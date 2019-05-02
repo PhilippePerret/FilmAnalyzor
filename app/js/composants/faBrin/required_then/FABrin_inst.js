@@ -1,36 +1,22 @@
 'use strict'
 
 Object.assign(FABrin.prototype,{
-addDocument(doc_id){
-  this.addToList('documents', doc_id)
-}
-,
-addEvent(ev_id){
-  this.addToList('events', ev_id)
-}
-,
-addTime(time){
-  this.addToList('times', otime.seconds)
-}
-,
-addBrin(brin_id){
-  if(this.id === brin_id){
-    return F.notify('Un brin ne peut pas être associé à lui-même, voyons…', {error: true})
+
+/**
+  Méthodes d'association et de dissociation
+
+  Ce sont des méthodes de l'instance FAEvent, même si ce ne sont
+  pas des events qui sont traités. Cela tient au fait que ces méthodes
+  touchent les mêmes propriétés des objets et qu'elles concernent le plus
+  souvent les evènements.
+**/
+  associer(asso){
+    return FAEvent.associer(this, asso)
   }
-  this.addToList('brins', brin_id)
-}
-,
-addToList(list_id, foo_id){
-  // console.log("addToList:", list_id, foo_id)
-  if(undefined === this.data[list_id] || this.data[list_id].indexOf(foo_id) < 0){
-    if (undefined === this.data[list_id]) this.data[list_id] = []
-    this.data[list_id].push(foo_id)
-    // console.log(`this.data[${list_id}] vaut maintenant:`,this.data[list_id])
-    this.modified = true
-  } else {
-    F.notify(`Le brin est déjà lié à cet élément « ${list_id} ».`)
+, dissocier(asso){
+    return FAEvent.dissocier(this, asso)
   }
-}
+
 })
 Object.defineProperties(FABrin.prototype,{
 id:{get(){return this.data.id}}

@@ -282,6 +282,14 @@
     "sceneType": "expo"
   },
   {
+    "id": 189,
+    "type": "event",
+    "titre": "Emménagement heureux",
+    "time": 332.88,
+    "duree": 41.26,
+    "content": "Flashback : @T et @CA emménagent dans leur nouvel appartement. Ils sont radieux, rayonnent de bonheur."
+  },
+  {
     "id": 168,
     "type": "stt",
     "titre": "La séparation",

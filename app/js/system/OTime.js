@@ -85,7 +85,7 @@ asAssociate(options){
   if(options.owner){
     // Si les options définissent un owner, on ajoute un lien pour pouvoir
     // dissocier le temps de son possesseur
-    dvs.push(DCreate('A',{class:'lkdiss', inner: '[dissocier]', attrs:{onclick:`FAEvent.dissocier.bind(FAEvent)({owned:{type:'time', id:${this.seconds}}, owner:{type:'${options.owner.type}', id:${options.owner.id}}})`}}))
+    dvs.push(DCreate('A',{class:'lkdiss', inner: '[dissocier]', attrs:{onclick:`FAEvent.prepareDissociation.bind(FAEvent)({owned:{type:'time', id:${this.seconds}}, owner:{type:'${options.owner.type}', id:${options.owner.id}}})`}}))
   }
   return DCreate('SPAN', {class:'lktime', append: dvs})
 }

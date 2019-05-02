@@ -105,7 +105,7 @@ static get folderModifieds(){
                             :time ou :id suivant qu'il s'agit d'un temps ou
                             d'un autre élément
 **/
-static dissocier(datadis){
+static prepareDissociation(datadis){
   datadis.owner.type || raise('Il faut fournir le type du propriétaire.')
   datadis.owner.id !== undefined || raise("Il faut fournir l'id du propriétaire")
   let owner = ((typ, id) => {
@@ -151,6 +151,51 @@ static set a(v){this._a = v}
 static get type(){return this._type||defP(this,'_type', this.dataType.type)}
 static get shortName(){return this._shortName||defP(this,'_shortName', this.dataType.name.short.cap.sing)}
 
+static associer(obj, asso){
+  let list_id = `${asso.type}s`
+  let res = this.addToList(list_id, obj, asso.id)
+  if (res == true){
+    obj.modified = true
+    if('function'===typeof(obj.updateInReader)){
+      obj.updateInReader()
+    }
+  }
+  return res
+}
+// ATTENTION : LA MÊME MÉTHODE EXISTE PLUS HAUT
+static dissocier(obj, asso){
+  let list_id = `${asso.type}s`
+  let res = this.supFromList(list_id, obj, asso.id)
+  if (res == true){
+    obj.modified = true
+    if('function'===typeof(obj.updateInReader)){
+      obj.updateInReader()
+    }
+  }
+  return res
+}
+
+static addToList(list_id, obj, asso_id){
+  // console.log("addToList:", list_id, foo_id)
+  if(list_id == 'times' && (asso_id instanceof(OTime))) asso_id = asso_id.seconds
+  if(obj[list_id].indexOf(asso_id) < 0){
+    obj[list_id].push(asso_id)
+    return true
+  } else {
+    F.notify(`Les deux éléments sont déjà liés.`)
+    return false
+  }
+}
+static supFromList(list_id, obj, asso_id){
+  if(list_id == 'times' && (asso_id instanceof(OTime))) asso_id = asso_id.seconds
+  var off = obj[list_id].indexOf(asso_id)
+  if(off > -1){
+    this[list_id].splice(off, 1)
+    return true
+  } else {
+    return false
+  }
+}
 // ---------------------------------------------------------------------
 //  INSTANCE
 
@@ -268,92 +313,11 @@ unsetParent(){
   this.modified = true
 }
 
-associer(asso){
-  let res = ( (typ, id) => {
-    switch (typ) {
-      case 'brin':
-        return this.addBrin(asso.id)
-      case 'event':
-        return this.addEvent(asso.id)
-      case 'document':
-        return this.addDocument(asso.id)
-      case 'time':
-        return this.addTime(asso.id)
-      default:
-        throw(T('unknown-associated-type', {type: asso.type}))
-    }
-  })(asso.type, asso.id)
-  this.modified = true
-  this.updateInReader()
-  return res
-}
 /**
-  Méthode pour dissocier l'élément +asso+ de l'event courant
+Méthode pour associer et dissocier l'élément +asso+ de l'event courant
 **/
-dissocier(asso){
-  switch (asso.type) {
-    case 'document':
-      this.supDocument(asso.id)
-      break;
-    case 'brin':
-      this.supBrin(asso.id)
-      break
-    case 'time':
-      this.supTime(asso)
-      break
-    default:
-      // Un event
-      this.supEvent(asso.id)
-  }
-  this.modified = true
-  this.updateInReader()
-}
-
-
-addDocument(doc_id){
-  if(this.documents.indexOf(doc_id) < 0){
-    this.documents.push(doc_id)
-  }
-  return true // car on peut, par exemple, vouloir mettre plusieurs balises
-              // dans le texte [plus tard: ET ALORS ???…]
-}
-supDocument(asso_id){
-  var off = this.documents.indexOf(asso_id)
-  if(off > -1) this.documents.splice(off, 1)
-}
-
-addEvent(event_id){
-  if(this.id == event_id){
-    return F.error(T('same-event-no-association'))
-  } else if (this.events.indexOf(event_id) < 0) {
-    this.events.push(event_id)
-  }
-  return true // même remarque que ci-dessus
-}
-supEvent(asso_id){
-  var off = this.events.indexOf(asso_id)
-  if(off > -1) this.events.splice(off, 1)
-}
-
-addTime(otime){
-  if(this.times.indexOf(otime.seconds) < 0){
-    this.times.push(otime.seconds)
-  }
-}
-supTime(otime){
-  var off = this.times.indexOf(otime.seconds)
-  if(off > -1) this.times.splice(off, 1)
-}
-
-addBrin(brin_id){
-  if(!this.brins || this.brins.indexOf(brin_id) < 0){
-    this.brins.push(brin_id)
-  }
-}
-supBrin(asso_id){
-  var off = this.brins.indexOf(asso_id)
-  if(off > -1) this.brins.splice(off, 1)
-}
+associer(asso) {return FAEvent.associer(this, asso)}
+dissocier(asso){return FAEvent.dissocier(this, asso)}
 
 /**
 
