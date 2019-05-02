@@ -73,7 +73,6 @@ init(){
   // On appelle juste l'indicateur de position pour l'initialiser
   this.positionIndicator.init()
 
-
   this.inited = true
   log.info("<- VideoController#init()")
 

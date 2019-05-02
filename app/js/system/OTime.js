@@ -58,6 +58,7 @@ class OTime {
 
   set horloge(v)  { this._horloge = v }
   get horloge()   {return this._horloge || defP(this,'_horloge', this.s2h())}
+  get vhorloge()  {return this._vhorloge || defP(this,'_vhorloge', this.s2h(this.vtime))}
   get horloge_simple(){
     if(undefined === this._horloge_simple){
       this._horloge_simple = this.s2h(this.secondsInt, {no_frames: true})
@@ -141,8 +142,9 @@ s2h(s, format){
  */
 updateSeconds(s){
   delete this._toString
+  delete this._vhorloge
+  delete this._horloge
   this.seconds = s
-  this.horloge = this.s2h(s)
 }
 
 
