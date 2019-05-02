@@ -33,8 +33,8 @@ class OTime {
       case 'object':
         if (v instanceof(OTime)){
           try {pourgenereuneerreur} catch (e) {
-            console.error(e)
             console.error("On ne doit pas envoyer un OTime pour initialiser un OTime.")
+            console.error(e)
           }
         }
         else {

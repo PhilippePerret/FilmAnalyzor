@@ -32,6 +32,7 @@ toString(){
                           :altText    Texte alternatif pour le spanRef.
 **/
 , as(format, flag, opts){
+  // console.log("-> as", format, flag, opts)
   if (undefined === flag) flag = 0
   if (undefined === opts) opts = {}
 
@@ -111,7 +112,6 @@ toString(){
     let divs = []
     if(this.titre) divs.push(DCreate('SPAN',{class:'titre',inner: DFormater(this.titre)}))
     divs.push(DCreate('SPAN',{class:'content', inner: DFormater(this.content)}))
-    if(!opts || !opts.no_warm) divs.push(this.warnCommonMethod)
     return divs
   }
 
@@ -141,7 +141,6 @@ toString(){
 // Version livre commune
 , asBook(opts){
     var divs = []
-    divs.push(this.warnCommonMethod)
     return divs
   }
 ,
@@ -153,10 +152,10 @@ asFull(opts){
   if(undefined === opts) opts = {}
   opts.no_warm = true // pour la version short
   divs.push(...this.asShort(opts))
-  if(!opts || !opts.no_warm) divs.push(this.warnCommonMethod)
   let divAssos = this.divAssociates(opts)
   // console.log("divAssos:", divAssos)
   divAssos && divs.push(...divAssos)
+  // console.log("divs:", divs)
   return divs
 }
 ,
@@ -261,17 +260,6 @@ Object.defineProperties(FAEvent.prototype,{
   }
 , link:{
     get(){return `-&gt; <a onclick="current_analyse.locator.setTime(${this.otime.vtime})">E #${this.id}</a>`}
-  }
-// Méthode de warning pour indiquer que la version d'affichage courante
-// est une version commune à tous les events, pas adaptée à l'event en
-// particulier. Elle s'affichera jusqu'à ce que l'event en particulier
-// possède sa propre méthode d'helper.
-, warnCommonMethod: {
-    get(){
-      if (undefined === this._warnCommonMethod){
-        this._warnCommonMethod = DCreate('DIV', {class:'tiny', inner: "Cette version est la version commune d’affichage de l’event. Pour une version personnalisée, créer la méthode `asFull`."})
-      }
-    }
   }
 
 })
