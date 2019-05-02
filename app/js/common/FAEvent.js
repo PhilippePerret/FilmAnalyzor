@@ -582,7 +582,9 @@ hasPersonnages(filtre){
     }
   } else {
     for(var reg of filtre.regulars){
-      if(!this.content.match(reg) && !this.titre.match(reg)) return false
+      let notInContent = !this.content  || !this.content.match(reg)
+      let notInTiter   = !this.titre    || !this.titre.match(reg)
+      if( notInContent && notInTiter ) return false
     }
     return true // dans tous les cas
   }
