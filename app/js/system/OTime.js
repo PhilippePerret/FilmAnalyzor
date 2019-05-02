@@ -144,6 +144,7 @@ updateSeconds(s){
   delete this._toString
   delete this._vhorloge
   delete this._horloge
+  delete this._horloge_simple
   this.seconds = s
 }
 
