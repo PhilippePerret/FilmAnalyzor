@@ -1,0 +1,10 @@
+---
+  types:
+    n/d:
+      hname: Non défini
+    personnage:
+      hname: Information sur un personnage
+    intrigue:
+      hname: Information sur une intrigue
+    theme:
+      hname: Information sur un thème

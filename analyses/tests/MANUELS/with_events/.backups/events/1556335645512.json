@@ -1,0 +1,1 @@
+{"0":{"id":0,"type":"scene","titre":"La première scène","time":0,"duree":75.6,"content":"La première scène","numero":1,"decor":"Maison","sous_decor":"jardin","lieu":"ext","effet":"jour"},"1":{"id":1,"type":"scene","titre":"La deuxième scène","time":75.6,"duree":10,"content":"La deuxième scène","numero":2,"decor":"Maison","sous_decor":"chambre","lieu":"int","effet":"jour"}}

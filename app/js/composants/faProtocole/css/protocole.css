@@ -1,0 +1,43 @@
+div#protocole {
+  background-color:lemonchiffon;
+  height:700px;
+  display:grid;
+  grid-template-rows: 659px 41px;
+  grid-template-columns: 600px;
+}
+div#protocole h2 {
+  margin-top:0;
+  font-variant:small-caps;
+  font-size:1.3em;
+}
+
+div#protocole div.body {
+  grid-row:1;
+  grid-column:1;
+  padding:2em;
+  overflow:auto;
+}
+div#protocole div.footer {
+  grid-row:2;
+  grid-column:1;
+  width:100%
+  margin:auto;
+  text-align:right;
+  background-color:#77789A;
+  padding:4px 8px;
+}
+
+div#protocole div.protocole-step input[type="checkbox"]{
+  margin-right: 0.5em;
+}
+/* Les sous-étapes */
+div#protocole div.protocole-step > div.protocole-sous-steps {
+  margin-left:2em;
+}
+div#protocole div.protocole-step > div.protocole-sous-steps label {
+  font-size:0.91em;
+}
+
+div#protocole div.separator {
+  height:10px;
+}

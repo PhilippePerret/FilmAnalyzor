@@ -1,0 +1,17 @@
+
+---
+Driver:
+  pseudo: Driver
+  prenom:
+  nom:
+  ages:
+  dim:   D
+  dimensions: # Liste des dimensions du personnage
+
+patron:
+  pseudo: Patron
+  prenom: John
+  nom:
+  ages:
+  description: Patron de @D
+  dim:    P

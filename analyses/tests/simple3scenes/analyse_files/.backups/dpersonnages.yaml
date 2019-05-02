@@ -1,0 +1,29 @@
+# Définition des personnages
+#
+# <id>:
+#   pseudo:
+#   etc.
+# Propriétés : :pseudo, :prenom, :nom, :ages
+# Propriétés spéciales :
+#     :dim    Sert pour les diminutifs
+---
+driver:
+  pseudo: driver
+  prenom:
+  nom:
+  ages:
+  dim:    D
+
+sam:
+  pseudo: samantha
+  prenom:
+  nom:
+  ages:
+  dim:    S
+  description: Petite amie de @D
+
+patron:
+  pseudo: patron
+  prenom: John
+  dim:    P
+  description: Patron du garage où travaille @D

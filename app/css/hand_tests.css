@@ -1,0 +1,96 @@
+div.htest {
+  background-color:#EEEEFF;
+  font-size:0.8em;
+  width:640px;
+  height:700px;
+  position:relative;
+  border:2px solid #555555;
+}
+div.htest .htest-header{
+  position:absolute;
+  top:0;
+  height:120px;
+  width:90%;
+  padding:12px 5%;
+  background-color:#516468;
+  color:white;
+}
+div.htest .htest-header h2 {
+  margin-bottom:0;
+}
+
+/* Le champ qui contient le path (éditable) */
+div.htest .htest-header #htest-path {
+  background-color:inherit;
+  color:inherit;
+  font-size:inherit;
+  border:1px solid #749678;
+  width:240px;
+  margin:0 12px;
+  padding:0px 7px 2px;
+}
+
+div.htest .htest-body {
+  margin-top:140px;
+  padding: 1em 2em 1em;
+  overflow:auto;
+}
+
+div.htest .htest-body ul.htest-steps li.htest-step.sleeping {
+  opacity:0.25;
+  font-style:italic;
+  font-weight:normal;
+}
+div.htest .htest-body ul.htest-steps li.htest-step.running {
+  opacity:1;
+  font-weight:bold;
+}
+div.htest .htest-body ul.htest-steps li.htest-step.failure {
+  opacity:0.7;
+  font-weight:bold;
+  color:red;
+}
+div.htest .htest-body ul.htest-steps li.htest-step.success {
+  opacity:0.5;
+  font-weight:bold;
+  color:green;
+}
+div.htest .htest-body ul.htest-steps li.htest-step.done {
+  opacity:0.5;
+  font-weight:normal;
+  font-style:italic;
+}
+
+div.htest .htest-body .htest-path {
+  font-size:11pt;
+  opacity:0.7;
+}
+div.htest div.htest-footer {
+  text-align:right;
+  height:50px;
+  width:100%;
+  background-color:grey;
+  position:absolute;
+  bottom:0;
+}
+div.htest div.htest-footer button {
+  font-size:inherit;
+  font-family:inherit;
+  margin-top:12px;
+  margin-right:1em;
+}
+
+div.htest div.htest-footer button#btn-step-success,
+div.htest div.htest-footer button#btn-step-failure
+{
+  display:inline-block;
+  width:80px;
+}
+div.htest div.htest-footer button#btn-step-success {
+  background-color:green;
+  color: white;
+}
+div.htest div.htest-footer button#btn-step-failure {
+  background-color:#DC0000;
+  color: white;
+}

@@ -1,0 +1,10 @@
+---
+types:
+  n/d:
+    hname: Non défini
+  major:
+    hname: Idée majeure
+  minor:
+    hname: Idée mineure
+  anecdote:
+    hname: Anecdote

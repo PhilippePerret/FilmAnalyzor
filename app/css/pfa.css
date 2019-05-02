@@ -1,0 +1,27 @@
+/*
+  Styles pour les paradigmes de Field
+ */
+
+section.pfa {
+  border:1px solid grey;
+}
+section.pfa-absolute {
+
+}
+
+section.pfa div.pfa-part
+{
+  width:25%;
+  height:200px;
+  border:1px solid grey;
+}
+
+section.pfa div.pfa-part span.pfa-part-name {
+  opacity:0.5;
+}
+
+
+section.pfa .quart {width:25%;}
+section.pfa .huiti {width:12.5%;}
+section.pfa .douzi {width:8.33%;}
+section.pfa .iem24 {width:4.16%;}

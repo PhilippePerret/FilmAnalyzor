@@ -1,0 +1,14 @@
+---
+  types:
+    n/d:
+      hname: Non défini
+    inner:
+      hname: Dialogue intérieur
+    conflictuel:
+      hname: Dialogue conflictuel
+    confident:
+      hname: Dialogue confidentiel
+      description: Par exemple une confidence faite à un tiers personnage.
+    informatif:
+      hname: Dialogue informatif
+      description: Dialogue dont le but principal est de fournir une information (en général objective).

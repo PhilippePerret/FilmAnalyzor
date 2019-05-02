@@ -1,0 +1,64 @@
+#
+# Les cinq Fondamentales du film
+---
+fd1:
+  pseudo: PSEUDO DU PERSONNAGE
+  prenom: FIRSTNAME
+  nom:    LASTNAME
+  description: |
+    DESCRIPTION DU PERSONNAGE.
+  facteurO: x/5
+  description_factO:
+  facteurU: x/5
+  description_factU:
+  scenes: []
+  events: []
+
+fd2:
+  question: QUESTION
+  description: |
+    DESCRIPTION
+  objectif: # objectif qui incarne la question
+  facteurO: x/5
+  description_factO:
+  facteurU: x/5
+  description_factU:
+  scenes: []
+  events: []
+
+fd3:
+  opposition: OPPOSITION
+  antagoniste: ANTAGONISTE
+  antagonisme: ANTAGONISME
+  description: |
+    DESCRIPTION
+  facteurO: x/5
+  description_factO:
+  facteurU: x/5
+  description_factU:
+  scenes: []
+  events: []
+
+fd4:
+  reponse: REPONSE
+  typeR: OUI/NON/OUI MAIS/NON MAIS
+  description: |
+    DESCRIPTION
+  signification: SIGNIFICATION
+  facteurO: x/5
+  description_factO:
+  facteurU: x/5
+  description_factU:
+  scenes: []
+  events: []
+
+fd5:
+  concept: CONCEPT
+  description: |
+    DESCRIPTION
+  facteurO: x/5
+  description_factO:
+  facteurU: x/5
+  description_factU:
+  scenes: []
+  events: []

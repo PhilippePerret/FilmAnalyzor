@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Manuel</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="manuel.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1 id="film-analyzer">Film-Analyzer</h1>
+<h1 id="manuel-de-développement">Manuel de développement</h1>
+<ul>
+<li><a href="#point_dentree">Point d’entrée</a></li>
+<li><a href="#travail_code_sandbox_run">Essais/travail du code</a></li>
+<li><a href="#loading_modules_folders">Chargement de dossier de modules</a>
+<ul>
+<li><a href="#load_folders_at_launching">Chargement de dossiers JS au lancement de l’application</a></li>
+</ul></li>
+<li><a href="#creation_event">Création/modification des events</a>
+<ul>
+<li><a href="#event_mise_en_forme">Mise en forme des events</a></li>
+<li><a href="#bouton_playstop_event">Bouton Play/Stop des events</a></li>
+<li><a href="#autoupdate_horloge_time_numera">Actualisation automatique des horloges, time et numéro</a></li>
+<li><a href="#autoupdate_scene_courante">Actualisation automatique du numéro de scène courante</a></li>
+<li><a href="#saving_events">Enregistrement des events</a></li>
+</ul></li>
+<li><a href="#working_with_events">Travail avec les events</a>
+<ul>
+<li><a href="#filtering_events">Filtrage des events</a></li>
+</ul></li>
+<li><a href="#add_global_prefs">Ajout de préférences globales</a>
+<ul>
+<li><a href="#use_global_prefs%7D">Utilisation des préférences globales</a></li>
+</ul></li>
+<li><a href="#add_analyse_pref">Ajout de préférence analyse</a></li>
+<li><a href="#temporal_fields">Horloges et durées</a></li>
+<li><a href="#visual_aspect">Aspect visuel</a>
+<ul>
+<li><a href="#boutons_close">Boutons de fermeture</a></li>
+<li><a href="#boutons_toggle_next">Boutons expand/collapse</a></li>
+</ul></li>
+<li><a href="#documents_analyse">Documents de l’analyse</a>
+<ul>
+<li><a href="#les_types_de_documents">Quatre types de documents</a></li>
+<li><a href="#saving_protected">Sauvegarde protégée des documents</a></li>
+</ul></li>
+<li><a href="#assemblage_analyse">Assemblage de l’analyse</a>
+<ul>
+<li><a href="#script_assemblage_analyse">Script d’assemblage</a></li>
+</ul></li>
+<li><a href="#test_application">Test de la l’application</a></li>
+</ul>
+<!-- Définition des liens courants -->
+<h2 id="point_dentree">Point d’entrée</h2>
+<p>Le point d’entrée du main process se fait par <code>./main.js</code></p>
+<p>Le point d’entrée de l’analyser (<code>analyser.html</code>) se fait par <code>./app/js/lecteur/on_ready.js</code></p>
+<p>On fabrique une instance <code>FAnalyse</code>, qui est l’analyse courante. Normalement, pour le moment, c’est un singleton, mais on pourra imaginer certaines parties du programme qui travaillent avec plusieurs analyses en même temps.</p>
+<p>Cette instance <code>FAnalyse</code> construit un « controleur vidéo » (instance <code>VideoController</code>) et un « lecteur d’analyse » (instance <code>FAReader</code>)</p>
+<h2 id="travail_code_sandbox_run">Essais/travail du code</h2>
+<p>Pour faciliter le travail, on peut utiliser <code>Sandbox.run</code> qui est appelée quand l’application est prête. Dans la méthode <code>run</code> de la Sandbox — qui se trouve dans le fichier <code>./js/system.sandbox.js</code> — on définit le code à ajouter.</p>
+<p>Par exemple, quand je travaillais sur le MiniWriter, plutôt que de chaque fois lancer l’application, afficher les events, choisir un event, le mettre en édition, activer l’option « Utiliser le Mini-Writer pour les textes » et cliquer sur le champ contenu du premier event, j’ai utilisé :</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb1-1" title="1"><span class="va">Sandbox</span>.<span class="at">run</span> <span class="op">=</span> <span class="kw">function</span>()<span class="op">{</span></a>
+<a class="sourceLine" id="cb1-2" title="2">  <span class="va">current_analyse</span>.<span class="at">editEvent</span>(<span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb1-3" title="3">  <span class="va">MiniWriter</span>.<span class="at">new</span>(<span class="at">DGet</span>(<span class="st">&#39;event-0-content&#39;</span>))</a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="op">}</span></a></code></pre></div>
+<h2 id="loading_modules_folders">Chargement de dossier de modules</h2>
+<p>On peut charger des modules en inscrivant leur balise <code>&lt;script&gt;</code> dans le document grâce à la méthode <code>System.loadJSFolders(mainFolder, subFolders, fn_callback)</code>.</p>
+<p>L’avantage de ce système — contrairement à <code>require</code> —, c’est que tout le contenu du code est exposé à l’application. Si une classe <code>FADocument</code> est définie, elle sera utilisable partout, à commencer par les modules chargés.</p>
+<p>C’est cette formule qu’on utilise par exemple pour charger le <em>FAWriter</em> qui permet de rédiger les textes.</p>
+<h3 id="load_folders_at_launching">Chargement de dossiers JS au lancement de l’application</h3>
+<p>Grâce au module <code>system/App.js</code>, on peut charger des dossiers javascript sans les coder en dur dans le fichier HTML de l’application.</p>
+<p>Il suffit de les inscrire dans la constante <code>AppLoader::REQUIRED_MODULES</code> et ils sont chargés de façon asynchrone.</p>
+<h2 id="creation_event">Création/modification des events</h2>
+<p>Les <code>events</code> (scène, info, note, qrd, etc.) héritent tous de la classe <code>FAEvent</code>.</p>
+<p>Ils sont définis dans le dossier <code>./app/js/common/FAEvents/</code> où on définit leur sous-classe. Par exemple la classe <code>FAEscene (extends FAEvent)</code>.</p>
+<p>La propriété de classe <code>OWN_PROPS</code> permet de définir les propriétés propres au type d’event. C’est une liste qui contient :</p>
+<ul>
+<li>soit un <code>String</code> si la propriété possède le même nom (suffixe d’id) que le champ où elle est éditée,</li>
+<li>soit un <code>Array</code> de deux éléments <code>[propriété, suffixe d'id]</code> si le champ pour l’éditer n’est pas propre à la propriété.</li>
+</ul>
+<p>Par exemple, pour la propriété personnelle <code>procType</code> de la classe <code>FAEproc</code>, le menu porte le nom <code>event-&lt;id event&gt;-procType</code>. Le suffixe est <code>procType</code>, on peut donc mettre juste le string <code>procType</code> dans <code>OWN_PROPS</code>. En revanche, la propriété <code>setup</code> (installation du procédé) est édité dans le champ <code>event-&lt;id&gt;-inputtext1</code>, donc il faut mettre la valeur <code>['setup', 'inputtext1']</code> dans <code>OWN_PROPS</code>.</p>
+<h3 id="exécution-dune-opération-après-la-création">Exécution d’une opération après la création</h3>
+<p>Il suffit de créer la méthode d’instance <code>onCreate</code> dans la classe de l’event. Elle sera automatiquement jouée lors de la modification de l’instance.</p>
+<h3 id="exécution-dune-opération-après-la-modification">Exécution d’une opération après la modification</h3>
+<p>Il suffit de créer la méthode d’instance <code>onModify</code> dans la classe de l’event. Elle sera automatiquement jouée lors de la modification de l’instance.</p>
+<h2 id="event_mise_en_forme">Mise en forme des events</h2>
+<p>C’est le getter super <code>div</code> qui se charge de construire le div qui doit être affiché dans le reader. Il convient de ne pas le surclasser, pour obtenir tous les outils nécessaires à la gestion des events.</p>
+<p>En revanche, pour un affichage particulier du contenu, on peut définir le fonction d’instance <code>formateContenu</code> qui doit définir ce qui va remplacer le texte <code>content</code> dans le div final. Elle doit retourner le contenu à afficher (sans le mettre dans une propriété conservé, ce qui empêcherait l’actualisation — ou la compliquerait).</p>
+<blockquote>
+<p>Utiliser la méthode <code>current_analyse.deDim(&lt;formated&gt;)</code> à la fin de l’opération pour remplacer tous les diminutifs utilisés.</p>
+</blockquote>
+<p>Exemple :</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb2-1" title="1"></a>
+<a class="sourceLine" id="cb2-2" title="2">  <span class="at">formateContenu</span>()<span class="op">{</span></a>
+<a class="sourceLine" id="cb2-3" title="3">    <span class="kw">var</span> str</a>
+<a class="sourceLine" id="cb2-4" title="4">    str <span class="op">=</span> <span class="st">&#39;&lt;mon div avec content&gt;&#39;</span></a>
+<a class="sourceLine" id="cb2-5" title="5">    str <span class="op">+=</span> <span class="st">&#39;&lt;mon div avec les notes&gt;&#39;</span></a>
+<a class="sourceLine" id="cb2-6" title="6">    str <span class="op">+=</span> <span class="st">&#39;&lt;mon div avec une autre valeur&gt;&#39;</span></a>
+<a class="sourceLine" id="cb2-7" title="7">    <span class="co">// etc.</span></a>
+<a class="sourceLine" id="cb2-8" title="8">    str <span class="op">=</span> <span class="kw">this</span>.<span class="va">analyse</span>.<span class="at">deDim</span>(str)</a>
+<a class="sourceLine" id="cb2-9" title="9"></a>
+<a class="sourceLine" id="cb2-10" title="10">    <span class="cf">return</span> str</a>
+<a class="sourceLine" id="cb2-11" title="11">  <span class="op">}</span></a></code></pre></div>
+<h3 id="bouton_playstop_event">Bouton Play/Stop des events</h3>
+<p><code>BtnPlay</code> est une classe javascript qui permet de gérer facilement les boutons play/stop des events, c’est-à-dire des boutons qui mettent en route (ou se rendent au temps de) la vidéo et l’arrête à la fin de la durée de l’event.</p>
+<p>Une unique instance <code>BtnPlay</code> est associée à un event <code>event.btnPlay</code> et va gérer tous les boutons play affichés de cet évènement.</p>
+<p>Pour l’implémenter, inscrire ce code HTML dans la page, à l’endroit où le bouton doit apparaitre, en réglant l’attribut <code>size</code> pour que le bouton ait la taille voulu. Si le bouton doit être à gauche, ajouter la classe <code>left</code>, s’il doit être à droite, ajouter <code>right</code> (cela permet de gérer l’espace avec les éléments autour) :</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode html"><code class="sourceCode html"><a class="sourceLine" id="cb3-1" title="1"></a>
+<a class="sourceLine" id="cb3-2" title="2">  <span class="kw">&lt;div</span><span class="ot"> id=</span><span class="st">&quot;main-container&quot;</span><span class="kw">&gt;</span></a>
+<a class="sourceLine" id="cb3-3" title="3"></a>
+<a class="sourceLine" id="cb3-4" title="4">    <span class="kw">&lt;button</span><span class="ot"> class=</span><span class="st">&quot;btnplay left&quot;</span><span class="ot"> size=</span><span class="st">&quot;30&quot;</span><span class="kw">&gt;&lt;/button&gt;</span></a>
+<a class="sourceLine" id="cb3-5" title="5"></a>
+<a class="sourceLine" id="cb3-6" title="6">  <span class="kw">&lt;/div&gt;</span></a></code></pre></div>
+<p>Dans le code javascript, ajouter simplement :</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb4-1" title="1"></a>
+<a class="sourceLine" id="cb4-2" title="2">  <span class="va">BtnPlay</span>.<span class="at">setAndWatch</span>(<span class="at">$</span>(<span class="st">&#39;#main-container&#39;</span>)<span class="op">,</span> <span class="op">&lt;</span>event<span class="op">&gt;</span>)</a></code></pre></div>
+<blockquote>
+<p><code>#main-container</code> ne peut pas être le bouton lui-même, il ne serait pas traité.</p>
+</blockquote>
+<p>Tout le reste est géré automatiquement, il n’y a rien à faire.</p>
+<h3 id="autoupdate_horloge_time_numera">Actualisation automatique des horloges, time et numéro</h3>
+<p>Afin que les horloges et les times en attribut de balises soient automatiquement modifiés tous en même temps, il suffit de respecter les conventions suivantes :</p>
+<ul>
+<li>Pour les horloges, ajouter la classe CSS <code>horloge-event</code> et mettre un attribut <code>data-id</code> avec la valeur de l’identifiant de l’event. Par exemple : <code>html     &lt;span class="horloge horloge-event" data-id="4"&gt;...&lt;/span&gt;</code></li>
+<li>Pour la valeur du <code>time</code> enregistré en attribut (pratique pour certaines opération), il suffit d’ajouter l’attribut <code>data-id</code> en parallèle de l’attribut <code>data-time</code>. Par exemple : <code>html     &lt;div data-time="23.56" data-id="12"&gt;...&lt;/div&gt;</code></li>
+<li>Si l’event est une scène, son numéro doit être indiqué de la manière suivante : <code>html     &lt;span class="numero-scene" data-id="23"&gt;...&lt;/span&gt;</code> Si ces conventions sont respectées, l’appel à la méthode <code>FAEvent#updateInUI</code> modification automatiquement les valeurs affichées et consignées. Pour ce qui est des scènes, c’est la méthode qui actualise tous les numéros qui se chargera d’actualiser les numéros de scène.</li>
+</ul>
+<p>Cf. aussi <a href="#temporal_fields">Champs temporels</a> pour les champs <em>horlogeables</em> et <em>durationables</em>.</p>
+<h3 id="autoupdate_scene_courante">Actualisation automatique du numéro de scène courante</h3>
+<p>Pour obtenir une actualisation automatique de la scène courante, comme elle est affichée par exemple à côté des markeurs de parties, il suffit d’utiliser des champs de classe CSS :</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode html"><code class="sourceCode html"><a class="sourceLine" id="cb5-1" title="1"></a>
+<a class="sourceLine" id="cb5-2" title="2"><span class="kw">&lt;span</span><span class="ot"> class=</span><span class="st">&quot;current-scene-number&quot;</span><span class="kw">&gt;</span>Scène 12<span class="kw">&lt;/span&gt;</span></a>
+<a class="sourceLine" id="cb5-3" title="3"><span class="kw">&lt;span</span><span class="ot"> class=</span><span class="st">&quot;current-scene-number-only&quot;</span><span class="kw">&gt;</span>12<span class="kw">&lt;/span&gt;</span></a>
+<a class="sourceLine" id="cb5-4" title="4"><span class="kw">&lt;span</span><span class="ot"> class=</span><span class="st">&quot;current-scene-pitch&quot;</span><span class="kw">&gt;</span>Le résumé de la scène<span class="kw">&lt;/span&gt;</span></a></code></pre></div>
+<h3 id="saving_events">Enregistrement des events</h3>
+<p>Les events sont enregistrés dans le fichier <code>events.json</code> du dossier de l’analyse. Des backups sont systématiquement faits dans le dossier <code>.backups</code>.</p>
+<p>Mais les events devenant très nombreux à l’avancée de l’analyse (pouvant dépasser les 2000 items), on procède en parallèle à un enregistrement des seuls events modifiés, ajoutés ou supprimés.</p>
+<p>C’est la classe <code>FAEvent</code> qui s’en charge, dans sa méthode <code>saveModifieds</code>. Ces enregistrements sont faits chaque fois qu’on enregistre la liste de tous les events et ils sont placés dans le dossier <code>.backups/events</code> de l’analyse.</p>
+<h2 id="working_with_events">Travail avec les events</h2>
+<h3 id="filtering_events">Filtrage des events</h3>
+<p>On peut travailler avec une liste filtrée des events grâce à la classe <code>EventsFilter</code> (définie pour le moment dans le <code>FAEventer</code>, donc il faut charger ce composant pour avoir le filtre).</p>
+<p>Pour créer un filtre :</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb6-1" title="1"></a>
+<a class="sourceLine" id="cb6-2" title="2">  <span class="kw">let</span> obj  <span class="op">=</span> monObjetPeuImporte</a>
+<a class="sourceLine" id="cb6-3" title="3">  <span class="kw">let</span> monFiltre <span class="op">=</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb6-4" title="4">    <span class="dt">eventTypes</span><span class="op">:</span> [<span class="st">&#39;stt&#39;</span><span class="op">,</span> <span class="st">&#39;scenes&#39;</span><span class="op">,</span> ...] <span class="co">// sinon tous les types</span></a>
+<a class="sourceLine" id="cb6-5" title="5">  <span class="op">,</span> <span class="dt">fromTime</span><span class="op">:</span> <span class="dv">1200</span>  <span class="co">// sinon le début</span></a>
+<a class="sourceLine" id="cb6-6" title="6">  <span class="op">,</span> <span class="dt">toTime</span><span class="op">:</span>   <span class="dv">12000</span> <span class="co">// sinon la fin</span></a>
+<a class="sourceLine" id="cb6-7" title="7">  <span class="op">,</span> <span class="dt">invert</span><span class="op">:</span>   <span class="kw">true</span>  <span class="co">// pour inverser toutes les conditions</span></a>
+<a class="sourceLine" id="cb6-8" title="8">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb6-9" title="9">  <span class="kw">let</span> monF <span class="op">=</span> <span class="kw">new</span> <span class="at">EventsFilter</span>(obj<span class="op">,</span> <span class="op">{</span><span class="dt">filter</span><span class="op">:</span> monFiltre<span class="op">}</span>)</a></code></pre></div>
+<h2 id="add_global_prefs">Ajout de préférences globales (appelées aussi “options globales”)</h2>
+<p>Ces préférences sont définies dans le menu « Options » jusqu’à définition contraire.</p>
+<ol type="1">
+<li><p>Définir la valeur par défaut et le nom de l’option dans le fichier <code>./js/system/Options.js:14</code>, dans la constante <code>DEFAULT_DATA</code>. S’inspirer des autres options.</p></li>
+<li><p>Créer un nouveau menu dans le submenu de “Options” (fichier <code>/main-process/menu.js:427</code>) avec les données suivantes :</p></li>
+</ol>
+<div class="sourceCode" id="cb7"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb7-1" title="1">  <span class="op">{</span></a>
+<a class="sourceLine" id="cb7-2" title="2">      <span class="dt">label</span><span class="op">:</span>    <span class="st">&quot;&lt;Le label de la préférences&gt;&quot;</span></a>
+<a class="sourceLine" id="cb7-3" title="3">    <span class="op">,</span> <span class="dt">id</span><span class="op">:</span>       <span class="st">&#39;&lt;id_indispensable_et_universel&gt;&#39;</span></a>
+<a class="sourceLine" id="cb7-4" title="4">    <span class="op">,</span> <span class="dt">type</span><span class="op">:</span>     <span class="st">&#39;checkbox&#39;</span></a>
+<a class="sourceLine" id="cb7-5" title="5">    <span class="op">,</span> <span class="dt">checked</span><span class="op">:</span>  <span class="kw">false</span></a>
+<a class="sourceLine" id="cb7-6" title="6">    <span class="op">,</span> <span class="dt">click</span><span class="op">:</span>    ()<span class="op">=&gt;{</span></a>
+<a class="sourceLine" id="cb7-7" title="7">        <span class="kw">var</span> check <span class="op">=</span> <span class="kw">this</span>.<span class="at">getMenu</span>(<span class="st">&#39;&lt;id_indispensable_et_universel&gt;&#39;</span>).<span class="at">checked</span></a>
+<a class="sourceLine" id="cb7-8" title="8">        <span class="va">mainW</span>.<span class="va">webContents</span>.<span class="at">executeJavaScript</span>(<span class="vs">`FAnalyse.setGlobalOption(&#39;&lt;id_indispensable_et_universel&gt;&#39;,</span><span class="sc">${</span>checked<span class="op">?</span><span class="st">&#39;true&#39;</span>:<span class="st">&#39;false&#39;</span><span class="sc">}</span><span class="vs">)`</span>)</a>
+<a class="sourceLine" id="cb7-9" title="9">    <span class="op">}</span></a>
+<a class="sourceLine" id="cb7-10" title="10">  <span class="op">}</span></a></code></pre></div>
+<ol start="3" type="1">
+<li>Demander le réglage de l’option, au chargement de l’application, dans le fichier <code>.../main-process/Prefs.js:170</code> :</li>
+</ol>
+<div class="sourceCode" id="cb8"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb8-1" title="1"></a>
+<a class="sourceLine" id="cb8-2" title="2">  <span class="co">// dans .../main-process/Prefs.js</span></a>
+<a class="sourceLine" id="cb8-3" title="3"></a>
+<a class="sourceLine" id="cb8-4" title="4">  <span class="op">,</span> <span class="at">setMenusPrefs</span>()<span class="op">{</span></a>
+<a class="sourceLine" id="cb8-5" title="5">      <span class="co">//...</span></a>
+<a class="sourceLine" id="cb8-6" title="6"></a>
+<a class="sourceLine" id="cb8-7" title="7">      <span class="va">ObjMenus</span>.<span class="at">getMenu</span>(<span class="st">&#39;&lt;id_indispensable_et_universel&gt;&#39;</span>).<span class="at">checked</span> <span class="op">=</span> <span class="kw">this</span>.<span class="at">get</span>(<span class="st">&#39;&lt;id_indispensable_et_universel&gt;&#39;</span>)</a>
+<a class="sourceLine" id="cb8-8" title="8">      <span class="co">// En considérant que le menu et l&#39;id de l&#39;option sont identiques, ce</span></a>
+<a class="sourceLine" id="cb8-9" title="9">      <span class="co">// qui est préférable.</span></a>
+<a class="sourceLine" id="cb8-10" title="10">    <span class="op">}</span></a></code></pre></div>
+<p>Si la valeur par défaut doit être false, il n’y a rien d’autres à faire. Sinon, il faut définir sa valeur par défaut dans <code>Prefs</code> (fichier <code>.../main-process/Prefs.js:140</code> comme ci-dessus) :</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb9-1" title="1"></a>
+<a class="sourceLine" id="cb9-2" title="2">  <span class="co">// dans .../js/main-process/Prefs.js</span></a>
+<a class="sourceLine" id="cb9-3" title="3">  loadUserPrefs<span class="op">:</span><span class="kw">function</span>()<span class="op">{</span></a>
+<a class="sourceLine" id="cb9-4" title="4">    <span class="co">//...</span></a>
+<a class="sourceLine" id="cb9-5" title="5">    <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb9-6" title="6">      <span class="kw">this</span>.<span class="at">userPrefs</span> <span class="op">=</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb9-7" title="7">        <span class="co">//...</span></a>
+<a class="sourceLine" id="cb9-8" title="8">        <span class="st">&#39;&lt;id_indispensable_et_universel&gt;&#39;</span><span class="op">:</span> <span class="kw">true</span></a>
+<a class="sourceLine" id="cb9-9" title="9">      <span class="op">}</span></a>
+<a class="sourceLine" id="cb9-10" title="10">    <span class="op">}</span></a>
+<a class="sourceLine" id="cb9-11" title="11">  }</a></code></pre></div>
+<h3 id="use_global_prefs">Utilisation des préférences globales</h3>
+<p>Pour connaitre la valeur d’une option globale, on utilise la même méthode que pour les options de l’analyse :</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb10-1" title="1"></a>
+<a class="sourceLine" id="cb10-2" title="2"><span class="kw">var</span> opt <span class="op">=</span> <span class="va">current_analyse</span>.<span class="va">options</span>.<span class="at">get</span>(<span class="st">&#39;&lt;id de l’option&gt;&#39;</span>)</a></code></pre></div>
+<h3 id="add_analyse_pref">Ajout de préférence analyse</h3>
+<ol type="1">
+<li><p>Dans le fichier <code>./app/js/system/Options.js</code>, ajouter l’option à la donnée <code>Options.DEFAULT_DATA</code>.</p></li>
+<li><p>Demander le réglage de l’option dans <code>FAnalyse#setOptionsInMenus</code> dans le fichier <code>common/FAnalyse.js</code> en s’inspirant des autres options.</p></li>
+<li><p>Traiter l’utilisation de l’option en se servant de la valeur de <code>current_analyse.options.get('&lt;id_universel_option&gt;')</code>.</p></li>
+</ol>
+<h3 id="temporal_fields">Horloges et durées</h3>
+<p>On peut mettre <code>horlogeable</code> et <code>durationable</code> sur les balises <code>&lt;horloge&gt;&lt;/horloge&gt;</code> qui doivent être gérable au niveau des horloges (positions) et des durées.</p>
+<p>Une horloge (balise <code>&lt;horloge&gt;</code>) doit obligatoirement posséder un identifiant unique dans la page.</p>
+<p>Quand un champ possède l’une de ces deux classes :</p>
+<ul>
+<li>il est rendu inéditable (<code>disabled</code>)</li>
+<li>il est sensible au déplacement de la souris pour augmenter/diminuer le temps</li>
+</ul>
+<p>Noter qu’il faut utiliser la méthode <code>UI.setHorlogeable(&lt;container&gt;, options)</code> ou <code>UI.setDurationable(&lt;container&gt;, options)</code> pour que les observers soient placés. <strong>ATTENTION</strong> de ne pas prendre un container trop grand, qui possèderait des éléments déjà horlogeables ou durationables.</p>
+<p>On peut récupérer les horloges qui sont renvoyées et les régler :</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb11-1" title="1">  <span class="kw">var</span> horloges <span class="op">=</span> <span class="va">UI</span>.<span class="at">setHorlogeable</span>(<span class="op">&lt;</span>container<span class="op">&gt;</span>[<span class="op">,</span> <span class="op">&lt;</span>option<span class="op">&gt;</span>])</a>
+<a class="sourceLine" id="cb11-2" title="2">  <span class="kw">var</span> h <span class="op">=</span> horloges[<span class="op">&lt;</span>id horloge<span class="op">&gt;</span>]</a>
+<a class="sourceLine" id="cb11-3" title="3">  <span class="va">h</span>.<span class="at">dispatch</span>(<span class="op">{</span><span class="dt">time</span><span class="op">:</span> <span class="op">&lt;</span>temps de départ<span class="op">&gt;,</span> ...<span class="op">}</span>)</a></code></pre></div>
+<p>On peut aussi implémenter soi-même l’horloge :</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb12-1" title="1">  <span class="kw">var</span> h <span class="op">=</span> <span class="kw">new</span> <span class="at">DOMHorloge</span>()</a>
+<a class="sourceLine" id="cb12-2" title="2">  <span class="va">h</span>.<span class="at">dispatch</span>(<span class="op">{</span></a>
+<a class="sourceLine" id="cb12-3" title="3">        <span class="dt">time</span><span class="op">:</span> <span class="op">&lt;</span>le temps de départ<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb12-4" title="4">      <span class="op">,</span> <span class="dt">synchroVideo</span><span class="op">:</span> <span class="kw">true</span>/<span class="kw">false</span></a>
+<a class="sourceLine" id="cb12-5" title="5">      <span class="op">,</span> <span class="dt">parentModifiable</span><span class="op">:</span> <span class="kw">true</span>/<span class="kw">false</span></a>
+<a class="sourceLine" id="cb12-6" title="6">      <span class="op">,</span> <span class="dt">unmodifiable</span><span class="op">:</span> <span class="kw">true</span>/<span class="kw">false</span></a>
+<a class="sourceLine" id="cb12-7" title="7">    <span class="op">}</span>).<span class="at">showTime</span>()</a></code></pre></div>
+<p><code>options</code> peut contenir <code>{synchro_video: true}</code> pour que l’horloge soit synchronisée avec la vidéo. Inutile alors de dispatcher cette donnée.</p>
+<p>Si <code>unmodifiable</code> est mis à true, on n’indiquera pas lorsque l’horloge aura changé de temps. C’est le cas par exemple de l’horloge principale.</p>
+<p>On utilise <code>parentModifiable</code> en indiquant le conteneur, qui peut recevoir la classe <code>modified</code> pour indiquer qu’il est modifiable (<em>visuellement</em> modifiable). C’est le cas par exemple pour les horloges des formulaires d’events. Les formulaires sont les « containers modifiables », qui vont recevoir la class <code>modified</code> quand l’horloge sera modifiée, ce qui aura pour effet de mettre l’horloge dans une autre couleur ainsi que le header et le footer du formulaire.</p>
+<h2 id="visual_aspect">Aspect visuel</h2>
+<h3 id="boutons-principaux">Boutons principaux</h3>
+<p>Appliquer la classe <code>main-button</code> aux <code>button</code>s principaux, qui est défini dans <code>ui.css</code>.</p>
+<h3 id="empêcher-la-sélection">Empêcher la sélection</h3>
+<p>Utiliser la classe CSS <code>no-user-selection</code> pour empêcher un élément de l’interface d’être sélectionné lorsque l’on glisse la souris.</p>
+<blockquote>
+<p>Note : une fois cette classe appliquée, les textes contenus ne peuvent pas être sélectionnés par l’user.</p>
+</blockquote>
+<h3 id="boutons_close">Boutons de fermeture</h3>
+<p>Pour faire un bouton rouge de fermeture « à la Mac », il suffit de placer dans l’entête de l’élément un <code>button</code> de classe <code>btn-close</code> :</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode html"><code class="sourceCode html"><a class="sourceLine" id="cb13-1" title="1"></a>
+<a class="sourceLine" id="cb13-2" title="2">  <span class="kw">&lt;button</span><span class="ot"> type=</span><span class="st">&quot;button&quot;</span><span class="ot"> class=</span><span class="st">&quot;btn-close&quot;</span><span class="kw">&gt;&lt;/button&gt;</span></a></code></pre></div>
+<p>Avec les helpers :</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb14-1" title="1">  <span class="kw">var</span> btn <span class="op">=</span> <span class="at">DCreate</span>(<span class="st">&#39;BUTTON&#39;</span><span class="op">,</span> <span class="op">{</span><span class="dt">class</span><span class="op">:</span> <span class="st">&#39;btn-close&#39;</span><span class="op">,</span> <span class="dt">type</span><span class="op">:</span><span class="st">&#39;button&#39;</span><span class="op">}</span>)</a></code></pre></div>
+<p>Rien d’autre à faire pour qu’il apparaisse comme un bouton de fermeture et qu’il ferme la fenêtre voulue.</p>
+<p>Si un traitement doit être opéré <em>avant</em> la fermeture de la boite, on peut implémenter la méthode <code>beforeHide</code> qui sera appelée avant. Si cette méthode renvoie <code>false</code>, le processus de fermeture est interrompue. <strong>La méthode doit renvoyer <code>true</code> pour que la fermeture est bien lieu.</strong></p>
+<p>Si une méthode <code>cancel</code> existe dans le propriétaire du bouton, c’est cette méthode qui sera utilisée plutôt que <code>hide</code> dans FWindow suivant de <code>onHide</code> dans le propriétaire.</p>
+<h3 id="boutons_toggle_next">Boutons expand/collapse</h3>
+<p>On appelle les boutons qui permette d’ouvrir et de refermer un container (comme une liste par exemple) des boutons « toggle next » (« next » parce qu’ils s’appliquent par défaut au nœud suivant).</p>
+<p>On implémente ces boutons simplement en inscrivant dans le code :</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode html"><code class="sourceCode html"><a class="sourceLine" id="cb15-1" title="1"></a>
+<a class="sourceLine" id="cb15-2" title="2"><span class="kw">&lt;button</span><span class="ot"> class=</span><span class="st">&quot;toggle-next&quot;</span><span class="kw">&gt;&lt;/button&gt;</span></a>
+<a class="sourceLine" id="cb15-3" title="3"><span class="kw">&lt;ul</span><span class="ot"> id=</span><span class="st">&quot;le-container-suivant&quot;</span><span class="ot"> style=</span><span class="st">&quot;display:none;&quot;</span><span class="kw">&gt;</span></a>
+<a class="sourceLine" id="cb15-4" title="4">  <span class="kw">&lt;li&gt;</span>...<span class="kw">&lt;/li&gt;</span></a>
+<a class="sourceLine" id="cb15-5" title="5"><span class="kw">&lt;/ul&gt;</span></a></code></pre></div>
+<p>… puis en appelant la méthode <code>BtnToggleNext.observe(cont)</code> où <code>cont</code> est le set jQuery qui contient le bouton en question.</p>
+<p>Si le bouton est le dernier élément, on peut ajouter un div-clear après lui, pour qu’il ne soit pas rogné. Par exemple :</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode html"><code class="sourceCode html"><a class="sourceLine" id="cb16-1" title="1"></a>
+<a class="sourceLine" id="cb16-2" title="2"><span class="kw">&lt;button</span><span class="ot"> class=</span><span class="st">&quot;toggle-next&quot;</span><span class="kw">&gt;&lt;/button&gt;</span></a>
+<a class="sourceLine" id="cb16-3" title="3"><span class="kw">&lt;ul</span><span class="ot"> id=</span><span class="st">&quot;le-container-suivant&quot;</span><span class="ot"> style=</span><span class="st">&quot;display:none;&quot;</span><span class="kw">&gt;</span></a>
+<a class="sourceLine" id="cb16-4" title="4">  <span class="kw">&lt;li&gt;</span>...<span class="kw">&lt;/li&gt;</span></a>
+<a class="sourceLine" id="cb16-5" title="5"><span class="kw">&lt;/ul&gt;</span></a>
+<a class="sourceLine" id="cb16-6" title="6"><span class="kw">&lt;div</span><span class="ot"> style=</span><span class="st">&quot;clear:both&quot;</span><span class="kw">&gt;&lt;/div&gt;</span></a></code></pre></div>
+<p>Si l’on désire que le container soit ouvert, il suffit de forcer l’attribut <code>data-state</code> du bouton en lui donnant la valeur <code>opened</code> :</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode html"><code class="sourceCode html"><a class="sourceLine" id="cb17-1" title="1"></a>
+<a class="sourceLine" id="cb17-2" title="2"><span class="kw">&lt;button</span><span class="ot"> class=</span><span class="st">&quot;toggle-next&quot;</span><span class="ot"> data-state=</span><span class="st">&quot;opened&quot;</span><span class="kw">&gt;&lt;/button&gt;</span></a>
+<a class="sourceLine" id="cb17-3" title="3"><span class="kw">&lt;ul</span><span class="ot"> id=</span><span class="st">&quot;le-container-suivant&quot;</span><span class="kw">&gt;</span><span class="co">&lt;!-- sera ouvert --&gt;</span></a>
+<a class="sourceLine" id="cb17-4" title="4">  <span class="kw">&lt;li&gt;</span>...<span class="kw">&lt;/li&gt;</span></a>
+<a class="sourceLine" id="cb17-5" title="5"><span class="kw">&lt;/ul&gt;</span></a></code></pre></div>
+<p>On peut viser un autre nœud que le nœud suivant grâce à l’attribut <code>container</code> du bouton :</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode html"><code class="sourceCode html"><a class="sourceLine" id="cb18-1" title="1"></a>
+<a class="sourceLine" id="cb18-2" title="2"><span class="kw">&lt;button</span><span class="ot"> class=</span><span class="st">&quot;toggle-next&quot;</span><span class="ot"> container=</span><span class="st">&quot;#monDiv&quot;</span><span class="kw">&gt;&lt;/button&gt;</span></a>
+<a class="sourceLine" id="cb18-3" title="3"><span class="co">&lt;!-- d&#39;autres éléments ici --&gt;</span></a>
+<a class="sourceLine" id="cb18-4" title="4"><span class="kw">&lt;ol</span><span class="ot"> id=</span><span class="st">&quot;monListing&quot;</span><span class="kw">&gt;</span></a>
+<a class="sourceLine" id="cb18-5" title="5">  <span class="kw">&lt;li&gt;</span>...<span class="kw">&lt;/li&gt;</span></a>
+<a class="sourceLine" id="cb18-6" title="6"><span class="kw">&lt;/ol&gt;</span></a></code></pre></div>
+<h2 id="documents_analyse">Documents de l’analyse</h2>
+<p>Les documents de l’analyse sont entièrement gérés, au niveau de l’écriture, par les modules contenus dans le dossier <code>./app/js/composants/faWriter</code>. Ce dossier est le premier qui a été chargé par la nouvelle méthode <code>System#loadJSFolders</code> (par le biais de <code>FAnalyse.loadWriter</code>) qui travaille avec des balises <code>&lt;script&gt;</code> afin d’exposer facilement tous les objets, constantes et autres.</p>
+<p>Ces documents permettent de construire l’analyse de deux façons différentes :</p>
+<ul>
+<li>en les rédigeant dans le <em>FAWriter</em> (qui s’ouvre grâce au menu « Documents »)</li>
+<li>en en créant le code de façon dynamique pour ce qui est des stats, des PFA et autres notes au fil du texte.</li>
+</ul>
+<h3 id="les_types_de_documents">Quatre types de documents</h3>
+<p>Il faut comprendre qu’il y a 4 types de documents, même s’ils sont tous accessibles depuis le menu « Documents » de l’application.</p>
+<ol type="1">
+<li>Les documents entièrement rédigés, littéraires (introduction, synopsis). Ils peuvent être coller tels quels dans l’analyse, grâce à la commande <code>FILE</code> du <a href="#script_assemblage_analyse">script d’assemblage</a>.</li>
+<li>Les documents partiellement rédigés et partiellement automatisés (Fondamentales, Annexes avec les statistiques, etc.)</li>
+<li>Les documents entièrement automatisés (PFA, au fil du film, scénier) qui se servent d’informations éparses — p.e. la définition des nœuds structurels au fil du film — pour se construire.</li>
+<li>Les documents de données (snippets, diminutifs, infos du film et de l’analyse)</li>
+</ol>
+<h3 id="saving_protected">Sauvegarde protégée des documents</h3>
+<p>La sauvegarde protégée des documents est gérée par <code>system/IOFile.js</code>. L’utilisation est simple : on crée une instance <code>IOFile</code> du document en envoyant son path et on peut le sauver et le charger en utilisant <code>&lt;instance&gt;.save()</code> et <code>&lt;instance&gt;.loadIfExists()</code>.</p>
+<p><span class="citation" data-cites="usage">@usage</span> complet :</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb19-1" title="1"></a>
+<a class="sourceLine" id="cb19-2" title="2">  <span class="kw">let</span> iofile <span class="op">=</span> <span class="kw">new</span> <span class="at">IOFile</span>(cheminFichier[<span class="op">,</span> objetProprietaire])</a>
+<a class="sourceLine" id="cb19-3" title="3"></a>
+<a class="sourceLine" id="cb19-4" title="4">  [<span class="va">iofile</span>.<span class="at">code</span> <span class="op">=</span> monCodeFinal <span class="co">// si objetProprietaire n&#39;est pas défini]</span></a>
+<a class="sourceLine" id="cb19-5" title="5">  <span class="va">iofile</span>.<span class="at">save</span>(<span class="op">{</span><span class="dt">after</span><span class="op">:</span> methode_appelee_apres_save<span class="op">}</span>)</a>
+<a class="sourceLine" id="cb19-6" title="6"></a>
+<a class="sourceLine" id="cb19-7" title="7">  <span class="kw">function</span> <span class="at">methode_appelee_apres_load</span>(code)<span class="op">{</span></a>
+<a class="sourceLine" id="cb19-8" title="8">    <span class="co">// ...</span></a>
+<a class="sourceLine" id="cb19-9" title="9">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb19-10" title="10"></a>
+<a class="sourceLine" id="cb19-11" title="11">  <span class="va">iofile</span>.<span class="at">loadIfExists</span>(aflter<span class="op">:</span> methode_appelee_apres_load_avec_code)</a></code></pre></div>
+<p>Pour fonctionner avec un <code>owner</code> (un propriétaire — une instance, un objet), il faut que ce propriétaire possède les propriétés <code>path</code> définissant le chemin d’accès au fichier ainsi que la propriété <code>contents</code> ou la propriété <code>code</code> définissant son code final à sauver.</p>
+<p>Exemple :</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb20-1" title="1"></a>
+<a class="sourceLine" id="cb20-2" title="2"><span class="kw">class</span> monObjet <span class="op">{</span></a>
+<a class="sourceLine" id="cb20-3" title="3">  get <span class="at">contents</span>()<span class="op">{</span> <span class="cf">return</span> <span class="kw">this</span>.<span class="at">_contents</span> <span class="op">}</span></a>
+<a class="sourceLine" id="cb20-4" title="4">  get <span class="at">path</span>() <span class="op">{</span> <span class="cf">return</span> <span class="st">&#39;chemin/daccess/au/fichier.odt&#39;</span><span class="op">}</span></a>
+<a class="sourceLine" id="cb20-5" title="5">  get <span class="at">iofile</span>()<span class="op">{</span> <span class="cf">return</span> <span class="kw">this</span>.<span class="at">_iofile</span> <span class="op">||</span> <span class="at">defP</span>(<span class="kw">this</span><span class="op">,</span><span class="st">&#39;_iofile&#39;</span><span class="op">,</span> <span class="kw">new</span> <span class="at">IOFile</span>(<span class="kw">this</span>))<span class="op">}</span></a>
+<a class="sourceLine" id="cb20-6" title="6"></a>
+<a class="sourceLine" id="cb20-7" title="7">  <span class="at">saveMe</span>()<span class="op">{</span></a>
+<a class="sourceLine" id="cb20-8" title="8">    <span class="kw">this</span>.<span class="va">iofile</span>.<span class="at">save</span>(<span class="op">{</span><span class="dt">after</span><span class="op">:</span> <span class="kw">this</span>.<span class="va">afterSaving</span>.<span class="at">bind</span>(<span class="kw">this</span>)<span class="op">}</span>)</a>
+<a class="sourceLine" id="cb20-9" title="9">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb20-10" title="10">  <span class="at">afterSaving</span>()<span class="op">{</span></a>
+<a class="sourceLine" id="cb20-11" title="11">    <span class="va">console</span>.<span class="at">log</span>(<span class="st">&quot;Le document est sauvé&quot;</span>)</a>
+<a class="sourceLine" id="cb20-12" title="12">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb20-13" title="13">  <span class="at">loadMe</span>()<span class="op">{</span></a>
+<a class="sourceLine" id="cb20-14" title="14">    <span class="kw">this</span>.<span class="va">iofile</span>.<span class="at">loadIfExists</span>(<span class="op">{</span><span class="dt">after</span><span class="op">:</span> <span class="kw">this</span>.<span class="va">afterLoading</span>.<span class="at">bind</span>(<span class="kw">this</span>)<span class="op">}</span>)</a>
+<a class="sourceLine" id="cb20-15" title="15">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb20-16" title="16">  <span class="at">afterLoading</span>(code)<span class="op">{</span></a>
+<a class="sourceLine" id="cb20-17" title="17">    <span class="kw">this</span>.<span class="at">_contents</span> <span class="op">=</span> code</a>
+<a class="sourceLine" id="cb20-18" title="18">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb20-19" title="19"><span class="op">}</span></a></code></pre></div>
+<p>Si <strong>le propriétaire n’est pas défini</strong>, il faut explicitement définir le code de l’<code>iofile</code> :</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb21-1" title="1"></a>
+<a class="sourceLine" id="cb21-2" title="2">  <span class="kw">this</span>.<span class="va">iofile</span>.<span class="at">code</span> <span class="op">=</span> <span class="st">&quot;Mon code à enregistrer&quot;</span></a>
+<a class="sourceLine" id="cb21-3" title="3">  <span class="kw">this</span>.<span class="va">iofile</span>.<span class="at">save</span>(<span class="op">{</span><span class="dt">after</span><span class="op">:</span> ...<span class="op">}</span>)</a></code></pre></div>
+<blockquote>
+<p>Noter qu’on indique le format que si l’extension du fichier ne correspond pas.</p>
+</blockquote>
+<div class="sourceCode" id="cb22"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb22-1" title="1"><span class="co">// ...</span></a>
+<a class="sourceLine" id="cb22-2" title="2"></a>
+<a class="sourceLine" id="cb22-3" title="3"><span class="kw">function</span> <span class="at">methode_apres_chargement</span>(contenu_document)<span class="op">{</span></a>
+<a class="sourceLine" id="cb22-4" title="4">  <span class="co">// ...</span></a>
+<a class="sourceLine" id="cb22-5" title="5"><span class="op">}</span></a>
+<a class="sourceLine" id="cb22-6" title="6"><span class="co">// Pour récupérer le document</span></a>
+<a class="sourceLine" id="cb22-7" title="7"><span class="va">iofile</span>.<span class="at">loadIfExists</span>(<span class="op">{</span></a>
+<a class="sourceLine" id="cb22-8" title="8">  <span class="dt">after</span><span class="op">:</span> methode_apres_chargement <span class="co">// reçoit en argument le contenu du document</span></a>
+<a class="sourceLine" id="cb22-9" title="9"><span class="op">}</span>)</a></code></pre></div>
+<p>Le format du contenu — JSON, YAML, etc. — n’a besoin d’être précisé que s’il ne correspond pas à l’extension du fichier (du <code>path</code>). On l’indique alors dans l’argument :</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb23-1" title="1"></a>
+<a class="sourceLine" id="cb23-2" title="2">  <span class="kw">this</span>.<span class="va">iofile</span>.<span class="at">save</span>(<span class="op">{</span><span class="dt">after</span><span class="op">:</span> ...<span class="op">,</span> <span class="dt">format</span><span class="op">:</span> <span class="st">&#39;json&#39;</span><span class="op">}</span>)</a></code></pre></div>
+<p>On peut mettre au format <code>raw</code> lorsque le format est reconnaissable par l’extension du <code>path</code>, mais qu’on ne veut pas que le code soit interprété.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb24-1" title="1"></a>
+<a class="sourceLine" id="cb24-2" title="2">  <span class="kw">this</span>.<span class="va">iofile</span>.<span class="at">load</span>(<span class="op">{</span><span class="dt">after</span><span class="op">:</span> ...<span class="op">,</span> <span class="dt">format</span><span class="op">:</span> <span class="st">&#39;raw&#39;</span><span class="op">}</span>) <span class="co">// =&gt; code brut du fichier</span></a></code></pre></div>
+<hr />
+<h1 id="assemblage_analyse">Assemblage de l’analyse</h1>
+<p>Cette partie traite de l’assemblage de l’analyse côté programmation.</p>
+<p>Pour assembler l’analyse, l’application se sert principalement de la classe <code>FABuilder</code> et de la classe <code>FAExporter</code>.</p>
+<h2 id="script_assemblage_analyse">Script d’assemblage</h2>
+<p>Le « script d’assemblage » définit la façon d’assembler les différents composants de l’analyse pour composer le document final.</p>
+<hr />
+<h2 id="test_application">Test de la l’application</h2>
+<p>Pour tester l’application en la programmant, le plus simple est d’utiliser les <code>Tests manuels</code>. Ce sont des tests qui sont semi-automatiques, c’est-à-dire que certaines opérations peuvent s’exécuter et se tester toutes seules, tandis que d’autres nécessitent une action réelle (jusqu’à ce que…).</p>
+<p>Ces tests manuels sont définis dans le dossier <code>./Tests_manuels/</code>. On peut s’inspirer des tests présents pour en créer d’autres.</p>
+<p>Un test manuel, au minimum, requiert :</p>
+<ul>
+<li>Un <code>id</code>, identifiant unique dans le fichier.</li>
+<li>Un <code>libelle</code> pour afficher ce qu’il fait.</li>
+<li>Un <code>synopsis</code> qui est une liste d’actions (Array),</li>
+<li>Une liste de <code>checks</code> à faire pour valider l’essai.</li>
+</ul>
+<p>Par exemple :</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode yaml"><code class="sourceCode yaml"><a class="sourceLine" id="cb25-1" title="1"></a>
+<a class="sourceLine" id="cb25-2" title="2"><span class="ot">---</span></a>
+<a class="sourceLine" id="cb25-3" title="3">  <span class="kw">-</span> <span class="fu">id:</span><span class="at"> mon_premier_test</span></a>
+<a class="sourceLine" id="cb25-4" title="4">    <span class="fu">libele:</span><span class="at"> Libellé de mon premier test, en titre</span></a>
+<a class="sourceLine" id="cb25-5" title="5">    <span class="fu">description:</span><span class="at"> C’est un tout premier test à faire</span></a>
+<a class="sourceLine" id="cb25-6" title="6">    <span class="fu">synopsis:</span></a>
+<a class="sourceLine" id="cb25-7" title="7">      <span class="kw">-</span> ouvrir l<span class="st">&#39;app</span></a>
+<a class="sourceLine" id="cb25-8" title="8"><span class="st">      - ouvrir une analyse</span></a>
+<a class="sourceLine" id="cb25-9" title="9"><span class="st">      - quitter l&#39;</span>app</a>
+<a class="sourceLine" id="cb25-10" title="10">    <span class="fu">checks:</span></a>
+<a class="sourceLine" id="cb25-11" title="11">      <span class="kw">-</span> tout doit s’être bien passé</a>
+<a class="sourceLine" id="cb25-12" title="12">      <span class="kw">-</span> l<span class="st">&#39;app ne doit plus être affichée</span></a>
+<a class="sourceLine" id="cb25-13" title="13"><span class="st">      - et moi non plus, d’ailleurs…</span></a></code></pre></div>
+<p>Les opérations automatiques sont définies dans le fichier <code>./app/js/composants/HandTests/required_xfinally/AUTOMATIC_STEPS.js</code>. Il suffit de les reprendre telles quelles dans le <code>synopsis</code> ou les <code>checks</code>.</p>
+<h3 id="vérification-insérée-dans-un-synopsis">Vérification insérée dans un synopsis</h3>
+<p>Si des vérifications précises, à des moments précis du test, doivent être effectuées, on les indique de cette manière :</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode yaml"><code class="sourceCode yaml"><a class="sourceLine" id="cb26-1" title="1"><span class="fu">synopsis:</span></a>
+<a class="sourceLine" id="cb26-2" title="2">  <span class="kw">-</span> mon test à faire</a>
+<a class="sourceLine" id="cb26-3" title="3">  <span class="kw">-</span> <span class="fu">check:</span></a>
+<a class="sourceLine" id="cb26-4" title="4">    <span class="kw">-</span> <span class="st">&quot;&lt;le code de la vérification&gt;&quot;</span></a>
+<a class="sourceLine" id="cb26-5" title="5">    <span class="kw">-</span> <span class="st">&quot;&lt;autre code de vérification&gt;&quot;</span></a>
+<a class="sourceLine" id="cb26-6" title="6">  <span class="kw">-</span> mon test à poursuivre</a></code></pre></div>
+<p>Ce code de vérification est un langage qui ressemble à ça : <code>L'{{event:0}} possède un {{type:note}}</code>. Ici, on vérifie que l’event qui a pour identifiant <code>0</code> possède bien un <code>type</code> (donc une propriété de nom <code>type</code>) qui vaut <code>note</code>.</p>
+<p>Cette partie est encore à l’état expérimental.</p>
+</body>
+</html>

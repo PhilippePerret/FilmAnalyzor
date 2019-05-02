@@ -1,0 +1,38 @@
+# Tests manuels concernant les documents
+---
+  document_trop_court:
+    libelle: Tentative d'enregistrement d'un document très raccourci
+    description: On tente d'enregistrer un document qui a été raccourci de plus de 20% de sa longueur. Une confirmation d'enregistrement devrait être demandée, pour annuler l'enregistrement.
+    synopsis:
+      - ouvrir l'application
+      - ouvrir une analyse avec des documents
+      - éditer un document
+      - enregistrer le document
+      - supprimer plus de 20 % du document
+      - essayer de l'enregistrer
+    checks:
+      - Le document ne doit pas avoir été enregistré
+  association_par_drop:
+    libelle: Associer un texte à un document en glissant le document sur le texte.
+    synopsis:
+      - Ouvrir l'application
+      - Choisir une analyse
+      - Initier le document Introduction
+      - Se positionner à un endroit du film
+      - Créer une note
+      - Glisser l'icone drop du document intro sur le texte de la note.
+    checks:
+      - La marque {{document:...}} doit s'inscrire dans le texte.
+  no_save_when_locked:
+    libelle: On ne doit pas pouvoir enregistrer de document lorsque l'analyse est verrouillée
+    synopsis:
+      - Ouvrir l'application
+      - Choisir une analyse
+      - Activer le verrouillage
+      - Ouvrir le writer de documents
+      - Choisir le document Introduction
+      - Modifier le document Introduction (nouvelle ligne)
+      - Enregistrer
+    checks:
+      - Une alerte devrait dire que le document ne peut pas être enregistré
+      - Le document n'a pas pu être modifié. Relancer l'analyse et ouvrir le document pour s'en assurer.

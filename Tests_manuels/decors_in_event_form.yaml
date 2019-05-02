@@ -1,0 +1,59 @@
+# Feuille de test pour tester la gestion des décors
+# dans le formulaire d'events
+# Les décors doivent toujours être mis par fréquence
+# d'utilisation.
+---
+  - id: plusieurs_decors
+    libelle: Scène dans plusieurs décors
+    synopsis:
+      - ouvrir l'app
+      - /ouvrir l'analyse 'vierge'/
+      - créer une scène au début avec {decor:'Maison'}
+      - créer une scène au milieu avec {decor:'Garage'}
+      - créer une scène au quart avec {decor:"Maison & Garage"}
+      - créer une nouvelle scène à la fin
+      - check: le menu des décors ne doit pas contenir 'Maison & Garage'
+      - check: le menu des décors doit contenir 'Maison' & 'Garage' avec chacun l'indication '(2)'
+      - afficher les décors
+    checks:
+      - le décor 'Maison' et le décor 'Garage' doivent posséder deux scènes, la 1 et 2 pour le premier, la 2 et 3 pour le second.
+
+  - id: plusieurs_sous_decors
+    libelle: Scène dans plusieurs sous-décors
+    synopsis:
+      - ouvrir l'app
+      - /ouvrir l'analyse 'vierge'/
+      - créer une scène au milieu avec {decor:'Maison', sous_decor:'Salon'}
+      - créer une scène au début avec {decor:'Maison', sous_decor:'Chambre'}
+      - créer une scène à la fin avec {decor:'Maison', sous_decor:'Salon & Chambre'}
+      - créer une nouvelle scène et lui choisir le décor 'Maison'
+      - check: la liste des sous-décors doit contenir seulement 'Salon' et 'Chambre'
+
+  - id: classement_decors
+    libelle: Les décors doivent se classer par importance
+    synopsis:
+      - ouvrir l'app
+      - /ouvrir l'analyse 'vierge'/
+      - créer une scène à 0:00:00 avec {decor:'Maison'}
+      - "créer une scène à 2:00"
+      - check: La liste des décors doit contenir 'Maison'
+      - choisir le décor 'Bureau' pour la scène 2
+      - créer une scène à 3:00
+      - check: La liste des décors doit contenir 'Maison, Bureau'
+      - choisir le décor 'Bureau' pour la 3e scène
+      - créer un scène à 4:00
+    checks:
+      - Le menu décors doit contenir maintenant 'Bureau, Maison' (bureau en premier)
+  - id: sort_sous_decors
+    libelle: Les sous-décors doivent se classer par ordre d'importance
+    synopsis:
+      - ouvrir l'app
+      - /ouvrir l'analyse 'vierge'/
+      - créer une scène au début avec {decor:'Maison', sous_decor:'Salon'}
+      - créer une scène au quart avec {decor:'Maison', sous_decor:'Chambre}
+      - créer une scène au milieu avec {decor:'Maison'}
+      - check: Le sous-décor doit contenir dans cet ordre 'Salon, Chambre'
+      - choisir le sous-décor 'Chambre'
+      - créer une scène au trois quart avec {decor:'Maison'}
+    checks:
+      - Les sous-décors doivent afficher dans l'ordre 'Chambre, Salon'

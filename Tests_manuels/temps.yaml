@@ -1,0 +1,49 @@
+# Tests sur le temps
+---
+
+  on_change_start_time_on_vierge:
+    libelle: Changement de temps de début pour une analyse vierge
+    description: Au changement du début du film, on ne doit rien faire que l'enregister s'il n'y a pas d'events ou de documents.
+    synopsis:
+      - lancer l'app
+      - /ouvrir l'analyse 'vierge'/
+      - check: aucun event
+      - check: aucun document
+      - check: aucun brin
+      - check: aucun personnage
+      - se placer sur un temps
+      - activer le menu « Vidéo > Temps courant comme début du film »
+    checks:
+      - aucun message n'a demandé de modifier les temps des events et des documents
+      - un message doit confirmer le changement
+      - la donnée a été enregistrée dans les data de l'analyse (fichier data.json)
+
+  on_change_start_time_avec_event:
+    libelle: Changement de début sur analyse avec event
+    description: Quand on change le temps de début du film sur une analyse avec des events, on doit corriger le temps de tous ces events.
+    synopsis:
+      - lancer l'app
+      - ouvrir l'analyse 'events_no_docs'
+      - choisir un temps dans la vidéo
+      - activer le menu « Vidéo > Temps courant comme début du film »
+      - confirmer le changement des temps
+    checks:
+      - un message confirme le changement
+      - les temps ont été modifiés dans les events
+      - la donnée a été enregistrée dans les data de l'analyse (fichier data.json)
+
+  on_change_start_time_avec_event_et_doc:
+    libelle: Changement de début sur analyse avec tout
+    description: Quand on change le temps de début du film sur une analyse avec des events et des documents, on doit corriger le temps de tous ces events et les balises times partout.
+    synopsis:
+      - lancer l'app
+      - ouvrir l'analyse 'events_and_docs'
+      - s'assurer que les documents contiennent au moins une balise time.
+      - choisir un temps dans la vidéo
+      - activer le menu « Vidéo > Temps courant comme début du film »
+      - confirmer le changement des temps
+    checks:
+      - un message confirme le changement
+      - les temps ont été modifiés dans les events
+      - toutes les balises times ont été modifiées dans les textes des documents.
+      - la donnée a été enregistrée dans les data de l'analyse (fichier data.json)

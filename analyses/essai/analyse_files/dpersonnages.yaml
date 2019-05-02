@@ -1,0 +1,26 @@
+# Définition des personnages
+#
+# <pseudo>:
+#   pseudo:
+#   etc.
+# Propriétés : :pseudo, :prenom, :nom, :ages
+# Propriétés spéciales :
+#     :dim    Sert pour les diminutifs
+---
+Chauffeur:
+  pseudo: Chauffeur
+  prenom:
+  nom:
+  ages:
+  dim:    C    # sert pour les diminutifs
+
+PimRose:
+  pseudo: Pimrose
+  prenom:
+  nom:
+  ages:
+  dim:    P
+
+Garagiste:
+  pseudo: Garagiste
+  dim: G

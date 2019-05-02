@@ -1,0 +1,47 @@
+#fwindow-brins {
+}
+
+#fwindow-brins .brin {
+  border:1px solid;
+  margin:8px 0;
+  padding:4px 16px;
+  line-height:0.85em;
+  clear:both;
+}
+
+#fwindow-brins .brin-title {
+  margin-right:1em;
+  font-size:0.9em;
+  font-weight:bold;
+}
+#fwindow-brins .brin-description,
+#fwindow-brins .brin-associateds {
+  opacity:0.4;
+}
+#fwindow-brins .brin-description:hover,
+#fwindow-brins .brin-associateds:hover {
+  opacity:1;
+}
+
+#fwindow-brins .brin-associateds {
+  font-size:0.85em;
+}
+
+#fwindow-brins .brin-statistiques {
+  font-size:0.85em;
+}
+
+#fwindow-brins button {
+  font-size:0.87em;
+}
+
+#fwindow-brins div.brin-associateds-detailled,
+#fwindow-brins div.brin-associateds-detailled *
+{
+  font-size:13pt;
+  line-height:16pt;
+}
+
+#fwindow-brins div.brin-associateds-detailled li {
+  list-style-type:katakana-iroha;
+}

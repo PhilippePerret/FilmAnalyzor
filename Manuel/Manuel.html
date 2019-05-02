@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Manuel</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="manuel.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1 id="film-analyzer">Film Analyzer</h1>
+<h1 id="manuel-dutilisation">Manuel d’utilisation</h1>
+<ul>
+<li><a href="#presentation_generale">Présentation générale</a></li>
+<li><a href="#concernant_la_video">Videos</a></li>
+<li><a href="#lanalyse">L’analyse de film</a>
+<ul>
+<li><a href="#analyse_protocole">Protocole d’analyse</a></li>
+<li><a href="#verrouillage_analyse">Verrouillage de l’analyse</a></li>
+</ul></li>
+<li><a href="#les_events">Les Events</a>
+<ul>
+<li><a href="#les_events_scenes">Les events « Scènes »</a></li>
+</ul></li>
+<li><a href="#gestion_des_temps">Gestion des temps</a>
+<ul>
+<li><a href="#move_with_timeline">Déplacements à l’aide de la Timeline</a></li>
+<li><a href="#move_by_parts_and_zones">Déplacements par parties/zones</a></li>
+<li><a href="#passe_revue_stop_points">Passer en revue les 3 derniers points d’arrêt</a></li>
+<li><a href="#get_current_time">Récupération du temps courant</a></li>
+<li><a href="#set_event_time">Réglage du temps et de la durée de l’event</a>
+<ul>
+<li><a href="#reglage_du_point_temporel">Réglage du temps</a></li>
+<li><a href="#reglage_de_la_duree">Réglage de la durée</a></li>
+<li><a href="#reglage_de_la_duree_des_scenes">Réglage de la durée des scènes</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#linterface">L’Interface</a>
+<ul>
+<li><a href="#indication_parties_zones_courantes">Indication des parties et zones courantes</a></li>
+<li><a href="#le_bouton_stop">Comportement du bouton STOP</a></li>
+<li><a href="#move_to_a_scene">Se déplacer rapidement à une scène particulière</a></li>
+</ul></li>
+<li><a href="#define_film_pfa">Définir le Paradigme de Field Augmenté du film</a></li>
+<li><a href="#les_documents">Les Documents</a>
+<ul>
+<li><a href="#types_de_documents">Quatre types de documents</a></li>
+<li><a href="#les_diminutifs">Diminutifs</a></li>
+<li><a href="#variables_dans_les_documents">Variables dans les documents</a></li>
+<li><a href="#les_snippets">Les snippets</a></li>
+<li><a href="#redaction_documents">Rédaction des documents</a></li>
+</ul></li>
+<li><a href="#assemblage_analyse">Assemblage de l’analyse finale</a></li>
+<li><a href="#publication_online">Publication online</a></li>
+</ul>
+<p>Ce manuel décrit l’utilisation de l’application <strong>FilmAnalyse</strong> qui permet d’effectuer avec confort — et plus que ça — des analyses de films.</p>
+<h2 id="presentation_generale">Présentation générale</h2>
+<h2 id="concernant_la_video">Videos</h2>
+<p>Les vidéos utilisées peuvent être au format <code>mp4</code>, <code>ogg</code> et <code>webm</code>.</p>
+<p>Si la durée de la vidéo est inférieure à 30 secondes environ, il y aura des problèmes au niveau des affichages. Il est bon, en règle générale, de choisir des vidéos d’au moins une minute.</p>
+<hr />
+<h2 id="lanalyse">L’analyse de film</h2>
+<p>L’<em>analyse de film</em> est le but ultime de l’application <strong>Film Analyzer</strong>, avec une orientation précise pour les eBooks.</p>
+<h3 id="analyse_protocole">Protocole d’analyse</h3>
+<p>Grâce au menu « Affichage &gt; Protocole de l’analyse », on peut avoir une idée de la démarche à suivre pour produire une analyse de film et son livre.</p>
+<h3 id="verrouillage_analyse">Verrouillage de l’analyse</h3>
+<p>Pour ne perdre aucune donnée ou ne pas modifier l’analyse lorsque par exemple on la fait lire à quelqu’un d’autre ou on la partage par l’application, on peut verrouiller les données grâce au menu « Analyse &gt; Verrouiller ».</p>
+<p>Cela empêche tout modification des données, à commencer par les <em>events</em> et les documents.</p>
+<hr />
+<h2 id="les_events">Les Events</h2>
+<p>Dans <strong>Film Analyzer</strong>, l’<em>Event</em> est l’élément de base, l’<em>atome</em> de l’analyse. Il signifie « évènement » en français, mais on préfère la version courte anglaise.</p>
+<p>On pourrait dire que <em>tout est event</em> dans <strong>Film Analyzer</strong>. Un procédé est un event, une scène est un event, une note est un event, etc.</p>
+<h3 id="les_events_scenes">Les events « Scènes »</h3>
+<p>Ils permettent de définir les scènes du film. Ce sont des <em>events</em> particulier dans le sens où leurs informations sont très particulières (effet, lieu, etc.) et ils sont souvent les conteneurs d’autres éléments.</p>
+<p>La scène, à la base, se définit par un <em>pitch</em> et un <em>résumé</em>. À la création de la scène, on remarque que le pitch, à mesure qu’on le rentre, se copie dans le résumé de la scène. Cela a une incidence directe sur l’affichage : si le résumé commence exactement comme le pitch, ce pitch n’est pas ajouté dans l’affichage complet des scènes. En revanche, il permet d’en faire un affichage réduit.</p>
+<hr />
+<h2 id="gestion_des_temps">Gestion des temps</h2>
+<h3 id="move_with_timeline">Déplacements à l’aide de la Timeline</h3>
+<p>Le moyen le plus rapide pour se déplacer dans le film — donc dans la vidéo — est sans doute la « Timeline », la ligne de temps.</p>
+<p>On peut l’afficher en activant le menu « Affichage &gt; Timeline » (ou en jouant CMD-MAJ-T).</p>
+<figure>
+<img src="" alt="Image de la Timeline" /><figcaption>Image de la Timeline</figcaption>
+</figure>
+<p>La Timeline se présente comme une longue bande représentant l’écoulement le temps, du départ du film à gauche à la fin à droite. Il suffit de glisser la souris sur la partie inférieure de cette bande pour se déplacer dans le temps.</p>
+<h3 id="move_by_parts_and_zones">Déplacements par parties/zones</h3>
+<p>À côté de l’horloge principale de la vidéo se trouve l’<a href="#indication_parties_zones_courantes">indication des parties et zones</a> dans lesquelles on se trouve. Pour passer d’une partie à l’autre, on peut cliquer sur le nom, soit en haut (grands actes), soit en bas (zones), en fonction du paradigme absolu (à gauche) ou du paradigment relatif (à droite) s’il est défini.</p>
+<p>En tenant la touche <code>CMD</code> pressée, on parcourt les parties et les zones en arrière.</p>
+<h3 id="passe_revue_stop_points">Passer en revue les 3 derniers points d’arrêt</h3>
+<figure>
+<img src="../app/img/btns-controller/btn-points-arrets.png" alt="Points d’arrêt" /><figcaption>Points d’arrêt</figcaption>
+</figure>
+<p>Ce bouton permet de passer en revue les trois derniers points d’arrêt de la vidéo.</p>
+<p><em>stricto sensu</em>, il s’agit en fait des trois points de redémarrage. Donc, pour les définir, il suffit de choisir la position précise à l’arrêt, puis de cliquer sur le bouton PLAY.</p>
+<blockquote>
+<p>Note : ces trois points d’arrêt sont enregistrés dans les données de l’analyse et peuvent donc être retrouvés en rechargeant l’analyse.</p>
+</blockquote>
+<p>#### Verrouillage des points d’arrêt</p>
+<p>Plus pratique encore, on peut décider de verrouiller ces points d’arrêt, pour qu’ils ne soient pas remplacés par de nouveaux points d’arrêts si l’on redémarre le film à une autre position. Pour se faire, il suffit que l’option « Verrouillage des points d’arrêt » soit cochée dans les options.</p>
+<h3 id="get_current_time">Récupération du temps courant</h3>
+<p>Pour coller rapidement un temps courant dans un champ d’édition, il suffit de cliquer sur le bouton « Temps courant » qui affiche le résultat et le colle dans le presse-papier.</p>
+<p>Mais il y a même plus simple en glissant la vidéo (qui se transforme en horloge) sur le champ de saisie voulu. Cela place une balise <code>{{time: &lt;le temps&gt;}}</code> qui sera ensuite formatée convenablement suivant le support voulu.</p>
+<h3 id="set_event_time">Réglage du temps de l’event</h3>
+<h4 id="reglage_du_point_temporel">Réglage du temps</h4>
+<p>Pour éditer le temps d’un event — i.e. le modifier, on peut s’y prendre de cette manière :</p>
+<ul>
+<li>éditer l’event en cliquant sur son bouton d’édition dans sa ligne d’outil dans le reader,</li>
+<li>cliquer sur l’horloge de position et déplacer la souris — horizontalement — pour changer le temps. Noter que la vidéo se change en conséquence</li>
+<li>utiliser la touche MAJ appuyée pour se déplacer rapidement dans le temps,</li>
+<li>utiliser la touche CTRL appuyée pour régler en finesse le temps,</li>
+<li>double-cliquer sur l’horloge pour remettre le temps initial (permet aussi, à l’ouverture du formulaire, de rejoindre tout de suite l’event dans le film),</li>
+<li>relâcher la souris lorsque le bon temps est trouvé,</li>
+<li>enregistrer les changements.</li>
+</ul>
+<h4 id="reglage_de_la_duree">Réglage de la durée</h4>
+<p>On peut régler la durée d’un event quelconque en modifiant son horloge de durée, de la même manière que pour l’horloge :</p>
+<ul>
+<li>éditer l’event en cliquant sur son bouton d’édition dans le lecteur (ou autre affichage de l’event),</li>
+<li>cliquer dans l’horloge de durée et déplacer la souris horizontalement pour changer le temps,</li>
+<li>la vidéo suit la fin de la durée, par caler précisément le temps,</li>
+<li>utiliser la touche MAJ appuyée pour se déplacer rapidement dans le temps,</li>
+<li>utiliser la touche CTRL appuyée pour régler en finesse le temps,</li>
+<li>relâcher la souris lorsque la bonne durée est trouvée,</li>
+<li>enregistrer les changements en cliquant sur le bouton adéquat.</li>
+</ul>
+<h4 id="reglage_de_la_duree_des_scenes">Réglage de la durée des scènes</h4>
+<p>Si l’option « Calcul automatique de la durée des scènes » est coché dans le menu « Options », le calcul de la durée des scènes se fait automatiquement à la création des scènes. Dès que la scène N est créée, on calcule la durée de la scène N-1 d’après son temps.</p>
+<hr />
+<h2 id="linterface">Interface</h2>
+<h3 id="indication_parties_zones_courantes">Indication des parties et zones courantes</h3>
+<p>À côté de l’horloge principale de la vidée se trouve l’indication de la partie (haut) et de la zone (bas) dans laquelle on se trouve dans le film. La première colonne, à gauche, indique les parties et les zones de façon absolue, dans le Paradigme de Field Augmenté, tandis que la seconde, à droite, indique ces parties et ces zones par rapport au film courant, si ces éléments sont définis.</p>
+<p>Voir comment se <a href="#move_by_parts_and_zones">déplacer par parties/zones</a> grâce à ces indications, en cliquant dessus.</p>
+<h3 id="le_bouton_stop">Comportement du bouton STOP</h3>
+<p>Le bouton STOP a trois comportement différents, dans l’ordre de priorité :</p>
+<ol type="1">
+<li>la première pression ramène au temps de départ précédent — et s’arrête,</li>
+<li>la deuxième pression ramène au début du film, s’il est défini,</li>
+<li>la troisième pression ramène au début de la vidéo.</li>
+</ol>
+<h3 id="move_to_a_scene">Se déplacer rapidement à une scène particulière</h3>
+<p>Pour se déplacer rapidement à une scène particulière, le mieux est d’utiliser l’<em>Eventers</em> qui affiche, par défaut, toutes les scènes :</p>
+<ul>
+<li>ouvrir l’<em>Eventer</em> par le menu « Events &gt; Nouvel eventer… » (ou faire <code>CMD MAJ E</code>),</li>
+<li>trouver la scène dans le listing qui s’affiche,</li>
+<li>cliquer sur son petit bouton play dans les outils au-dessus de la scène.</li>
+</ul>
+<hr />
+<h2 id="define_film_pfa">Définir le Paradigme de Field Augmenté du film</h2>
+<p>Pour définir le PFA du film, on crée des events de type <strong>Nœud STT</strong>. Il suffit de choisir le type du nœud dans le premier menu et de décrire en quoi le temps courant correspond au nœud concerné.</p>
+<p>Une fois suffisamment de nœud définis, on peut demander l’affichage du paradigme en actionnant le menu « Affichage &gt; Paradigme de Field Augmenté ».</p>
+<h2 id="les_documents">Les Documents</h2>
+<p>Une analyse, en plus des [events][] qui permettent de définir des éléments précis du film, est composée de <a href="#types_de_documents">documents</a> de types différents. On peut tous les atteindre depuis le menu « Documents » de l’application <strong>Film-Analyzer</strong>.</p>
+<h3 id="types_de_documents">Quatre types de documents</h3>
+<p>Il faut comprendre qu’il y a 4 types de documents, même s’ils sont tous accessibles depuis le menu « Documents » de l’application.</p>
+<ol type="1">
+<li><strong>Documents TEXTUELS</strong>. Ce sont des documents entièrement rédigés, littéraires (introduction, synopsis). Ils peuvent être coller tels quels dans l’analyse, grâce à la commande <code>FILE</code> du [script d’assemblage][].</li>
+<li><strong>Documents SEMI-TEXTUELS</strong>. Les documents partiellement rédigés et partiellement automatisés (Fondamentales, Annexes avec les statistiques, etc.)</li>
+<li><strong>Documents AUTOMATISÉS</strong>. Les documents entièrement automatisés (PFA, au fil du film, scénier) qui se servent d’informations éparses — p.e. la définition des nœuds structurels au fil du film — pour se construire.</li>
+<li><strong>Documents DATA</strong>. Les documents de données (snippets, diminutifs, infos du film et de l’analyse)</li>
+</ol>
+<p>Quels que soient les documents textuels, leur toute première ligne doit définir leur titre, après un signe dièse (« # »).</p>
+<p>Tous les documents peuvent utiliser des <a href="#variables_dans_les_documents">variables</a> ou des <a href="#les_diminutifs">diminutifs</a> qui simplifient grandement la rédaction et évitent certaines erreurs.</p>
+<h3 id="les_diminutifs">Les Diminutifs</h3>
+<p>Les diminutifs du film, par exemple les noms de personnage, se définissent dans le document « Diminutifs » qu’on peut atteindre par le menu « Documents ».</p>
+<p>Dans le texte, il suffit de précéder ce diminutif d’un arobase.</p>
+<p>Si l’on définit le diminutif suivant dans <code>diminutifs.yaml</code> :</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode yaml"><code class="sourceCode yaml"><a class="sourceLine" id="cb1-1" title="1"></a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="fu">diM_24:</span> <span class="st">|</span></a>
+<a class="sourceLine" id="cb1-3" title="3">  Un diminutif peut contenir des lettres maj/min, des chiffres</a>
+<a class="sourceLine" id="cb1-4" title="4">  et le caractère underscore.</a>
+<a class="sourceLine" id="cb1-5" title="5"><span class="fu">DIM_24:</span><span class="at"> Il est sensible à la casse</span></a></code></pre></div>
+<p>Alors on peut utiliser dans le texte :</p>
+<pre class="text"><code>
+  C&#39;est @dim_24 et @DIM_24.
+</code></pre>
+<p>… qui sera remplacé par :</p>
+<pre class="text"><code>
+  C&#39;est Un diminutif peut contenir des lettres maj/min, des chiffres
+  et le caractère underscore et Il est sensible à la casse.
+</code></pre>
+<h3 id="variables_dans_les_documents">Variables dans les documents</h3>
+<p>On peut placer des variables dans les documents à l’aide de la syntaxe :</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode markdown"><code class="sourceCode markdown"><a class="sourceLine" id="cb4-1" title="1"></a>
+<a class="sourceLine" id="cb4-2" title="2">  {{variable-name}}</a></code></pre></div>
+<p>Ces variables concernent en tout premier lieu les données générales de l’analyse. Ils sont définis dans le document « Documents &gt; Informations »</p>
+<p>On trouve par exemple :</p>
+<dl>
+<dt><code>{{title}}</code></dt>
+<dd>Titre complet du film
+</dd>
+<dt><code>{{authors}}</code></dt>
+<dd>Auteurs du film.
+</dd>
+<dd>Ce sont des noms formatés séparés par des virgules.
+</dd>
+<dt><code>{{analystes}}</code></dt>
+<dd>Analystes du film.
+</dd>
+<dd>Ce sont des noms formatés séparés par des virgules.
+</dd>
+<dt><code>{{date}}</code></dt>
+<dd>Date du film.
+</dd>
+</dl>
+<p>Mais on peut trouver dans ce document toutes les variables qu’on jugera utile pour l’analyse courante.</p>
+<h3 id="les_snippets">Les snippets</h3>
+<p>Les snippets permettent de rédiger beaucoup plus vite le texte en permettant d’écrire le simple début d’un mot, et d’en obtenir la suite en jouant la touche TABULATION. Par exemple, si le snippet <code>f:film</code> est défini, il suffit de taper « f » suivi de la touche TABULATION pour écrire « film ».</p>
+<p>Les snippets se définissent dans le document de même nom, qu’on peut atteindre par le menu « Documents ». On en définit autant qu’on veut, pour chaque analyse. Si l’on veut utiliser les snippets d’une autre analyse, il suffit de l’ouvrir et de copier-coller le code des snippets dans la nouvelle.</p>
+<h3 id="redaction_documents">Rédaction des documents</h3>
+<p>Le <code>Writer</code> de l’application permet de rédiger tous les documents de l’analyse. Il suffit de le choisir dans le menu « Documents » et il s’ouvre en édition. Tous les <a href="#types_de_documents">types de documents</a> peuvent s’ouvrir de cette manière.</p>
+<p>On utilisera des <a href="#variables_dans_les_documents">variables</a> les <a href="#les_diminutifs">diminutifs</a> et les <a href="#les_snippets">snippets</a> pour se faciliter l’écriture et éviter certaines erreurs.</p>
+<p>Pour faire référence à des <em>events</em> de tout type, il suffit de prendre ces <em>events</em> et de les glisser dans le texte. Une référence sera écrite au curseur. La nature et l’aspect de cette référence est fonction du type de l’<em>event</em> et peut varier beaucoup d’un type à l’autre. On reconnait les balises à leur forme <code>{{event: &lt;id de l'event&gt;}}</code>. Si l’<em>event</em> est une scène, il apparaitra de cette manière : <code>{{scene: &lt;id event&gt;}}</code> (noter que ça n’est pas le <em>numéro de la scène</em>, mais bien l’<em>identifiant de l’event</em> qui est inscrit).</p>
+<p>ASTUCE : On peut voir tout de suite l’aspect que prendra la référence — et la modifier au besoin — en demandant la visualisation en direct du texte (case à cocher « Visualiser » dans le pied de page du <code>Writer</code>).</p>
+<h2 id="assemblage_analyse">Assemblage de l’analyse finale</h2>
+<p>L’assemblage de l’analyse finale se fait à partir du <em>script d’assemblage</em> défini dans les documents. S’il n’est pas défini, c’est le script par défaut qui sera utilisé (<code>./app/analyse_files/building_script.md</code>).</p>
+<p>Chaque ligne de ce <em>script d’assemblage</em> définit une commande à jouer. Cette commande est composée de la commande elle-même, qui est toujours le premier mot en majuscule, suivi des arguments à utiliser.</p>
+<p>Les deux premières type sont :</p>
+<ul>
+<li><code>FILE</code>. Elle permet d’inclure un texte dans l’analyse à l’endroit voulu.</li>
+<li><code>BUILD</code>. Elle demande la construction d’un composant de l’analyse, tel que le paradigme de Field, le diagramme dramatique ou autres statistiques.</li>
+</ul>
+<h3 id="commande-file">Commande <code>FILE</code></h3>
+<p>En argument de la commande <code>FILE</code>, on peut trouver tous les types de document du menu des documents. On pourra donc faire, par exemple :</p>
+<pre><code>FILE Introduction
+FILE Lecon_tiree</code></pre>
+<p>En fait, ces fichiers se trouvent dans le dossier <code>analyse_files</code> de l’analyse. Tout fichier contenu par ce dossier peut être inclus de cette manière dans l’analyse. S’il existe par exemple un fichier s’appelant <code>grande_note.md</code>, alors on pourra utiliser la commande :</p>
+<pre><code>FILE Introduction
+FILE grande_note
+FILE Lecon_tiree</code></pre>
+<p>… pour le charger à l’endroit voulu dans le fichier, ici entre l’introduction et la leçon tirée du film. Toute hiérarchie peut être utilisée, si les documents se trouvent dans des sous-dossiers. Par exemple :</p>
+<pre><code>FILE dossier1/sous-dossier2/mon_fichier_markdown</code></pre>
+<p>La seule exigence pour le moment est que le fichier doit être au format Markdown (étendu).</p>
+<h2 id="publication_online">Publication online</h2>
+<p>Sur Kindle, la page de couverture ne doit pas être jointe au .mobi. Elle doit être :</p>
+<ul>
+<li>format JPEG ou TIFF</li>
+<li>ratio hauteur:largeur de 1.6:1 (c’est-à-dire 1600 en hauteur pour 1000 en largeur) Préconisé : 2560px x 1600px (mais 4500 pour les tablettes…)</li>
+<li>&lt; 50Mo</li>
+<li>Détail : <a href="https://kdp.amazon.com/fr_FR/help/topic/G200645690">Aide KDP</a></li>
+</ul>
+<p>Taille recommandé par Apple (à vérifier) :</p>
+<ul>
+<li>1400x1873 pixels</li>
+</ul>
+<p>Rapport pour les smartphones :</p>
+<ul>
+<li>11/18</li>
+</ul>
+<p>Pour la couverture de l’epub :</p>
+<ul>
+<li>cover.jpg (obligatoire)</li>
+<li>600 x 1000 environ</li>
+</ul>
+</body>
+</html>

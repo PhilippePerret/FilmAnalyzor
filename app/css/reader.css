@@ -1,0 +1,39 @@
+/*
+  Tout ce qui concerne le reader
+*/
+
+section#section-reader {
+  width:      600px;
+  min-height: 800px;
+  z-index:40!important; /* pour passer sous les fwindows - mais normalement, le reader EST une fwindow */
+}
+
+
+#reader {
+  display:block;
+  width:inherit;
+  position:relative;
+  max-height: 600px;
+  min-height: 600px;
+  background-color:#EEEEFF;
+  overflow: scroll;
+  padding:0;
+  z-index:40!important; /* pour passer sous les fwindows - mais normalement, le reader EST une fwindow */
+}
+
+#reader .fw-title {
+  opacity:0.3;
+  position:absolute;
+  left:10px;
+  right:10px;
+  font-style:italic;
+  text-align:right;
+}
+
+#reader h3 {
+  margin:0.5em 0 0.3em;
+}
+
+#reader .associates {
+  margin-left:1em;
+}

@@ -1,0 +1,29 @@
+---
+title: TITRE DU FILM
+title_fr: TITRE FRANÇAIS # supprimer si non nécessaire
+date: JJ/MM/YYYY
+realisation:
+  - Nom, Prénom
+production:
+  - Nom, Prénom
+ecriture:
+  - Nom, Prénom, fonction
+  - Nom, Prénom, fonction
+
+# Concernant la vidéo
+zero: DESCRIPTION # par exemple « Juste avant le titre »
+first_image:
+  description:  # description de la toute première image
+  time: # temps par rapport au zéro défini
+end_time: H:MM:SS # temps de fin par rapport au zéro
+generic_end_time: H:MM:SS # temps après le générique
+
+# Concernant l'analyse
+analystes:
+  - Nom, Prénom
+  - Nom, Prénom
+correcteurs:
+  - Nom, Prénom
+  - Nom, Prénom
+date_debut: JJ/MM/YYYY
+date_fin: JJ/MM/YYYY

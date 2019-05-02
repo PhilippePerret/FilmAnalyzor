@@ -1,0 +1,54 @@
+# Définition des personnages
+---
+Theodore:
+  pseudo: Theodore
+  prenom: Theodore
+  nom:    Twombly
+  ages:
+  dim:    T
+  description: Protagoniste
+
+Samantha:
+  pseudo: Samantha
+  prenom: Samantha
+  nom:
+  ages:
+  dim:    S
+  description: Le nouveau système d'exploitation de @T.
+
+Amy:
+  pseudo: Amy
+  prenom: Amy
+  description: Amie et confidente de @T.
+  dim: A
+
+Charles:
+  pseudo: Charles
+  prenom: Charles
+  description: Petit ami de @A au début du film.
+  dim: C
+
+Catherine:
+  pseudo: Catherine
+  prenom: Catherine
+  nom:    Klausen
+  dim:    CA
+  description: Femme dont @T divorce.
+
+Paul:
+  pseudo: Paul
+  prenom: Paul
+  dim:    P
+  description: Hôte d'accueil de l'entreprise BellesLettresManuscrites.com où travaille @T. C'est le premier fan de @T, aux airs d'homosexuels.
+
+Tatiana:
+  pseudo: Tatiana
+  prenom: Tatiana
+  dim:    TA
+  description: Petite amie de @P, l'hôte d'accueil de l'entreprise BellesLettresManuscrites.com
+
+Isabella:
+  pseudo: Isabella
+  prenom: Isabella
+  dim:    I
+  description: Assistante sexuelle qui doit servir de corps à @S pour faire l'amour avec @T.

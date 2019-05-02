@@ -1,0 +1,10 @@
+# Tests concernant les ASSOCIATIONS de toute sorte
+---
+- id: association_simple
+  libelle: Association simple
+  description: On peut associer une note à une scène
+  synopsis:
+    - ouvrir l'app
+    - /ouvrir l'analyse 'with_events'
+  checks:
+    - Poursuivre la rédaction de ce test

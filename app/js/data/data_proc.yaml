@@ -1,0 +1,321 @@
+# TOUTES LES DONNÉES PROCÉDÉS
+#
+# CE FICHIER PERMET DE PEUPLER LES MENUS DES PROCÉDÉS
+#
+# ATTENTION : IL EST QUAND MÊME DIFFÉRENT DES AUTRES FICHIERS DE DONNÉES
+#
+#
+# On part pour le moment sur 3 niveaux de données :
+#   procédé > sous-procédé > procédé-précis
+# Les trois niveaux sont marqués par trois graphies différentes :
+#   PROCÉDÉ > Procédé > procédé
+#
+# Par exemple :
+#   <préparation paiement> > <personnages> > ’Révélateur de changement’
+#
+
+# POURVOIR:
+#   hname: Nouvelle catégorie pour voir
+#   items:
+#     pourvoir:
+#       hname: D’abord pour voir
+#       items: []
+#     pourrevoir:
+#       hname: Et pour revoir
+#       items: []
+
+# --- NON PLACÉS ---
+
+NONPLACES:
+  hname: Procédés non placé
+  items:
+
+    Intrigues:
+      hname: Peut-être intrigue
+      items:
+
+        effetallegorie:
+          hname: "Effet d’allégorie"
+          description: >
+            désigne un procédé qui consiste à faire un parallèle entre un personnage et un élément concret de
+            l’histoire.
+          exemple: >
+            Dans Titanic, le parallèle entre Rose et le bâtiment crée un effet d’allégorie : le naufrage du
+            navire parle aussi de celui de Rose (qui aurait pu survenir sans l’histoire)
+
+# --- PERSONNAGES ---
+
+PERSONNAGE:
+  hname: Personnage
+  items:
+    Personnalite:
+      hname: Personnalité, caractéristiques
+      items:
+
+        actioncaract:
+          hname: Action caractérisante
+          description: procédé consistant à faire accomplir au personnage une action qui le caractérise fortement.
+
+    Action:
+      hname: Action de personnage
+      items:
+
+        acteheroique:
+          hname: Acte héroïque
+          description: désigne un acte héroïque accompli par le personnage, même s’il est artificiellement magnifié.
+          exemple: >
+            Dans Le Dernier Samouraï, lorsque Tom Cruise se place devant le fusil d’un militaire pour prouver que ce militaire n’est pas prêt à se battre.
+            Note : c’est en même temps un acte paradoxal.
+        acteparadoxal:
+          hname: Acte paradoxal
+          description: "désigne un acte qui contient une contradiction, tout au moins en apparence. Désigne également un acte qui apparait être ce qu’il est mais qui en réalité signifie autre chose."
+          exemple: "l’acte héroïque de Tom Cruise dans Le Dernier Samouraï."
+
+
+# --- INTRIGUES ---
+
+INTRIGUE:
+  hname: Les Intrigues
+  items:
+
+    Type_recit:
+      hname: Type de récit
+      items:
+        recitrapported:
+          hname: Récit rapporté
+          description: désigne un récit qui est raconté par quelqu’un, qui présente donc une subjectivité potentielle.
+          exemple: Amadeus (raconté par Salieri), Out of Africa (raconté par Karen Blixen des années plus tard), Titanic (raconté par Rose vieille), Forest Gump (raconté par Forest Gump), Sunset Boulevard (raconté par le protagoniste mort)
+
+    Parcours:
+      hname: Procédés en rapport avec le parcours de l’intrigue
+      items:
+
+        annoncescene:
+          hname: Annonce de scène
+          description: consiste à annoncer une scène à venir, souvent par le dialogue.
+
+        pointsituation:
+          hname: Point sur la situation
+          description: consiste à faire un point sur là où on en est de l’histoire. Cela peut apporter de la clarté, mais aussi d’autres émotions.
+          exemple: c’est ce que fait l’ami producteur de l’éditeur, dans Le Diner de Con, lorsqu’il rappelle avec humour tout ce qui s’est passé jusqu’à maintenant.
+
+        manqueddepeu:
+          hname: Le « Manqué d’un rien »
+          description: consiste à faire manqué de peu, au protagoniste, un élément pourtant essentiel pour sa réussite. C’est le « il est passé à côté de peu ».
+          exemple: dans la firme, il s’en est fallu de peu pour que Tom Cruise ne rencontre pas le client qui allait pourtant lui donner sans le savoir la solution ultime que Tom était incapable de trouver.
+
+        runninggag:
+          hname: Runnin gag
+          description: effet provoquant de l’humour consistant à répéter presque à l’identique un même élément dramatique (souvent un dialogue ou un geste).
+          exemple: dans Road To Perdition, on voit le personnage procéder plusieurs fois à un cambriolage. Chaque fois, son fils d’une dizaine d’années arrive en conduisant la voiture pour s’échapper, mais manque singulièrement d’expérience.
+
+    Tension:
+      hname: "Procédés augmentant la tension de l’intrigue"
+      items:
+
+        urgence:
+          hname: L’urgence
+          description: consiste à placer une urgence sur la réalisation de l’objectif.
+          exemple: dans Working Girl, Tess, qui pensait avoir tout son temps, après que sa patronne va rentrer plus tôt.
+
+        timelock:
+          hname: Le Timelock
+          description: consiste à placer une fin temporelle fixe à la réalisation de l’objectif.
+          exemple: typiquement, c’est la bombe qui doit exploser dans deux heures.
+
+    Conclusion:
+      hname: Procédés à la fin des récits
+      items:
+
+        malparlemal:
+          hname: Le mal par le mal
+          description: consiste à faire mourir le méchant par là où il a pêché.
+
+# --- IRONIE DRAMATIQUE ---
+IRDR:
+  hname: Ironie dramatique
+  items:
+
+    AutresIrdr:
+      hname: "Autres ironies dramatiques"
+      items:
+
+        irdrdiffuse:
+          hname: Ironie dramatique diffuse
+          description: désigne une ironie dramatique qui n’est pas installée à l’intérieur du film, mais plutôt par culture, par actualité ou par déduction ou bon sens.
+          exemple: Dans Everest, pendant longtemps, rien n’implante dans le film qu’une catastrophe va se produire, mais le spectateur le devine alors que les personnages (victimes de l’ironie dramatique) semblent l’ignorer.
+
+    ProduisantPeur:
+      hname: Ironies dramatiques produisant de la peur
+      items:
+
+        bearonthebeach:
+          hname: Le Bear on the beach
+          description: littéralement, c’est « l’ours sur le plage ». Désigne un monstre qui rôde, sans que les protagonistes ne le sachent encore.
+
+# --- PRÉPARATION / PAIEMENT ---
+PP:
+  hname: Préparation/paiement
+  items:
+    Personnages:
+      hname: P/P sur personnages
+      items:
+        revchang:
+          hname: Révélateur de changement
+          description: Deux temps souvent éloignés, mais très similaires, qui témoignent que quelque chose a changé chez le personnage.
+        revstab:
+          hname: Révélateur de stabilité
+          description: "Deux temps successifs, souvent éloignés mais identiques, qui témoignent que quelque chose n’a pas changé chez le personnage"
+
+INFORMATION:
+  hname: L’Information
+  items:
+
+    Placement:
+      hname: Placement
+      items:
+
+        detournementattention:
+          hname: "Détournement d’attention"
+          description: "consiste, pour placer une information importante sans sembler le faire, à mettre l’accent sur un autre élément, souvent par le biais de l’humour ou du conflit."
+          exemple: trop nombreux pour avoir le courage d’en choisir un seul…
+
+        actionvautreponse:
+          hname: Action implique réponse
+          description: "consiste à montrer une action résultant d’un choix ou d’une réponse plutôt que de montrer ce choix ou cette réponse."
+          exemple: Dans The Man in The Iron Mask, quand on demande à Di Caprio (alias Philippe) s’il accepte de prendre la place de son frère Louis, on ne le voit pas répondre. Mais dans la scène suivante, on le voit apprendre son rôle.
+
+        placementdrapeau:
+          hname: Utilisation d’un drapeau
+          description: Un drapeau consiste en un évènement suffisamment remarquable (un dialogue, une action, une réaction) qui marque une information, permettant de s’en souvenir beaucoup plus tard.
+
+        infoparinference:
+          hname: Information par inférence
+          description: désigne le sous-texte en matière d’action, quelque chose que l’on comprend, sans que ce soit dit, par la seule action.
+          exemple: Dans Dancer In The Dark, quand Bill Houston fait croire qu’il sort mais reste dans la caravance de Selma Jeskova, on sait qu’il veut regarder où Selma range ses économies.
+
+    Revelation:
+      hname: Révélation
+      items:
+
+        revelmystere:
+          hname: Révélation de mystère
+          exemple: Le sens de « Rosebud » dans Citizen Kane.
+
+    Rappel:
+      hname: "Rappel d’une information"
+      items:
+
+        rappelobjectif:
+          hname: "Rappel de l’objectif"
+        rappelmotivation:
+          hname: "Rappel des motivations"
+          description:  désigne un élément permettant de rappeler les motivations du personnage concernant son objectif.
+        rappeldrapeau:
+          hname: Rappel par drapeau
+          description: désigne une information qui est rappelée par « effet de drapeau » (cf. {{procede:placementdrapeau}})
+
+EFFET:
+  hname: Effets
+  items:
+
+    SurPersonnage:
+      hname: Effets sur les personnages
+      items:
+
+        effetmagnification:
+          hname: Effet de magnification
+          description: consiste à magnifier le personnage, à le présenter sous un angle exceptionnel ou dans un acte exceptionnel.
+
+        effetmoderation:
+          hname: Effet de modération
+          description: consiste à modérer une caractéristique présentée précédemment, par un {{procede:effetmagnification}} par exemple.
+
+        effetdinattendu:
+          hname: Effet d’inattendu
+          description: consiste à faire faire au personnage quelque chose d’inattendu — et pourtant profondément logique, lorsqu’on le voit.
+          exemple: Dans Adam’s Rib, alors que la maitresse s’apprête à rentrer, une arme à la main, dans un appartement où se trouve son mari et sa maitresse, elle se recule un peu, sort le mode d’emploi de l’arme et le lit.
+
+        effetambivalenceperso:
+          hname: Effet d’ambivalence
+          description: consiste à changer le statut d’un personnage, qui par exemple de bon devient mauvais, ou de mauvais devient bon.
+
+        prepaemotionbycontraire:
+          hname: Préparation d’une émotion par son contraire
+          description: procédé puissant qui consiste, pour rendre claire une émotion, une surprise, à la faire précéder de l’émotion contraire.
+          exemple: si le personnage doit devenir tout à coup joyeux, le montrer avant cela triste (de façon cohérente)
+
+        vieremplaced:
+          hname: Effet de vie remplacée
+          description: consiste à faire naitre une vie lorsqu’un protagoniste meurt.
+          exemple: Dans Everest, le protagoniste mort est remplacé par sa fille qui va naitre. Dans Seven Pounds, l’amie est enceinte à la fin, après la mort du protagoniste.
+
+    SurScene:
+      hname: Effets sur les scènes
+      items:
+
+        premieresymbolique:
+          hname: Première scène symbolique
+          description: consiste à faire une première scène qui est une symbolisation de tout le récit.
+          exemple: dans Le Diner de con, on voit un personnage se prendre « en pleine gueule » un boomerang qu’il avait envoyé. C’est ce qui va se passer pour l’éditeur au cours du film. Au cinéma, lorsqu’a été projeté Dancer In The Dark, les spectateurs sont restés plongés dans le noir pendant toute la musique du générique. Une façon — symbolique — de les plonger dans l’état terminal du personnage principal, qui devient aveugle au cours du film.
+
+        inversionpolarite:
+          hname: Inversion de polarité
+          description: consiste à inverser un élément entre le début et la fin d’une temporalité, principalement d’une scène.
+          exemple: au début de la scène où Theodore Twombly revoit sa femme pour signer les papiers du divorce, tout se passe tellement bien — et en même temps ils se demandent ce qu’ils font — qu’on se demande s’ils vont vraiment divorcer. À la fin, les personnages sont en conflit total et l’on devine les raisons de leur séparation.
+
+        horschampnarratif:
+          hname: Effet de Hors-champ narratif
+          description: consiste à suggérer un élément du récit qui ne se trouve pas dans le récit, mais qui a eu lieu dans la « réalité » de l’histoire, souvent une scène.
+          exemple: >
+            Dans A.I, Artificial Intelligence, lorsque Gigolo Joe trouve sa client morte dans son lit, on
+            peut deviner la scène qui a pu se produire : un mari jaloux est venu l’assassiner.
+
+    SurThemes:
+      hname: Effets sur les thèmes
+      items:
+
+        geotropisme:
+          hname: Géotropisme
+          description: procédé qui consiste, par un plan, par un dialogue, à orienter l’esprit du spectateur/lecteur vers un sujet particulier, en général le sujet principal du film.
+          exemple: quand Selma se rend chez les Houston avec son fils Gene, dans Dancer In The Dark, elle lui demande de faire parler Bill de son argent, de son héritage. Ce sera justement le cœur de l’histoire.
+
+    SurObjets:
+      hname: Effets sur les objets
+      items:
+
+        christsymbol:
+          hname: Cristalisation symbolique
+          description: consiste à transformer un élément de la narration, souvent un objet, en symbole de quelque chose d’autre dans le film.
+          exemple: Dans Citizen Kane, une fois le secret révélé, la luge devient le symbole de l’effet perdue à tout jamais de Charles Foster Kane.
+
+    SurTout:
+      hname: Effets s’appliquant à tous les éléments
+      items:
+
+        effetdemystere:
+          hname: Effet de mystère
+          description: consiste à montre au spectateur quelque chose qu’il ne peut encore discerner ou comprendre, pour attiser sa curiosité.
+          exemple: dans Laurence d’Arabie, alors que le héros s’hydrate avec son guide bédouin dans un puits dans le désert, une forme noire apparait au loin, se rapprochant lentement.
+
+SURPRISE:
+  hname: Surprises
+  items:
+
+    Twist:
+      hname: Twist
+      items:
+        twistfinal:
+          hname: "Twist final"
+          exemple: Usual Suspects, Le Sixième sens, La Dernière tentation du Christ
+
+    Contraire:
+      hname: Le Contraire
+      items:
+
+        reponsecontraire:
+          hname: Réponse contraire
+          description: désigne une réponse qui utilise le contraire de ce qu’on attendrait, et provoque une surprise agréable.
+        actioncontraire:
+          hname: Action contraire
+          description: désigne une action qui fait le contraire de ce que l’on attendrait, et provoque une surprise agréable.

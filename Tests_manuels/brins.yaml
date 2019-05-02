@@ -1,0 +1,68 @@
+# Tests manuels sur les brins
+---
+  creation_brin:
+    libelle: Création d'un brin
+    description: pouvoir créer des brins à l'aide du document « Brins data »
+    synopsis:
+      - ouvrir l'application
+      - ouvrir une analyse
+      - déverrouiller l'analyse
+      - ouvrir le document dbrins
+      - définir des brins en s'inspirant de l'exemple
+      - enregistrer le document courant
+      - afficher la liste des brins
+    checks:
+      - les nouveaux brins doivent être affichés dans la liste.
+      - Fermer les fenêtres pour pouvoir continuer.
+
+  associations_event:
+    libelle: Pouvoir associer un event à un brin
+    synopsis:
+      - ouvrir la fenêtre des brins
+      - glisser l'event depuis l'eventer sur le brin
+      - glisser un event depuis le reader sur le brin
+    checks:
+      - les events doivent avoir été associés
+      - la fenêtre des brins doit avoir été actualisée
+
+  associations_document:
+    libelle: Pouvoir associer un document à un brin
+    synopsis:
+      - créer 3 brins si nécessaire
+      - ouvrir la fenêtre des brins
+      - ouvrir un document quelconque
+      - glisser l'icone d'association sur le brin
+      - choisir un autre document
+      - l'associer au même brin et à un autre brin
+    checks:
+      - les documents doivent avoir été associés
+      - la fenêtre des brins doit avoir été actualisée
+  associations_temps:
+    libelle: Pouvoir associer des temps à un brin
+    synopsis:
+      - créer 3 brins si nécessaire
+      - ouvrir la fenêtre des brins
+      - se positionner quelque part dans la vidéo
+      - glisser la vidéo sur le brin (donc son temps)
+      - répéter pour plusieurs temps et plusieurs brins
+    checks:
+      - les temps doivent avoir été associés
+      - la fenêtre des brins doit avoir été actualisée
+  affichage_listing_detailled:
+    libelle: On doit pouvoir afficher le listing détaillé des associés
+    synopsis:
+      - reprendre l'analyse précédente
+      - ouvrir la fenêtre des brins
+      - cliquer sur les petits icones d'ouverture pour afficher la liste détaillée
+      - cliquer à nouveau pour refermer la liste.
+    checks:
+      - la liste détaillée des associés doit s'afficher et se refermer
+  edition_associed:
+    libelle: On doit pouvoir éditer ou afficher les associés depuis la fenêtre des brins
+    synopsis:
+      - reprendre l'analyse précédente
+      - ouvrir la fenêtre des brins
+      - afficher la liste détaillés des associés d'un ou deux brins
+      - éditer un event en cliquant dessus dans le listing détaillé
+      - se rendre à un endroit de la vidéo en cliquant sur un temps
+      - ouvrir un document en édition en cliquant sur son lien

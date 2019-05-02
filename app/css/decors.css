@@ -1,0 +1,13 @@
+.decors {
+
+}
+.decors div.sous-decors {
+  margin-left:1em;
+}
+.decors div.sous-decors span {
+  font-variant:small-caps;
+}
+.decors div.scenes {
+  margin-left:1em;
+  font-size:0.85em;
+}

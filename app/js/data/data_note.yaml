@@ -1,0 +1,22 @@
+---
+types:
+  n/d:
+    hname: Non défini
+  coherence:
+    hname: Sur la cohérence
+  musique:
+    hname: Sur la musique
+  importante:
+    hname: Note importante
+  note:
+    hname: À noter
+  remarque:
+    hname: Simple remarque
+  anecdote:
+    hname: Anecdote
+  jeu:
+    hname: Note sur le jeu d'acteur
+  stt:
+    hname: Note sur la construction
+  effet_image:
+    hname: Note sur un effet d'image

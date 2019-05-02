@@ -1,0 +1,158 @@
+section#section-writer {
+  margin-right:20px;
+  position:absolute;
+  /* left:200px; */
+  top:0;
+}
+
+section#section-writer div#writer.fwindow {
+  border:4px solid grey;
+  width:800px;
+}
+
+section#section-writer.modified div.header,
+section#section-writer.modified div.header *,
+section#section-writer.modified div.footer,
+section#section-writer.modified div.footer *
+{
+  background-color:#990022;
+  color:white;
+}
+section#section-writer div.header {
+  background-color:#DFDFDF;
+  padding:0.2em 1em;
+  position:relative;
+}
+
+section#section-writer div.header #writer-doc-title {
+  margin-bottom:0.5em;
+  margin-left:30px;
+  position:relative;
+}
+
+section#section-writer div.header div#writer-doc-title .writer-btn-drop {
+  all:unset;
+  font-size:30pt;
+  vertical-align:sub;
+}
+
+section#section-writer div.body {
+  padding:1em;
+  background-color:white;
+}
+section#section-writer div.footer {
+  background-color:#DFDFDF;
+  text-align:right;
+  padding-top:3px;
+}
+
+section#section-writer div.header #writer-doc-title,
+section#section-writer div.header #writer-doc-title select,
+section#section-writer div.header #writer-doc-title select option
+{
+  font-weight:bold;
+  font-size:1.11em;
+}
+
+/* Le bouton pour créer un nouveau document */
+section#section-writer div.header button#writer-btn-new-doc {
+  font-size:28pt;
+  width:46px;
+  height:46px;
+  line-height:42px;
+  position:absolute;
+  top:0;
+  right:0;
+}
+
+section#section-writer div.header div.modeles {
+  text-align:right;
+}
+
+section#section-writer div.footer,
+section#section-writer div.footer *
+{
+  font-size:0.85em;
+  color:teal;
+}
+section#section-writer div.footer > label {
+  margin-left:24px;
+}
+section#section-writer div.footer label#writer-message {
+  display:block;
+  overflow:hidden;
+  width:90%;
+  background-color:#CCCCCC;
+  color:black;
+  text-align:left;
+  padding:0 8px;
+  margin-top:1px;
+}
+
+section#section-writer textarea#document-contents {
+  width:100%;
+  min-height:740px;
+  resize:none;
+  border-color:#EEEEEE;
+}
+section#section-writer textarea#document-contents:focus {
+  outline:none;
+}
+/* Les thèmes du champ de saisie */
+
+/* THÈME : real (pour les "vrais" documents) */
+section#section-writer textarea#document-contents.real-theme,
+section#section-writer div.body.real-theme
+{
+  color:#333333;
+  background-color:white;
+}
+section#section-writer textarea#document-contents.real-theme {
+  font-family: 'Times New Roman';
+  font-size:17pt;
+}
+/* THEME : data-theme */
+section#section-writer textarea#document-contents.data-theme,
+section#section-writer div.body.data-theme
+{
+  color:white;
+  background-color:#333333;
+  border-color:transparent;
+}
+section#section-writer textarea#document-contents.data-theme {
+  font-family: Menlo, 'Consolas', 'DejaVu Sans Mono', monospace;
+  font-size:15pt;
+}
+
+/* THEME : musical-theme */
+section#section-writer textarea#document-contents.musical-theme,
+section#section-writer div.body.musical-theme
+{
+  color:#000055;
+  background-color:#EEEFFF;
+}
+section#section-writer textarea#document-contents.musical-theme {
+  font-family: Avenir, Helvetica, Arial;
+  font-size:15pt;
+}
+/* --------------------------------------------------------------------- */
+
+section#section-writer div#writer-doc-visualizor {
+  position:fixed;
+  top:0;
+  left:0;
+  width:400px;
+  height: 600px;
+  padding:1em;
+  border:4px solid grey;
+  border-radius:0 0.3em 0.3em 0;
+  box-shadow:5px 5px 5px 0px #DDDDDD;
+  background-color:white;
+  overflow:auto;
+  z-index:20;
+}
+section#section-writer div#writer-doc-visualizor,
+section#section-writer div#writer-doc-visualizor *
+{
+  font-size:0.91em;
+}

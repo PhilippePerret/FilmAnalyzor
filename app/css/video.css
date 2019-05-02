@@ -1,0 +1,185 @@
+/*
+  Section principale contenant toutes les vidéos
+*/
+section#section-videos {
+  position: absolute;
+  top:0;
+  display:block;
+  clear:both;
+  /* border:1px dashed red; */
+  background:black;
+  z-index:10;
+}
+
+/* Une section complète de vidéo */
+section.section-video {
+  min-width:600px;
+}
+
+section.section-video video {
+  border:1px solid #555555;
+}
+
+/* L'entête, avec l'horloge et les marques */
+section.section-video div.video-header {
+  display:grid;
+  grid-template-rows: 38px 38px;
+  grid-template-columns: 164px 214px 214px 214px auto;
+  margin-bottom:2px;
+}
+
+section.section-video div.video-header horloge {
+  grid-column:1;
+  grid-row:1;
+  opacity:0.3;
+  width:164px;
+  text-align:left;
+}
+section.section-video div.video-header horloge:hover,
+section.section-video div.video-controller span.real-horloge:hover
+{
+  opacity:1;
+}
+
+section.section-video div.video-header > div {
+  border:1px solid #666666;
+  vertical-align:bottom;
+  font-size:9.4pt;
+  cursor:pointer;
+  background-color:#222222;
+  padding-left:12px;
+  padding-top:9px;
+}
+
+section.section-video div.video-header div.main-part {
+  color:palevioletred;
+}
+section.section-video div.video-header div.part-abs {
+  background-color:#222222;
+}
+section.section-video div.video-header div.sub-part {
+  color:darkseagreen;
+}
+section.section-video div.video-header div.part-rel {
+  background-color:#112211;
+}
+
+section.section-video div.video-header div.main-part-abs {
+  grid-row:1;
+  grid-column:2;
+}
+section.section-video div.video-header div.sub-part-abs {
+  grid-row:2;
+  grid-column:2;
+}
+section.section-video div.video-header div.main-part-rel {
+  grid-row:1;
+  grid-column:3;
+}
+section.section-video div.video-header div.sub-part-rel {
+  grid-row:2;
+  grid-column:3;
+}
+section.section-video div.video-header div.mark-current-scene {
+  grid-row:1/3;
+  grid-column:4;
+  text-align:left;
+  padding:2px 2px 2px 12px;
+  overflow:hidden;
+}
+section.section-video div.video-header div.mark-current-scene,
+section.section-video div.video-header div.mark-current-scene *
+{
+  font-size:9.7pt;
+  color:#DDDDDD;
+}
+
+section#section-videos div.video-controller {
+  display:grid;
+  grid-template-rows: auto auto auto auto;
+  grid-template-columns: 150px auto auto 280px;
+  border:3px solid #555555;
+  text-align:center;
+  padding:0.5em;
+}
+
+div.video-controller, div.video-controller * {
+  background:#222222;
+}
+
+section#section-videos div.video-controller div.vcontroller-tiny-btns,
+section#section-videos div.video-controller div.vcontroller-tiny-btns *,
+section#section-videos div.video-controller div.vcontroller-main-btns,
+section#section-videos div.video-controller div.vcontroller-main-btns *
+{
+  background:#DCDCDC;
+}
+
+section#section-videos div.video-controller div.vcontroller-tiny-btns,
+section#section-videos div.video-controller div.vcontroller-main-btns
+{
+  grid-column:4;
+}
+
+section.section-video div.video-controller span.real-horloge {
+  grid-row:1;
+  grid-column:1;
+  font-size:0.9em;
+  opacity:0.2;
+}
+section.section-video div.video-controller div.go-to-time,
+section.section-video div.video-controller div.go-to-time *
+{
+  color:#AAAAAA;
+}
+section.section-video div.video-controller div.go-to-time button {
+  grid-row:1;
+  grid-column:2;
+  padding:5px;
+  border:1px solid white;
+  border-radius:4px;
+}
+section.section-video div.video-controller div.go-to-time input {
+  grid-row:2;
+  grid-column:2;
+  border:none;
+}
+section.section-video div.video-controller div.vcontroller-tiny-btns {
+  grid-row:1;
+  padding-top:8px;
+}
+
+section#section-videos div.video-controller div.vcontroller-main-btns {
+  grid-row:2;
+  padding-bottom:8px;
+}
+
+div.video-controller button {
+  border:0;
+  border-bottom:3px solid inherit;
+  padding:0;
+}
+div.video-controller button.controller {
+  vertical-align:middle;
+  text-align:center;
+  margin:0 0.1em;
+}
+div.video-controller button.main {
+  padding-bottom:2px;
+  background-color:#CCFFCC;
+  margin:0 0.25em;
+}
+div.video-controller button:active {
+  background-color:#31d300;
+}
+div.video-controller button.actived {
+  /* background-color:green; */
+  background-color:#31d300;
+}
+div.video-controller button.main img {
+  width:40px;
+}
+
+div.video-controller button.controller img {
+  width:30px;
+}

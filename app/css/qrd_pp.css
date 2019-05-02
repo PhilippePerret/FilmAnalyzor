@@ -1,0 +1,18 @@
+section#section-qrd-pp {
+  position:absolute;
+  top:0;
+  right:0;
+  width: 500px;
+  height:calc(100%);
+  background-color:pink;
+  overflow:auto;
+}
+
+section#section-qrd-pp,
+section#section-qrd-pp *
+{
+  font-size:9.8pt;
+}
+section#section-qrd-pp *:not(label, span.ref){
+  color:red;
+}

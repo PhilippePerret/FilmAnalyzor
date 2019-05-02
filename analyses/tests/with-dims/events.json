@@ -1,0 +1,4 @@
+[
+  {"id":12, "type": "note", "time":23, "duree": 60, "content": "titre de l’event 12"},
+  {"id":13, "type": "scene", "time":78, "duree": 120, "content": "Scène de l’event 13", "sceneType": null}
+]

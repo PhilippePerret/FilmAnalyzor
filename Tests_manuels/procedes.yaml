@@ -1,0 +1,73 @@
+# Tests concernant les PROCÉDÉS
+---
+- id: creation_procede
+  libelle: Création d'un procédé
+  description: On peut créer un procédé de n'importe quel type
+  synopsis:
+    - ouvrir l'app
+    - ouvrir une analyse
+    - se rendre au milieu
+    - créer un procédé en définissant toutes les données requises
+    - check: le procédé doit s'afficher dans le reader
+    - recharger la page
+    - se rendre au milieu du film
+  checks:
+    - le procédé doit avoir toutes les données définies dans le fichier events.json
+    - le procédé doit apparaitre dans les listes des procédés dans l'eventer
+
+- id: modification_procede
+  libelle: Un procédé peut être édité et modifié
+  description: On peut éditer un procédé précédemment créé et le modifier
+  synopsis:
+    - ouvrir l'app
+    - ouvrir l'analyse précédente (celle dans laquelle on a créé un procédé)
+    - rejoindre le milieu du film et jouer
+    - check: le procédé doit apparaitre
+    - cliquer sur le bouton pour éditer le procédé
+    - check: le procédé doit se mettre en édition
+    - check: tous les champs doivent avoir été réglés correctement
+    - Glisser un temps (la vidéo) sur chaque champ
+    - check: les temps doivent s'insérer dans les champs (les champs sont droppables)
+    - Jouer CMD-T sur un champ
+    - check: Le temps doit se marquer dans le champ (les évènements keydown sont ré-implémentés)
+    - Déplacer le temps de l'event
+    - check: le temps doit changer
+    - Allonger la durée de l'event
+    - check: la durée de l'event doit changer
+    - Jouer CMD-RETURN
+  checks:
+    - l'event doit terminer son édition
+    - l'event doit avoir été modifié dans le reader
+    - l'event doit avoir été enregistré dans le fichier events.json
+
+- id: updateprocedes
+  libelle: On peut actualiser les procédés en direct
+  description: Inutile de recharger l'application pour actualiser les procédés, même lorsqu'ils ont déjà été chargés.
+  synopsis:
+    - lancer l'application
+    - ouvrir une analyse
+    - créer trois events de type Procédé
+    - dans le premier, choisir laisser le menu catégories
+    - dans le deuxième, choisir une catégorie (la liste des sous-catégories doit s'afficher)
+    - dans le troisième, choisir une sous-catégorie et un procédé
+    - modifier le fichier data/data_procedes.yaml
+    - activer le bouton d'actualisation des procédés dans la deuxième fenêtre de formulaire
+  checks:
+    - les menus doivent avoir été actualisés
+    - la valeur des menus doit être restée la même
+
+-
+  id: resolution_required
+  libelle: Les procédés avec résolution obligatoire doivent s'inscrire dans la fenêtre
+  synopsis:
+    - ouvrir l'app
+    - /ouvrir l'analyse 'with_events'/
+    - /se rendre au quart/
+    - /se rendre un peu plus loin/
+    - créer un procédé de type ironie dramatique (sans résolution)
+    - check: le procédé doit s'inscrire en rouge en bas à droite de la fenêtre
+    - éditer le dernier event
+    - /se rendre plus loin/
+    - définir la résolution de l'ironie dramatique et enregistrer
+  checks:
+    - Le procédé ne doit plus être inscrit en rouge en bas à droite de la fenêtre

@@ -1,0 +1,28 @@
+# Tests concernant les scènes
+---
+  insertion_scene:
+    libelle: Insérer une scène entre deux autres
+    description: L'insertion d'une scène doit actualiser les numéros et les durées des scènes.
+    synopsis:
+      - ouvrir l'app
+      - ouvrir l'analyse 'simple3scenes'
+      - créer une nouvelle scène entre la 2 et la 3
+    checks:
+      - le numéro des scènes doit avoir été actualisé
+      - l'affichage des numéros de scène doit avoir été modifié.
+      - la durée des scènes doit avoir été recalculée
+      - dans le reader, la nouvelle scène doit avoir été ajoutée au bon endroit, pas à la fin
+
+  destruction_scene:
+    libelle: Détruire un event de type scène (par le biais du formulaire)
+    description: On prend une analyse test, et on détruit une de ses scènes.
+    synopsis:
+      - ouvrir l'app
+      - ouvrir une analyse de test quelconque
+      - mettre une scène existante en édition
+      - détruire la scène en édition
+    checks:
+      - la scène doit avoir été détruite
+      - Le numéro des autres scènes doit avoir été rectifié
+      - La durée des autres scènes doit avoir été rectifiée
+      - le nombre de scènes doit avoir changé (`FAEscene.count`)

@@ -1,0 +1,9 @@
+# Snippets utilisables dans le documents
+# @usage :
+#   <SNIPPET>: <VALEUR ENTIÈRE>
+# @exemple :
+#   ph: philippe
+
+h: Her
+
+m: Marion

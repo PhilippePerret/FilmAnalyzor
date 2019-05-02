@@ -1,0 +1,61 @@
+# Fichier des tests concernant l'analyse dans
+# son ensemble, création, ouverture, etc.
+---
+  open_from_scratch:
+    libelle: Ouverture d'une première analyse
+    description: On va ouvrir une analyse sans qu'il y en ait déjà une affichée.
+    synopsis:
+      - lancer l'app
+      - s'assurer que l'option « Charger la dernière analyse au chargement » est désactivée, la désactiver le cas échéant.
+      - quitter l'app, la recharger et choisir « Outils > Poursuivre les tests » pour revenir ici.
+      - ouvrir une analyse par le menu « Analyse > Ouvrir… »
+    checks:
+      - l'analyse doit avoir été ouverte sans message d'erreur
+      - sa vidéo est affichée
+      - le reader est affiché
+
+  create_from_scratch:
+    libelle: Création d'une nouvelle analyse à l'ouverture
+    description: On ouvre l'application et on crée une nouvelle analyse
+    synopsis:
+      - ouvrir l'app
+      - désactiver l'option « Charger la dernière analyse au chargement »
+      - quitter l'app et rouvrir (relancer ces tests pour poursuivre)
+      - Activer le menu « Analyse > Nouvelle… » pour créer l'analyse en choisissant le dossier et la vidéo
+      - créer une note au début de la vidéo, de type “à noter”
+      - check: "{{event:0}} existe"
+      - check: "{{event:0}} possède le {{type:note}}"
+      - check: "{{event:0}} possède le {{noteType:note}}"
+      - check: "{{event:0}} apparait dans le READER"
+      - créer une info à 1 minute environ, de type personnage
+      - check: "{{event:1}} existe"
+      - check: "{{event:1}} est de {{type:info}}"
+      - check: "{{event:1}} est de {{typeInfo:personnage}}"
+      - check: "{{event:1}} apparait dans le READER"
+      - enregistrer l'analyse
+      - quitter l'app, la relancer, relancer ces tests et utiliser le menu « Ouvrir… » pour rouvrir la nouvelle analyse.
+    checks:
+      - "{{event:0}} existe"
+      - "{{event:0}} possède le {{type:note}}"
+      - "{{event:0}} possède le {{noteType:note}}"
+      - "{{event:0}} apparait dans le READER"
+      - "{{event:1}} existe"
+      - "{{event:1}} est de {{type:info}}"
+      - "{{event:1}} est de {{typeInfo:personnage}}"
+      - "{{event:1}} apparait dans le READER"
+      - la vidéo doit être la bonne
+      - on doit pouvoir lancer la vidéo et voir les deux events s'afficher au moment voulu.
+
+  create_when_current:
+    libelle: Création d'une nouvelle analyse avec une analyse courante
+    description: On ouvre une analyse existante dans l'application et on crée la nouvelle analyse.
+    synopsis:
+      - ouvrir l'app
+      - activer l'option « Charger la dernière analyse au chargement »
+      - ouvrir une analyse existante et fonctionnelle
+      - quitter l'app et la rouvrir, reprendre les tests jusqu'ici
+      - créer une nouvelle analyse à partir du menu « Nouvelle… »
+    checks:
+      - La liste des events doit être vide
+      - la vidéo doit être la bonne (et pas celle de l'autre analyse)
+      - la liste des documents doit être vide

@@ -1,0 +1,14 @@
+# Définition des brins du film
+---
+-
+  id:     ID_STRING_DU_BRIN # p.e. 'intrigue_amoureuse'
+  title:  TITRE DU BRIN
+  type:   type du brin # on en définira plus tard
+  description: >
+    Description du brin
+-
+  id:     ID_STRING_AUTRE_BRIN
+  title: TITRE
+  type: type
+  description: >
+    Description du deuxième brin.

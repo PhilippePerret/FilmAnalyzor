@@ -1,0 +1,12 @@
+# Liste des récompenses obtenues par le film
+---
+id_recompense:
+  libelle: LIBELLE_RECOMPENSE # par exemple "Palme d'or au festival de Cannes"
+  destinataire: DESTINATAIRE # par exemple 'Gosling, Ryan'
+  date: AAAA # Année de la récompense
+  note: # Des notes si nécessaire
+id_autre_recompense:
+  libelle: LIBELLE_RÉCOMPENSE
+  destinataire: FILM # Quand c'est le film
+  date: AAAA
+  note:

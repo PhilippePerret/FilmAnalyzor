@@ -1,0 +1,11 @@
+---
+  types:
+    n/d:
+      hname: Non défini
+      description: Scène dont la nature, le type, n’est pas défini.
+    physique:
+      hname: Action physique
+    intellectuelle:
+      hname: Action intellectuelle
+    artistique:
+      hname: Action artistique

@@ -1,0 +1,57 @@
+---
+fd1:
+  pseudo: Driver
+  description: |
+    Un héros silencieux, à l'instart des personnages de Clint Eastwood. Voir {{document:introduction}}.
+  scenes: [4,5]
+  events: []
+  facteurO: 4/5
+  description_factO: Dans ce genre d'histoire, le protagoniste n'est pas à proprement parler un romantique.
+  facteurU: 4/5
+  description_factU:
+
+fd2:
+  question: Driver va-t-il trouver l'amour ?
+  description: |
+    On le voit à ce qu'il cherche.
+  facteurO: 0/5
+  description_factO:
+  facteurU: 5/5
+  description_factU:
+  scenes: []
+  events: []
+
+fd3:
+  opposition: L'opposition vient principalement de la mafia.
+  antagoniste: Mafia
+  description: |
+    DESCRIPTION
+  facteurO: x/5
+  description_factO:
+  facteurU: x/5
+  description_factU:
+    scenes: []
+  events: []
+
+fd4:
+  reponse: OUI, il trouvera l'amour, mais perdra tout le reste.
+  typeR: OUI MAIS
+  signification: Cette réponse signifie qu'il y a toujours de l'espoir dans la vie.
+  description:
+  facteurO: x/5
+  description_factO:
+  facteurU: x/5
+  description_factU:
+  scenes: [5]
+  events: []
+
+fd5:
+  concept: CONCEPT
+  description: |
+    DESCRIPTION
+  facteurO: x/5
+  description_factO:
+  facteurU: x/5
+  description_factU:
+  scenes: []
+  events: []

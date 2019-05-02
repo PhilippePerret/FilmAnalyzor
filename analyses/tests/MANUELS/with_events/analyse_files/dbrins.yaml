@@ -1,0 +1,15 @@
+# Définition des brins du film
+---
+-
+  id:     intrigue_principale
+  title:  L'intrigue principale
+  type:   intrigue
+  description: >
+    C'est le brin qui s'occupe de rassembler tout ce qui concerne l'intrigue principale.
+
+-
+  id:     intrigue_amoureuse
+  title: L'intrigue amoureuse
+  type: intrigue
+  description: >
+    C'est le brin qui s'occupe de tout ce qui concerne l'intrigue amoureuse entre le protagoniste et l'objet de sa quête.

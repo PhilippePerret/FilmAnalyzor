@@ -1,0 +1,87 @@
+div.mini-writer {
+  position:fixed;
+  top:0;
+  left: 0;
+  background-color:grey;
+  background:rgba(0,0,0,0.74);
+  height:900px;
+  display:grid;
+  grid-template-rows: 50px 800px 50px;
+  grid-template-columns: 20px 600px 780px 20px;
+  padding:2em;
+}
+/* --- L'ÉDITEUR --- */
+div.mini-writer div.mini-writer-editor {
+  grid-row:2;
+  grid-column:3;
+  background-color:white;
+  display:grid;
+  grid-template-rows: 50px auto 50px;
+  padding:0;
+  justify-self:stretch;
+  align-self:stretch;
+}
+div.mini-writer div.mini-writer-editor .mini-writer-div-textarea {
+  grid-row:2;
+  display:grid;
+  grid-template-rows: 1em auto 1em;
+  grid-template-columns: 1em auto 1em;
+  /* background-color:#CCFFCC; */
+}
+div.mini-writer div.mini-writer-editor textarea {
+  display:block;
+  grid-row:2;
+  grid-column:2;
+  resize:none;
+}
+div.mini-writer div.mini-writer-editor textarea:focus {
+  outline:none;
+}
+
+div.mini-writer div.mini-writer-editor div.mini-writer-tools,
+div.mini-writer div.mini-writer-editor div.mini-writer-buttons
+{
+  background-color:grey;
+  opacity:0.3;
+  padding:8px 1em;
+  text-align:right;
+}
+div.mini-writer div.mini-writer-editor div.mini-writer-tools,
+div.mini-writer div.mini-writer-editor div.mini-writer-tools *,
+div.mini-writer div.mini-writer-editor div.mini-writer-buttons,
+div.mini-writer div.mini-writer-editor div.mini-writer-buttons *
+{
+  font-size:0.9em;
+}
+
+div.mini-writer div.mini-writer-editor div.mini-writer-tools:hover,
+div.mini-writer div.mini-writer-editor div.mini-writer-buttons:hover
+{
+  opacity:1;
+}
+
+div.mini-writer div.mini-writer-editor div.mini-writer-tools{
+  grid-row: 1/2;
+}
+div.mini-writer div.mini-writer-editor div.mini-writer-buttons{
+  grid-row: 3/4;
+}
+
+/* --- LE VISUALISEUR --- */
+div.mini-writer div.mini-writer-visualizor {
+  grid-row:2;
+  grid-column:2;
+  background-color:white;
+  border-right:1px solid #999999;
+  display:grid;
+  grid-template-rows: 2em auto 2em;
+  grid-template-columns: 2em auto 2em;
+}
+
+div.mini-writer div.mini-writer-visualizor div.mini-writer-visualizor-content {
+  border:1px solid #CCCCCC;
+  align-self:stretch;
+  justify-self:stretch;
+  grid-column:2;
+  grid-row:2;
+}

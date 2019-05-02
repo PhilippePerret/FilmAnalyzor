@@ -1,0 +1,248 @@
+
+/* ---------------------------------------------------------------------
+    Définition de l'aspect des events partout
+ */
+
+.event {
+  padding: 0.2em 0.5em;
+  width: 96%;
+  clear:both;
+  background-color:white;
+  border:1px solid transparent;
+  margin-bottom:3px;
+  font-size:12.6pt;
+}
+
+/* --------------------------------------------------------------------- */
+/* --- TITRES --- */
+
+.event h3 {
+  font-size:12.9pt;
+}
+
+/* --------------------------------------------------------------------- */
+
+.event.current,
+.event.current * {
+  background-color:#EEFFEE;
+}
+
+/* Quand on le draggue */
+.event.myHighlight{
+  border:2px solid red;
+  z-index: 1000;
+}
+
+.survoled, .survoled * {
+  background-color:#EEFFEE!important;
+}
+
+.event.survoled {
+  border:1px dashed green;
+}
+
+/* --------------------------------------------------------------------- */
+/* --- SCÈNES --- */
+
+.event .scene-heading{
+  display:block;
+  font-weight: bold;
+  margin-top: 1em;
+  text-decoration: underline;
+}
+.scene-content { /* sous l'intitulé */
+  display:block;
+}
+.event span.scene-resume {
+  display:block;
+  font-style:italic;
+  margin-left:1em;
+}
+
+
+/* Styles pour les notes (indicées) */
+
+/* L'indice dans le texte, renvoyant à la note — renvoi */
+sup.note-indice {
+  margin-left:3.2px;
+  font-size:0.85em;
+  vertical-align:24%;
+}
+
+/* DIV contenant les notes insérées dans le texte */
+div.notes {
+  font-size:0.9em;
+  border-top:1px solid grey;
+  border-bottom:1px solid grey;
+  margin: 12px 1em 12px 2em;
+  padding: 4px 0 4px 0.5em;
+}
+/* Une note dans le listing de notes */
+div.notes .note {
+  display:block;
+  margin-top: 4px;
+}
+/* La note, dans le div des notes */
+div.notes span.note-indice {
+  font-size:0.9em;
+  margin-right:8px;
+  vertical-align:10%;
+}
+
+
+/* Les petits boutons au-dessus de l'event dans le reader */
+.event .e-tools {
+  display:inline-block;
+  text-align:right;
+  float:right;
+  clear:both;
+  font-size: 9.1pt;
+  opacity:0.15;
+}
+.event  .e-tools:hover {
+  opacity:1;
+}
+
+.event .content {
+  clear:both;
+}
+.event  .horloge {
+  background-color:grey;
+  font-size: 9.1pt;
+}
+
+.event .e-tools button:not(.btnplay) {
+  position:relative;
+  width:22px;
+  height:22px;
+  line-height:22px;
+  text-align:center;
+  vertical-align:middle;
+  margin-right:8px;
+}
+.event .e-tools .btn { /* peut être une img */
+  width:16px;
+  position:absolute;
+  top:2px;
+  left:2px;
+}
+
+/* --------------------------------------------------------------------- */
+/*
+  Pour essayer de mettre en forme les events sans utiliser de caractères
+  en dehors de leur définition
+  Si ces styles fonctionnent bien, il faut les reprendre dans publishing.js
+ */
+:root{
+  --label-font-size:0.88em;
+  --label-style:italic;
+  --label-color:#999999;
+  --label-margin-left:8px;
+}
+
+/* Pour marquer la référence de l'élément */
+span.ref {
+  font-size:0.88em;
+  opacity:0.5;
+  margin-right:4px;
+}
+/* span.ref:after{content:' : '} */
+
+span.titre {font-weight:bold;}
+span.titre:before{content:"« "}
+span.titre:after{content:" » "}
+
+span.quotes {font-weight:bold;}
+span.quotes:before{content:"« "}
+span.quotes:after{content:" » "}
+span.quotes+span.titre:before{all:unset;}
+span.quotes+span.titre:after{all:unset;}
+
+span.question,
+span.question,
+span.reponse,
+span.content,
+span.setup,
+span.exploit,
+span.payoff
+{
+  margin-right:var(--label-margin-left);
+}
+
+span.question:before,
+span.question:after,
+span.reponse:before,
+span.content:before,
+span.setup:before,
+span.exploit:before,
+span.payoff:before
+{
+  font-size:var(--label-font-size);
+  font-style:var(--label-style);
+  color:var(--label-color);
+  /* margin-left:var(--label-margin-left); */
+}
+span.question:before {
+  content: '• Question : « ';
+}
+span.question:after {
+  content:' »';
+}
+span.reponse:before {
+  content: '• Réponse : ';
+}
+
+span.content{font-style:italic;}
+span.content:before{
+  content:'• description : ';
+}
+
+span.setup{}
+span.setup:before{
+  content:'• installation : ';
+}
+span.exploit{}
+span.exploit:before{
+  content:'• exploitation : ';
+}
+span.payoff{}
+span.payoff:before{
+  content:'• résolution : ';
+}
+
+
+/* Les procédés */
+div.proc {
+
+}
+
+a.lkevent {
+  /* margin-left:4px; */
+  background-color:#44CC44!important;
+  color:white;
+  padding:0 3px;
+  font-size:11px;
+  cursor:pointer;
+  vertical-align:top;
+}
+
+/* --------------------------------------------------------------------- */
+/* --- AFFICHAGE DES ASSOCIÉS --- */
+
+.event div.associates,
+.event div.associates *
+{
+  font-size:11.4pt;
+}
+
+span.lktime, a.lktime {
+  margin-right:4px;
+  cursor:pointer;
+  vertical-align:top;
+}
+
+/* Lien pour dissocier deux éléments */
+a.lkdiss {
+  font-size:0.8em;
+  cursor:pointer;
+}

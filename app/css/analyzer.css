@@ -1,0 +1,40 @@
+.timeline {
+  position:relative;
+}
+.timeline .timeline-cursors {
+  position:relative;
+  width:100%;
+  height:10px;
+  background-color:#333333;
+  border-style:solid;
+  border-color:white;
+  border-width:1px 0;
+  cursor:pointer;
+}
+.timeline .timeline-cursors .cursor {
+  width:4px;
+  height:10px;
+  position:absolute;
+  left:0px;
+}
+.timeline .timeline-cursors .cursor.timeline-maincursor {
+  background-color:red;
+  z-index:20;
+}
+.timeline .timeline-cursors .cursor.timeline-shadowcursor {
+  visibility:hidden;
+  background-color:#FF8888;
+  z-index:19;
+}
+.timeline span.timeline-horloge {
+  position:absolute;
+  top:-26px;
+  right:0px;
+  font-size:11pt;
+  font-family:monospace;
+  visibility:hidden;
+  border:1px solid darkred;
+}
+.timeline:hover span.timeline-horloge {
+  visibility:visible;
+}

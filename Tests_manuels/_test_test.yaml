@@ -1,0 +1,17 @@
+# pour tester les tests
+---
+  - id: mon_test
+    libelle: C'est un test pour voir si un check peut ne pas être une liste
+    synopsis:
+      - faire n'importe quoi
+      - check: je peux checker juste ça.
+      - faire n'importe quoi
+      - check: 3 brins
+
+  - id: test_nombre_elements
+    libelle: Pour tester le nombre d'élément
+    synopsis:
+      - ouvrir l'analyse 'htests'
+      - check: 4 documents
+      - check: 3 brins
+      - check: 5 events

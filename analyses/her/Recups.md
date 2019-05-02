@@ -1,0 +1,1 @@
+Noter comment le premier contact est à l'opposé de celui qu'il deviendra. Ici, l'ordinateur est conforme à ce que l'on attend de lui, il semble froid, il semble insensible, pose des questions intimes — la relation à la mère — sans même attendre la réponse.

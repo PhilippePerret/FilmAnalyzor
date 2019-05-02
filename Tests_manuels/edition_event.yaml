@@ -1,0 +1,50 @@
+---
+  -
+    id: draggable_after_edition
+    libelle: Après son édition, un event doit redevenir draggable
+    synopsis:
+      - ouvrir l'app
+      - /ouvrir l'analyse 'with_events'/
+      - verrouiller l'analyse
+      - /se rendre à 0:0:50.0/
+      - éditer le deuxième event
+      - modifier le deuxième event et l'enregistrer
+    checks:
+      - le deuxième event, dans le reader, doit pouvoir être draggué dans le texte d'une nouvelle scène.
+  -
+    id: synchro_pitch_content
+    libelle: La description de la scène se synchronise avec le pitch
+    synopsis:
+      - ouvrir l'app
+      - /ouvrir l'analyse 'vierge'/
+      - créer une nouvelle scène
+      - rentrer le pitch de la scène
+    checks:
+      - le résumé doit se synchroniser avec le pitch
+
+  -
+    id: non_synchro_pitch_contenu
+    libelle: Avec résumé défini, la synchro pitch-résumé ne doit pas se faire
+    synopsis:
+      - ouvrir l'app
+      - /ouvrir l'analyse 'vierge'/
+      - créer une nouvelle scène
+      - rentrer le résumé de la scène
+      - rentrer le pitch de la scène
+    checks:
+      - le résumé ne doit pas être remplacé par le pitch
+
+  -
+    id: synchro-after-non-synchro
+    libelle: En revidant le résumé, il redevient synchronisable
+    synopsis:
+      - ouvrir l'app
+      - /ouvrir l'analyse 'vierge'/
+      - créer une nouvelle scène
+      - rentrer le résumé de la scène
+      - rentrer le pitch
+      - check: le résumé ne doit pas changer
+      - supprimer le résumé de la scène
+      - rentre le pitch
+    checks:
+      - le résumé doit se synchroniser avec le pitch de la scène

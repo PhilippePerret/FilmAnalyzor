@@ -1,0 +1,16 @@
+/* Styles pour la timeline */
+#main-timeline {
+  position:fixed;
+  border:2px solid;
+  left:0;
+  bottom:0;
+  z-index:2000;
+  height:40px;
+  background-color:#660000;
+  width:100%;
+}
+#main-timeline #timeline-header {
+  min-height:20px;
+  width:100%
+  background-color:rgba(200,200,255,0.3)
+}

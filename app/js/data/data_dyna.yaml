@@ -1,0 +1,14 @@
+---
+types:
+  n/d:
+    hname: "Type de l'élément dynamique :"
+  objectif:
+    hname: Objectif
+  sous-objectif:
+    hname: Sous-objectif
+  moyen:
+    hname: Moyen
+  obstacle:
+    hname: Obstacle
+  conflit:
+    hname: Conflit

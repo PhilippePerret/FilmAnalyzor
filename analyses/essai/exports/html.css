@@ -1,0 +1,53 @@
+/* STYLE POUR LA PUBLICATION */
+@media print {
+
+}
+
+/* --------------------------------------------------------------------- */
+/* === STYLES GÉNÉRAUX === */
+
+body, body * {
+  font-family:Palatino;/*, Georgia, Baskerville*/
+}
+h1 {
+  margin-top:3em;
+  margin-bottom:1em;
+  color:red;
+}
+
+a, a:hover, a:link, a:visited {
+  text-decoration:none;
+  color:inherit;
+}
+a:hover{text-decoration:underline;}
+
+p.rouge {color:red;}
+
+div.rouge {color:green;}
+
+.rouge {color:red;}
+.bleu {color:blue;font-size:1.4em;}
+
+.libval {
+  border:1px dashed green;
+}
+.libval label,
+.libval span.value
+{
+  display:inline-block;
+}
+.libval > label {width:20%;}
+.libval > span.value {width:70%;}
+
+
+div.grid {
+  grid-template-rows: auto;
+  grid-template-columns: 20% 75%;
+}
+div.grid label {
+  grid-column:1;
+}
+div.grid span.value {
+  grid-column:2;
+  text-align:right;
+}
