@@ -10,6 +10,9 @@ Object.assign(FABrin.prototype,{
 **/
 as(format, flag, opts){
   if (undefined === flag) flag = 0
+  if (undefined === opts) opts = {}
+
+  opts.owner = {type: 'brin', id: this.id}
 
   var divs = [], str
 
@@ -28,7 +31,7 @@ as(format, flag, opts){
       divs.push(...this.asFull(opts))
       break
     case 'associate':
-      divs.push(this.asAssociate(opts))
+      divs.push(...this.asAssociate(opts))
       break
     default:
       throw(`Format inconnu : "${format}"`)
@@ -75,7 +78,13 @@ as(format, flag, opts){
   }
 
 , asAssociate(opts){
-    return this.asShort(opts)[0]
+    var divs = this.asShort(opts)
+    if(opts.owner){
+      // Si les options définissent un owner, on ajoute un lien pour pouvoir
+      // dissocier le temps de son possesseur
+      divs.push(DCreate('A',{class:'lkdiss', inner: '[dissocier]', attrs:{onclick:`FAEvent.dissocier.bind(FAEvent)({owned:{type:'brin', id:${this.id}}, owner:{type:'${opts.owner.type}', id:${opts.owner.id}}})`}}))
+    }
+    return divs
   }
 
 , editLink(opts){

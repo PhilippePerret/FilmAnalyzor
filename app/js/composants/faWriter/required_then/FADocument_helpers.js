@@ -10,37 +10,41 @@ Object.assign(FADocument.prototype,{
 **/
 as(format, flag, opts){
   if (undefined === flag) flag = 0
-  // Pour le moment, on lie par défaut (NON !)
-  // Pour le moment, on corrige par défaut
-  flag = flag | FORMATED
+  if (undefined === opts) opts = {}
 
-  // console.log("-> as(format, flag)", format, flag)
+  opts.owner = {type: 'document', id: this.id || this.type}
 
-  var str
+  var divs = []
+
+  if(flag & LABELLED) divs.push(DCreate('LABEL', {inner: `DOC #${this.id || this.type}`}))
+
   switch (format) {
     case 'short':
-      str = this.asShort(opts)
-      break
+      divs.push(this.asShort(opts)); break
     case 'book':
       // Sortie pour le livre
-      str = this.asBook(opts)
-      break
+      divs.push(this.asBook(opts)); break
     case 'full':
       // Affiche complet, avec toutes les informations
-      str = this.asFull(opts)
-      break
+      divs.push(this.asFull(opts)); break
     case 'associate':
-      str = this.asAssociate(opts)
-      break
+      divs.push(...this.asAssociate(opts)); break
     default:
-      str = this.title
+      divs.push(this.asShort(opts))
   }
 
-  if(flag & LABELLED) str = `<label>DOC #${this.id || this.type} : </label> ${str}`
+  if(flag & DUREE) divs.push(DCreate('SPAN',{class:'horloge', inner:` (${this.hduree})` }))
 
-  if(flag & DUREE) str += ` (${this.hduree})`
+  // --- LE DIV FINAL ---
 
-  if(flag & FORMATED) str = DFormater(str)
+  // Avec tous ses éléments ajoutés en fonction des choix
+  // console.log("domEls:",domEls)
+  let divAs = DCreate('DIV', {class:`document DOC${this.id}`, append: divs})
+
+  // --- LE STRING FINAL ---
+
+  // La version string résultant du travail d'assemblage précédent
+  let str = divAs.outerHTML
 
   if(flag & ESCAPED){
     // Note : il exclut editable et linked
@@ -55,15 +59,32 @@ as(format, flag, opts){
     str = this.linked(str)
   }
 
-
   return str
 }
 
-, asShort(opts){ return this.title }
-, asBook(opts){ return this.title }
+, asShort(opts){ return DCreate('SPAN', {class:'titre', inner:DFormater(this.title)}) }
+, asBook(opts){ return DCreate('SPAN', {class:'titre', inner:DFormater(this.title)}) }
+
 , asFull(opts){
     return this.asBook() // pour le moment
   }
+
+, asAssociate(opts){
+  var divs = []
+  divs.push(DCreate('SPAN', {inner: `Doc : ${this.id}`, attrs:{title:`Document « ${DFormater(this.title)} »`}}))
+  if(opts.owner){
+    // Si les options définissent un owner, on ajoute un lien pour pouvoir
+    // dissocier le temps de son possesseur
+    divs.push(DCreate('A',{class:'lkdiss', inner: '[dissocier]', attrs:{onclick:`FAEvent.dissocier.bind(FAEvent)({owned:{type:'brin', id:${this.id}}, owner:{type:'${opts.owner.type}', id:${opts.owner.id}}})`}}))
+  }
+  return divs
+}
+
+, as_link(options){
+    if(undefined === options) options = {}
+    return `« <a onclick="showDocument('${this.id||this.type}')" class="doclink">${options.title || this.title}</a> »`
+  }
+
 // asAssociate est défini ailleurs
 , linkedToEdit(str){return `<a onclick="showDocument(${this.argId})">${str}</a>`}
 , linked(str){return `<a onclick="showDocument(${this.argId})">${str}</a>`}

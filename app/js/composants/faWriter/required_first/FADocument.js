@@ -183,18 +183,6 @@ displaySize(){
 }
 
 // ---------------------------------------------------------------------
-// Méthodes d'helpers
-
-asAssociate(opts){
-  return DCreate('SPAN', {inner: `Doc : ${this.id}`, attrs:{title:`Document « ${DFormater(this.title)} »`}})
-}
-
-as_link(options){
-  if(undefined === options) options = {}
-  return `« <a onclick="showDocument('${this.id||this.type}')" class="doclink">${options.title || this.title}</a> »`
-}
-
-// ---------------------------------------------------------------------
 //  Méthodes de données
 
 get a() { return current_analyse }

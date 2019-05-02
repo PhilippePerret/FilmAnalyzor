@@ -58,6 +58,14 @@
     "effet": "jour"
   },
   {
+    "id": 14,
+    "type": "info",
+    "titre": "Une info",
+    "time": 93.64,
+    "duree": 10,
+    "content": "L'information."
+  },
+  {
     "id": 10,
     "type": "qrd",
     "titre": "un qrd",
