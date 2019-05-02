@@ -437,14 +437,8 @@ getTime(){ return this.currentTime }
 **/
 getRealTime(s){
   var negative = s < 0
-  if(negative){s = -s}
-  // console.log("s = ",s)
-  if(undefined === this._horloger){
-    this._horloger = s
-  } else {
-    this._horloger.updateSeconds(s.seconds)
-  }
-  return `${negative?'-':' '}${this._horloger.horloge}`
+  if(negative){s.updateSeconds(-s.seconds)}
+  return `${negative?'-':' '}${s.horloge}`
 }
 
 // ---------------------------------------------------------------------
