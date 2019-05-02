@@ -579,7 +579,6 @@ submit(){
   var initTime = this.isNew ? null : Math.round(this.event.time)
 
   var all_data = this.getFormValues()
-  console.log("all_data:", all_data)
   this.isNew = all_data.is_new
 
   // On crée ou on update l'évènement
@@ -619,8 +618,6 @@ submit(){
     // En cas d'erreur, on focus dans le premier champ erroné (s'il existe)
     $(this.event.firstErroredFieldId).focus().select()
   }
-
-  console.log("ici")
 
   my = null
 }
