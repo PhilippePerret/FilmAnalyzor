@@ -102,6 +102,7 @@
   {
     "id": 12,
     "type": "dialog",
+    "titre": "Un titre au dialogue",
     "time": 305.96,
     "duree": 10,
     "content": "C'est un bon dialogue",

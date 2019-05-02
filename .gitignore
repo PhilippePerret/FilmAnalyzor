@@ -1,3 +1,8 @@
+
+analyses/
+
+dist/
+
 # Logs
 logs
 *.log

@@ -16,11 +16,11 @@ module.exports = function(options){
   fs.existsSync(dst_path) && fs.unlinkSync(dst_path)
 
   // HTML -> ePub
-  // var cmd = `cd ${my.folder};pandoc -o ./exports/${my.epub_name} ./exports/${my.html_name} --css=/Users/philippeperret/Programmation/Electron/FilmsAnalyse/app/analyse_files/css/publishing.css --epub-cover-image='./exports/cover.jpg'`
+  // var cmd = `cd ${my.folder};pandoc -o ./exports/${my.epub_name} ./exports/${my.html_name} --css=/Users/philippeperret/Programmation/FilmAnalyzor/app/analyse_files/css/publishing.css --epub-cover-image='./exports/cover.jpg'`
 
   // Markdown -> ePub
   // ORIGINAL À RETRAVAILLER
-  // var cmd = `cd ${my.a.folder};pandoc -o ./exports/${my.a.epub_name} ./exports/${src_name} --metadata-file=./exports/metadata.yaml --css=/Users/philippeperret/Programmation/Electron/FilmsAnalyse/app/analyse_files/css/publishing.css --toc --toc-depth=2 --epub-cover-image="./exports/img/cover.jpg"`
+  // var cmd = `cd ${my.a.folder};pandoc -o ./exports/${my.a.epub_name} ./exports/${src_name} --metadata-file=./exports/metadata.yaml --css=/Users/philippeperret/Programmation/FilmAnalyzor/app/analyse_files/css/publishing.css --toc --toc-depth=2 --epub-cover-image="./exports/img/cover.jpg"`
   // SIMPLIFIÉ :
   // var cmd = `cd ${my.a.folderExport};pandoc -o ${my.a.epub_name} ${src_name} --css=css/html.css --toc --toc-depth=2`
 

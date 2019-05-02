@@ -63,7 +63,7 @@ fs.writeFile(my.a.html_path, code, 'utf8', error => {
 })
 // // Exécution de la commande pandoc
 // // -------------------------------
-// // var cmd = `cd ${my.a.folder};pandoc -o ./exports/${my.a.html_name} ./exports/${my.a.md_name}${cmd_metadata} --css=/Users/philippeperret/Programmation/Electron/FilmsAnalyse/app/analyse_files/css/publishing.css --toc --toc-depth=2${cmd_epub_cover}`
+// // var cmd = `cd ${my.a.folder};pandoc -o ./exports/${my.a.html_name} ./exports/${my.a.md_name}${cmd_metadata} --css=/Users/philippeperret/Programmation/FilmAnalyzor/app/analyse_files/css/publishing.css --toc --toc-depth=2${cmd_epub_cover}`
 // var cmd = `cd ${my.a.folder};pandoc -s -o ./exports/${my.a.html_name} ./exports/.chunks/wholeHTML.html --css=./css/html.css --toc --toc-depth=2${cmd_epub_cover}`
 //
 // // console.log("cmd pandoc:", cmd)

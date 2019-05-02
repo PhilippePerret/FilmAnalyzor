@@ -153,7 +153,7 @@ const Prefs = {
       console.log(`Le fichier "${this.userPrefsPath}" n'existe pas. Je crée les préférences de toute pièce`)
       this.userPrefs = {
         "load_last_on_launching": true,
-        // "last_analyse_folder": "/Users/philippeperret/Programmation/Electron/FilmsAnalyse/analyses/her"
+        // "last_analyse_folder": "/Users/philippeperret/Programmation/FilmAnalyzor/analyses/her"
         "last_analyse_folder": "./analyses/her"
       }
       this.save()
