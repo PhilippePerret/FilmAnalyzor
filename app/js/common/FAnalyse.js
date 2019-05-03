@@ -111,6 +111,8 @@ static isDossierAnalyseValid(folder, withMessage){
   }
 }
 
+// ---------------------------------------------------------------------
+
 /**
  * Instanciation de l'analyse à partir du path de son dossier
  */
@@ -755,6 +757,17 @@ filePathOf(fname){
 **/
 pathOf(relpath){ return path.join(this.folder,relpath)}
 
+/**
+  Pour "résoudre" une path indiqué "./quel/que/chose" comme path absolue
+  dans l'analyse courante (dans son dossier)
+  Utilisé pour le path de la vidéo quand elle se trouve dans le dossier
+  de l'analyse.
+**/
+resolvePath(rpath){
+  if(rpath.substring(0,1) == '.'){
+    return path.join(this.folder, rpath.substring(1,rpath.length))
+  } else {return rpath}
+}
 
 // Le path au template du fichier d'analyse (dans 'app/analyse_files')
 // Note : par défaut (d'extension), on considère que ça doit être un document
