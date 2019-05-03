@@ -20,7 +20,6 @@ Object.assign(FAEnote.prototype,{
                             d'édition
 **/
 asNote(options){
-  console.log("-> asNote", options)
   if(undefined === options) options = {}
   var divs = []
   if(undefined === this.indice_note) this.indice_note = FATexte.newIndiceNote()
