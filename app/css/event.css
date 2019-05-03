@@ -223,14 +223,33 @@ div.proc {
 
 }
 
-a.lkevent {
+/* --------------------------------------------------------------------- */
+/* Liens outils */
+
+a.lkevent,
+a.lkdiss
+{
+  padding:0 3px;
+  font-family:Avenir, Arial;
+  font-size:10.5pt!important;
+  cursor:pointer;
+  vertical-align:top;
+  opacity:0.3;
+}
+a.lkevent:hover,
+a.lkdiss:hover
+{
+  opacity:1;
+}
+
+a.lkevent:hover {
   /* margin-left:4px; */
   background-color:#44CC44!important;
   color:white;
-  padding:0 3px;
-  font-size:11px;
-  cursor:pointer;
-  vertical-align:top;
+}
+a.lkdiss:hover {
+  background-color:#CC4444!important;
+  color:white;
 }
 
 /* --------------------------------------------------------------------- */
@@ -246,10 +265,4 @@ span.lktime, a.lktime {
   margin-right:4px;
   cursor:pointer;
   vertical-align:top;
-}
-
-/* Lien pour dissocier deux éléments */
-a.lkdiss {
-  font-size:0.8em;
-  cursor:pointer;
 }
