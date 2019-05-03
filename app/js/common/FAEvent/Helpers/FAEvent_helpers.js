@@ -36,13 +36,6 @@ toString(){
   if (undefined === flag) flag = 0
   if (undefined === opts) opts = {}
 
-  // On ajoute le possesseur aux options, ce qui permettra de faire
-  // les associés
-  // MAIS ATTENTION : s'assurer que si la méthode est employée dans une
-  // des méthodes ci-dessous le posseurs soit bien modifié si on doit
-  // appeler une dissociation
-  opts.owner = {type: 'event', id: this.id}
-
   // La liste dans laquelle on va mettre tous les DOMElements fabriqués
   var domEls = []
 
@@ -179,7 +172,7 @@ asAssociate(opts){
   if(opts.owner){
     // Si les options définissent un owner, on ajoute un lien pour pouvoir
     // dissocier le temps de son possesseur
-    divs.push(DCreate('A',{class:'lkdiss', inner: '[dissocier]', attrs:{onclick:`FAEvent.prepareDissociation.bind(FAEvent)({owned:{type:'event', id:${this.id}}, owner:{type:'${opts.owner.type}', id:${opts.owner.id}}})`}}))
+    divs.push(FAEvent.linkDissocier({owner: opts.owner, owned: this}))
   }
   return DCreate('DIV', {class:`associate ${this.type} EVT${this.id}`, append:divs})
 }

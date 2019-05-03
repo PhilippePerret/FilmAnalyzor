@@ -87,7 +87,7 @@ toString(){
     if(opts.owner){
       // Si les options définissent un owner, on ajoute un lien pour pouvoir
       // dissocier le temps de son possesseur
-      divs.push(DCreate('A',{class:'lkdiss', inner: '[dissocier]', attrs:{onclick:`FAEvent.prepareDissociation.bind(FAEvent)({owned:{type:'brin', id:${this.id}}, owner:{type:'${opts.owner.type}', id:${opts.owner.id}}})`}}))
+      divs.push(FAEvent.linkDissocier({owner: opts.owner, owned: this}))
     }
     return divs
   }
@@ -165,7 +165,7 @@ divAssociateds(){
   for(id of this.events){
     if(FAEvent.exists(id)){
       ass = FABrin.a.ids[id]
-      inner = ass ? ass.as('associate',LINKED,{no_warm:true, notes:false}) : `NOUVEL EVENT #${id}`
+      inner = ass ? ass.as('associate',LINKED,{no_warm:true, notes:false, owner:{type:'brin', id:this.id}}) : `NOUVEL EVENT #${id}`
       divs.push(DCreate('DIV', {attrs:{'data-type':'event', 'data-id': id}, append:[
         // DCreate('LI', {class:'event-title', inner: ass.as('short',FORMATED|LINKED|LABELLED,{no_warm:true, notes:false})})
         DCreate('LI', {class:'event-title', inner:inner})

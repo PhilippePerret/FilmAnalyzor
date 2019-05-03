@@ -160,6 +160,26 @@ static set a(v){this._a = v}
 static get type(){return this._type||defP(this,'_type', this.dataType.type)}
 static get shortName(){return this._shortName||defP(this,'_shortName', this.dataType.name.short.cap.sing)}
 
+// ---------------------------------------------------------------------
+//  MÉTHODES POUR LES ASSOCIATIONS
+
+/**
+  Construit un lien pour casser une association et le retourne.
+  @param {Object} datass  Données pour l'association. Doit contenir :
+                          :owner    Définition du propriétaire (:type/:id)
+                          :owned    Définition du possédé (:type/:id) ou objet
+**/
+static linkDissocier(datass){
+  if(datass.owner.type == datass.owned.type && datass.owned.id == datass.owner.id){
+    throw("Impossible de dissocier un élément de lui-même, voyons…")
+  }
+  let owner_id = datass.owner.id
+  if('number' !== typeof(owner_id)) owner_id = `'${owner_id}'`
+  let owned_id = datass.owned.id
+  if('number' !== typeof(owned_id)) owned_id = `'${owned_id}'`
+
+  return DCreate('A',{class:'lkdiss', inner: '[dissocier]', attrs:{onclick:`FAEvent.prepareDissociation.bind(FAEvent)({owned:{type:'${datass.owned.metaType||datass.owned.type}', id:${owned_id}}, owner:{type:'${datass.owner.metaType||datass.owner.type}', id:${owner_id}}})`}})
+}
 static associer(obj, asso){
   log.info(`-> FAEvent::associer`)
   let list_id = `${asso.type}s`
@@ -175,7 +195,7 @@ static associer(obj, asso){
 }
 // ATTENTION : LA MÊME MÉTHODE EXISTE PLUS HAUT
 static dissocier(obj, asso){
-  let list_id = `${asso.type}s`
+  let list_id = `${asso.metaType||asso.type}s`
   let res = this.supFromList(list_id, obj, asso.id)
   if (res == true){
     obj.modified = true
@@ -203,7 +223,7 @@ static supFromList(list_id, obj, asso_id){
   if(list_id == 'times' && (asso_id instanceof(OTime))) asso_id = asso_id.seconds
   var off = obj[list_id].indexOf(asso_id)
   if(off > -1){
-    this[list_id].splice(off, 1)
+    obj[list_id].splice(off, 1)
     return true
   } else {
     return false
@@ -219,6 +239,7 @@ static supFromList(list_id, obj, asso_id){
 **/
 constructor(analyse, data){
   this.analyse  = this.a = analyse
+  this.metaType = 'event' // alors que le type sera 'scene', 'dialog', etc.
 
   this.dispatch(data)
 

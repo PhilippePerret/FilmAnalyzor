@@ -75,7 +75,7 @@ as(format, flag, opts){
   if(opts.owner){
     // Si les options définissent un owner, on ajoute un lien pour pouvoir
     // dissocier le temps de son possesseur
-    divs.push(DCreate('A',{class:'lkdiss', inner: '[dissocier]', attrs:{onclick:`FAEvent.prepareDissociation.bind(FAEvent)({owned:{type:'brin', id:${this.id}}, owner:{type:'${opts.owner.type}', id:${opts.owner.id}}})`}}))
+    divs.push(FAEvent.linkDissocier({owner: opts.owner, owned: this}))
   }
   return divs
 }
