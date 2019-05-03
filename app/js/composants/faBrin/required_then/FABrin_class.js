@@ -1,4 +1,5 @@
 'use strict'
+
 Object.assign(FABrin,{
 
 newNumero(){

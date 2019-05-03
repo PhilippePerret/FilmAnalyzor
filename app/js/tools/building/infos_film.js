@@ -5,6 +5,7 @@ class FAInfosFilm {
 constructor(analyse){
   this.analyse = this.a = analyse || current_analyse
 }
+toggle(){ this.fwindow.toggle()}
 display(){ this.fwindow.show() }
 close()  { this.fwindow.hide()}
 
@@ -57,11 +58,18 @@ build(){
     delete this.errors
   }
 
+  let divs = []
+  if (this.dataExistent){
+    divs = this.buildBody()
+  } else {
+    divs.push(DCreate('DIV',{class:'warning', inner: 'Aucune information n’a été donnée sur les films… Éditer le fichier infos pour y remédier'}))
+  }
+
   return [
     DCreate('DIV', {class: 'header', append:[
         DCreate('H3', {inner: 'INFORMATIONS TECHNIQUES SUR LE FILM'})
       ]})
-  , DCreate('DIV', {class:'body', append: this.buildBody()})
+  , DCreate('DIV', {class:'body', append: divs})
   , DCreate('DIV', {class:'footer', append:[
       DCreate('BUTTON', {inner: 'Actualiser', class: 'btn-update small fleft'})
     , DCreate('BUTTON', {type:'button', inner: 'OK', class: 'btn-ok main-button small'})
@@ -123,12 +131,17 @@ get date_fin(){return this._date_fin||defP(this,'_date_fin',this.dateOrNull('dat
 get analystes(){return this.data.analystes}
 get correcteurs(){return this.data.correcteurs}
 
-
+get dataExistent(){
+  return fs.existsSync(this.infosPath)
+}
 get data(){
   if(undefined === this._data){
-    this._data = YAML.safeLoad(fs.readFileSync(path.join(this.a.filePathOf('infos.yaml')), 'utf8'))
+    this._data = YAML.safeLoad(fs.readFileSync(this.infosPath, 'utf8'))
   }
   return this._data
+}
+get infosPath(){
+  return this.a.filePathOf('infos.yaml')
 }
 
 /**
@@ -212,4 +225,4 @@ get fwindow(){return this._fwindow||defP(this,'_fwindow', new FWindow(this,{clas
 
 }
 
-module.exports = FAInfosFilm
+module.exports = new FAInfosFilm(current_analyse)

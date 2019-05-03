@@ -16,6 +16,7 @@ asPitch(opts){
   if(undefined === this._aspitch){
     if(this.isRealScene) this._aspitch = DFormater(`${this.numero}. ${this.pitch}`)
     else this._aspitch = 'GÉNÉRIQUE'
+    this._aspitch = DCreate('SPAN',{class:'pitch', inner: this._aspitch})
   }
   return this._aspitch
 }

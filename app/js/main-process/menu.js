@@ -26,7 +26,8 @@ const CURRENT_THING_MENUS = [
   'display-fondamentales', 'display-statistiques', 'new-eventer', 'open-writer',
   'display-timeline', 'display-analyse-state', 'display-last-report',
   'display-protocole', 'option-locked', 'new-version', 'display-brins',
-  'goto-last-scene', 'display-decors', 'check-data-validity'
+  'goto-last-scene', 'display-decors', 'check-data-validity',
+  'display-personnages'
 ]
 // Note : les ID des menus de documents seront ajoutés "à la volée"
 
@@ -291,7 +292,7 @@ const DATA_MENUS = [
                 label: 'Protocle de l’analyse'
               , id: 'display-protocole'
               , enabled: false
-              , click: ()=>{execJsOnCurrent('displayProtocole')}
+              , click: ()=>{execJsOnCurrent('toggleProtocole')}
             }
           , {type:'separator'}
           , {
@@ -299,7 +300,7 @@ const DATA_MENUS = [
               , id: 'display-infos-film'
               , accelerator: 'CmdOrCtrl+Alt+Shift+I'
               , enabled: false
-              , click: () => {execJsOnCurrent('displayInfosFilm')}
+              , click: () => {execJsOnCurrent('togglePanneauInfosFilm')}
             }
           , {type:'separator'}
           , {
@@ -314,35 +315,42 @@ const DATA_MENUS = [
               , id: 'display-fondamentales'
               , accelerator: 'CmdOrCtrl+Alt+Shift+F'
               , enabled: false
-              , click: ()=>{execJsOnCurrent('displayFondamentales')}
+              , click: ()=>{execJsOnCurrent('togglePanneauFondamentales')}
+            }
+          , {
+                label: "Personnages"
+              , id: 'display-personnages'
+              , accelerator: 'CmdOrCtrl+Alt+Shift+C'
+              , enabled: false
+              , click: ()=>{execJsOnCurrent('togglePanneauPersonnages')}
             }
           , {
                 label: "Brins"
               , id: 'display-brins'
               , accelerator: 'CmdOrCtrl+Alt+Shift+B'
               , enabled: false
-              , click: ()=>{execJsOnCurrent('displayBrins')}
+              , click: ()=>{execJsOnCurrent('togglePanneauBrins')}
             }
           , {
                 label: "Décors"
               , id: 'display-decors'
               , accelerator: 'CmdOrCtrl+Alt+Shift+D'
               , enabled: false
-              , click: ()=>{execJsOnCurrent('displayDecors')}
+              , click: ()=>{execJsOnCurrent('togglePanneauDecors')}
             }
           , {
                 label: "Statistiques"
               , id: 'display-statistiques'
               , accelerator: 'CmdOrCtrl+Alt+Shift+S'
               , enabled: false
-              , click: ()=>{execJsOnCurrent('displayStatistiques')}
+              , click: ()=>{execJsOnCurrent('togglePanneauStatistiques')}
             }
           , {type:'separator'}
           , {
                 label: "Avancement de l'analyse"
               , id: 'display-analyse-state'
               , accelerator: 'CmdOrCtrl+Alt+S'
-              , click: () => {execJsOnCurrent('displayAnalyseState')}
+              , click: () => {execJsOnCurrent('toggleAnalyseState')}
             }
           , {
                 label: "Dernier rapport produit"

@@ -220,7 +220,7 @@ exportAs(format){
 }
 
 // Pour afficher le protocole de l'analyse
-displayProtocole(){this.protocole.show()}
+toggleProtocole(){this.protocole.toggle()}
 
 /**
 * Pour afficher la Timeline
@@ -253,22 +253,29 @@ displayLastReport(){
 displayPFA(){
   this.PFA.toggle()
 }
-displayInfosFilm(){
-  const FAInfosFilm = require('./js/tools/building/infos_film.js')
-  new FAInfosFilm(this).display()
+togglePanneauInfosFilm(){
+  let iPanelInfosFilm = require('./js/tools/building/infos_film.js')
+  iPanelInfosFilm.toggle()
 }
-displayDecors(){
-  require('./js/tools/building/decors.js').bind(this)()
+togglePanneauDecors(){
+  const iPanelDecors = require('./js/tools/building/decors.js')
+  iPanelDecors.toggle()
 }
-displayFondamentales(){
-  require('./js/tools/building/fondamentales.js').bind(this)()
+togglePanneauFondamentales(){
+  const PanelFonds = require('./js/tools/building/fondamentales.js')
+  PanelFonds.toggle()
 }
-displayBrins(){ FABrin.display() }
-displayStatistiques(){
-  // TODO
-  F.error("Les Statistiques ne sont pas encore implémentées. Passer par l'affichage de l'analyse (en ajoutant `BUILD Statistiques` au script d'assemblage).")
+togglePanneauPersonnages(){
+  const PanelPersos = require('./js/tools/building/personnages.js')
+  PanelPersos.toggle()
 }
-displayAnalyseState(){ FAStater.displayFullState() }
+togglePanneauStatistiques(){
+  const PanelStatistiques = require('./js/tools/building/statistiques.js')
+  PanelStatistiques.toggle()
+}
+togglePanneauBrins(){ FABrin.toggle() }
+
+toggleAnalyseState(){ FAStater.toggleFullState() }
 
 newVersionRequired(){
   var method = require('./js/tools/new_version.js')

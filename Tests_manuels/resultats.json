@@ -1,28 +1,13 @@
 {
-  "date": 1556438754039,
+  "date": 1556856814413,
   "successCount": 0,
   "failureCount": 0,
-  "pendingCount": 3,
+  "pendingCount": 0,
   "tests": {
-    "./__procedes.yaml": {
+    "./__associations.yaml": {
       "0": {
         "0": 2,
         "1": 2
-      },
-      "1": {
-        "0": 2,
-        "1": 2
-      },
-      "2": {
-        "0": 2,
-        "1": 2
-      },
-      "3": {
-        "0": 2,
-        "1": 2,
-        "2": 2,
-        "3": 2,
-        "4": 2
       }
     }
   }

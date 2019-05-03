@@ -55,7 +55,7 @@ toString(){
     case 'pitch':
       // Pour le méthode qui répondent à la méthode `asPitch`
       // à commencer par la scène
-      domEls.push(...this.asPitch(opts))
+      domEls.push(this.asPitch(opts))
       break
     case 'full':
       // Affiche complet, avec toutes les informations
