@@ -211,7 +211,7 @@ static addToList(list_id, obj, asso_id){
   // console.log("addToList:", list_id, foo_id)
   if(list_id == 'times' && (asso_id instanceof(OTime))) asso_id = asso_id.seconds
   if(obj[list_id].indexOf(asso_id) < 0){
-    log.inf(`   Ajout id #${asso_id} à liste ${list_id} de ${obj.asString()}`)
+    log.info(`   Ajout id #${asso_id} à liste ${list_id} de ${obj.toString()}`)
     obj[list_id].push(asso_id)
     return true
   } else {
