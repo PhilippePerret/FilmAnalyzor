@@ -1,6 +1,6 @@
 # SUR LE GRILL
 
-GHI : close 11, 18, 19
+GHI : close 11, 18, 19, 21
 ### Traiter :
 
   - Vérifier que les trois temps soient bien enregistrés (startFilmTime, endFilmTime et

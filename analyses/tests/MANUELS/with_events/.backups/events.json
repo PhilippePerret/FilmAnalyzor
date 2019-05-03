@@ -21,14 +21,6 @@
     "content": "Une petite note."
   },
   {
-    "id": 13,
-    "type": "note",
-    "titre": "Autre note",
-    "time": 39.1,
-    "duree": 10,
-    "content": "Une autre note"
-  },
-  {
     "id": 12,
     "type": "note",
     "titre": "Une note avec notes",
@@ -43,6 +35,15 @@
     "time": 39.1,
     "duree": 10,
     "content": "Pour voir l'event associé."
+  },
+  {
+    "id": 13,
+    "type": "note",
+    "titre": "Autre note",
+    "time": 39.1,
+    "duree": 10,
+    "content": "Une autre note",
+    "noteType": "importante"
   },
   {
     "id": 4,

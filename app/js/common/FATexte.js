@@ -318,7 +318,7 @@ deEventTags(str, options){
       if(options.notes === false){
         return ''
       } else {
-        notes_list.push(ev.asNote({as: 'string'}))
+        notes_list.push(ev.asNote({as: 'string', linked: true}))
         return `<sup class="note-indice">[${ev.indice_note}]</sup>`
       }
     }
