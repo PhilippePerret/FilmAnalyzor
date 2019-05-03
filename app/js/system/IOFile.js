@@ -292,7 +292,7 @@ confirmIfMuchShorter(scode){
   if(this.exists()){
     let vingtPourcent = this.size * 80 / 100
       , newLength = Buffer.from(scode).length
-    if(newLength < vingtPourcent) return confirm(T('confirm-content-much-shorter'), {doc_name: this.nameWithFolder})
+    if(newLength < vingtPourcent) return confirm(T('confirm-content-much-shorter', {doc_name: this.nameWithFolder}))
   }
   return true
 }
