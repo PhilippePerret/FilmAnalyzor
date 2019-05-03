@@ -7,7 +7,9 @@
   },
   "intrigue_amoureuse": {
     "events": [
-      11
+      11,
+      13,
+      15
     ]
   }
 }

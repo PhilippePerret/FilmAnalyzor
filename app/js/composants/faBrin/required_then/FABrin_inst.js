@@ -11,10 +11,16 @@ Object.assign(FABrin.prototype,{
   souvent les evènements.
 **/
   associer(asso){
-    return FAEvent.associer(this, asso)
+    log.info(`-> ${this.toString()}#associer`, {type: asso.type, id: asso.id})
+    let res = FAEvent.associer(this, asso)
+    log.info(`<- ${this.toString()}#associer (return ${res})`)
+    return res
   }
 , dissocier(asso){
-    return FAEvent.dissocier(this, asso)
+    log.info(`-> ${this.toString()}#dissocier`, {type: asso.type, id: asso.id})
+    let res = FAEvent.dissocier(this, asso)
+    log.info(`<- ${this.toString()}#dissocier (return ${res})`)
+    return res
   }
 
 })
@@ -88,7 +94,7 @@ scenes:{
           sc = ev.scene
           arr[sc.numero] = sc
         }
-        else {
+        else if (!FAEvent.exists(ev_id)){// il peut être en création
           console.error(`GRAVE PROBLÈME : l'event #${ev_id} n'existe pas dans l'analyse… Or il est associé à un brin. L'analyse doit être corrigée.`)
         }
       }

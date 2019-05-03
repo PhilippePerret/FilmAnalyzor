@@ -50,9 +50,11 @@ updateListing(e){
 }
 ,
 onDrop(e, ui){
+  log.info('-> FABrin::onDrop')
   let b = $(e.target)
     , brin = this.brins[b.attr('data-id')]
   this.a.associateDropped(brin, ui.helper)
+  log.info('<- FABrin::onDrop')
 }
 
 })

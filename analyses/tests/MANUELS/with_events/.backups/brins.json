@@ -1,8 +1,14 @@
 {
   "intrigue_principale": {
     "events": [
-      5
+      5,
+      11
     ]
   },
-  "intrigue_amoureuse": {}
+  "intrigue_amoureuse": {
+    "events": [
+      11,
+      13
+    ]
+  }
 }

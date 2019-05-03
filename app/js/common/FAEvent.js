@@ -32,6 +32,15 @@ static get(event_id){
 static count(){
   return this.a.events.length
 }
+
+/**
+  Retourne true si l'event d'identifiant +eid+ existe ou est en cours
+  de création
+**/
+static exists(eid){
+  return (this.a.ids[eid] !== undefined) || ($(`form#form-edit-event-${eid}`).length > 0)
+}
+
 /**
   @return {Array} La liste des propriétés pour une sous-classe
   précise.
@@ -152,6 +161,7 @@ static get type(){return this._type||defP(this,'_type', this.dataType.type)}
 static get shortName(){return this._shortName||defP(this,'_shortName', this.dataType.name.short.cap.sing)}
 
 static associer(obj, asso){
+  log.info(`-> FAEvent::associer`)
   let list_id = `${asso.type}s`
   let res = this.addToList(list_id, obj, asso.id)
   if (res == true){
@@ -160,6 +170,7 @@ static associer(obj, asso){
       obj.updateInReader()
     }
   }
+  log.info(`<- FAEvent::associer (return ${res})`)
   return res
 }
 // ATTENTION : LA MÊME MÉTHODE EXISTE PLUS HAUT
@@ -176,9 +187,11 @@ static dissocier(obj, asso){
 }
 
 static addToList(list_id, obj, asso_id){
+  log.info(`-> FAEvent::addToList(list_id="${list_id}", obj={type:${obj.type},id:${obj.id}}, asso_id=${asso_id})`)
   // console.log("addToList:", list_id, foo_id)
   if(list_id == 'times' && (asso_id instanceof(OTime))) asso_id = asso_id.seconds
   if(obj[list_id].indexOf(asso_id) < 0){
+    log.inf(`   Ajout id #${asso_id} à liste ${list_id} de ${obj.asString()}`)
     obj[list_id].push(asso_id)
     return true
   } else {

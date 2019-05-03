@@ -37,6 +37,14 @@
     "content": "Cette note contient une note ici{{event:11}} et une autre note là{{event:13}}."
   },
   {
+    "id": 15,
+    "type": "event",
+    "titre": "Un event associé",
+    "time": 39.1,
+    "duree": 10,
+    "content": "Pour voir l'event associé."
+  },
+  {
     "id": 4,
     "type": "note",
     "titre": "Une première note",
