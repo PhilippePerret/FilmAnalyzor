@@ -111,15 +111,17 @@ load(){
  */
 , onReady(){
     log.info('-> <<FAanalyse>>#onReady')
-    if(NONE === typeof FAProcede)   return this.loadProcede(this.onReady.bind(this))
-    if(NONE === typeof FADecor)      return this.loadDecor(this.onReady.bind(this))
-    if(NONE === typeof FABrin)      return this.loadBrin(this.onReady.bind(this))
-    if(NONE === typeof FAReader)    return this.loadReader(this.onReady.bind(this))
-    if(NONE === typeof FAWriter)    return this.loadWriter(this.onReady.bind(this))
-    if(NONE === typeof FAProtocole) return this.loadProtocole(this.onReady.bind(this))
-    if(NONE === typeof FAStater)    return this.loadStater(this.onReady.bind(this))
-    if(NONE === typeof FAStats)     return this.loadStats(this.onReady.bind(this))
-    if(NONE === typeof FAEventer)   return this.loadEventer(this.onReady.bind(this))
+    if(NONE === typeof FAPersonnage)  return this.loadPersonnage(this.onReady.bind(this))
+    if(NONE === typeof FAProcede)     return this.loadProcede(this.onReady.bind(this))
+    if(NONE === typeof FADecor)       return this.loadDecor(this.onReady.bind(this))
+    if(NONE === typeof FABrin)        return this.loadBrin(this.onReady.bind(this))
+    if(NONE === typeof FAReader)      return this.loadReader(this.onReady.bind(this))
+    if(NONE === typeof FAWriter)      return this.loadWriter(this.onReady.bind(this))
+    if(NONE === typeof FAProtocole)   return this.loadProtocole(this.onReady.bind(this))
+    if(NONE === typeof FAStater)      return this.loadStater(this.onReady.bind(this))
+    if(NONE === typeof FAStats)       return this.loadStats(this.onReady.bind(this))
+    if(NONE === typeof FAEventer)     return this.loadEventer(this.onReady.bind(this))
+    if(NONE === typeof DataEditor)    return this.loadDataEditor(this.onReady.bind(this))
     this.videoController = new VideoController(this)
     this.locator = new Locator(this)
     this.reader  = new FAReader(this)
@@ -143,6 +145,9 @@ load(){
     if('function' === typeof this.methodAfterLoadingAnalyse){
       this.methodAfterLoadingAnalyse()
     }
+    // On appelle la méthode `window.WhenAllIsReallyReady` qui permet de
+    // jouer du code pour essai à la toute fin
+    WhenAllIsReallyReady()
     log.info('<- <<FAanalyse>>#onReady')
   }
 
@@ -204,10 +209,12 @@ loadProtocole(fn_callback){
 loadReader(fn_callback){
   return System.loadComponant('faReader', fn_callback)
 }
-,
-loadProcede(fn_callback){
-  return System.loadComponant('faProcede', fn_callback)
-}
+, loadPersonnage(fn_callback){
+    return System.loadComponant('faPersonnage', fn_callback)
+  }
+, loadProcede(fn_callback){
+    return System.loadComponant('faProcede', fn_callback)
+  }
 , loadBrin(fn_callback){
     return System.loadComponant('faBrin', fn_callback)
 }
@@ -216,6 +223,9 @@ loadProcede(fn_callback){
 }
 , loadEventer(fn_callback){
     return System.loadComponant('faEventer', fn_callback)
+}
+, loadDataEditor(fn_callback){
+    return System.loadComponant('DataEditor', fn_callback)
 }
 
 })

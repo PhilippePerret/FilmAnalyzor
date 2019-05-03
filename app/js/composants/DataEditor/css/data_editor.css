@@ -1,0 +1,65 @@
+/* note: une flying-window */
+#dataeditor {
+  background-color:#EEEEFF;
+}
+
+#dataeditor .body {
+  padding:12px;
+}
+
+#dataeditor button#btn-add,
+#dataeditor button#btn-del
+{
+  all:unset;
+  float:right;
+  background-color:inherit;
+  color:white;
+  font-size:20pt;
+  border-left:2px solid #CCCCCC;
+  padding:2px 14.5px;
+}
+
+#dataeditor select#dataeditor-menu_items,
+#dataeditor select#dataeditor-menu_items option {
+  all:unset;
+  font-size:inherit;
+  font-family:inherit;
+  font-style:normal;
+  border:1px solid;
+}
+#dataeditor select#dataeditor-menu_items {
+  font-weight:bold;
+  padding:2px 8px;
+  width:400px;
+}
+
+#dataeditor form#dataeditor-form_item {
+  padding:2em;
+}
+#dataeditor form#dataeditor-form_item div.div-form {
+  margin-bottom:0.5em;
+}
+#dataeditor form#dataeditor-form_item div.div-form label:not(.long) {
+  display:inline-block;
+  width:80px;
+}
+#dataeditor form#dataeditor-form_item label.long {
+  display:block;
+  width:98%;
+}
+#dataeditor form#dataeditor-form_item textarea,
+#dataeditor form#dataeditor-form_item input
+{
+  font-size:0.85em;
+}
+
+#dataeditor form#dataeditor-form_item input[type="text"]:not(.court){
+  width:300px;
+}
+
+#dataeditor form#dataeditor-form_item textarea {
+  display:block;
+  width:98%;
+  height:6em;
+  resize:none;
+}
