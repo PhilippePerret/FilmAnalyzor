@@ -1,6 +1,38 @@
 'use strict'
+
+Object.assign(FAPersonnage,{
+
+/**
+  Méthode utilisée par DataEditor pour créer un item
+**/
+  createItem(dperso){
+    let newData = {}
+    Object.assign(newData, this.data)
+    newData[dperso.id] = dperso
+    this.reset()
+    this._data = newData
+    // console.log("Data à sauver :", this.data)
+    // return
+    this.code = YAML.dump(newData)
+    // console.log("code à sauver:", this.code)
+    this.iofile.save()
+    return this.get(dperso.id)
+  }
+
+/**
+  Méthode utilisée par DataEditor pour actualiser un item
+**/
+, updateItem(data){
+
+  }
+
+})
 Object.defineProperties(FAPersonnage,{
-  dataEditor:{
+  // Le IOFile qui sert pour le DataEditor (pas quand le document est visualisé
+  // dans le Writer)
+  iofile:{get(){return this._iofile||defP(this,'_iofile',new IOFile(this))}}
+
+, dataEditor:{
     get(){return this._dataeditor||defP(this,'_dataeditor',new DataEditor(this, this.DataEditorData))}
   }
 , DataEditorData:{get(){
@@ -28,7 +60,7 @@ Object.defineProperties(FAPersonnage,{
               return arr.join("\n")
             }
           , getValueMethod: (v) => {
-              if(!v) return
+              if(!v) return null
               var tbl = {}, k, v
               v.split(RC).map(line => {
                 [k, v] = line.split(':').map(e => valOrNull(e))

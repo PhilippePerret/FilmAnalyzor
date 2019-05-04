@@ -38,6 +38,7 @@ static reset(){
   delete this._data
   delete this._diminutifs
   delete this._personnages
+  delete this._hpersonnages
   delete this._count
   delete this._path
   return this // chainage

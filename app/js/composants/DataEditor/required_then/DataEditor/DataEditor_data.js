@@ -23,6 +23,3 @@ Object.assign(DataEditor.prototype,{
     return elWithSameProp
   }
 })
-Object.defineProperties(DataEditor.prototype,{
-
-})

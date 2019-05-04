@@ -34,13 +34,12 @@ Object.assign(DataEditor.prototype,{
 
 **/
 , createNewItem(data){
-    console.log("Création du nouveau item avec ", data)
-    nitem = data // pour le moment (après : nouvel item pour la mainClass)
+    let nitem = this.mainClass.createItem(data)
     // Ajout au menu (inutile de le sélectionner, ça le fera avec
     // la méthode d'édition)
-    this.menuItems.append(DCreate('OPTION',{value: data.id, inner: DFormater(nitem[my.titleProp])}))
+    this.menuItems.append(DCreate('OPTION',{value: data.id, inner: DFormater(nitem[this.titleProp])}))
   }
-  
+
 // Méthode appelée par le bouton "+"
 , addElement(){
     console.log("-> addElement")
