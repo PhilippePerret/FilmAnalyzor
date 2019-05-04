@@ -1,24 +1,44 @@
 'use strict'
 
-Object.assign(DataEditor,{
+Object.assign(DataEditor.prototype,{
 // Méthode qui place les valeurs dans le formulaire
   setFormValues(){
-    var prop
-    this.dataFields.map(dField => dField.set(this.currentItem[dField.prop]))
+    var prop, fval
+    this.dataFields.map(dField => {
+      fval = this.currentItem[dField.prop]
+      if(dField.setValueMethod) fval = dField.setValueMethod(fval)
+      dField.set(fval)}
+    )
   }
 // Méthode qui récupère les valeurs du formulaire
 , getFormValues(){
-    var prop, formData = {}
+    var prop, formData = {}, fval
     this.dataFields.map(dField => {
       prop = dField.prop
-      formData[prop] = $(`#dataeditor-item-${prop}`).val()
+      fval = dField.fieldValue
+      dField.field.hasClass('error') && dField.field.removeClass('error')
+      if(dField.getValueMethod) fval = dField.getValueMethod(fval)
+      formData[prop] = fval
     })
     return formData
   }
 // Mtéthode qui check la validité des valeurs du formulaire
-, checkFormValues(){
+, checkFormValues(formData){
+    var val
+      , res
+      , errors = []
     this.dataFields.map(dField => {
-
+      val = formData[dField.prop]
+      try {
+        dField.isRequired && !val && raise("est requise")
+        dField.isUniq && (res = this.isNotUniq(dField)) && raise(`doit être unique (déjà possédée par ${res.toString()})`)
+        dField.checkValueMethod && (res = dField.checkValueMethod(val)) && raise(res)
+      } catch (e) {
+        // console.error(e)
+        errors.push({error: `Cette propriété ${e} : ${dField.prop}.`, prop: dField.prop})
+      }
     })
+    if(errors.length) return errors
+    // Sinon on ne retourne rien
   }
 })

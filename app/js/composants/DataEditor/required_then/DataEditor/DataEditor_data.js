@@ -2,22 +2,27 @@
 
 Object.assign(DataEditor.prototype,{
 
-  checkUnicite(field){
-    let val   = field.value
+/**
+  Méthode qui retourne true si le champ +field+ ne contient pas une
+  valeur unique.
+**/
+  isNotUniq(field){
+    let val   = field.fieldValue
       , prop  = field.prop
       , idx_current = this.currentItemIndex // pour ne pas le considérer
 
-    var elWithSameProp = undefined
+    // console.log("Index item courant :", idx_current)
+    var elWithSameProp = false
     this.forEachElement(el => {
       if(el.DEditorIndex == idx_current) return
       if(el[prop] == val){
         elWithSameProp = el
-        return false // pour arrêter
+        return false // pour arrêter la boucle
       }
     })
     return elWithSameProp
   }
 })
-Object.defineProperties(DataEditor,{
+Object.defineProperties(DataEditor.prototype,{
 
 })

@@ -14,21 +14,24 @@ Object.defineProperties(DataField.prototype,{
 , defValue:   {get(){return this.data.defValue}}
 , exemple:    {get(){return this.data.exemple}}
 , aide:       {get(){return this.data.aide}}
+, setValueMethod:{get(){return this.data.setValueMethod}}
+, getValueMethod:{get(){return this.data.getValueMethod}}
 
 // ---------------------------------------------------------------------
 //  DONNÉES VOLATILES
 
 // La valeur dans le champ ou null si non définie
-, fieldValue:{get(){return this.getFieldValueOrNull()}}
-, domId:      {get(){return this._domid||defP(this,'_domid', `dataeditor-item-${this.prop}`)}}
-, tagName:    {get(){return this._tagname || defP(this,'_tagname',this.tagNameAndType[0])}}
-, tagAttributes:{get(){return this._tagattrs||defP(this,'_tagattrs',this.defineTagAttributes())}}
-, tagNameAndType:{get(){return this._tagnameNtype||defP(this,'_tagnameNtype',this.defineTagNameAndType())}}
+, field:          {get(){return $(`#${this.domId}`)}}
+, fieldValue:     {get(){return this.getFieldValueOrNull()}}
+, domId:          {get(){return this._domid||defP(this,'_domid', `${this.dataEditor.id}-item-${this.prop}`)}}
+, tagName:        {get(){return this._tagname || defP(this,'_tagname',this.tagNameAndType[0])}}
+, tagAttributes:  {get(){return this._tagattrs||defP(this,'_tagattrs',this.defineTagAttributes())}}
+, tagNameAndType: {get(){return this._tagnameNtype||defP(this,'_tagnameNtype',this.defineTagNameAndType())}}
 
 // ---------------------------------------------------------------------
 //  DOM
 
-, editField:{get(){return this.dataEditor.jqObj.find(`#${this.domId}`)}}
+, field:{get(){return this.dataEditor.jqObj.find(`#${this.domId}`)}}
 
 // ---------------------------------------------------------------------
 //  DONNÉES D'ÉTAT VOLATILES
@@ -57,15 +60,15 @@ Object.assign(DataField.prototype,{
   Place la valeur dans le champ
 **/
 , set(value){
-    this.editField.val(value)
+    this.field.val(value)
   }
 /**
   Retourne la valeur dans le champ ou null si elle est vide
 **/
 , getFieldValueOrNull(){
     // TODO Ci-dessous il faudra faire en fonction du type
-    var v = this.editField.val()
-    console.log("value du champ", this.prop, v)
+    var v = this.field.val()
+    // console.log("value du champ", this.prop, v)
     if(v === '') v = null
     return v
   }

@@ -1,3 +1,10 @@
+
+/* Tous les champs erronés */
+form .error {
+  background-color:#FFCCCC;
+}
+
+
 select:hover {
   cursor:ns-resize;
 }
@@ -49,9 +56,7 @@ form.form-edit-event .div-form {
   margin-top:8px;
   padding:0 6px 0 7px;
 }
-form.form-edit-event .error {
-  background-color:#FFCCCC;
-}
+
 form.form-edit-event .div-form textarea,
 form.form-edit-event .div-form input[type="text"]
 {

@@ -101,6 +101,8 @@ constructor(analyse, data){
   for(var prop in data){this[`_${prop}`] = data[prop]}
 }
 
+toString(){return `${this.pseudo} (#${this.id})`}
+
 get pseudo(){return this._pseudo}
 get id(){return this._id}
 get dim(){return this._dim}
