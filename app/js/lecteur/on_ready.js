@@ -4,7 +4,8 @@ const APPFOLDER = path.resolve('.')
 
 function WhenAllIsReallyReady(){
   // DataEditor.toggle()
-  DataEditor.edit({mainClass:FAPersonnage, items:(FAPersonnage.personnages||[]), title_prop:'pseudo'})
+  FAPersonnage.dataEditor.open()
+  // DataEditor.edit({mainClass:FAPersonnage, items:(FAPersonnage.personnages||[]), current: 'personnage2', titleProp:'pseudo'})
 }
 
 $(document).ready(() => {

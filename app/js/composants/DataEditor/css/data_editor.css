@@ -1,14 +1,14 @@
 /* note: une flying-window */
-#dataeditor {
+.dataeditor {
   background-color:#EEEEFF;
 }
 
-#dataeditor .body {
+.dataeditor .body {
   padding:12px;
 }
 
-#dataeditor button#btn-add,
-#dataeditor button#btn-del
+.dataeditor button.btn-add,
+.dataeditor button.btn-del
 {
   all:unset;
   float:right;
@@ -19,45 +19,45 @@
   padding:2px 14.5px;
 }
 
-#dataeditor select#dataeditor-menu_items,
-#dataeditor select#dataeditor-menu_items option {
+.dataeditor select.menu-items,
+.dataeditor select.menu-items option {
   all:unset;
   font-size:inherit;
   font-family:inherit;
   font-style:normal;
   border:1px solid;
 }
-#dataeditor select#dataeditor-menu_items {
+.dataeditor select.menu-items {
   font-weight:bold;
   padding:2px 8px;
   width:400px;
 }
 
-#dataeditor form#dataeditor-form_item {
+.dataeditor form.dataeditor-form_item {
   padding:2em;
 }
-#dataeditor form#dataeditor-form_item div.div-form {
+.dataeditor form.dataeditor-form_item div.div-form {
   margin-bottom:0.5em;
 }
-#dataeditor form#dataeditor-form_item div.div-form label:not(.long) {
+.dataeditor form.dataeditor-form_item div.div-form label:not(.textarea) {
   display:inline-block;
-  width:80px;
+  width:100px;
 }
-#dataeditor form#dataeditor-form_item label.long {
+.dataeditor form.dataeditor-form_item label.textarea {
   display:block;
   width:98%;
 }
-#dataeditor form#dataeditor-form_item textarea,
-#dataeditor form#dataeditor-form_item input
+.dataeditor form.dataeditor-form_item textarea,
+.dataeditor form.dataeditor-form_item input
 {
   font-size:0.85em;
 }
 
-#dataeditor form#dataeditor-form_item input[type="text"]:not(.court){
+.dataeditor form.dataeditor-form_item input[type="text"]:not(.court){
   width:300px;
 }
 
-#dataeditor form#dataeditor-form_item textarea {
+.dataeditor form.dataeditor-form_item textarea {
   display:block;
   width:98%;
   height:6em;

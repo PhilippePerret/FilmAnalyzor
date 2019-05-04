@@ -53,7 +53,7 @@ const ERRORS = {
 , "--- DATA ÉDITOR ---":""
 , "deditor-data-required": "Les données d'édition sont requises pour éditer un élément de l'analyse (premier argument Object)."
 , "deditor-mainclass-required": "La classe principale de l'objet à éditer (`mainClass`) est absolument requise."
-, "deditor-title_prop-required": "La propriété `title_prop` doit définir quelle propriété utiliser comme titre (pour le menu des éléments, notamment)."
+, "deditor-titleProp-required": "La propriété `titleProp` doit définir quelle propriété utiliser comme titre (pour le menu des éléments, notamment)."
 , "deditor-get-method-required": "La méthode `%{classe}::get` doit absolument exister, qui retourne l'instance de l'élément possédant l'id de la valeur envoyée en argument."
 , "deditor-onsave-required": "La méthode `%{classe}.dataEditor.onSave` est requise pour savoir quoi faire à l'enregistrement."
 , "deditor-onremove-required": "La méthode `%{classe}.dataEditor.onRemove` est requise pour savoir quoi faire à la destruction de l'élément."
