@@ -2,6 +2,8 @@
 
 ### Traiter :
 
+- Faire un fichier fondamentales alt, et pfa alt (les mettre dans min.js)
+
 * DataEditor
   - faire la liste des types de brins (menu actualisable)
   - Faire la même chose pour les fondamentales

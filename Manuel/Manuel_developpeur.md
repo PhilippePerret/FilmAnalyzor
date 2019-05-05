@@ -26,6 +26,7 @@
   * [Boutons expand/collapse](#boutons_toggle_next)
 * [Documents de l'analyse](#documents_analyse)
   * [Quatre types de documents](#les_types_de_documents)
+  * [Édition d'un fichier quelconque](#edit_any_file)
   * [Sauvegarde protégée des documents (IOFile)](#saving_protected)
 * [Assemblage de l'analyse](#assemblage_analyse)
   * [Script d'assemblage](#script_assemblage_analyse)
@@ -284,6 +285,7 @@ Voilà les données générales :
   , aide:     'texte ajouté en petit à côté du libellé'
   , validities: flag pour tester la validité de (UNIQ, REQUIRED, ASCII)
   , values:   <valeurs pour un select, soit [{value: inner}...], soit [[value, inner]...]
+  , updateValuesMethod:  <function> // si select, la méthode pour actualiser
 
   , getValueMethod: (v) => { return "la valeur réelle à prendre en compte"}
   , setValueMethod: (v) => { return "la valeur à mettre dans le champ (if any)"}
@@ -517,9 +519,10 @@ On peut viser un autre nœud que le nœud suivant grâce à l'attribut `containe
 
 Les documents de l'analyse sont entièrement gérés, au niveau de l'écriture, par les modules contenus dans le dossier `./app/js/composants/faWriter`. Ce dossier est le premier qui a été chargé par la nouvelle méthode `System#loadJSFolders` (par le biais de `FAnalyse.loadWriter`) qui travaille avec des balises `<script>` afin d'exposer facilement tous les objets, constantes et autres.
 
-Ces documents permettent de construire l'analyse de deux façons différentes :
+Ces documents permettent de construire l'analyse de trois façons différentes :
 
-* en les rédigeant dans le *FAWriter* (qui s'ouvre grâce au menu « Documents »)
+* en les rédigeant dans le *FAWriter* (qui s'ouvre grâce au menu « Documents »),
+* en les peuplant grâce à l'[éditeur de données](#data_editor),
 * en en créant le code de façon dynamique pour ce qui est des stats, des PFA et autres notes au fil du texte.
 
 ### Quatre types de documents {#les_types_de_documents}
@@ -530,6 +533,18 @@ Il faut comprendre qu'il y a 4 types de documents, même s'ils sont tous accessi
 2. Les documents partiellement rédigés et partiellement automatisés (Fondamentales, Annexes avec les statistiques, etc.)
 3. Les documents entièrement automatisés (PFA, au fil du film, scénier) qui se servent d'informations éparses — p.e. la définition des nœuds structurels au fil du film — pour se construire.
 4. Les documents de données (snippets, diminutifs, infos du film et de l'analyse)
+
+### Édition quelconque d'un fichier {#edit_any_file}
+
+Le `FAWriter` permet d'éditer un fichier quelconque, par exemple une liste de valeurs programme, et même, pourquoi pas, un fichier de code.
+
+On utilise alors la méthode `openAnyDoc`.
+
+```javascript
+
+  FAWriter.openAnyDoc('<path>')
+
+```
 
 
 ### Sauvegarde protégée des documents {#saving_protected}
@@ -620,6 +635,7 @@ On peut mettre au format `raw` lorsque le format est reconnaissable par l'extens
   this.iofile.load({after: ..., format: 'raw'}) // => code brut du fichier
 
 ```
+
 
 ---------------------------------------------------------------------
 

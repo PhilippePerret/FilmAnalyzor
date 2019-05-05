@@ -7,7 +7,7 @@ Object.defineProperties(DataField.prototype,{
 //  (dans FAPersonnage par exemple )
   id:         {get(){return this.data.id}}
 , label:      {get(){return this.data.label}}
-, type:       {get(){return this.data.type}} // détermine le champ
+, type:       {get(){return this.data.type}} // détermine le tag
 , prop:       {get(){return this.data.prop}}
 , validities: {get(){return this.data.validities||[]}}
 , values:     {get(){return this.data.values}}
@@ -22,7 +22,6 @@ Object.defineProperties(DataField.prototype,{
 //  DONNÉES VOLATILES
 
 // La valeur dans le champ ou null si non définie
-, field:          {get(){return $(`#${this.domId}`)}}
 , fieldValue:     {get(){return this.getFieldValueOrNull()}}
 , domId:          {get(){return this._domid||defP(this,'_domid', `${this.dataEditor.id}-item-${this.prop}`)}}
 , tagName:        {get(){return this._tagname || defP(this,'_tagname',this.tagNameAndType[0])}}
@@ -36,9 +35,12 @@ Object.defineProperties(DataField.prototype,{
 
 // ---------------------------------------------------------------------
 //  DONNÉES D'ÉTAT VOLATILES
+
 , isRequired:{get(){return this._isrequired||defP(this,'_isrequired', !!(this.validities&REQUIRED))}}
 , isUniq:{get(){return this._isuniq||defP(this,'_isuniq',!!(this.validities&UNIQ))}}
 , isOnlyAscii:{get(){return this._isascii||defP(this,'_isascii',!!(this.validities&ASCII))}}
+
+, isSelectUpdatable:{get(){return this.type === 'select' && 'function' === typeof(this.values)}}
 })
 
 Object.assign(DataField.prototype,{
@@ -118,14 +120,31 @@ Object.assign(DataField.prototype,{
 
 /**
   Pour un menu (select), retourne les balises options d'après les valeurs
+
+  C'est la propriété `values` qui définit les valeurs.
+  C'est :
+    - soit un array [ [val1, inner1], [val2, inner2]...]
+    - soit un hash {val1: inner1, val2: inner2, ...}
+    - soit un fonction retournant la liste des valeurs dans un de ces formats
+      Noter que si `values` est une fonction, un bouton 'update' permettra
+      d'actualiser le menu.
 **/
 , optionsSelect(){
     let hoptions = {}
       , opts = []
-    if(Array.isArray(this.values)){
-      this.values.map(duo => h[duo[0]] = duo[1])
+      , valuesWithFunction = 'function' == typeof(this.values)
+      , optionsValues
+
+    if (valuesWithFunction) {
+      optionsValues = this.values()
     } else {
-      hoptions = this.values
+      optionsValues = this.values
+    }
+
+    if(Array.isArray(optionsValues)){
+      optionsValues.map(duo => hoptions[duo[0]] = duo[1])
+    } else {
+      hoptions = optionsValues
     }
     for(var val in hoptions){
       opts.push(DCreate('OPTION',{value: val, inner: hoptions[val]}))

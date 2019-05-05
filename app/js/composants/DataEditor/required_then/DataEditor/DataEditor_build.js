@@ -41,5 +41,9 @@ Object.assign(DataEditor.prototype,{
     // formulaire (enfin… façon de parler)
     this.jqObj.find('textarea, input[type="text"], input[type="checkbox"], select').on('keydown', this.onKeyDownOnTextFields.bind(this))
 
+    // S'il y a un bouton pour updater les valeurs d'un select, il faut
+    // pouvoir actualiser ou ouvrir le fichier
+    this.dataFields.map(dfield => dfield.observeIfNecessary())
+
   }
 })

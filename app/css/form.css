@@ -4,6 +4,16 @@ form .error {
   background-color:#FFCCCC;
 }
 
+form button.update {
+  all:unset;
+}
+form button.update img, img.update, img.open {
+  width:20px;
+}
+img.update, img.open {
+  margin-left:8px;
+  vertical-align:middle;
+}
 
 select:hover {
   cursor:ns-resize;
@@ -171,15 +181,10 @@ form.form-edit-event button.modify
   margin-left:8px;
 }
 
-form.form-edit-event button.update {
-}
 form.form-edit-event button.info,
 form.form-edit-event button.modify
 {
   vertical-align:sub;
-}
-form.form-edit-event button img {
-  width:20px;
 }
 form.form-edit-event button.modify img {
   width:18px;

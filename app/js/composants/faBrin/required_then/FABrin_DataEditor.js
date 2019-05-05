@@ -35,14 +35,34 @@ Object.assign(FABrin,{
     this.DESave()
     return true
   }
+
+// Retourne les valeurs pour le menu 'bType'
+, getBTypeValues(){
+    let d = {'': "Choisir le type…"}
+    Object.assign(d, YAML.safeLoad(fs.readFileSync(this.btypeFilePath,'utf8')))
+    // console.log(d)
+    return d
+  }
+
+// Pour ouvrir le fichier des données de btype de brin
+, DEOpenDoc(type){
+    switch (type) {
+      case 'bType':
+        FAWriter.openAnyDoc(this.btypeFilePath)
+        break
+      default:
+        console.error("Impossible de traiter le type", type)
+    }
+  }
+
 })
 Object.defineProperties(FABrin,{
   dataEditor:{
     get(){return this._dataeditor||defP(this,'_dataeditor',DataEditor.init(this, this.DataEditorData))}
   }
-  // Le IOFile qui sert pour le DataEditor (pas quand le document est visualisé
-  // dans le Writer)
-// , iofile:{get(){return this._iofile||defP(this,'_iofile',new IOFile(this))}}
+
+, btypeFilePath:{get(){return path.join(APPFOLDER,'app','js','data','btypes_brins.yaml')}}
+
 
 /**
   Les données utiles pour l'instanciation d'un dataeditor pour l'élément
@@ -62,7 +82,7 @@ Object.defineProperties(FABrin,{
         {label:'Id', type:'text', prop:'id', exemple:'a-z0-9_', validities:UNIQ|REQUIRED|ASCII,
           getValueMethod:(v)=>{if(v){return v.toLowerCase()}}}
       , {label:'Titre', type:'text', prop:'title', validities: UNIQ|REQUIRED}
-      , {label:'Type', type:'select', prop:'bType', values: {'': 'Choisir le type…', intrigue: "Intrigue", personnage: "Personnage", autre:"Autre"}}
+      , {label:'bType', type:'select', prop:'bType', values: this.getBTypeValues.bind(this)}
       , {label:'Description', type:'textarea', prop:'description', validities:REQUIRED}
       ]
     }

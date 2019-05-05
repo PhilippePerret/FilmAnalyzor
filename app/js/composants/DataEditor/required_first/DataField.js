@@ -7,8 +7,8 @@
 **/
 class DataField {
   constructor(dataEditor, data){
-    this.data       = data
     this.dataEditor = dataEditor
+    this.data       = data
   }
 
 }
