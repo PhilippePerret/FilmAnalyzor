@@ -1,8 +1,12 @@
 'use strict'
 
 Object.assign(DataEditor.prototype,{
+// Méthode qui réinitialise le formulaire (pour un nouvel élément)
+  resetFormValues(){
+    this.dataFields.map(dField => dField.reset())
+  }
 // Méthode qui place les valeurs dans le formulaire
-  setFormValues(){
+, setFormValues(){
     var prop, fval
     this.dataFields.map(dField => {
       fval = this.currentItem[dField.prop]
@@ -31,7 +35,8 @@ Object.assign(DataEditor.prototype,{
       val = formData[dField.prop]
       try {
         dField.isRequired && !val && raise("est requise")
-        dField.isUniq && (res = this.isNotUniq(dField)) && raise(`doit être unique (déjà possédée par ${res.toString()})`)
+        dField.isUniq && (res = this.isNotUniq(dField)) && raise(`doit être unique (déjà possédée par « ${res.toString()} »)`)
+        dField.isOnlyAscii && isNotAscii(val) && raise(`doit être composé seulement de a-z, A-Z, 0-9 et _`)
         dField.checkValueMethod && (res = dField.checkValueMethod(val)) && raise(res)
       } catch (e) {
         // console.error(e)
@@ -40,5 +45,15 @@ Object.assign(DataEditor.prototype,{
     })
     if(errors.length) return errors
     // Sinon on ne retourne rien
+  }
+
+, onKeyDownOnTextFields(e){
+    if(e.metaKey){
+      if(e.keyCode === KRETURN){
+        this.saveElement()
+        return stopEvent(e)
+      }
+    }
+    return true
   }
 })

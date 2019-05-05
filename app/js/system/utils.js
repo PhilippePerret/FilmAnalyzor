@@ -1,5 +1,8 @@
 'use strict'
 
+function isNotAscii(str){
+  return str.replace(/[a-zA-Z0-9_]/g,'') != ''
+}
 
 function asPourcentage(expected, actual){
   return `${pourcentage(expected,actual)} %`

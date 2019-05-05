@@ -1,9 +1,13 @@
 'use strict'
 
 Object.assign(DataEditor.prototype,{
+
+// Mettre l'élément choisi en édition
   editElement(){
     this.setFormValues()
   }
+
+// Sauver l'élément édité
 , saveElement(){
     var errors
       , formData = this.getFormValues()
@@ -11,10 +15,11 @@ Object.assign(DataEditor.prototype,{
     if(errors = this.checkFormValues(formData)){
       return this.traiteErrors(errors)
     }
-    console.log("On peut enregistrer les données :", formData)
+    // console.log("On peut enregistrer les données :", formData)
 
     if(this.currentItem){
-
+      // Modification
+      this.updateCurrentItem(formData)
     } else {
       // Nouvel item
       this.createNewItem(formData)
@@ -34,7 +39,7 @@ Object.assign(DataEditor.prototype,{
 
 **/
 , createNewItem(data){
-    let nitem = this.mainClass.createItem(data)
+    let nitem = this.mainClass.DECreateItem(data)
     // Ajout au menu (inutile de le sélectionner, ça le fera avec
     // la méthode d'édition)
     this.menuItems.append(DCreate('OPTION',{value: data.id, inner: DFormater(nitem[this.titleProp])}))
@@ -42,14 +47,10 @@ Object.assign(DataEditor.prototype,{
 
 // Méthode appelée par le bouton "+"
 , addElement(){
-    console.log("-> addElement")
-    F.notify("Je vais ajouter un élément du type édité")
-  }
-
-, removeElement(){
-    if(!this.currentItem) return
-    if(!confirm(`Es-tu certain de vouloir détruire à tout jamais l'élément ${this.currentItemRef}?`)) return
-    F.notify("Je vais supprimer l'élément édité")
+    // Vider les champs (on reconstruit le formulaire)
+    this.resetFormValues()
+    // Remettre le menu au premier item
+    this.menuItems[0].selectedIndex = 0
   }
 
 , forEachElement(fn){

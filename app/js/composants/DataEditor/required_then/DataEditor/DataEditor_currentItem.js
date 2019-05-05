@@ -8,6 +8,25 @@ Object.assign(DataEditor.prototype,{
     this.menuItems.val(item_id)
     this.editElement()
   }
+
+, removeCurrentItem(){
+    if(!this.currentItem) return
+    if(!confirm(`Es-tu certain de vouloir détruire à tout jamais l'élément ${this.currentItemRef}?`)) return
+    if(this.mainClass.DERemoveItem(this.currentItem)){
+      // Supprimer dans le menu
+      this.menuItems.find(`option:nth-child(${this.currentItemIndex + 2})`).remove()
+      // Remettre le menu au début
+      this.menuItems[0].selectedIndex = 0
+      // Resetter les champs
+      this.resetFormValues()
+    }
+  }
+
+, updateCurrentItem(formData){
+    this.mainClass.DEUpdateItem(formData)
+    F.notify(`Élément ${this.currentItemRef} actualisé.`)
+  }
+
 })
 Object.defineProperties(DataEditor.prototype,{
 

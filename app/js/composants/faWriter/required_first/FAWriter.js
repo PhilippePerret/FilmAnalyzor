@@ -53,6 +53,17 @@ const FAWriter = {
     this.menuTypeDoc.val(kdoc)
   }
 
+// Permet de forcer le rechargement du document d'identifiant +kdoc+. La
+// méthode est utilisée par le dataeditor
+, resetDocument(kdoc){
+    if(undefined === this.writerDocs) return
+    if (this.currentDoc && this.currentDoc.type == kdoc){
+      console.log("C'est le document édité")
+      this.hide()
+    }
+    delete this.writerDocs[kdoc]
+  }
+
   /**
    * Actualise la visualisation du contenu Markdown dans le visualiseur
    */

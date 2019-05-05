@@ -49,6 +49,9 @@ const DATA_DOCS = require('../composants/faWriter/required_first/min.js')
 function openDocInWriter(doc_id){
   mainW.webContents.executeJavaScript(`current_analyse && current_analyse.openDocInWriter("${doc_id}")`)
 }
+function openDocInDataEditor(doc_id){
+  mainW.webContents.executeJavaScript(`current_analyse && current_analyse.openDocInDataEditor("${doc_id}")`)
+}
 var curType = null
 for(var doc_id in DATA_DOCS){
   if (DATA_DOCS[doc_id].menu === false) continue
@@ -59,13 +62,35 @@ for(var doc_id in DATA_DOCS){
   var ddoc = DATA_DOCS[doc_id]
   var menu_id = `open-doc-${doc_id}`
   CURRENT_THING_MENUS.push(menu_id)
-  var method = openDocInWriter.bind(null, doc_id)
-  FAWriterSubmenus.push({
-      label:    ddoc.hname
-    , id:       menu_id
-    , enabled:  false
-    , click:    method
-  })
+  var method    = openDocInWriter.bind(null, doc_id)
+  if(ddoc.dataeditor){
+    CURRENT_THING_MENUS.push(`${menu_id}-de`)
+    var DEMethod  = openDocInDataEditor.bind(null,doc_id)
+    FAWriterSubmenus.push({
+        label:    ddoc.hname
+      , submenu:[
+            {
+              label: "Éditeur de données"
+            , id:     `${menu_id}-de`
+            , enabled: false
+            , click: DEMethod
+            }
+          , {
+              label:  "Fichier complet"
+            , id:     menu_id
+            , enabled: false
+            , click:    method
+            }
+        ]
+    })
+  } else {
+    FAWriterSubmenus.push({
+        label:    ddoc.hname
+      , id:       menu_id
+      , enabled:  false
+      , click:    method
+    })
+  }
 }
 
 // console.log("FAWriterSubmenus:", FAWriterSubmenus)

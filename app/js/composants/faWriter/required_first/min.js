@@ -30,9 +30,9 @@ const DATA_DOCUMENTS = {
 
 , separator3: 'separator'
 
-, dpersonnages:     {hname: 'Personnages (data)', format:'yaml', type:'data'}
-, dbrins:           {hname: 'Brins (data)', format:'yaml', type:'data'}
-, fondamentales:    {hname: 'Fondamentales (data)', format: 'yaml', type:'data'}
+, dpersonnages:     {hname: 'Personnages', format:'yaml', type:'data', dataeditor: true}
+, dbrins:           {hname: 'Brins', format:'yaml', type:'data', dataeditor: true}
+, fondamentales:    {hname: 'Fondamentales', format: 'yaml', type:'data', dataeditor: true}
 , recompenses:      {hname: 'Récompenses (data)', format: 'yaml', type:'data'}
 
 , separator1: 'separator'

@@ -3,48 +3,68 @@
 Object.assign(FAPersonnage,{
 
 /**
+  Méthode pour sauver les données éditées par le DataEditor
+**/
+  DESave(){
+    this.code = YAML.dump(this.data)
+    this.iofile.save()
+    FAWriter.resetDocument('dpersonnages')
+  }
+/**
   Méthode utilisée par DataEditor pour créer un item
 **/
-  createItem(dperso){
-    let newData = {}
-    Object.assign(newData, this.data)
-    newData[dperso.id] = dperso
+, DECreateItem(dperso){
+    this._data[dperso.id] = dperso
     this.reset()
-    this._data = newData
-    // console.log("Data à sauver :", this.data)
-    // return
-    this.code = YAML.dump(newData)
-    // console.log("code à sauver:", this.code)
-    this.iofile.save()
+    this.DESave()
     return this.get(dperso.id)
   }
 
 /**
   Méthode utilisée par DataEditor pour actualiser un item
 **/
-, updateItem(data){
-
+, DEUpdateItem(dperso){
+    this._data[dperso.id] = dperso
+    this.reset()
+    this.DESave()
+    return true
   }
 
+/**
+  Méthode utilisée par DataEditor pour supprimer un item
+**/
+, DERemoveItem(dperso){
+    delete this._data[dperso.id]
+    this.reset()
+    this.DESave()
+    return true
+  }
 })
 Object.defineProperties(FAPersonnage,{
+  dataEditor:{
+    get(){return this._dataeditor||defP(this,'_dataeditor',DataEditor.open(this, this.DataEditorData))}
+  }
   // Le IOFile qui sert pour le DataEditor (pas quand le document est visualisé
   // dans le Writer)
-  iofile:{get(){return this._iofile||defP(this,'_iofile',new IOFile(this))}}
+, iofile:{get(){return this._iofile||defP(this,'_iofile',new IOFile(this))}}
 
-, dataEditor:{
-    get(){return this._dataeditor||defP(this,'_dataeditor',new DataEditor(this, this.DataEditorData))}
-  }
+/**
+  Les données utiles pour l'instanciation d'un dataeditor pour l'élément
+  Sa validité sera contrôlée avant l'instanciation de this.dataEditor
+  Cf. le manuel développeur pour le détail.
+**/
 , DataEditorData:{get(){
     return {
       type: 'personnage'
+    , title: 'PERSONNAGES'
     , items: this.personnages
     , titleProp: 'pseudo'
     /**
       Définition des champs d'édition d'un élément
     **/
     , dataFields: [
-        {label:'Id', type:'text', prop:'id', exemple:'a-zA-Z_', validities:[UNIQ, REQUIRED]}
+        {label:'Id', type:'text', prop:'id', exemple:'a-z0-9_', validities:[UNIQ, REQUIRED, ASCII],
+          getValueMethod:(v)=>{if(v){return v.toLowerCase()}}}
       , {label:'Diminutif', type:'text', prop:'dim', validities:[UNIQ, REQUIRED]}
       , {label:'Pseudo', type:'text', prop:'pseudo', validities:[UNIQ, REQUIRED]}
       , {label:'Prénom', type:'text', prop:'prenom'}
@@ -82,12 +102,6 @@ Object.defineProperties(FAPersonnage,{
             }
         }
       ]
-    /**
-      Méthode qui sera appelée quand on enregistrement l'élément édité
-    **/
-    , onSave: function(){F.notify("Implémentation de la méthode onSave requise")}
-    , onRemove: function(){F.notify("Implémentation de la méthode onRemove requise")}
-
     }
   }}
 })

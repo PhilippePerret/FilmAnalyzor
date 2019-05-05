@@ -37,6 +37,7 @@ Object.defineProperties(DataField.prototype,{
 //  DONNÉES D'ÉTAT VOLATILES
 , isRequired:{get(){return this._isrequired||defP(this,'_isrequired',this.validities.indexOf(REQUIRED)>-1)}}
 , isUniq:{get(){return this._isuniq||defP(this,'_isuniq',this.validities.indexOf(UNIQ)>-1)}}
+, isOnlyAscii:{get(){return this._isascii||defP(this,'_isascii',this.validities.indexOf(ASCII)>-1)}}
 })
 
 Object.assign(DataField.prototype,{
@@ -63,13 +64,31 @@ Object.assign(DataField.prototype,{
     this.field.val(value)
   }
 /**
+  Réinitialise le champ
+  (en fonction de son type)
+**/
+, reset(){
+    switch (this.type) {
+      case 'checkbox':
+        this.field[0].checked = false
+        break
+      default:
+        this.field.val('') // TODO : traiter les autres types
+    }
+  }
+/**
   Retourne la valeur dans le champ ou null si elle est vide
 **/
 , getFieldValueOrNull(){
-    // TODO Ci-dessous il faudra faire en fonction du type
-    var v = this.field.val()
-    // console.log("value du champ", this.prop, v)
-    if(v === '') v = null
+    var v
+    switch (this.type) {
+      case 'checkbox':
+        v = this.field[0].checked
+        break
+      default:
+        v = this.field.val()
+        if(v === '') v = null
+    }
     return v
   }
 /**

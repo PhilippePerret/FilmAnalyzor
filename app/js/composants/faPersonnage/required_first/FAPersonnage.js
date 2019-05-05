@@ -31,11 +31,16 @@ static init(){
 }
 
 /**
-Réinitialiser la donnée. Comme par exemple après une modification
+Réinitialisation totale de la donnée. Comme par exemple après une modification
 du fichier de données.
 **/
-static reset(){
+static resetAll(){
   delete this._data
+  this.reset()
+  return this // chainage
+}
+
+static reset(){
   delete this._diminutifs
   delete this._personnages
   delete this._hpersonnages

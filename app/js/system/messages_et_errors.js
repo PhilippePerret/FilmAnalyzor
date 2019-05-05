@@ -52,6 +52,7 @@ const ERRORS = {
 , "notify-missed-variable": "La variable “{{%{var}}}” est inconnue. Il faut la définir dans le documents “Documents > Informations/variables” en ajoutant la ligne `%{var}: Valeur` (code YAML)."
 , "--- DATA ÉDITOR ---":""
 , "deditor-data-required": "Les données d'édition sont requises pour éditer un élément de l'analyse (premier argument Object)."
+, "deditor-title-required": "La propriété `title` définissant le titre de la fenêtre est requise."
 , "deditor-mainclass-required": "La classe principale de l'objet à éditer (`mainClass`) est absolument requise."
 , "deditor-titleProp-required": "La propriété `titleProp` doit définir quelle propriété utiliser comme titre (pour le menu des éléments, notamment)."
 , "deditor-get-method-required": "La méthode `%{classe}::get` doit absolument exister, qui retourne l'instance de l'élément possédant l'id de la valeur envoyée en argument."
@@ -62,6 +63,7 @@ const ERRORS = {
 , "deditor-items-is-array": "La liste des éléments (`items`) doit être un Array."
 , "deditor-must-have-prop-dataEditor": "La classe %{classe} devrait avoir une propriété objet `dataEditor` (qui définira tout)."
 , "deditor-fields-undefined": "`%{classe}.dataEditor.dataFields` doit définir les champs permettant d'éditer un élément."
+, "deditor-function-required": "La classe %{classe} devrait définir la fonction `%{function}()`?"
 , "--- DIVERS ---":""
 , "otime-arg-required": "Cette méthode requiert un argument temps de type OTime"
 }

@@ -3,24 +3,13 @@
 ### Traiter :
 
 * DataEditor
-  Une classe pour l'édition des cartes, que ce soit pour les brins, les personnages, peut-être les variables
-  Elle se sert de Flying-window pour s'afficher
-  Chaque type d'élément (FABrin par exemple) définit ses propriétés avec le type de champs
-  On trouve toujours:
-    label: le label du champ
-    validityMethod: méthode de validation
-  FABrin.editFields = {
-    'id': {type:'text', label: '...', validityMethod: 'MéthodeDeCheckIfAny'}
-    'title':
-    'type': {type:'menu', values:[], ...}
-    'description':{type:'textarea', ...}
-  }
-
-  DataEditor (class) possède la fenêtre générale qui permet d'éditer un élément existant ou d'en créer/détruire un nouveau
-
-  new DataEditor génère le contenu intérieur
-
-
+  - documenter dans le manuel développeur
+  - menus : Personnages > Document/Data Editor, etc.
+  - Faire la même chose pour les brins
+  - Faire la même chose pour les fondamentales
+  - Faire la même chose pour les variables ?
+  - Faire la même chose pour les infos du film ?
+  
 * CHECK ANALYSE
   - Poursuivre le check de la validité des données (app/js/tools/analyse_checker.js)
 

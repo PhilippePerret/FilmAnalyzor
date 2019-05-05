@@ -36,6 +36,3 @@ init(){
   }
 
 })
-Object.defineProperties(DataEditor.prototype,{
-
-})

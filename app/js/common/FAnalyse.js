@@ -296,6 +296,12 @@ openDocInWriter(dtype){
   FAWriter.openDoc(dtype)
 }
 /**
+  Méthode qui ouvre le DataEditor
+**/
+openDocInDataEditor(dtype){
+  DataEditor.openPerType(dtype)
+}
+/**
  * Pour obtenir un nouvel "eventer", c'est-à-dire une liste filtrable
  * des events.
  */

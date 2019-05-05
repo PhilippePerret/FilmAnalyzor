@@ -13,7 +13,7 @@ Object.assign(DataEditor.prototype,{
         DCreate('BUTTON', {type:'button', class:'btn-close'})
       , DCreate('BUTTON', {type:'button', class:'btn-add', id:my.idFor('btn-add'), inner: '+'})
       , DCreate('BUTTON', {type:'button', class:'btn-del', id:my.idFor('btn-del'), inner: '–'})
-      , DCreate('H3', {id:my.idFor('main-title'), inner: `Data Editor`})
+      , DCreate('H3', {id:my.idFor('main-title'), inner: this.data.title})
       ]}))
     divs.push(DCreate('DIV',{class:'body', append:[
         DCreate('SELECT',{id:my.idFor('menu_items'), class:'menu-items'})
@@ -33,8 +33,13 @@ Object.assign(DataEditor.prototype,{
 
 , observe(){
     this.jqObj.find(`#${this.id}-btn-add`).on('click', this.addElement.bind(this))
-    this.jqObj.find(`#${this.id}-btn-del`).on('click', this.removeElement.bind(this))
+    this.jqObj.find(`#${this.id}-btn-del`).on('click', this.removeCurrentItem.bind(this))
     this.jqObj.find(`#${this.id}-menu_items`).on('change', this.editElement.bind(this))
     this.saveBtn.on('click', this.saveElement.bind(this))
+
+    // Les champs d'édition répondent au cmd-enter pour soumettre le
+    // formulaire (enfin… façon de parler)
+    this.jqObj.find('textarea, input[type="text"], input[type="checkbox"], select').on('keydown', this.onKeyDownOnTextFields.bind(this))
+
   }
 })

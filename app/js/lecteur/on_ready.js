@@ -3,9 +3,8 @@
 const APPFOLDER = path.resolve('.')
 
 function WhenAllIsReallyReady(){
-  // DataEditor.toggle()
-  FAPersonnage.dataEditor.open()
-  // DataEditor.edit({mainClass:FAPersonnage, items:(FAPersonnage.personnages||[]), current: 'personnage2', titleProp:'pseudo'})
+  // FAPersonnage.dataEditor.open()
+  // FABrin.dataEditor.open()
 }
 
 $(document).ready(() => {
