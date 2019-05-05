@@ -227,5 +227,8 @@ loadReader(fn_callback){
 , loadDataEditor(fn_callback){
     return System.loadComponant('DataEditor', fn_callback)
 }
+, loadFondamentales(fn_callback){
+    return System.loadComponant('Fondamentales', fn_callback)
+}
 
 })

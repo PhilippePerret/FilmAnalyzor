@@ -51,7 +51,7 @@ const ERRORS = {
 , "--- TEXTES ---": ""
 , "notify-missed-variable": "La variable “{{%{var}}}” est inconnue. Il faut la définir dans le documents “Documents > Informations/variables” en ajoutant la ligne `%{var}: Valeur` (code YAML)."
 , "--- DATA ÉDITOR ---":""
-, "deditor-data-required": "Les données d'édition sont requises pour éditer un élément de l'analyse (premier argument Object)."
+, "deditor-data-required": "Les données d'édition sont requises pour éditer un élément de l'analyse (`DataEditorData`)."
 , "deditor-title-required": "La propriété `title` définissant le titre de la fenêtre est requise."
 , "deditor-mainclass-required": "La classe principale de l'objet à éditer (`mainClass`) est absolument requise."
 , "deditor-titleProp-required": "La propriété `titleProp` doit définir quelle propriété utiliser comme titre (pour le menu des éléments, notamment)."

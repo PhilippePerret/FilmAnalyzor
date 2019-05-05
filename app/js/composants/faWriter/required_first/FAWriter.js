@@ -201,6 +201,11 @@ const FAWriter = {
     this.isOpened = true
 }
 
+/**
+  Préparation de l'interface en fonction du type de document
+  Méthode inaugurée pour afficher seulement le path d'un document quelconque
+  mis en édition.
+**/
 , setUI(){
     let my = this
       , any = this.currentDoc.type == 'anydoc'

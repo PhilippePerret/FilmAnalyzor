@@ -8,6 +8,7 @@ Object.defineProperties(DataField.prototype,{
   id:         {get(){return this.data.id}}
 , label:      {get(){return this.data.label}}
 , type:       {get(){return this.data.type}} // détermine le tag
+, class:      {get(){return this.data.class}} // css du champ d'édition
 , prop:       {get(){return this.data.prop}}
 , validities: {get(){return this.data.validities||[]}}
 , values:     {get(){return this.data.values}}
@@ -113,6 +114,7 @@ Object.assign(DataField.prototype,{
 , defineTagAttributes(){
     var tagAtt = this.tagNameAndType[1] // :type est peut-être défini
     tagAtt.id     = this.domId
+    if(this.class) tagAtt.class = this.class
     tagAtt.attrs  = {}
     if(this.exemple) tagAtt.attrs.placeholder = this.exemple
     return tagAtt

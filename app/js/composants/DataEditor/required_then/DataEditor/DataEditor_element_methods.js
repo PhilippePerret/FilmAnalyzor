@@ -15,7 +15,9 @@ Object.assign(DataEditor.prototype,{
     if(errors = this.checkFormValues(formData)){
       return this.traiteErrors(errors)
     }
+
     // console.log("On peut enregistrer les données :", formData)
+    // console.log("this.currentItem:", this.currentItem)
 
     if(this.currentItem){
       // Modification

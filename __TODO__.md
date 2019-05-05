@@ -5,8 +5,12 @@
 - Faire un fichier fondamentales alt, et pfa alt (les mettre dans min.js)
 
 * DataEditor
-  - faire la liste des types de brins (menu actualisable)
   - Faire la même chose pour les fondamentales
+      Mais ça a l'air trop dur… Il faudrait changer les champs à
+      chaque fondamentale. Ou alors, il faut mettre en item les différents
+      groupes de fondamentales et dans les champs toutes les fondamentales
+      Mais essayer déjà avec les trucs communs
+
   - Faire la même chose pour les variables ?
   - Faire la même chose pour les infos du film ?
   - Pour les brins, et peut-être aussi les personnages, il faudrait exploiter

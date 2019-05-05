@@ -19,7 +19,8 @@ Object.assign(DataEditor,{
       switch(typ){
         case 'dpersonnages':  return FAPersonnage
         case 'dbrins':        return FABrin
-        case 'fondamentales': return Fonds
+        case 'fondamentales': return Fondamentales
+        case 'fondamentales_alt': throw("Je ne vois pas encore comment éditer les fondamentales alternatives comme ça")
       }
     })(dtype)
     owner || raise(`Le possesseur de type ${dtype} est inconnu…`)

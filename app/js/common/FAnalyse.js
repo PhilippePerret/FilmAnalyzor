@@ -138,13 +138,9 @@ get PFA(){
   return this._PFA
 }
 
-get Fonds(){
-  if(undefined === this._Fonds){
-    this._Fonds = require('./js/common/Fondamentales/Fonds.js')
-    this._Fonds.init(this)
-  }
-  return this._Fonds
-}
+get Fonds(){return this._mainfonds||defP(this,'_mainfonds',new Fondamentales(this.fondsFilePath))}
+
+get FondsAlt(){return this._fondsalt||defP(this,'_fondsalt',new Fondamentales(this.fondsAltFilePath))}
 
 get decors(){ return FADecor }
 
@@ -289,9 +285,9 @@ newVersionRequired(){
  */
 openDocInWriter(dtype){
   if('undefined' === typeof Snippets) return FAnalyse.loadSnippets(this.openDocInWriter.bind(this, dtype))
-  // if( NONE === typeof FAWriter){
-  //   return System.loadComponant('faWriter', this.openDocInWriter.bind(this, dtype))
-  // }
+  if(dtype.startsWith('fondamentales') && NONE === typeof(Fondamentales)){
+    return this.loadFondamentales(this.openDocInWriter.bind(this, dtype))
+  }
   if(!FAWriter.inited) FAWriter.init()
   FAWriter.openDoc(dtype)
 }
@@ -299,6 +295,9 @@ openDocInWriter(dtype){
   Méthode qui ouvre le DataEditor
 **/
 openDocInDataEditor(dtype){
+  if(dtype.startsWith('fondamentales') && NONE === typeof(Fondamentales)){
+    return this.loadFondamentales(this.openDocInDataEditor.bind(this, dtype))
+  }
   DataEditor.openPerType(dtype)
 }
 /**
@@ -727,6 +726,9 @@ get pfaFilePath(){
 }
 get fondsFilePath(){
   return this._fondsFilePath || defP(this,'_fondsFilePath', this.filePathOf('fondamentales.yaml'))
+}
+get fondsAltFilePath(){
+  return this._fondsAltFilePath || defP(this,'_fondsAltFilePath', this.filePathOf('fondamentales_alt.yaml'))
 }
 
 get markModified(){return this._markModified||defP(this,'_markModified',$('span#modified-indicator'))}

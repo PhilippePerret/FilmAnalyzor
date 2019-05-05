@@ -36,7 +36,8 @@ Object.defineProperties(DataEditor.prototype,{
   currentItem:{
     get(){
       if(this.currentItemIndex < 0) return // pas de courant
-      return this.mainClass.get(this.menuItems.val())
+      // return this.mainClass.get(this.menuItems.val())
+      return this.data.items[this.currentItemIndex]
     }
   }
 , currentItemIndex:{

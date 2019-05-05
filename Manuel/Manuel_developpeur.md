@@ -542,7 +542,7 @@ On utilise alors la méthode `openAnyDoc`.
 
 ```javascript
 
-  FAWriter.openAnyDoc('<path>')
+  FAWriter.openAnyDoc('<path/absolue/to/document.ext>')
 
 ```
 
