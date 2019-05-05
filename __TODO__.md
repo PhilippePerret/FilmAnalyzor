@@ -3,13 +3,14 @@
 ### Traiter :
 
 * DataEditor
-  - documenter dans le manuel développeur
   - faire la liste des types de brins (menu actualisable)
   - Faire la même chose pour les fondamentales
   - Faire la même chose pour les variables ?
   - Faire la même chose pour les infos du film ?
   - Pour les brins, et peut-être aussi les personnages, il faudrait exploiter
-    les propriétés 'events', 'documents', 'times', 'brins' (qui s'enregistrent maintenant dans le fichier YAML)
+    les propriétés 'events', 'documents', 'times', 'brins' (qui s'enregistrent maintenant dans le fichier YAML).
+    - les afficher
+    - pouvoir dropper un nouvel élément
 
 * CHECK ANALYSE
   - Poursuivre le check de la validité des données (app/js/tools/analyse_checker.js)

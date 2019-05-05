@@ -40,6 +40,7 @@ Object.assign(FAPersonnage,{
     return true
   }
 })
+
 Object.defineProperties(FAPersonnage,{
   dataEditor:{
     get(){return this._dataeditor||defP(this,'_dataeditor',DataEditor.init(this, this.DataEditorData))}
@@ -63,14 +64,14 @@ Object.defineProperties(FAPersonnage,{
       Définition des champs d'édition d'un élément
     **/
     , dataFields: [
-        {label:'Id', type:'text', prop:'id', exemple:'a-z0-9_', validities:[UNIQ, REQUIRED, ASCII],
+        {label:'Id', type:'text', prop:'id', exemple:'a-z0-9_', validities: UNIQ|REQUIRED|ASCII,
           getValueMethod:(v)=>{if(v){return v.toLowerCase()}}}
-      , {label:'Diminutif', type:'text', prop:'dim', validities:[UNIQ, REQUIRED]}
-      , {label:'Pseudo', type:'text', prop:'pseudo', validities:[UNIQ, REQUIRED]}
+      , {label:'Diminutif', type:'text', prop:'dim', validities:UNIQ|REQUIRED}
+      , {label:'Pseudo', type:'text', prop:'pseudo', validities:UNIQ|REQUIRED}
       , {label:'Prénom', type:'text', prop:'prenom'}
       , {label:'Nom', type:'text', prop:'nom'}
       , {label:'Age(s)', type:'text', prop:'ages', exemple:'12 ou [23, 68]'}
-      , {label:'Description', type:'textarea', prop:'description', validities:[REQUIRED]}
+      , {label:'Description', type:'textarea', prop:'description', validities:REQUIRED}
       , {label:'Dimensions', type:'textarea', prop:'dimensions', aide:'1 par ligne (&lt;type&gt;: &lt;description&gt;)'
           , exemple:'religieuse: @T croit en Dieu.\nprofessionnelle: @T travaille pour lui.'
           , setValueMethod: (v)=>{

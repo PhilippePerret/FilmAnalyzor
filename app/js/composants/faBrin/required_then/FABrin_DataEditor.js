@@ -59,11 +59,11 @@ Object.defineProperties(FABrin,{
       Définition des champs d'édition d'un élément
     **/
     , dataFields: [
-        {label:'Id', type:'text', prop:'id', exemple:'a-z0-9_', validities:[UNIQ, REQUIRED, ASCII],
+        {label:'Id', type:'text', prop:'id', exemple:'a-z0-9_', validities:UNIQ|REQUIRED|ASCII,
           getValueMethod:(v)=>{if(v){return v.toLowerCase()}}}
-      , {label:'Titre', type:'text', prop:'title', validities:[UNIQ, REQUIRED]}
+      , {label:'Titre', type:'text', prop:'title', validities: UNIQ|REQUIRED}
       , {label:'Type', type:'select', prop:'bType', values: {'': 'Choisir le type…', intrigue: "Intrigue", personnage: "Personnage", autre:"Autre"}}
-      , {label:'Description', type:'textarea', prop:'description', validities:[REQUIRED]}
+      , {label:'Description', type:'textarea', prop:'description', validities:REQUIRED}
       ]
     }
   }}

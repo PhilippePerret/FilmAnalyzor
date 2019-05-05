@@ -36,9 +36,9 @@ Object.defineProperties(DataField.prototype,{
 
 // ---------------------------------------------------------------------
 //  DONNÉES D'ÉTAT VOLATILES
-, isRequired:{get(){return this._isrequired||defP(this,'_isrequired',this.validities.indexOf(REQUIRED)>-1)}}
-, isUniq:{get(){return this._isuniq||defP(this,'_isuniq',this.validities.indexOf(UNIQ)>-1)}}
-, isOnlyAscii:{get(){return this._isascii||defP(this,'_isascii',this.validities.indexOf(ASCII)>-1)}}
+, isRequired:{get(){return this._isrequired||defP(this,'_isrequired', !!(this.validities&REQUIRED))}}
+, isUniq:{get(){return this._isuniq||defP(this,'_isuniq',!!(this.validities&UNIQ))}}
+, isOnlyAscii:{get(){return this._isascii||defP(this,'_isascii',!!(this.validities&ASCII))}}
 })
 
 Object.assign(DataField.prototype,{

@@ -20,8 +20,11 @@
  */
 const DATA_DOCUMENTS = {
 
-  infos:            {hname: 'Informations/variables', format: 'yaml', type:'data'}
-, building_script:  {hname: 'Script d’assemblage', format:'md', type:'data'}
+  building_script:  {hname: 'Script d’assemblage', format:'md', type:'data'}
+
+, separatorInfos: 'separator'
+
+, infos:            {hname: 'Informations/variables', format: 'yaml', type:'data'}
 
 , separator2: 'separator'
 

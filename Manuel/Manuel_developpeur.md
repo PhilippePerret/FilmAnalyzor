@@ -15,6 +15,8 @@
   * [Enregistrement des events](#saving_events)
 * [Travail avec les events](#working_with_events)
   * [Filtrage des events](#filtering_events)
+* [Autres données de l'analyse](#analyse_autres_donnees)
+  * [DataEditor, l'éditeur de données](#data_editor)
 * [Ajout de préférences globales](#add_global_prefs)
   * [Utilisation des préférences globales](#use_global_prefs})
 * [Ajout de préférence analyse](#add_analyse_pref)
@@ -235,7 +237,81 @@ Pour créer un filtre :
 
 ```
 
+---------------------------------------------------------------------
 
+## Autres données de l'analyse {#analyse_autres_donnees}
+
+L'analyse contient d'autres données contenues le plus souvent dans des documents au format `YAML`. On trouve pour commencer les données du film, les personnages, les brins, etc.
+
+La plupart de ces données peuvent se définir par le menu `Documents`.
+
+### DataEditor, l'éditeur de données {#data_editor}
+
+Parmi les données précédentes, on trouve des données qui peuvent s'éditer à l'aide du `DataEditor`. Ce sotn par exemple les personnages, les brins, les Fondamentales, etc.
+
+Pour pouvoir être *data-éditorable*, un objet ou une classe doit posséder :
+
+* une propriété `DataEditorData` qui définit un grand nombre de caractéristiques,
+* des méthodes permettant de prendre en compte les changements et de les enregistrer dans un fichier.
+
+Pour le développeur, ces requisitions sont testées et signalées en cas de manquement.
+
+Voilà les données générales :
+
+```javascript
+
+  DataEditorData:{
+      title:  "Le titre à donner à la fenêtre d'édition"
+    , type:   "Le type de l'élément, par exemple 'personnage'" // pas vraiment utilisé
+    , titleProp:  'la propriété qui servira à nommer l’élément, dans le menu par exemple'
+    , items:      [Array('de tous les éléments comme instances')]
+    , dataFields: [
+        // Définition des champs d'édition (cf. plus bas)
+      ]
+  }
+
+```
+
+`DataEditorData.dataFields` est un `Array` qui contient des `object`s définissant les propriétés suivantes :
+
+```javascript
+
+  {
+    label:    'Libellé affiché en regard du champ'     // REQUIS
+  , type:     'type du champ (text, textarea, select)'   // REQUIS
+  , prop:     'la propriété de l’instance qui sera lue et affectée'  // REQUIS
+  , exemple:  'placeholder affiché quand aucune donnée'
+  , aide:     'texte ajouté en petit à côté du libellé'
+  , validities: flag pour tester la validité de (UNIQ, REQUIRED, ASCII)
+  , values:   <valeurs pour un select, soit [{value: inner}...], soit [[value, inner]...]
+
+  , getValueMethod: (v) => { return "la valeur réelle à prendre en compte"}
+  , setValueMethod: (v) => { return "la valeur à mettre dans le champ (if any)"}
+  , checkValueMethod: (v) => { /* return rien si valeur v OK, sinon le message d'erreur */}
+
+  }
+
+```
+
+Le flag `validities` permet de checker si la valeur est :
+
+* unique (`UNIQ`),
+* définie (requise, obligatoire) (`REQUIRED`),
+* composée uniquement de lettre a-z (min/maj) de chiffre ou du trait plat (`ASCII`).
+
+Si de plus amples vérifications doivent être faites sur la donnée, il faut utiliser la méthode `checkValueMethod`.
+
+#### Les méthodes obligatoires
+
+Un objet *data-editorable* doit répondre aux méthodes :
+
+* `DECreateItem(data)`. Qui doit permettre de créer un nouvel élément avec les données `data`,
+* `DEUpdateItem(data)`. Qui doit permettre de modifier un élément avec les nouvelles données `data`,
+* `DERemoveItem(data)`. Qui doit permettre de détruire l'élément d'identifiant `data.id`
+
+Note : s'inspirer des fonctions définies dans `app/js/composants/faPersonnage/required_then/FAPersonnage_DataEditor.js` pour les personnages ou `app/js/composants/faBrin/required_then/FABrin_DataEditor.js` pour les brins.
+
+---------------------------------------------------------------------
 
 ## Ajout de préférences globales (appelées aussi "options globales") {#add_global_prefs}
 
