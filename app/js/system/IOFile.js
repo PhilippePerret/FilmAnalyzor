@@ -67,13 +67,13 @@ static codeIsOK(code, format){
 //  INSTANCE
 
 // Cf. le manuel de développement
-constructor(p_or_owner){
+constructor(p_or_owner, otherPath){
   if('string' === typeof p_or_owner){
     this.path   = p_or_owner
     this.owner  = undefined
   } else {
     this.owner  = p_or_owner
-    this.path   = this.owner.path
+    this.path   = otherPath || this.owner.path
   }
 
 }

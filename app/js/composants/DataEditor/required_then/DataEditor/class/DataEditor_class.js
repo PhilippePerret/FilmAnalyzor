@@ -22,16 +22,16 @@ Object.assign(DataEditor,{
         case 'fondamentales': return Fonds
       }
     })(dtype)
-    owner || raise(`Le possessuer de type ${dtype} est inconnu…`)
-    this.open(owner)
+    owner || raise(`Le possesseur de type ${dtype} est inconnu…`)
+    this.init(owner).open()
   }
 /**
   Méthode principale appelée pour ouvrir l'éditeur de données
   @param {Class}  owner   La classe (ou object) principale. Pe FAPersonnage, FABrin
   @param {Object} data    Définition des données pour le data-éditor
 **/
-, open(owner, data){
-    if (undefined === data) data = owner.dataEditorData
+, init(owner, data){
+    if (undefined === data) data = owner.DataEditorData
     data != undefined   || raise(T('deditor-data-required'))
     data.mainClass = owner
     if(this.isValidData(data)){

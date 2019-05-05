@@ -42,7 +42,7 @@ Object.assign(FAPersonnage,{
 })
 Object.defineProperties(FAPersonnage,{
   dataEditor:{
-    get(){return this._dataeditor||defP(this,'_dataeditor',DataEditor.open(this, this.DataEditorData))}
+    get(){return this._dataeditor||defP(this,'_dataeditor',DataEditor.init(this, this.DataEditorData))}
   }
   // Le IOFile qui sert pour le DataEditor (pas quand le document est visualisé
   // dans le Writer)
@@ -70,7 +70,7 @@ Object.defineProperties(FAPersonnage,{
       , {label:'Prénom', type:'text', prop:'prenom'}
       , {label:'Nom', type:'text', prop:'nom'}
       , {label:'Age(s)', type:'text', prop:'ages', exemple:'12 ou [23, 68]'}
-      , {label:'Description', type:'textarea', prop:'description', validities:[UNIQ, REQUIRED]}
+      , {label:'Description', type:'textarea', prop:'description', validities:[REQUIRED]}
       , {label:'Dimensions', type:'textarea', prop:'dimensions', aide:'1 par ligne (&lt;type&gt;: &lt;description&gt;)'
           , exemple:'religieuse: @T croit en Dieu.\nprofessionnelle: @T travaille pour lui.'
           , setValueMethod: (v)=>{

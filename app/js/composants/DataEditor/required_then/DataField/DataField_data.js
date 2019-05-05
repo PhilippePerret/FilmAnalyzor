@@ -10,6 +10,7 @@ Object.defineProperties(DataField.prototype,{
 , type:       {get(){return this.data.type}} // détermine le champ
 , prop:       {get(){return this.data.prop}}
 , validities: {get(){return this.data.validities||[]}}
+, values:     {get(){return this.data.values}}
 // Propriétés exceptionnelles
 , defValue:   {get(){return this.data.defValue}}
 , exemple:    {get(){return this.data.exemple}}
@@ -100,6 +101,7 @@ Object.assign(DataField.prototype,{
       case 'textarea':  return ['TEXTAREA', {}]
       case 'checkbox':  return ['INPUT', {type:'checkbox'}]
       case 'hidden':    return ['INPUT', {type:'hidden'}]
+      case 'select':    return ['SELECT', {append: this.optionsSelect()}]
     }
   }
 /**
@@ -112,5 +114,22 @@ Object.assign(DataField.prototype,{
     tagAtt.attrs  = {}
     if(this.exemple) tagAtt.attrs.placeholder = this.exemple
     return tagAtt
+  }
+
+/**
+  Pour un menu (select), retourne les balises options d'après les valeurs
+**/
+, optionsSelect(){
+    let hoptions = {}
+      , opts = []
+    if(Array.isArray(this.values)){
+      this.values.map(duo => h[duo[0]] = duo[1])
+    } else {
+      hoptions = this.values
+    }
+    for(var val in hoptions){
+      opts.push(DCreate('OPTION',{value: val, inner: hoptions[val]}))
+    }
+    return opts
   }
 })

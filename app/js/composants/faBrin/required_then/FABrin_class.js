@@ -6,16 +6,15 @@ newNumero(){
   if(undefined === this.lastNumero) this.lastNumero = 0
   return ++ this.lastNumero
 }
-,
 
 /**
   Boucle sur tous les brins
 **/
-forEachBrin(fn){
-  for(var brin_id in this.brins){
-    if(false === fn(this.brins[brin_id])) break
+, forEachBrin(fn){
+    for(var brin_id in this.brins){
+      if(false === fn(this.brins[brin_id])) break
+    }
   }
-}
 
 ,
 /**
@@ -45,68 +44,76 @@ reset(){
   delete this.lastNumero
   return this // chainage
 }
-,
-init(){
-  this.loadData()
-}
-,
-loadData(){
-  log.info("-> FABrin::loadData")
-  this.iofileData.loadIfExists({after: this.afterLoadData.bind(this)})
-  log.info("<- FABrin::loadData")
-}
-,
-afterLoadData(data){
-  log.info("-> FABrin::afterLoadData")
-  this.brins = {}
-  if(data){
-    for(var dbrin of data){
-      this.brins[dbrin.id] = new FABrin(dbrin)
-    }
+
+, init(){
+    this.loadData()
   }
-  this.load()
-  log.info("<- FABrin::afterLoadData")
-}
-,
+
+, loadData(){
+    log.info("-> FABrin::loadData")
+    this.iofileData.loadIfExists({after: this.afterLoadData.bind(this)})
+    log.info("<- FABrin::loadData")
+  }
+
+, afterLoadData(data){
+    log.info("-> FABrin::afterLoadData")
+    this.data = data
+    this.load()
+    log.info("<- FABrin::afterLoadData")
+  }
+
 /**
   Chargement des informations sur les events
   Contrairement à la méthode `loadData` qui charge les données sur les brins
 **/
-load(){
-  log.info("-> FABrin::load")
-  this.iofile.loadIfExists({after:this.afterLoad.bind(this)})
-  log.info("<- FABrin::load")
-}
-,
-afterLoad(data){
-  log.info("-> FABrin::afterLoad")
-  if(data){
-    for(var brin_id in data){
-      Object.assign(this.brins[brin_id].data, data[brin_id])
-    }
+, load(){
+    log.info("-> FABrin::load")
+    this.iofile.loadIfExists({after:this.afterLoad.bind(this)})
+    log.info("<- FABrin::load")
   }
-  // console.log("[After load] brins:", this.brins)
-  log.info("<- FABrin::afterLoad")
-}
 
-,
-save(){
-  log.info('-> FABrin::save')
-  if(this.a.locked) return F.notify(T('analyse-locked-no-save'))
-  this.saving = true
-  this.composeThisData()
-  this.iofile.save({after:this.afterSaving.bind(this)})
-  log.info('<- FABrin::save (asynchrone)')
-}
-,
-afterSaving(){
-  log.info('-> FABrin::afterSaving')
-  this.saving = false
-  clearTimeout(this.timerSave)
-  delete this.timerSave
-  if(this.analyseWasNotModified) this.a.modified = false
-  log.info('<- FABrin::afterSaving')
-}
+, afterLoad(data){
+    log.info("-> FABrin::afterLoad")
+    if(data){
+      for(var brin_id in data){
+        Object.assign(this.brins[brin_id].data, data[brin_id])
+      }
+    }
+    // console.log("[After load] brins:", this.brins)
+    log.info("<- FABrin::afterLoad")
+  }
+
+, saveData(){
+    log.info('-> FABrin::saveData')
+    if(this.a.locked) return F.notify(T('analyse-locked-no-save'))
+    this.saving = true
+    this.composeThisDataBrins()
+    // console.log("this.data avant save:", this.data)
+    this.iofileData.save({after:this.afterSavingData.bind(this)})
+    log.info('<- FABrin::saveData')
+  }
+, afterSavingData(){
+    this.saving = false
+  }
+
+, save(){
+    log.info('-> FABrin::save')
+    if(this.a.locked) return F.notify(T('analyse-locked-no-save'))
+    this.saving = true
+    this.composeThisData()
+    console.log("this.data avant save:", this.data)
+    this.iofile.save({after:this.afterSaving.bind(this)})
+    log.info('<- FABrin::save (asynchrone)')
+  }
+
+, afterSaving(){
+    log.info('-> FABrin::afterSaving')
+    this.saving = false
+    clearTimeout(this.timerSave)
+    delete this.timerSave
+    if(this.analyseWasNotModified) this.a.modified = false
+    log.info('<- FABrin::afterSaving')
+  }
 
 /**
   Pour éditer le brin d'identifiant +bid+
@@ -126,6 +133,14 @@ afterSaving(){
   }
 
 /**
+  Méthode qui reconstitue les data pour le fichier (utilisé par
+  le data éditor)
+**/
+, composeThisDataBrins(){
+    this.contents = Object.values(this.brins).map(brin => brin.dataEpured())
+  }
+  
+/**
   Méthode qui définit les données à enregistrer (et les envoie directement
   à iofile). La raison est simple : ce ne sont que les données de liaisons
   qui sont enregistrées dans le fichier brins.json (les données des brins,
@@ -141,14 +156,27 @@ afterSaving(){
       if(brin.times.length) sd.times = brin.times
       d[brin.id] = sd
     })
-    this.contents = d // pour être utilisé par iofile
+    this.contents = this.data = d // pour être utilisé par iofile
 }
 
 })
 Object.defineProperties(FABrin,{
-// L'analyse courante
-a:{get(){return current_analyse}}
-,
+  // L'analyse courante
+  a:{get(){return current_analyse}}
+
+, brins:{
+    get(){
+      if(undefined === this._brins){
+        this._brins = {}
+        if(this.data){
+          for(var dbrin of this.data){
+            this._brins[dbrin.id] = new FABrin(dbrin)
+          }
+        }
+      }
+      return this._brins
+    }
+  }
 /**
   Marque de modification
   ----------------------
@@ -158,34 +186,34 @@ a:{get(){return current_analyse}}
 
   Lorsqu'il y a modification, on actualise aussi la fenêtre d'affichage.
 **/
-modified:{
-  get(){return this._modified || false}
-, set(v){
-    if(v && this.a.locked) return F.notify(T('analyse-locked-no-save'))
-    this._modified = v
-    if (true === v && !this.timerSave){
-      this.analyseWasNotModified = !this.a._modified
-      this.a.modified = true
-      this.timerSave  = setTimeout(this.save.bind(this), 3000)
-      this.updateListing()
+, modified:{
+    get(){return this._modified || false}
+  , set(v){
+      if(v && this.a.locked) return F.notify(T('analyse-locked-no-save'))
+      this._modified = v
+      if (true === v && !this.timerSave){
+        this.analyseWasNotModified = !this.a._modified
+        this.a.modified = true
+        this.timerSave  = setTimeout(this.save.bind(this), 3000)
+        this.updateListing()
+      }
     }
   }
-}
-,
+
 /**
   @return {Number} Le nombre de brins définis
 **/
-count:{
-  get(){return Object.keys(this.brins).length}
-}
-,
-iofile:{get(){return this._iofile||defP(this,'_iofile',new IOFile(this))}}
-,
-path:{get(){return this._path||defP(this,'_path',path.join(this.a.folder,'brins.json'))}}
-,
-iofileData:{get(){return this._iofileData||defP(this,'_iofileData', new IOFile(this.pathData))}}
-,
-pathData:{get(){return this._pathData||defP(this,'_pathData',path.join(this.a.folderFiles,'dbrins.yaml'))}}
+, count:{
+    get(){return Object.keys(this.brins).length}
+  }
+
+, iofile:{get(){return this._iofile||defP(this,'_iofile',new IOFile(this))}}
+
+, path:{get(){return this._path||defP(this,'_path',path.join(this.a.folder,'brins.json'))}}
+
+, iofileData:{get(){return this._iofileData||defP(this,'_iofileData', new IOFile(this, this.pathData))}}
+
+, pathData:{get(){return this._pathData||defP(this,'_pathData',path.join(this.a.folderFiles,'dbrins.yaml'))}}
 
 
 })

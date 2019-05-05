@@ -24,7 +24,7 @@
   * [Boutons expand/collapse](#boutons_toggle_next)
 * [Documents de l'analyse](#documents_analyse)
   * [Quatre types de documents](#les_types_de_documents)
-  * [Sauvegarde protégée des documents](#saving_protected)
+  * [Sauvegarde protégée des documents (IOFile)](#saving_protected)
 * [Assemblage de l'analyse](#assemblage_analyse)
   * [Script d'assemblage](#script_assemblage_analyse)
 * [Test de la l'application](#test_application)
@@ -464,7 +464,7 @@ La sauvegarde protégée des documents est gérée par `system/IOFile.js`. L'uti
 
 ```javascript
 
-  let iofile = new IOFile(cheminFichier[, objetProprietaire])
+  let iofile = new IOFile(<cheminFichier ou objetProprietaire>[, autrePath])
 
   [iofile.code = monCodeFinal // si objetProprietaire n'est pas défini]
   iofile.save({after: methode_appelee_apres_save})
@@ -473,11 +473,11 @@ La sauvegarde protégée des documents est gérée par `system/IOFile.js`. L'uti
     // ...
   }
 
-  iofile.loadIfExists(aflter: methode_appelee_apres_load_avec_code)
+  iofile.loadIfExists(after: methode_appelee_apres_load_avec_code)
 
 ```
 
-Pour fonctionner avec un `owner` (un propriétaire — une instance, un objet), il faut que ce propriétaire possède les propriétés `path` définissant le chemin d'accès au fichier ainsi que la propriété `contents` ou la propriété `code` définissant son code final à sauver.
+Pour fonctionner avec un `owner` (un propriétaire — une instance, un objet), il faut que ce propriétaire possède les propriétés `path` définissant le chemin d'accès au fichier — ou que le path soit défini en second argument — ainsi que la propriété `contents` ou la propriété `code` définissant son code final à sauver.
 
 Exemple :
 
