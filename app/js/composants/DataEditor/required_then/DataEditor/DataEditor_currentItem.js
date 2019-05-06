@@ -23,8 +23,10 @@ Object.assign(DataEditor.prototype,{
   }
 
 , updateCurrentItem(formData){
+    log.info(`-> DataEditor#updateCurrentItem(data=${JSON.stringify(formData)})`)
     this.mainClass.DEUpdateItem(formData)
     F.notify(`Élément ${this.currentItemRef} actualisé.`)
+    log.info('<- DataEditor#updateCurrentItem')
   }
 
 })
@@ -44,6 +46,10 @@ Object.defineProperties(DataEditor.prototype,{
     get(){return this.menuItems[0].selectedIndex - 1}// premier menu = -1
   }
 , currentItemRef:{
-    get(){return `« ${this.currentItem[this.data.titleProp]} » (#${this.currentItem.id})`}
+    get(){
+      var rf = `« ${this.currentItem[this.data.titleProp]} »`
+      if(undefined !== this.currentItem.id) rf += ` (#${this.currentItem.id})`
+      return rf
+    }
   }
 })

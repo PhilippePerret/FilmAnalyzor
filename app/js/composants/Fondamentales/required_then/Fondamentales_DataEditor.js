@@ -26,6 +26,8 @@ Object.defineProperties(Fondamentales,{
         new Fondamentales(this.a.fondsFilePath)
       , new Fondamentales(this.a.fondsAltFilePath)
       ]
+    , no_new_item: true // pas d'ajout possible
+    , no_del_item: true // pas de suppression possible
     , titleProp: 'title'
     , dataFields:[
 
@@ -50,8 +52,8 @@ Object.defineProperties(Fondamentales,{
         , id: 'fd2'
         , title: 'QDF'
         , dataFields: [
-            {label:'Id QD', type:'text', class:'short', prop:'fd2-question', validities:REQUIRED}
-          , {label:'Objectif', type:'text', prop:'fd2-objectif', validities:REQUIRED}
+            {label:'QD (id)', type:'text', class:'short', prop:'fd2-question-id', validities:REQUIRED}
+          , {label:'Objectif', type:'text', prop:'fd2-objectif'}
           , {label:'Description', type:'textarea', prop:'fd2-description', validities:REQUIRED}
           , {label:'Facteur U', type:'textarea', prop:'fd2-Ufactor', aide:'universalité de cette fondamentale'}
           , {label:'Facteur O', type:'textarea', prop:'fd2-Ofactor', aide:'originalité de cette fondamentale'}
@@ -80,7 +82,8 @@ Object.defineProperties(Fondamentales,{
         , id: 'fd4'
         , title: 'RDF'
         , dataFields: [
-            {label:'Réponse', type:'select', prop:'fd4-reponse', values:{oui:'Positive',non:'Négative'}, validities:REQUIRED}
+            {label:'RD (id)', type:'text', class:'short', prop:'fd2-reponse-id', validities:REQUIRED}
+          , {label:'Réponse', type:'select', prop:'fd4-reponse', values:{oui:'Positive',non:'Négative'}, validities:REQUIRED}
           , {label:'Paradoxale', type:'checkbox', prop:'fd4-paradoxale'}
           , {label:'Paradoxe', type:'textarea', prop:'fd4-paradoxe', exemple:'Seulement si réponse paradoxale'}
           , {label:'Description', type:'textarea', prop:'fd4-description', validities:REQUIRED}

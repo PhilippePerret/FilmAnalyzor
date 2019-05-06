@@ -30,18 +30,28 @@ Object.assign(DataEditor.prototype,{
       var divsForm = [DCreate('FORM', {id: my.idFor('form_item'), class: 'dataeditor-form_item', append: divsForm})]
     }
 
-    divs.push(DCreate('DIV',{class:'header', append:[
-        DCreate('BUTTON', {type:'button', class:'btn-close'})
-      , DCreate('BUTTON', {type:'button', class:'btn-add', id:my.idFor('btn-add'), inner: '+'})
-      , DCreate('BUTTON', {type:'button', class:'btn-del', id:my.idFor('btn-del'), inner: '–'})
-      , DCreate('H3', {id:my.idFor('main-title'), inner: this.data.title})
-      ]}))
-    divs.push(DCreate('DIV',{class:'body', append:[
+    var divsHeader = []
+    divsHeader.push(DCreate('BUTTON', {type:'button', class:'btn-close'}))
+    if(!this.data.no_new_item){
+      divsHeader.push(DCreate('BUTTON', {type:'button', class:'btn-add', id:my.idFor('btn-add'), inner: '+'}))
+    }
+    if(!this.data.no_del_item){
+      divsHeader.push(DCreate('BUTTON', {type:'button', class:'btn-del', id:my.idFor('btn-del'), inner: '–'}))
+    }
+    divsHeader.push(DCreate('H3', {id:my.idFor('main-title'), inner: this.data.title}))
+    divs.push(DCreate('DIV',{class:'header', append:divsHeader}))
+
+    let classBody = ['body']
+    if(this.dataPanels) classBody.push('plain')
+    divs.push(DCreate('DIV',{class:classBody.join(' '), append:[
         DCreate('SELECT',{id:my.idFor('menu_items'), class:'menu-items'})
       , ...divsForm
       ]}))
+
+    // Le bouton "enregistrer" n'est visible que si un élément est choisi
+    let visuBtnSave = this.data.no_new_item ? 'hidden' : 'visible'
     divs.push(DCreate('DIV',{class:'footer', append:[
-        DCreate('BUTTON', {id:my.idFor('btn-save'), type:'button', class:'btn-save small main-button', inner:"Enregistrer"})
+        DCreate('BUTTON', {id:my.idFor('btn-save'), type:'button', class:'btn-save small main-button', inner:"Enregistrer", style:`visibility:${visuBtnSave};`})
       ]}))
     return divs
   }

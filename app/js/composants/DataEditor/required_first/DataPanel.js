@@ -44,6 +44,7 @@ get id(){return this.data.id}
 get domId(){return this._domid||defP(this,'_domid',`${this.dataEditor.id}-panel-${this.id}`)}
 get title(){return this.data.title}
 get fields(){return this._fields || []}
+get dataFields(){return this.fields}// pour cohérence avec données normales
 
 get DOMOnglet(){return $(`#${this.domId}-onglet`)}
 get DOMPanel(){return $(`#${this.domId}`)}

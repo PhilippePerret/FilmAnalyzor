@@ -4,15 +4,24 @@ Object.assign(DataEditor.prototype,{
 
 // Mettre l'élément choisi en édition
   editElement(){
-    this.setFormValues()
+    this.resetFormValues() // enlève aussi l'erreur
+    if(this.currentItem){
+      this.setFormValues()
+      if(this.data.no_new_item) this.saveBtn.css('visibility', 'visible')
+    } else {
+      // Quand on choisit le premier menu
+      if(this.data.no_new_item) this.saveBtn.css('visibility', 'hidden')
+    }
   }
 
 // Sauver l'élément édité
 , saveElement(){
+    log.info('-> DataEditor#saveElement')
     var errors
       , formData = this.getFormValues()
     // On doit valider les données
     if(errors = this.checkFormValues(formData)){
+      log.info('   Errors dans les données', errors)
       return this.traiteErrors(errors)
     }
 
@@ -27,7 +36,7 @@ Object.assign(DataEditor.prototype,{
       this.createNewItem(formData)
       this.editCurrent(formData.id)
     }
-
+    log.info('<- DataEditor#saveElement')
   }
 
 /**

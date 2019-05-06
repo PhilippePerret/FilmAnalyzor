@@ -79,6 +79,7 @@ Object.assign(DataField.prototype,{
       default:
         this.field.val('') // TODO : traiter les autres types
     }
+    this.field.removeClass('error')
   }
 /**
   Retourne la valeur dans le champ ou null si elle est vide

@@ -21,14 +21,18 @@ dataPanels:{get(){
       this._datafields = []
       this._datapanels = []
       var current_panel = null
+      var iField
       this.data.dataFields.map(dField => {
         if (dField.type == 'panel'){
           current_panel = new DataPanel(this, dField)
           this._datapanels.push(current_panel)
           dField.dataFields.map( subDField => {
             subDField.panel = dField.id
-            current_panel.addField(new DataField(this, subDField))
-            // this._datafields.push()
+            iField = new DataField(this, subDField)
+            current_panel.addField(iField)
+            // On met aussi le champ dans DataEditor.datafields pour simplifier
+            // la relève des valeurs, le check des valeurs, etc.
+            this._datafields.push(iField)
           })
         } else {
           this._datafields.push(new DataField(this, dField))

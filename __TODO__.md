@@ -2,6 +2,8 @@
 
 ### Traiter :
 
+- Pouvoir glisser une QD sur le champ id de la QDF
+- Pouvoir glisser une QD sur le champ id de la RDF
 - Faire un fichier fondamentales alt, et pfa alt (les mettre dans min.js)
 
 * DataEditor

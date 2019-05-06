@@ -269,6 +269,9 @@ Voilà les données générales :
     , dataFields: [
         // Définition des champs d'édition (cf. plus bas)
       ]
+    , no_new_item: true // Si true, on ne peut pas ajouter de données
+                        // C'est le cas par exemple des Fondamentales
+    , no_del_item: true // Si true, on ne peut pas détruire de données
   }
 
 ```
