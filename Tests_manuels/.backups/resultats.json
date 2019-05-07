@@ -1,10 +1,17 @@
 {
-  "date": 1556856814413,
+  "date": 1557218535680,
   "successCount": 0,
   "failureCount": 0,
   "pendingCount": 0,
   "tests": {
-    "./__associations.yaml": {
+    "./__personnages.yaml": {
+      "0": {
+        "0": 2,
+        "1": 2,
+        "2": 2
+      }
+    },
+    "./_associations.yaml": {
       "0": {
         "0": 2,
         "1": 2

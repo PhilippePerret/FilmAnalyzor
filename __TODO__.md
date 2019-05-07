@@ -2,9 +2,6 @@
 
 ### Traiter :
 
-* TESTS MANUEL :
-  - le body doit être overflow:auto
-
 * DATAEDITOR
   - [BUG] Quand on crée un nouveau personnage, il s'affiche bien dans la liste, il
     s'enregistre bien dans le fichier yaml, mais quand on le choisit dans le menu,
