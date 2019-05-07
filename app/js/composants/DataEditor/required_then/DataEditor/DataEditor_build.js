@@ -49,10 +49,13 @@ Object.assign(DataEditor.prototype,{
       ]}))
 
     // Le bouton "enregistrer" n'est visible que si un élément est choisi
-    let visuBtnSave = this.data.no_new_item ? 'hidden' : 'visible'
-    divs.push(DCreate('DIV',{class:'footer', append:[
-        DCreate('BUTTON', {id:my.idFor('btn-save'), type:'button', class:'btn-save small main-button', inner:"Enregistrer", style:`visibility:${visuBtnSave};`})
-      ]}))
+    var footerDivs = []
+    let visuBtns = this.data.no_new_item ? 'hidden' : 'visible'
+    if(this.data.checkOnDemand){
+      footerDivs.push(DCreate('BUTTON', {id:my.idFor('btn-check'), type:'button', class:'btn-check small', inner:"Check now!", style:`visibility:${visuBtns};`}))
+    }
+    footerDivs.push(DCreate('BUTTON', {id:my.idFor('btn-save'), type:'button', class:'btn-save small main-button', inner:"Enregistrer", style:`visibility:${visuBtns};`}))
+    divs.push(DCreate('DIV',{class:'footer', append:footerDivs}))
     return divs
   }
 
@@ -71,6 +74,11 @@ Object.assign(DataEditor.prototype,{
     this.jqObj.find(`#${this.id}-btn-add`).on('click', this.addElement.bind(this))
     this.jqObj.find(`#${this.id}-btn-del`).on('click', this.removeCurrentItem.bind(this))
     this.jqObj.find(`#${this.id}-menu_items`).on('change', this.editElement.bind(this))
+
+    if(this.data.checkOnDemand){
+      this.checkBtn.on('click', this.onCheckOnDemand.bind(this))
+    }
+
     this.saveBtn.on('click', this.saveElement.bind(this))
 
     // Les champs d'édition répondent au cmd-enter pour soumettre le

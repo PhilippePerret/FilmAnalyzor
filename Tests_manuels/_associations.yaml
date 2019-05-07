@@ -5,6 +5,6 @@
   description: On peut associer une note à une scène
   synopsis:
     - ouvrir l'app
-    - /ouvrir l'analyse 'with_events'
+    - /ouvrir l'analyse 'with_events'/
   checks:
     - Poursuivre la rédaction de ce test

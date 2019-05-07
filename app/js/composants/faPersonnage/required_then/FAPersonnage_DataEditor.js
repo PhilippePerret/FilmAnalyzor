@@ -6,7 +6,8 @@ Object.assign(FAPersonnage,{
   Méthode pour sauver les données éditées par le DataEditor
 **/
   DESave(){
-    this.code = YAML.dump(this.data)
+    this.contents = YAML.dump(this.data)
+    console.log("Données enregistrées dans le fichier personnages : ", this.contents)
     this.iofile.save()
     FAWriter.resetDocument('dpersonnages')
   }
@@ -27,7 +28,7 @@ Object.assign(FAPersonnage,{
     this._data[dperso.id] = dperso
     this.reset()
     this.DESave()
-    return true
+    return this.get(dperso.id)
   }
 
 /**
@@ -91,8 +92,9 @@ Object.defineProperties(FAPersonnage,{
             }
 
           , checkValueMethod: (v) => {
+              if (!v) return // rien = ok
               try {
-                Object.isObject(v) || raise("Les dimensions devraient être un objet.")
+                ('object' === typeof(v)) && Array.isArray(v) && raise("Les dimensions devraient être un objet.")
                 for(var k in v){
                   v[k] || raise(`La clé de dimension "${k}" est mal définie (&lt;clé&gt;: &lt;valeur&gt;)`)
                 }

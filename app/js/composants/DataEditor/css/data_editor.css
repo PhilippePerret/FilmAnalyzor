@@ -118,3 +118,7 @@
   height:6em;
   resize:none;
 }
+
+.dataeditor .footer button {
+  margin-left:12px;
+}

@@ -5,7 +5,7 @@ const APPFOLDER = path.resolve('.')
 function WhenAllIsReallyReady(){
   // FAPersonnage.dataEditor.open()
   // FABrin.dataEditor.open()
-  current_analyse.openDocInDataEditor('fondamentales')
+  // current_analyse.openDocInDataEditor('fondamentales')
 }
 
 $(document).ready(() => {

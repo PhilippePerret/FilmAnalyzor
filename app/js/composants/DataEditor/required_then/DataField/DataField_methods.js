@@ -1,6 +1,7 @@
 'use strict'
 
 Object.assign(DataField.prototype,{
+
   updateSelectValues(){
     this.field.html('')
     this.optionsSelect().map(o => this.field.append(o))

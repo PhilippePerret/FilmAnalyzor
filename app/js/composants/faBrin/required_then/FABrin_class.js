@@ -74,9 +74,15 @@ reset(){
 
 , afterLoad(data){
     log.info("-> FABrin::afterLoad")
+    var ibrin
     if(data){
       for(var brin_id in data){
-        Object.assign(this.brins[brin_id].data, data[brin_id])
+        ibrin = this.brins[brin_id]
+        if (ibrin){
+          Object.assign(ibrin.data, data[brin_id])
+        } else {
+          F.error(`Error: impossible de trouver le brin #${brin_id}`)
+        }
       }
     }
     // console.log("[After load] brins:", this.brins)
@@ -139,7 +145,7 @@ reset(){
 , composeThisDataBrins(){
     this.contents = Object.values(this.brins).map(brin => brin.dataEpured())
   }
-  
+
 /**
   Méthode qui définit les données à enregistrer (et les envoie directement
   à iofile). La raison est simple : ce ne sont que les données de liaisons

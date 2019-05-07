@@ -7,10 +7,16 @@ Object.assign(DataEditor.prototype,{
     this.resetFormValues() // enlève aussi l'erreur
     if(this.currentItem){
       this.setFormValues()
-      if(this.data.no_new_item) this.saveBtn.css('visibility', 'visible')
+      if(this.data.no_new_item){
+        this.saveBtn.css('visibility', 'visible')
+        this.checkBtn.css('visibility', 'visible')
+      }
     } else {
       // Quand on choisit le premier menu
-      if(this.data.no_new_item) this.saveBtn.css('visibility', 'hidden')
+      if(this.data.no_new_item){
+        this.saveBtn.css('visibility', 'hidden')
+        this.checkBtn.css('visibility', 'hidden')
+      }
     }
   }
 
@@ -20,7 +26,7 @@ Object.assign(DataEditor.prototype,{
     var errors
       , formData = this.getFormValues()
     // On doit valider les données
-    if(errors = this.checkFormValues(formData)){
+    if(errors = this.checkFormValues()){
       log.info('   Errors dans les données', errors)
       return this.traiteErrors(errors)
     }
@@ -51,6 +57,8 @@ Object.assign(DataEditor.prototype,{
 **/
 , createNewItem(data){
     let nitem = this.mainClass.DECreateItem(data)
+    // On l'ajoute à la liste des items
+    this.data.items.push(nitem)
     // Ajout au menu (inutile de le sélectionner, ça le fera avec
     // la méthode d'édition)
     this.menuItems.append(DCreate('OPTION',{value: data.id, inner: DFormater(nitem[this.titleProp])}))

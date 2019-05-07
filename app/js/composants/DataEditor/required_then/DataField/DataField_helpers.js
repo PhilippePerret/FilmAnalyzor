@@ -18,11 +18,24 @@ Object.assign(DataField.prototype,{
   Utilise lorsqu'un champ d'édition particulier doit être surveillé
   Pour le moment, elle est utile lorsque le select a des valeurs définies par
   une méthode (qui permet donc d'actualiser les valeurs)
+
+  Elle gère aussi la propriété `observe` qui peut placer des observers
 **/
   observeIfNecessary(){
     if(this.isSelectUpdatable){
       this.dataEditor.jqObj.find(`.update-${this.prop}-values`).on('click', this.updateSelectValues.bind(this))
       this.dataEditor.jqObj.find(`.open-${this.prop}-values`).on('click', this.openValues.bind(this))
+    }
+
+    if (this.observe){
+      // Cf. le manuel développeur
+      for(var e in this.observe){
+        if(e === 'drop'){
+          this.field.droppable(this.observe[e])
+        } else {
+          this.field.on(e, this.observe[e].bind(this))
+        }
+      }
     }
   }
 

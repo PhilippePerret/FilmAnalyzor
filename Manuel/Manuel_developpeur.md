@@ -272,6 +272,11 @@ Voilà les données générales :
     , no_new_item: true // Si true, on ne peut pas ajouter de données
                         // C'est le cas par exemple des Fondamentales
     , no_del_item: true // Si true, on ne peut pas détruire de données
+    , checkOnDemand: true /* Si true, les données ne sont pas vérifiées
+                            automatiquement. C'est un bouton qui permet de les
+                            valider. Cela permet de les rentrer progressivement,
+                            comme pour les fondamentales par exemple.
+                          */
   }
 
 ```
@@ -284,6 +289,13 @@ Voilà les données générales :
     label:    'Libellé affiché en regard du champ'     // REQUIS
   , type:     'type du champ (text, textarea, select)'   // REQUIS
   , prop:     'la propriété de l’instance qui sera lue et affectée'  // REQUIS
+  , observe: {
+        '<type evenement>': <méthode de traitement>
+      /* par exemple */ , 'click': OBJ.onClick.bind(OBJ)
+      /* ou encore */   , 'change': OBJ.onChange.bind(OBJ)
+      /* Cas spécial du drop : */
+      , 'drop': {<data pour droppable>}
+    }
   , exemple:  'placeholder affiché quand aucune donnée'
   , aide:     'texte ajouté en petit à côté du libellé'
   , validities: flag pour tester la validité de (UNIQ, REQUIRED, ASCII)

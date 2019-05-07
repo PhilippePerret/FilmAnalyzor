@@ -27,8 +27,8 @@ dataPanels:{get(){
           current_panel = new DataPanel(this, dField)
           this._datapanels.push(current_panel)
           dField.dataFields.map( subDField => {
-            subDField.panel = dField.id
             iField = new DataField(this, subDField)
+            iField.panel = current_panel
             current_panel.addField(iField)
             // On met aussi le champ dans DataEditor.datafields pour simplifier
             // la relève des valeurs, le check des valeurs, etc.
@@ -38,6 +38,7 @@ dataPanels:{get(){
           this._datafields.push(new DataField(this, dField))
         }
       })
+      if(this._datapanels.length === 0) delete this._datapanels
     }
     return this._datafields
   }}

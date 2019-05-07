@@ -2,23 +2,37 @@
 
 ### Traiter :
 
-- Pouvoir glisser une QD sur le champ id de la QDF
-- Pouvoir glisser une QD sur le champ id de la RDF
-- Faire un fichier fondamentales alt, et pfa alt (les mettre dans min.js)
+* TESTS MANUEL :
+  - le body doit être overflow:auto
 
-* DataEditor
-  - Faire la même chose pour les fondamentales
-      Mais ça a l'air trop dur… Il faudrait changer les champs à
-      chaque fondamentale. Ou alors, il faut mettre en item les différents
-      groupes de fondamentales et dans les champs toutes les fondamentales
-      Mais essayer déjà avec les trucs communs
+* DATAEDITOR
+  - [BUG] Quand on crée un nouveau personnage, il s'affiche bien dans la liste, il
+    s'enregistre bien dans le fichier yaml, mais quand on le choisit dans le menu,
+    ses données ne s'affichent pas.
+  - [BUG] Un élément supprimé reste dans le fichier ymal (avec les personnages en tout cas)
 
+  - si la qdf (id) est définie => bouton pour la voir
+  - si la rdf (id) est définie => bouton pour la voir
+  - si le personnage fondamental est défini => bouton pour le voir
+  - si l'antagoniste est défini => bouton pour le voir
+  - rendre les champs perso_id, antagoniste_id sensibles au drop de personnage
+  - Il faut rendre les textarea et input-text sensible à tout drop (event, times, brins)
+  => Dans la définition des dataFields, pouvoir mettre un paramètre
+  observe: 'click' => methode, 'drop' => methode
+  'drop'=>method entrainerait un travail plus conséquent puisqu'il faudrait
+  rentre le champ droppable. Dans ce cas là, la valeur, au lieu d'être une
+  méthode, serait les options de droppable
+  'drop'=>{data drop}
+  => Documenter la propriété 'observe'
+  - Pouvoir glisser une QD sur le champ id de la RDF
+  - Faire un fichier fondamentales alt, et pfa alt (les mettre dans min.js)
   - Faire la même chose pour les variables ?
   - Faire la même chose pour les infos du film ?
   - Pour les brins, et peut-être aussi les personnages, il faudrait exploiter
     les propriétés 'events', 'documents', 'times', 'brins' (qui s'enregistrent maintenant dans le fichier YAML).
-    - les afficher
-    - pouvoir dropper un nouvel élément
+    => Propriété général 'associable' qui construit un div, comme pour le
+       div parent dans l'eventform, sur lequel on peut glisser des éléments
+    - les afficher quand ils sont définis
 
 * CHECK ANALYSE
   - Poursuivre le check de la validité des données (app/js/tools/analyse_checker.js)

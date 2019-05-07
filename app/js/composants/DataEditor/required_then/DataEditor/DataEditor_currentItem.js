@@ -13,10 +13,14 @@ Object.assign(DataEditor.prototype,{
     if(!this.currentItem) return
     if(!confirm(`Es-tu certain de vouloir détruire à tout jamais l'élément ${this.currentItemRef}?`)) return
     if(this.mainClass.DERemoveItem(this.currentItem)){
+      // Supprimer dans les items
+      this.data.items.splice(this.currentItemIndex,1)
       // Supprimer dans le menu
       this.menuItems.find(`option:nth-child(${this.currentItemIndex + 2})`).remove()
       // Remettre le menu au début
       this.menuItems[0].selectedIndex = 0
+      // Plus d'élément courant
+      delete this.currentItem
       // Resetter les champs
       this.resetFormValues()
     }
@@ -24,7 +28,27 @@ Object.assign(DataEditor.prototype,{
 
 , updateCurrentItem(formData){
     log.info(`-> DataEditor#updateCurrentItem(data=${JSON.stringify(formData)})`)
-    this.mainClass.DEUpdateItem(formData)
+    /**
+      Si le data-editor fonctionne par panneau à onglets, il faut recomposer
+      une vrai données.
+      Par exemple, quand l'identifiant du champ sera `...fd1-perso_id`, où
+      `fd1` est l'identifiant du panneau, la table formData devra posséder
+      une clé `fd1` qui sera un object définissant 'perso_id'
+    **/
+    if(this.dataPanels){
+      var h = {}
+      this.dataPanels.map(dpanel => {
+        h[dpanel.id] = {}
+        dpanel.dataFields.map(dfield => {
+          h[dpanel.id][dfield.prop] = formData[`${dpanel.id}-${dfield.prop}`]
+        })
+      })
+      formData = h
+      h = null
+    }
+    let nitem = this.mainClass.DEUpdateItem(formData)
+    nitem || raise("La méthode DEUpdateItem doit impérativement retourner l'élément actualisé")
+    this.data.items[this.currentItemIndex] = nitem
     F.notify(`Élément ${this.currentItemRef} actualisé.`)
     log.info('<- DataEditor#updateCurrentItem')
   }

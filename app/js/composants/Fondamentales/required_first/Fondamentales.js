@@ -29,6 +29,15 @@ init(analyse){
   else this.loaded = true // pas de fondamentales
 }
 
+save(options){
+  this.saving = true
+  if(undefined === options)options = {}
+  if(undefined === options.after) options.after = this.afterSave.bind(this)
+  this.iofile.save(options)
+}
+afterSave(){
+  this.saving = false
+}
 /**
   Méthode qui charge les fondamentales si
   elles existent.
@@ -79,10 +88,11 @@ get fds(){
 get iofile(){return this._iofile||defP(this,'_iofile', new IOFile(this))}
 // Path au fichier des fondamentales
 get path(){return this._path}
+// Affixe
+get affixe(){return this._affixe||defP(this,'_affixe',path.basename(this.path,path.extname(this.path)))}
 // Titre pour le data-editor
 get title(){return this._title||defP(this,'_title', this.defineTitle())}
 defineTitle(){
-  var n = path.basename(this.path,path.extname(this.path))
-  return n.replace(/_/,' ').titleize()
+  return this.affixe.replace(/_/,' ').titleize()
 }
 }

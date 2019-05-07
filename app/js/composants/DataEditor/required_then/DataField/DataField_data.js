@@ -13,18 +13,23 @@ Object.defineProperties(DataField.prototype,{
 , validities: {get(){return this.data.validities||[]}}
 , values:     {get(){return this.data.values}}
 // Propriétés exceptionnelles
+, observe:    {get(){return this.data.observe}}
 , defValue:   {get(){return this.data.defValue}}
 , exemple:    {get(){return this.data.exemple}}
 , aide:       {get(){return this.data.aide}}
 , setValueMethod:{get(){return this.data.setValueMethod}}
 , getValueMethod:{get(){return this.data.getValueMethod}}
+, checkValueMethod:{get(){return this.data.checkValueMethod}}
 
 // ---------------------------------------------------------------------
 //  DONNÉES VOLATILES
 
 // La valeur dans le champ ou null si non définie
 , fieldValue:     {get(){return this.getFieldValueOrNull()}}
-, domId:          {get(){return this._domid||defP(this,'_domid', `${this.dataEditor.id}-item-${this.prop}`)}}
+  // La 'key' est une propriété plus développée qui tient compte du fait que la propriété
+  // est définie dans un panneau.
+, key:            {get(){return this._key||defP(this,'_key', `${this.panel?(this.panel.id+'-'):''}${this.prop}`)}}
+, domId:          {get(){return this._domid||defP(this,'_domid', `${this.dataEditor.id}-item-${this.key}`)}}
 , tagName:        {get(){return this._tagname || defP(this,'_tagname',this.tagNameAndType[0])}}
 , tagAttributes:  {get(){return this._tagattrs||defP(this,'_tagattrs',this.defineTagAttributes())}}
 , tagNameAndType: {get(){return this._tagnameNtype||defP(this,'_tagnameNtype',this.defineTagNameAndType())}}
