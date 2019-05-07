@@ -26,7 +26,8 @@ const CURRENT_THING_MENUS = [
   'display-fondamentales', 'display-statistiques', 'new-eventer', 'open-writer',
   'display-timeline', 'display-analyse-state', 'display-last-report',
   'display-protocole', 'option-locked', 'new-version', 'display-brins',
-  'goto-last-scene', 'display-decors', 'check-data-validity'
+  'goto-last-scene', 'display-decors', 'check-data-validity',
+  'display-personnages'
 ]
 // Note : les ID des menus de documents seront ajoutés "à la volée"
 
@@ -48,6 +49,9 @@ const DATA_DOCS = require('../composants/faWriter/required_first/min.js')
 function openDocInWriter(doc_id){
   mainW.webContents.executeJavaScript(`current_analyse && current_analyse.openDocInWriter("${doc_id}")`)
 }
+function openDocInDataEditor(doc_id){
+  mainW.webContents.executeJavaScript(`current_analyse && current_analyse.openDocInDataEditor("${doc_id}")`)
+}
 var curType = null
 for(var doc_id in DATA_DOCS){
   if (DATA_DOCS[doc_id].menu === false) continue
@@ -58,13 +62,35 @@ for(var doc_id in DATA_DOCS){
   var ddoc = DATA_DOCS[doc_id]
   var menu_id = `open-doc-${doc_id}`
   CURRENT_THING_MENUS.push(menu_id)
-  var method = openDocInWriter.bind(null, doc_id)
-  FAWriterSubmenus.push({
-      label:    ddoc.hname
-    , id:       menu_id
-    , enabled:  false
-    , click:    method
-  })
+  var method    = openDocInWriter.bind(null, doc_id)
+  if(ddoc.dataeditor){
+    CURRENT_THING_MENUS.push(`${menu_id}-de`)
+    var DEMethod  = openDocInDataEditor.bind(null,doc_id)
+    FAWriterSubmenus.push({
+        label:    ddoc.hname
+      , submenu:[
+            {
+              label: "Éditeur de données"
+            , id:     `${menu_id}-de`
+            , enabled: false
+            , click: DEMethod
+            }
+          , {
+              label:  "Fichier complet"
+            , id:     menu_id
+            , enabled: false
+            , click:    method
+            }
+        ]
+    })
+  } else {
+    FAWriterSubmenus.push({
+        label:    ddoc.hname
+      , id:       menu_id
+      , enabled:  false
+      , click:    method
+    })
+  }
 }
 
 // console.log("FAWriterSubmenus:", FAWriterSubmenus)
@@ -291,7 +317,7 @@ const DATA_MENUS = [
                 label: 'Protocle de l’analyse'
               , id: 'display-protocole'
               , enabled: false
-              , click: ()=>{execJsOnCurrent('displayProtocole')}
+              , click: ()=>{execJsOnCurrent('toggleProtocole')}
             }
           , {type:'separator'}
           , {
@@ -299,7 +325,7 @@ const DATA_MENUS = [
               , id: 'display-infos-film'
               , accelerator: 'CmdOrCtrl+Alt+Shift+I'
               , enabled: false
-              , click: () => {execJsOnCurrent('displayInfosFilm')}
+              , click: () => {execJsOnCurrent('togglePanneauInfosFilm')}
             }
           , {type:'separator'}
           , {
@@ -314,35 +340,42 @@ const DATA_MENUS = [
               , id: 'display-fondamentales'
               , accelerator: 'CmdOrCtrl+Alt+Shift+F'
               , enabled: false
-              , click: ()=>{execJsOnCurrent('displayFondamentales')}
+              , click: ()=>{execJsOnCurrent('togglePanneauFondamentales')}
+            }
+          , {
+                label: "Personnages"
+              , id: 'display-personnages'
+              , accelerator: 'CmdOrCtrl+Alt+Shift+C'
+              , enabled: false
+              , click: ()=>{execJsOnCurrent('togglePanneauPersonnages')}
             }
           , {
                 label: "Brins"
               , id: 'display-brins'
               , accelerator: 'CmdOrCtrl+Alt+Shift+B'
               , enabled: false
-              , click: ()=>{execJsOnCurrent('displayBrins')}
+              , click: ()=>{execJsOnCurrent('togglePanneauBrins')}
             }
           , {
                 label: "Décors"
               , id: 'display-decors'
               , accelerator: 'CmdOrCtrl+Alt+Shift+D'
               , enabled: false
-              , click: ()=>{execJsOnCurrent('displayDecors')}
+              , click: ()=>{execJsOnCurrent('togglePanneauDecors')}
             }
           , {
                 label: "Statistiques"
               , id: 'display-statistiques'
               , accelerator: 'CmdOrCtrl+Alt+Shift+S'
               , enabled: false
-              , click: ()=>{execJsOnCurrent('displayStatistiques')}
+              , click: ()=>{execJsOnCurrent('togglePanneauStatistiques')}
             }
           , {type:'separator'}
           , {
                 label: "Avancement de l'analyse"
               , id: 'display-analyse-state'
               , accelerator: 'CmdOrCtrl+Alt+S'
-              , click: () => {execJsOnCurrent('displayAnalyseState')}
+              , click: () => {execJsOnCurrent('toggleAnalyseState')}
             }
           , {
                 label: "Dernier rapport produit"

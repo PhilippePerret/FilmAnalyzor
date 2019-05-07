@@ -55,7 +55,7 @@ toString(){
     case 'pitch':
       // Pour le méthode qui répondent à la méthode `asPitch`
       // à commencer par la scène
-      domEls.push(...this.asPitch(opts))
+      domEls.push(this.asPitch(opts))
       break
     case 'full':
       // Affiche complet, avec toutes les informations
@@ -78,6 +78,7 @@ toString(){
   else if (flag & LINKED) domEls.push(this.showLink(opts))
 
   // --- LE DIV FINAL ---
+
   // Avec tous ses éléments ajoutés en fonction des choix
   // console.log("domEls:",domEls)
   let divAs = DCreate('DIV', {class:`${this.type} EVT${this.id}`, append: domEls})
@@ -168,6 +169,11 @@ asAssociate(opts){
     divs.push(DCreate('SPAN', {class:'titre', inner: this.f_titre || DFormater(this.titre)}))
   }
   divs.push(DCreate('SPAN', {class:'content', inner: DFormater(this.content)}))
+  if(opts.owner){
+    // Si les options définissent un owner, on ajoute un lien pour pouvoir
+    // dissocier le temps de son possesseur
+    divs.push(FAEvent.linkDissocier({owner: opts.owner, owned: this}))
+  }
   return DCreate('DIV', {class:`associate ${this.type} EVT${this.id}`, append:divs})
 }
 

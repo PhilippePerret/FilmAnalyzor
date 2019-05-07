@@ -61,6 +61,7 @@ loadData(){
 
 // Miscelleanous
 
+toggle(){this.fwindow.toggle()}
 show(){this.fwindow.show()}
 saveAndHide(){
   this.save()

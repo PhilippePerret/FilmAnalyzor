@@ -27,11 +27,27 @@ static get(event_id){
 }
 
 /**
+  Pour mettre l'event +event_id+ en édition
+**/
+static edit(event_id){
+  return EventForm.editEvent.bind(EventForm, this.get(event_id))()
+}
+
+/**
   @return {Number} Le nombre d'events actuels
 **/
 static count(){
   return this.a.events.length
 }
+
+/**
+  Retourne true si l'event d'identifiant +eid+ existe ou est en cours
+  de création
+**/
+static exists(eid){
+  return (this.a.ids[eid] !== undefined) || ($(`form#form-edit-event-${eid}`).length > 0)
+}
+
 /**
   @return {Array} La liste des propriétés pour une sous-classe
   précise.
@@ -105,7 +121,7 @@ static get folderModifieds(){
                             :time ou :id suivant qu'il s'agit d'un temps ou
                             d'un autre élément
 **/
-static dissocier(datadis){
+static prepareDissociation(datadis){
   datadis.owner.type || raise('Il faut fournir le type du propriétaire.')
   datadis.owner.id !== undefined || raise("Il faut fournir l'id du propriétaire")
   let owner = ((typ, id) => {
@@ -152,6 +168,75 @@ static get type(){return this._type||defP(this,'_type', this.dataType.type)}
 static get shortName(){return this._shortName||defP(this,'_shortName', this.dataType.name.short.cap.sing)}
 
 // ---------------------------------------------------------------------
+//  MÉTHODES POUR LES ASSOCIATIONS
+
+/**
+  Construit un lien pour casser une association et le retourne.
+  @param {Object} datass  Données pour l'association. Doit contenir :
+                          :owner    Définition du propriétaire (:type/:id)
+                          :owned    Définition du possédé (:type/:id) ou objet
+**/
+static linkDissocier(datass){
+  if(datass.owner.type == datass.owned.type && datass.owned.id == datass.owner.id){
+    throw("Impossible de dissocier un élément de lui-même, voyons…")
+  }
+  let owner_id = datass.owner.id
+  if('number' !== typeof(owner_id)) owner_id = `'${owner_id}'`
+  let owned_id = datass.owned.id
+  if('number' !== typeof(owned_id)) owned_id = `'${owned_id}'`
+
+  return DCreate('A',{class:'lkdiss', inner: '[dissocier]', attrs:{onclick:`FAEvent.prepareDissociation.bind(FAEvent)({owned:{type:'${datass.owned.metaType||datass.owned.type}', id:${owned_id}}, owner:{type:'${datass.owner.metaType||datass.owner.type}', id:${owner_id}}})`}})
+}
+static associer(obj, asso){
+  log.info(`-> FAEvent::associer`)
+  let list_id = `${asso.type}s`
+  let res = this.addToList(list_id, obj, asso.id)
+  if (res == true){
+    obj.modified = true
+    if('function'===typeof(obj.updateInReader)){
+      obj.updateInReader()
+    }
+  }
+  log.info(`<- FAEvent::associer (return ${res})`)
+  return res
+}
+// ATTENTION : LA MÊME MÉTHODE EXISTE PLUS HAUT
+static dissocier(obj, asso){
+  let list_id = `${asso.metaType||asso.type}s`
+  let res = this.supFromList(list_id, obj, asso.id)
+  if (res == true){
+    obj.modified = true
+    if('function'===typeof(obj.updateInReader)){
+      obj.updateInReader()
+    }
+  }
+  return res
+}
+
+static addToList(list_id, obj, asso_id){
+  log.info(`-> FAEvent::addToList(list_id="${list_id}", obj={type:${obj.type},id:${obj.id}}, asso_id=${asso_id})`)
+  // console.log("addToList:", list_id, foo_id)
+  if(list_id == 'times' && (asso_id instanceof(OTime))) asso_id = asso_id.seconds
+  if(obj[list_id].indexOf(asso_id) < 0){
+    log.info(`   Ajout id #${asso_id} à liste ${list_id} de ${obj.toString()}`)
+    obj[list_id].push(asso_id)
+    return true
+  } else {
+    F.notify(`Les deux éléments sont déjà liés.`)
+    return false
+  }
+}
+static supFromList(list_id, obj, asso_id){
+  if(list_id == 'times' && (asso_id instanceof(OTime))) asso_id = asso_id.seconds
+  var off = obj[list_id].indexOf(asso_id)
+  if(off > -1){
+    obj[list_id].splice(off, 1)
+    return true
+  } else {
+    return false
+  }
+}
+// ---------------------------------------------------------------------
 //  INSTANCE
 
 /**
@@ -161,6 +246,7 @@ static get shortName(){return this._shortName||defP(this,'_shortName', this.data
 **/
 constructor(analyse, data){
   this.analyse  = this.a = analyse
+  this.metaType = 'event' // alors que le type sera 'scene', 'dialog', etc.
 
   this.dispatch(data)
 
@@ -268,92 +354,11 @@ unsetParent(){
   this.modified = true
 }
 
-associer(asso){
-  let res = ( (typ, id) => {
-    switch (typ) {
-      case 'brin':
-        return this.addBrin(asso.id)
-      case 'event':
-        return this.addEvent(asso.id)
-      case 'document':
-        return this.addDocument(asso.id)
-      case 'time':
-        return this.addTime(asso.id)
-      default:
-        throw(T('unknown-associated-type', {type: asso.type}))
-    }
-  })(asso.type, asso.id)
-  this.modified = true
-  this.updateInReader()
-  return res
-}
 /**
-  Méthode pour dissocier l'élément +asso+ de l'event courant
+Méthode pour associer et dissocier l'élément +asso+ de l'event courant
 **/
-dissocier(asso){
-  switch (asso.type) {
-    case 'document':
-      this.supDocument(asso.id)
-      break;
-    case 'brin':
-      this.supBrin(asso.id)
-      break
-    case 'time':
-      this.supTime(asso)
-      break
-    default:
-      // Un event
-      this.supEvent(asso.id)
-  }
-  this.modified = true
-  this.updateInReader()
-}
-
-
-addDocument(doc_id){
-  if(this.documents.indexOf(doc_id) < 0){
-    this.documents.push(doc_id)
-  }
-  return true // car on peut, par exemple, vouloir mettre plusieurs balises
-              // dans le texte [plus tard: ET ALORS ???…]
-}
-supDocument(asso_id){
-  var off = this.documents.indexOf(asso_id)
-  if(off > -1) this.documents.splice(off, 1)
-}
-
-addEvent(event_id){
-  if(this.id == event_id){
-    return F.error(T('same-event-no-association'))
-  } else if (this.events.indexOf(event_id) < 0) {
-    this.events.push(event_id)
-  }
-  return true // même remarque que ci-dessus
-}
-supEvent(asso_id){
-  var off = this.events.indexOf(asso_id)
-  if(off > -1) this.events.splice(off, 1)
-}
-
-addTime(otime){
-  if(this.times.indexOf(otime.seconds) < 0){
-    this.times.push(otime.seconds)
-  }
-}
-supTime(otime){
-  var off = this.times.indexOf(otime.seconds)
-  if(off > -1) this.times.splice(off, 1)
-}
-
-addBrin(brin_id){
-  if(!this.brins || this.brins.indexOf(brin_id) < 0){
-    this.brins.push(brin_id)
-  }
-}
-supBrin(asso_id){
-  var off = this.brins.indexOf(asso_id)
-  if(off > -1) this.brins.splice(off, 1)
-}
+associer(asso) {return FAEvent.associer(this, asso)}
+dissocier(asso){return FAEvent.dissocier(this, asso)}
 
 /**
 
@@ -582,7 +587,9 @@ hasPersonnages(filtre){
     }
   } else {
     for(var reg of filtre.regulars){
-      if(!this.content.match(reg) && !this.titre.match(reg)) return false
+      let notInContent = !this.content  || !this.content.match(reg)
+      let notInTiter   = !this.titre    || !this.titre.match(reg)
+      if( notInContent && notInTiter ) return false
     }
     return true // dans tous les cas
   }
@@ -741,7 +748,9 @@ observe(container){
    */
   o.draggable({
       revert: true
-    , helper: 'clone'
+    // , helper: 'clone'
+    , helper: () => {return `<div style="z-index:2000;" data-type="event" data-etype="${this.type}" data-id="${this.id}">${this.toString()}</div>`}
+    , cursorAt: {left:40, top:20}
     // , stack: 'section#section-eventers div.eventer div.pan-events'
     // , start: function(event, ui) { $(this).css("z-index", a++); }
     , classes:{
@@ -773,46 +782,6 @@ defineDomReaderObj(){
   var obj
   if (this.jqReaderObj) obj = this.jqReaderObj[0]
   return obj
-}
-
-}
-
-// Pour la compatibilité avec les autres types
-class FAEevent extends FAEvent {
-
-static get dataType(){
-  if(undefined === this._dataType){
-    this._dataType ={
-      type: 'event'
-    , genre: 'M'
-    , article:{
-        indefini: {sing: 'un', plur: 'des'}
-      , defini: {sing: 'l’', plur: 'les'}
-      }
-    , name: {
-        plain: {
-          cap: {sing: 'Évènement', plur: 'Évènements'}
-        , min: {sing: 'évènement', plur: 'évènements'}
-        , maj: {sing: 'ÉVÈNEMENT', plur: 'ÉVÈNEMENTS'}
-        }
-      , short:{
-          cap: {sing: 'Évènement', plur: 'Évènements'}
-        , min: {sing: 'évènement', plur: 'évènements'}
-        , maj: {sing: 'ÉVÈNEMENT', plur: 'ÉVÈNEMENTS'}
-        }
-      , tiny: {
-          cap: {sing: 'Ev.', plur: 'Evs.'}
-        , min: {sing: 'ev.', plur: 'evs.'}
-        }
-      }
-    }
-  }
-  return this._dataType
-}
-
-
-constructor(analyse, data){
-  super(analyse, data)
 }
 
 }

@@ -1,0 +1,135 @@
+/* note: une flying-window */
+.dataeditor {
+  background-color:#EEEEFF;
+}
+
+/* ---------------------------------------------------------------------
+    GÉNÉRALITÉS
+ */
+.dataeditor img.link, .dataeditor span.link img {
+  width:20px;
+  margin-left:8px;
+}
+
+/* ---------------------------------------------------------------------
+    BODY
+ */
+.dataeditor .body:not(.plain) {
+  padding:12px;
+}
+
+/*
+  Pour un body 'plain', utilisé pour les panneaux, par exemple,
+  pour ne pas avoir de bord pour les onglets.
+ */
+.dataeditor .body.plain { padding:0px; }
+
+.dataeditor .dataeditor-onglets {
+  border-bottom:3px solid;
+  margin-top:1em;
+  padding-left:12px;
+}
+.dataeditor a.onglet {
+  display:inline-block;
+  text-align:center;
+  font-family:Arial,Helvetica;
+  font-size:12.1pt;
+  border-style:solid;
+  border-width:1px 1px 0 1px;
+  border-radius:8px 8px 0 0;
+  height:22px;
+  cursor:pointer;
+}
+.dataeditor a.onglet.active {
+  background-color:#516468;
+  border-color:#516468;
+  color:white;
+}
+
+.dataeditor .panel {
+  display:none;
+}
+.dataeditor .panel.active {
+  display:block;
+}
+
+.dataeditor button.btn-add,
+.dataeditor button.btn-del
+{
+  all:unset;
+  float:right;
+  background-color:inherit;
+  color:white;
+  font-size:20pt;
+  border-left:2px solid #CCCCCC;
+  padding:2px 14.5px;
+}
+
+.dataeditor .body.plain select.menu-items {
+  margin:12px 0 0 12px;
+}
+.dataeditor select.menu-items,
+.dataeditor select.menu-items option {
+  all:unset;
+  font-size:inherit;
+  font-family:inherit;
+  font-style:normal;
+  border:1px solid;
+}
+
+.dataeditor select.menu-items {
+  font-weight:bold;
+  padding:2px 8px;
+  width:400px;
+}
+
+.dataeditor form select,
+.dataeditor form select option
+{
+  font-family:inherit;
+  font-size:inherit;
+  color:inherit;
+  font-style:inherit;
+  /* all:inherit; */
+}
+
+.dataeditor form.dataeditor-form_item {
+  padding:0.9em;
+}
+.dataeditor form.dataeditor-form_item div.div-form {
+  margin-bottom:0.5em;
+}
+.dataeditor form.dataeditor-form_item div.div-form label:not(.textarea) {
+  display:inline-block;
+  width:140px;
+}
+.dataeditor form.dataeditor-form_item label.textarea {
+  display:block;
+  width:98%;
+}
+.dataeditor form.dataeditor-form_item textarea,
+.dataeditor form.dataeditor-form_item input
+{
+  font-size:1.2em;
+}
+
+.dataeditor form input[type="text"]:not(.short):not(.medium) {
+  width:300px;
+}
+.dataeditor form input[type="text"].medium{
+  width:150px;
+}
+.dataeditor form.dataeditor-form_item input[type="text"].short{
+  width:80px;
+}
+
+.dataeditor form.dataeditor-form_item textarea {
+  display:block;
+  width:98%;
+  height:6em;
+  resize:none;
+}
+
+.dataeditor .footer button {
+  margin-left:12px;
+}

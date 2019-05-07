@@ -14,8 +14,19 @@ const FAWriter = {
 
 , currentDoc: undefined //l'instance FADocument courante (elle doit toujours exister)
 
+, openAnyDoc(path){
+    if(false === this.checkCurrentDocModified()) return
+    if(undefined === this.writerDocs) this.writerDocs = {}
+    let ndoc = new FADocument('anydoc', path)
+    this.writerDocs[ndoc.id] = ndoc
+    this.makeCurrent(ndoc.id)
+  }
+
   /**
    * Ouverture du document de type +typeDoc+ (p.e. 'introduction')
+
+   ATTENTION : pour un document quelconque, utiliser la méthode
+   `openAnyDoc`
    */
 , openDoc(dtype){
     this.message(`Document de type "${dtype}" en préparation…`)
@@ -51,6 +62,16 @@ const FAWriter = {
     if(this.visualizeDoc) this.updateVisuDoc()
     // On "referme" toujours le menu des types (après l'ouverture)
     this.menuTypeDoc.val(kdoc)
+  }
+
+// Permet de forcer le rechargement du document d'identifiant +kdoc+. La
+// méthode est utilisée par le dataeditor
+, resetDocument(kdoc){
+    if(undefined === this.writerDocs) return
+    if (this.currentDoc && this.currentDoc.type == kdoc){
+      this.hide()
+    }
+    delete this.writerDocs[kdoc]
   }
 
   /**
@@ -175,9 +196,27 @@ const FAWriter = {
   }
 , OTHER_SECTIONS: ['#section-reader']
 , onShow(){
+    this.setUI() // préparer l'interface en fonction du type de document
     this.docField.focus()
     this.isOpened = true
 }
+
+/**
+  Préparation de l'interface en fonction du type de document
+  Méthode inaugurée pour afficher seulement le path d'un document quelconque
+  mis en édition.
+**/
+, setUI(){
+    let my = this
+      , any = this.currentDoc.type == 'anydoc'
+      , rpath = any ? this.currentDoc.path.replace(new RegExp(`^${APPFOLDER}`),'.'):'DOCUMENT '
+    my.menuTypeDoc[any?'hide':'show']()
+    my.section.find('.header #writer-doc-title select')[any?'hide':'show']()
+    my.section.find('.header #writer-doc-title label').html(rpath)
+    my.section.find('.header .div-modeles')[any?'hide':'show']()
+    my.section.find('.header .writer-btn-drop')[any?'hide':'show']()
+    my.section.find('.header #writer-btn-new-doc')[any?'hide':'show']()
+  }
 
 , beforeHide(){
   if(false === this.checkCurrentDocModified()) return false
@@ -287,7 +326,7 @@ const FAWriter = {
     })
 
     var divmodeles = DCreate('DIV', {
-      class: 'modeles'
+      class: 'div-modeles'
     , append: [
         DCreate('LABEL', {class: 'small', inner: 'MODÈLES '})
       , DCreate('SELECT', {id: 'modeles-doc'})]

@@ -15,6 +15,9 @@
   * [Enregistrement des events](#saving_events)
 * [Travail avec les events](#working_with_events)
   * [Filtrage des events](#filtering_events)
+* [Autres données de l'analyse](#analyse_autres_donnees)
+  * [DataEditor, l'éditeur de données](#data_editor)
+  * [Actualisation automatique des éléments affichés lors des modifications](#autoupdate_after_edit)
 * [Ajout de préférences globales](#add_global_prefs)
   * [Utilisation des préférences globales](#use_global_prefs})
 * [Ajout de préférence analyse](#add_analyse_pref)
@@ -24,7 +27,8 @@
   * [Boutons expand/collapse](#boutons_toggle_next)
 * [Documents de l'analyse](#documents_analyse)
   * [Quatre types de documents](#les_types_de_documents)
-  * [Sauvegarde protégée des documents](#saving_protected)
+  * [Édition d'un fichier quelconque](#edit_any_file)
+  * [Sauvegarde protégée des documents (IOFile)](#saving_protected)
 * [Assemblage de l'analyse](#assemblage_analyse)
   * [Script d'assemblage](#script_assemblage_analyse)
 * [Test de la l'application](#test_application)
@@ -79,7 +83,7 @@ Par exemple, quand je travaillais sur le MiniWriter, plutôt que de chaque fois 
 
 ```javascript
 Sandbox.run = function(){
-  current_analyse.editEvent(0)
+  FAEvent.edit(0)
   MiniWriter.new(DGet('event-0-content'))
 }
 ```
@@ -235,7 +239,159 @@ Pour créer un filtre :
 
 ```
 
+---------------------------------------------------------------------
 
+## Autres données de l'analyse {#analyse_autres_donnees}
+
+L'analyse contient d'autres données contenues le plus souvent dans des documents au format `YAML`. On trouve pour commencer les données du film, les personnages, les brins, etc.
+
+La plupart de ces données peuvent se définir par le menu `Documents`.
+
+### DataEditor, l'éditeur de données {#data_editor}
+
+Parmi les données précédentes, on trouve des données qui peuvent s'éditer à l'aide du `DataEditor`. Ce sotn par exemple les personnages, les brins, les Fondamentales, etc.
+
+Pour pouvoir être *data-éditorable*, un objet ou une classe doit posséder :
+
+* une propriété `DataEditorData` qui définit un grand nombre de caractéristiques,
+* des méthodes permettant de prendre en compte les changements et de les enregistrer dans un fichier.
+
+Pour le développeur, ces requisitions sont testées et signalées en cas de manquement.
+
+Voilà les données générales :
+
+```javascript
+
+  DataEditorData:{
+      title:  "Le titre à donner à la fenêtre d'édition"
+    , type:   "Le type de l'élément, par exemple 'personnage'" // pas vraiment utilisé
+    , titleProp:  'la propriété qui servira à nommer l’élément, dans le menu par exemple'
+    , items:      [Array('de tous les éléments comme instances')]
+    , dataFields: [
+        // Définition des champs d'édition (cf. plus bas)
+      ]
+    , no_new_item: true // Si true, on ne peut pas ajouter de données
+                        // C'est le cas par exemple des Fondamentales
+    , no_del_item: true // Si true, on ne peut pas détruire de données
+    , checkOnDemand: true /* Si true, les données ne sont pas vérifiées
+                            automatiquement. C'est un bouton qui permet de les
+                            valider. Cela permet de les rentrer progressivement,
+                            comme pour les fondamentales par exemple.
+                          */
+  }
+
+```
+
+`DataEditorData.dataFields` est un `Array` qui contient des `object`s définissant les propriétés suivantes :
+
+```javascript
+
+  {
+    label:    'Libellé affiché en regard du champ'     // REQUIS
+  , type:     'type du champ (text, textarea, select)'   // REQUIS
+  , prop:     'la propriété de l’instance qui sera lue et affectée'  // REQUIS
+  , observe: {
+        '<type evenement>': <méthode de traitement>
+      /* par exemple */ , 'click': OBJ.onClick.bind(OBJ)
+      /* ou encore */   , 'change': OBJ.onChange.bind(OBJ)
+      /* Cas spécial du drop : */
+      , 'drop': {<data pour droppable>}
+    }
+  , exemple:  'placeholder affiché quand aucune donnée'
+  , aide:     'texte ajouté en petit à côté du libellé'
+  , validities: flag pour tester la validité de (UNIQ, REQUIRED, ASCII)
+  , values:   <valeurs pour un select, soit [{value: inner}...], soit [[value, inner]...]
+  , editLink: <function>
+        /**
+          Si définie, un lien est placé après le champ d'édition pour éditer la
+          chose qui correspond au champ d'édition avec la fonction spécifiée.
+          Par exemple, si c'est un champ contenu un ID de QRD, un lien pour
+          éditer la QRD sera créé.
+
+          La méthode spécifiée doit IMPÉRATIVEMENT pouvoir recevoir en premier
+          argument la valeur du champ courant (par exemple l'identifiant de la
+          QRD à éditer).
+
+          [2] Si la méthode existe au moment de la définition de ce editLink, on
+          peut utiliser la tournure : `editLink:MONObjet.method.bind(MONObjet)`
+          Si elle n'existe pas, on utilisera la formule :
+            `editLink:(v)=>{MONObjet.method.bind(MONObjet)(v)}`
+
+        **/
+  , showLink: <function>
+        /**
+          Même fonctionnement que pour la propriété editLink ci-dessus, mais
+          pour les éléments qui ne s'éditent pas.
+
+          La méthode spécifiée doit IMPÉRATIVEMENT pouvoir recevoir en premier
+          argument la valeur du champ courant (par exemple l'identifiant de la
+          personnage à afficher).
+        **/
+  , updateValuesMethod:  <function> // si select, la méthode pour actualiser
+                          // [OPTIONNEL]
+
+  , getValueMethod: (v) => { return "la valeur réelle à prendre en compte"}
+  , setValueMethod: (v) => { return "la valeur à mettre dans le champ (if any)"}
+  , checkValueMethod: (v) => { /* return rien si valeur v OK, sinon le message d'erreur */}
+
+  }
+
+```
+
+Le flag `validities` permet de checker si la valeur est :
+
+* unique (`UNIQ`),
+* définie (requise, obligatoire) (`REQUIRED`),
+* composée uniquement de lettre a-z (min/maj) de chiffre ou du trait plat (`ASCII`).
+
+Si de plus amples vérifications doivent être faites sur la donnée, il faut utiliser la méthode `checkValueMethod`.
+
+#### Les méthodes obligatoires
+
+Un objet *data-editorable* doit répondre aux méthodes :
+
+* `DECreateItem(data)`. Qui doit permettre de créer un nouvel élément avec les données `data`,
+* `DEUpdateItem(data)`. Qui doit permettre de modifier un élément avec les nouvelles données `data`,
+* `DERemoveItem(data)`. Qui doit permettre de détruire l'élément d'identifiant `data.id`
+
+Note : s'inspirer des fonctions définies dans `app/js/composants/faPersonnage/required_then/FAPersonnage_DataEditor.js` pour les personnages ou `app/js/composants/faBrin/required_then/FABrin_DataEditor.js` pour les brins.
+
+## Actualisation automatique des éléments affichés lors des modifications {#autoupdate_after_edit}
+
+Le système adopté pour actualiser automatiquement l'affichage lors de modification est de fonctionner avec une classe qui contienne la définition de ce qu'est l'élément.
+
+Un exemple tout simple, avec les personnages. Lorsqu'un personnage est modifié, disons son pseudo, automatiquement, tous les éléments (span essentiellement) possédant la classe `perso-<ID perso>-pseudo` sont modifiés pour refléter le changement.
+
+Donc, la classe est construite avec :
+
+```
+
+  <prefixe objet>-<identifiant objet>-<propriété>
+
+```
+
+Chaque classe doit posséder une méthode d'instance `onUpdate` qui corrige les éléments. Elle peut se résumer à :
+
+```javascript
+
+onUpdate(){
+  this.constructor.PROPS.map(prop => {
+    $(this.domCP(prop)).html(this[`f_${prop}`]||this[prop])
+  })  
+}
+domC(prop){return `${this.prefix}-${this.id}-${prop}`}
+domCP(prop){return `.${this.domC(prop)}`}
+get prefix(){return 'perso' /* À DÉFINIR */}
+
+```
+
+Avec comme prérequis que :
+
+* `PROPS` contient la liste de toutes les propriétés actualisables.
+* chaque propriété spéciale possède une méthode `f_<propriété>` qui formate cette propriété pour l'affichage. Le cas échéant, c'est la valeur de la propriété elle-même qui est utilisée.
+
+
+---------------------------------------------------------------------
 
 ## Ajout de préférences globales (appelées aussi "options globales") {#add_global_prefs}
 
@@ -441,9 +597,10 @@ On peut viser un autre nœud que le nœud suivant grâce à l'attribut `containe
 
 Les documents de l'analyse sont entièrement gérés, au niveau de l'écriture, par les modules contenus dans le dossier `./app/js/composants/faWriter`. Ce dossier est le premier qui a été chargé par la nouvelle méthode `System#loadJSFolders` (par le biais de `FAnalyse.loadWriter`) qui travaille avec des balises `<script>` afin d'exposer facilement tous les objets, constantes et autres.
 
-Ces documents permettent de construire l'analyse de deux façons différentes :
+Ces documents permettent de construire l'analyse de trois façons différentes :
 
-* en les rédigeant dans le *FAWriter* (qui s'ouvre grâce au menu « Documents »)
+* en les rédigeant dans le *FAWriter* (qui s'ouvre grâce au menu « Documents »),
+* en les peuplant grâce à l'[éditeur de données](#data_editor),
 * en en créant le code de façon dynamique pour ce qui est des stats, des PFA et autres notes au fil du texte.
 
 ### Quatre types de documents {#les_types_de_documents}
@@ -455,6 +612,18 @@ Il faut comprendre qu'il y a 4 types de documents, même s'ils sont tous accessi
 3. Les documents entièrement automatisés (PFA, au fil du film, scénier) qui se servent d'informations éparses — p.e. la définition des nœuds structurels au fil du film — pour se construire.
 4. Les documents de données (snippets, diminutifs, infos du film et de l'analyse)
 
+### Édition quelconque d'un fichier {#edit_any_file}
+
+Le `FAWriter` permet d'éditer un fichier quelconque, par exemple une liste de valeurs programme, et même, pourquoi pas, un fichier de code.
+
+On utilise alors la méthode `openAnyDoc`.
+
+```javascript
+
+  FAWriter.openAnyDoc('<path/absolue/to/document.ext>')
+
+```
+
 
 ### Sauvegarde protégée des documents {#saving_protected}
 
@@ -464,7 +633,7 @@ La sauvegarde protégée des documents est gérée par `system/IOFile.js`. L'uti
 
 ```javascript
 
-  let iofile = new IOFile(cheminFichier[, objetProprietaire])
+  let iofile = new IOFile(<cheminFichier ou objetProprietaire>[, autrePath])
 
   [iofile.code = monCodeFinal // si objetProprietaire n'est pas défini]
   iofile.save({after: methode_appelee_apres_save})
@@ -473,11 +642,11 @@ La sauvegarde protégée des documents est gérée par `system/IOFile.js`. L'uti
     // ...
   }
 
-  iofile.loadIfExists(aflter: methode_appelee_apres_load_avec_code)
+  iofile.loadIfExists(after: methode_appelee_apres_load_avec_code)
 
 ```
 
-Pour fonctionner avec un `owner` (un propriétaire — une instance, un objet), il faut que ce propriétaire possède les propriétés `path` définissant le chemin d'accès au fichier ainsi que la propriété `contents` ou la propriété `code` définissant son code final à sauver.
+Pour fonctionner avec un `owner` (un propriétaire — une instance, un objet), il faut que ce propriétaire possède les propriétés `path` définissant le chemin d'accès au fichier — ou que le path soit défini en second argument — ainsi que la propriété `contents` ou la propriété `code` définissant son code final à sauver.
 
 Exemple :
 
@@ -544,6 +713,7 @@ On peut mettre au format `raw` lorsque le format est reconnaissable par l'extens
   this.iofile.load({after: ..., format: 'raw'}) // => code brut du fichier
 
 ```
+
 
 ---------------------------------------------------------------------
 

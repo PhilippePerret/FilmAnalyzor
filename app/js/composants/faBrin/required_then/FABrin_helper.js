@@ -4,52 +4,60 @@
 **/
 Object.assign(FABrin.prototype,{
 
+toString(){
+  if(undefined === this._tostring) this._tostring = `<<BRIN id=${this.id}>>`
+  return this._tostring
+}
+
 /**
   Pour conformité avec les autres éléments, events, documents, etc.
   Cf. le détail des arguments dans FAEvent
 **/
-as(format, flag, opts){
-  if (undefined === flag) flag = 0
+, as(format, flag, opts){
+    if (undefined === flag) flag = 0
+    if (undefined === opts) opts = {}
 
-  var divs = [], str
+    opts.owner = {type: 'brin', id: this.id}
 
-  if(flag & LABELLED) divs.push(DCreate('LABEL', {inner: `${this.htype} #${this.id}`}))
+    var divs = [], str
 
-  switch (format) {
-    case 'short':
-      divs.push(...this.asShort(opts))
-      break
-    case 'book':
-      // Sortie pour le livre
-      divs.push(...this.asBook(opts))
-      break
-    case 'full':
-      // Affiche complet, avec toutes les informations
-      divs.push(...this.asFull(opts))
-      break
-    case 'associate':
-      divs.push(this.asAssociate(opts))
-      break
-    default:
-      throw(`Format inconnu : "${format}"`)
+    if(flag & LABELLED) divs.push(DCreate('LABEL', {inner: `${this.htype} #${this.id}`}))
+
+    switch (format) {
+      case 'short':
+        divs.push(...this.asShort(opts))
+        break
+      case 'book':
+        // Sortie pour le livre
+        divs.push(...this.asBook(opts))
+        break
+      case 'full':
+        // Affiche complet, avec toutes les informations
+        divs.push(...this.asFull(opts))
+        break
+      case 'associate':
+        divs.push(...this.asAssociate(opts))
+        break
+      default:
+        throw(`Format inconnu : "${format}"`)
+    }
+
+
+    if(flag & DUREE) divs.push(DCreate('SPAN', {class:'duree', inner: ` (${this.hduree})`}))
+    if(flag & EDITABLE) divs.push(this.editLink(opts))
+    else if (flag & LINKED) divs.push(this.lienVoir(opts))
+
+    if(flag & ESCAPED){
+      // Note : il exclut editable et linked
+      str = str.replace(/<(.*?)>/g, '')
+      str = str.replace(/\"/g, '\\\"')
+      str = str.replace(/[\n\r]/,' --- ')
+    }
+    else if(flag & LINKED){
+      str = this.linked(str)
+    }
+    return str
   }
-
-
-  if(flag & DUREE) divs.push(DCreate('SPAN', {class:'duree', inner: ` (${this.hduree})`}))
-  if(flag & EDITABLE) divs.push(this.editLink(opts))
-  else if (flag & LINKED) divs.push(this.lienVoir(opts))
-
-  if(flag & ESCAPED){
-    // Note : il exclut editable et linked
-    str = str.replace(/<(.*?)>/g, '')
-    str = str.replace(/\"/g, '\\\"')
-    str = str.replace(/[\n\r]/,' --- ')
-  }
-  else if(flag & LINKED){
-    str = this.linked(str)
-  }
-  return str
-}
 
 , asShort(opts){
     return [
@@ -75,7 +83,13 @@ as(format, flag, opts){
   }
 
 , asAssociate(opts){
-    return this.asShort(opts)[0]
+    var divs = this.asShort(opts)
+    if(opts.owner){
+      // Si les options définissent un owner, on ajoute un lien pour pouvoir
+      // dissocier le temps de son possesseur
+      divs.push(FAEvent.linkDissocier({owner: opts.owner, owned: this}))
+    }
+    return divs
   }
 
 , editLink(opts){
@@ -133,6 +147,7 @@ as(format, flag, opts){
 divAssociateds(){
   var divs = [ DCreate('H4', {inner:'Associés'}) ]
     , id, ass, time
+    , assExiste, inner
   for(id of this.documents){
     if(ass = FADocument.get(id)){
       divs.push(DCreate('DIV', {attrs:{'data-type':'document', 'data-id': ass.id}, append:[
@@ -142,11 +157,18 @@ divAssociateds(){
       console.error(`ERREUR Document introuvable. #${id}`)
     }
   }
+  // Liste des events
+  // Un event peut ne pas exister encore s'il n'a pas été enregistré, si on
+  // l'associe depuis le formulaire. Pour le savoir, on utilise la méthode
+  // FAEvent.exist?(id) qui vérifie dans l'analyse courante et dans un
+  // formulaire existant
   for(id of this.events){
-    if(ass = FABrin.a.ids[id]){
-      divs.push(DCreate('DIV', {attrs:{'data-type':'event', 'data-id': ass.id}, append:[
+    if(FAEvent.exists(id)){
+      ass = FABrin.a.ids[id]
+      inner = ass ? ass.as('associate',LINKED,{no_warm:true, notes:false, owner:{type:'brin', id:this.id}}) : `NOUVEL EVENT #${id}`
+      divs.push(DCreate('DIV', {attrs:{'data-type':'event', 'data-id': id}, append:[
         // DCreate('LI', {class:'event-title', inner: ass.as('short',FORMATED|LINKED|LABELLED,{no_warm:true, notes:false})})
-        DCreate('LI', {class:'event-title', inner: ass.as('associate',LINKED,{no_warm:true, notes:false})})
+        DCreate('LI', {class:'event-title', inner:inner})
       ]}))
     } else {
       console.error(`EVENT INTROUVABLE. ID: #${id}. C'est une erreur grave, l'analyse a besoin d'être fixée.`)

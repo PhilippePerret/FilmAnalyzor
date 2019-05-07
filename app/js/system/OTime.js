@@ -58,6 +58,7 @@ class OTime {
 
   set horloge(v)  { this._horloge = v }
   get horloge()   {return this._horloge || defP(this,'_horloge', this.s2h())}
+  get vhorloge()  {return this._vhorloge || defP(this,'_vhorloge', this.s2h(this.vtime))}
   get horloge_simple(){
     if(undefined === this._horloge_simple){
       this._horloge_simple = this.s2h(this.secondsInt, {no_frames: true})
@@ -84,7 +85,7 @@ asAssociate(options){
   if(options.owner){
     // Si les options définissent un owner, on ajoute un lien pour pouvoir
     // dissocier le temps de son possesseur
-    dvs.push(DCreate('A',{class:'lkdiss', inner: '[dissocier]', attrs:{onclick:`FAEvent.dissocier.bind(FAEvent)({owned:{type:'time', id:${this.seconds}}, owner:{type:'${options.owner.type}', id:${options.owner.id}}})`}}))
+    divs.push(FAEvent.linkDissocier({owner: opts.owner, owned: this}))
   }
   return DCreate('SPAN', {class:'lktime', append: dvs})
 }
@@ -141,8 +142,10 @@ s2h(s, format){
  */
 updateSeconds(s){
   delete this._toString
+  delete this._vhorloge
+  delete this._horloge
+  delete this._horloge_simple
   this.seconds = s
-  this.horloge = this.s2h(s)
 }
 
 

@@ -115,7 +115,7 @@ Object.assign(PFA, {
       })
       .on('click', function(e){
         var event_id = parseInt($(this).attr('data-id'),10)
-        ca.editEvent.bind(ca, event_id)()
+        FAEvent.edit.bind(ca, event_id)()
         stopEvent(e)//sinon le pfa est remis au premier plan
       })
 }

@@ -67,13 +67,13 @@ static codeIsOK(code, format){
 //  INSTANCE
 
 // Cf. le manuel de développement
-constructor(p_or_owner){
+constructor(p_or_owner, otherPath){
   if('string' === typeof p_or_owner){
     this.path   = p_or_owner
     this.owner  = undefined
   } else {
     this.owner  = p_or_owner
-    this.path   = this.owner.path
+    this.path   = otherPath || this.owner.path
   }
 
 }
@@ -292,7 +292,7 @@ confirmIfMuchShorter(scode){
   if(this.exists()){
     let vingtPourcent = this.size * 80 / 100
       , newLength = Buffer.from(scode).length
-    if(newLength < vingtPourcent) return confirm(T('confirm-content-much-shorter'), {doc_name: this.nameWithFolder})
+    if(newLength < vingtPourcent) return confirm(T('confirm-content-much-shorter', {doc_name: this.nameWithFolder}))
   }
   return true
 }

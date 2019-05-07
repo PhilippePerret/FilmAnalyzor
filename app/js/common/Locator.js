@@ -27,6 +27,12 @@ init(){
   // ce temps est défini pour l'analyse courante
   this.a.setButtonGoToStart()
 
+  // L'horloge de la vidéo n'est visible que lorsque son temps est différent
+  // du temps réel, donc lorsque le début du film est défini
+  if (!this.hasStartTime){
+    this.realHorloge.style.visibility = 'hidden'
+  }
+
   my = null
 }
 
@@ -343,8 +349,9 @@ get nextScene(){
 
 goToPrevScene(){
   let method = () => {
-    if (this.prevScene){
-      this.setTime(this.prevScene.otime)
+    let pScene = this.prevScene
+    if (pScene){
+      this.setTime(pScene.otime)
     } else if (FAEscene.current){
       F.notify(`La scène ${FAEscene.current.numero} n'a pas de scène précédente.`)
     } else {
@@ -362,9 +369,11 @@ stopGoToPrevScene(){
 goToNextScene(){
   log.info("-> Locator#goToNextScene", (!FAEscene.current ? 'pas de scène courante' : `Numéro courante : ${FAEscene.current.numero}`))
   let method = () => {
-    if (this.nextScene){
-      this.setTime(this.nextScene.otime)
-      log.info(`   Après setTime, numéro scène courant = ${this.currentScene.numero}, numéro scène suivante = ${this.nextScene.numero}`)
+    let nScene = this.nextScene
+    if (nScene){
+      this.setTime(nScene.otime)
+      if(this.currentScene) log.info(`   Après setTime, numéro scène courant = ${this.currentScene.numero}`)
+      log.info(`   Après setTime, numéro scène suivante = ${nScene.numero}`)
     } else if (FAEscene.current) {
       F.notify(`   La scène ${FAEscene.current.numero} n'a pas de scène suivante.`)
     } else {
@@ -428,14 +437,8 @@ getTime(){ return this.currentTime }
 **/
 getRealTime(s){
   var negative = s < 0
-  if(negative){s = -s}
-  // console.log("s = ",s)
-  if(undefined === this._horloger){
-    this._horloger = s
-  } else {
-    this._horloger.updateSeconds(s.seconds)
-  }
-  return `${negative?'-':' '}${this._horloger.horloge}`
+  if(negative){s.updateSeconds(-s.seconds)}
+  return `${negative?'-':' '}${s.horloge}`
 }
 
 // ---------------------------------------------------------------------
@@ -449,9 +452,6 @@ activateHorloge(){
   if (this.intervalTimer){
     this.desactivateHorloge()
   } else {
-    if (!this.hasStartTime){
-      this.realHorloge.style.visibility = 'hidden'
-    }
     this.intervalTimer = setInterval(my.actualizeALL.bind(my), 1000/40)
   }
   my = null
@@ -482,7 +482,7 @@ actualizeALL(){
 actualizeHorloge(curt){
   if(undefined === curt) curt = this.currentTime
   this.horloge.innerHTML = this.getRealTime(curt)
-  this.realHorloge.innerHTML = this.getRealTime(curt)
+  this.realHorloge.innerHTML = curt.vhorloge
   this.oMainHorloge.time = curt
 }
 

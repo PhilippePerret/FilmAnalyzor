@@ -82,7 +82,7 @@ get filtereds(){
     })
   }
   my = null
-  if(this._filtereds.length === 0){
+  if(this._filtereds.length === 0 && FAEvent.count > 0){
     F.notify(T('no-event-with-filter'))
   }
   return this._filtereds

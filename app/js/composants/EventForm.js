@@ -534,7 +534,7 @@ observe(){
       let obj = this.event || {type:'event', id: this.id}
       var balise = this.a.getBaliseAssociation(obj, ui.helper, e)
       if(balise){
-        if(['', 'INPUT', 'TEXTAREA'].indexOf(e.target.tagName) > -1) $(e.target).insertAtCaret(balise)
+        if(['', 'INPUT', 'TEXTAREA'].indexOf(e.target.tagName)) $(e.target).insertAtCaret(balise)
       } else if(e.target.className.indexOf('event-parent') > -1){
         this.setParent(ui.helper)
       }
@@ -592,6 +592,7 @@ submit(){
   }
   // Et on dispatche les autres données
 
+
   if (this.event.isValid) {
     if(this.isNew){
       // CRÉATION
@@ -603,6 +604,7 @@ submit(){
       if('function' === typeof this.event.onModify) this.event.onModify()
     }
   }
+
 
   if (this.event.isValid){
     this.isNew    = false // il a été enregistré, maintenant

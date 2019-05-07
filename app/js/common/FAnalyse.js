@@ -111,6 +111,8 @@ static isDossierAnalyseValid(folder, withMessage){
   }
 }
 
+// ---------------------------------------------------------------------
+
 /**
  * Instanciation de l'analyse à partir du path de son dossier
  */
@@ -136,13 +138,9 @@ get PFA(){
   return this._PFA
 }
 
-get Fonds(){
-  if(undefined === this._Fonds){
-    this._Fonds = require('./js/common/Fondamentales/Fonds.js')
-    this._Fonds.init(this)
-  }
-  return this._Fonds
-}
+get Fonds(){return this._mainfonds||defP(this,'_mainfonds',new Fondamentales(this.fondsFilePath))}
+
+get FondsAlt(){return this._fondsalt||defP(this,'_fondsalt',new Fondamentales(this.fondsAltFilePath))}
 
 get decors(){ return FADecor }
 
@@ -220,7 +218,7 @@ exportAs(format){
 }
 
 // Pour afficher le protocole de l'analyse
-displayProtocole(){this.protocole.show()}
+toggleProtocole(){this.protocole.toggle()}
 
 /**
 * Pour afficher la Timeline
@@ -253,22 +251,29 @@ displayLastReport(){
 displayPFA(){
   this.PFA.toggle()
 }
-displayInfosFilm(){
-  const FAInfosFilm = require('./js/tools/building/infos_film.js')
-  new FAInfosFilm(this).display()
+togglePanneauInfosFilm(){
+  let iPanelInfosFilm = require('./js/tools/building/infos_film.js')
+  iPanelInfosFilm.toggle()
 }
-displayDecors(){
-  require('./js/tools/building/decors.js').bind(this)()
+togglePanneauDecors(){
+  const iPanelDecors = require('./js/tools/building/decors.js')
+  iPanelDecors.toggle()
 }
-displayFondamentales(){
-  require('./js/tools/building/fondamentales.js').bind(this)()
+togglePanneauFondamentales(){
+  const PanelFonds = require('./js/tools/building/fondamentales.js')
+  PanelFonds.toggle()
 }
-displayBrins(){ FABrin.display() }
-displayStatistiques(){
-  // TODO
-  F.error("Les Statistiques ne sont pas encore implémentées. Passer par l'affichage de l'analyse (en ajoutant `BUILD Statistiques` au script d'assemblage).")
+togglePanneauPersonnages(){
+  const PanelPersos = require('./js/tools/building/personnages.js')
+  PanelPersos.toggle()
 }
-displayAnalyseState(){ FAStater.displayFullState() }
+togglePanneauStatistiques(){
+  const PanelStatistiques = require('./js/tools/building/statistiques.js')
+  PanelStatistiques.toggle()
+}
+togglePanneauBrins(){ FABrin.toggle() }
+
+toggleAnalyseState(){ FAStater.toggleFullState() }
 
 newVersionRequired(){
   var method = require('./js/tools/new_version.js')
@@ -280,11 +285,20 @@ newVersionRequired(){
  */
 openDocInWriter(dtype){
   if('undefined' === typeof Snippets) return FAnalyse.loadSnippets(this.openDocInWriter.bind(this, dtype))
-  // if( NONE === typeof FAWriter){
-  //   return System.loadComponant('faWriter', this.openDocInWriter.bind(this, dtype))
-  // }
+  if(dtype.startsWith('fondamentales') && NONE === typeof(Fondamentales)){
+    return this.loadFondamentales(this.openDocInWriter.bind(this, dtype))
+  }
   if(!FAWriter.inited) FAWriter.init()
   FAWriter.openDoc(dtype)
+}
+/**
+  Méthode qui ouvre le DataEditor
+**/
+openDocInDataEditor(dtype){
+  if(dtype.startsWith('fondamentales') && NONE === typeof(Fondamentales)){
+    return this.loadFondamentales(this.openDocInDataEditor.bind(this, dtype))
+  }
+  DataEditor.openPerType(dtype)
 }
 /**
  * Pour obtenir un nouvel "eventer", c'est-à-dire une liste filtrable
@@ -330,10 +344,6 @@ addEvent(nev) {
   FAStater.update()
 }
 
-// Pour éditer l'event d'identifiant +event_id+
-editEvent(event_id){
-  return EventForm.editEvent.bind(EventForm, this.ids[event_id])()
-}
 // Pour éditer le document d'identifiant +doc_id+
 // Note : on pourrait y aller directement, mais c'est pour compatibiliser
 // les choses
@@ -713,6 +723,9 @@ get pfaFilePath(){
 get fondsFilePath(){
   return this._fondsFilePath || defP(this,'_fondsFilePath', this.filePathOf('fondamentales.yaml'))
 }
+get fondsAltFilePath(){
+  return this._fondsAltFilePath || defP(this,'_fondsAltFilePath', this.filePathOf('fondamentales_alt.yaml'))
+}
 
 get markModified(){return this._markModified||defP(this,'_markModified',$('span#modified-indicator'))}
 
@@ -748,6 +761,17 @@ filePathOf(fname){
 **/
 pathOf(relpath){ return path.join(this.folder,relpath)}
 
+/**
+  Pour "résoudre" une path indiqué "./quel/que/chose" comme path absolue
+  dans l'analyse courante (dans son dossier)
+  Utilisé pour le path de la vidéo quand elle se trouve dans le dossier
+  de l'analyse.
+**/
+resolvePath(rpath){
+  if(rpath.substring(0,1) == '.'){
+    return path.join(this.folder, rpath.substring(1,rpath.length))
+  } else {return rpath}
+}
 
 // Le path au template du fichier d'analyse (dans 'app/analyse_files')
 // Note : par défaut (d'extension), on considère que ça doit être un document

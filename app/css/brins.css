@@ -43,5 +43,8 @@
 }
 
 #fwindow-brins div.brin-associateds-detailled li {
-  list-style-type:katakana-iroha;
+  list-style-type:square;
+}
+#fwindow-brins div.brin-associateds-detailled li div {
+  display:inline;
 }

@@ -33,6 +33,7 @@ div.htest .htest-header #htest-path {
 div.htest .htest-body {
   margin-top:140px;
   padding: 1em 2em 1em;
+  height:530px;
   overflow:auto;
 }
 

@@ -1,14 +1,11 @@
 'use strict'
 
-module.exports = function(){
-  var my = this
-  new FADecorsList(current_analyse).display()
-}
 
 class FADecorsList {
 constructor(analyse){
   this.analyse = this.a = analyse
 }
+toggle(){this.fwindow.toggle()}
 display(){ this.fwindow.show() }
 close()  { this.fwindow.hide()}
 build(){
@@ -30,7 +27,7 @@ build(){
       var divsScenesMain = []
       decor.forEachScene(function(scene){
         if (undefined === scenesSousDecors[scene.numero]){
-          divsScenesMain.push(DCreate('DIV', {inner: scene.as('pitch', FORMATED|EDITABLE)}))
+          divsScenesMain.push(DCreate('DIV', {inner: scene.as('pitch', EDITABLE)}))
         }
       })
       // Les sous-décors
@@ -38,7 +35,7 @@ build(){
       decor.forEachSousDecor(function(sousdec){
         var divsScenes = []
         sousdec.forEachScene(function(scene){
-          divsScenes.push(DCreate('DIV', {inner: scene.as('pitch', FORMATED|EDITABLE)}))
+          divsScenes.push(DCreate('DIV', {inner: scene.as('pitch', EDITABLE)}))
         })
         divsSousDecors.push(DCreate('DIV', {class:'sous-decor', inner: DFormater(sousdec.name)}))
         divsSousDecors.push(DCreate('DIV', {class:'scenes', append:divsScenes}))
@@ -63,8 +60,10 @@ build(){
   ]
 }
 observe(){
-  this.fwindow.jqObj.find('.btn-ok').on('click', this.close.bind(this))
+  this.fwindow.jqObj.find('.btn-ok').on('click', this.fwindow.toggle.bind(this.fwindow))
 }
 
 get fwindow(){return this._fwindow||defP(this,'_fwindow', new FWindow(this,{class:'fwindow-listing-type decors', x:10, y:10}))}
 }
+
+module.exports = new FADecorsList(current_analyse)

@@ -1,0 +1,29 @@
+# Tests concernant les PERSONNAGES de toute sorte
+---
+- id: perso_dataeditor
+  libelle: Gestion des personnages avec le DataEditor
+  description: On peut créer, modifier et supprimer des personnages
+  synopsis:
+    - ouvrir l'app
+    - /ouvrir l'analyse 'with_events'/
+    - déverrouiller l'analyse si nécessaire
+    - ouvrir l'éditeur de données pour les personnages (menu Documents > Personnages > Éditeur de données)
+    - Créer un nouveau personnage correct ('patate')
+    - check: Le personnage est créé dans le fichier yaml (ouvrir le fichier)
+    - check: Le personnage a été ajouté au menu de l'éditeur de données
+    - check: Quand on ré-édite le personnage, ses données correctes s'affichent
+    - Détruire ce nouveau personnage
+    - check: Le personnage a été supprimé du fichier yaml
+    - check: Le personnage a été supprimé du menu de l'éditeur de données
+    - Créer un nouveau personnage correct ('endive')
+    - check: Le personnage a été ajouté au fichier yaml
+    - check: Le personnage 'patate' n'a pas été rajouté
+    - Éditer un des personnages existants
+    - Remettre 'endive' en édition
+    - check: Ses données correctes doivent s'afficher
+    - Modifier sa description (ajouter "modifiée" par exemple)
+    - Enregistrer la modification
+  checks:
+    - Les données de 'endive' ont été modifiées dans le fichier yaml
+    - Les données ont été modifiées dans le panneau de la liste des personnages
+    - Le personnage 'patate' n'a pas été rajouté dans le fichier yaml

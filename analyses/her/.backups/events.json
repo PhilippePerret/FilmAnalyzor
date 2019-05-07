@@ -58,7 +58,7 @@
     "content": "Le film est construit sur une arche qui part d'une lettre et se termine par une autre lettre. Pour se souvenir de cette première lettre, l'auteur utilise une double QRD qui met l'accent sur ce que fait @T : {{event:164}}{{event:165}}",
     "procType": "placementdrapeau",
     "setup": "Au tout début du film, on voir @T parler face à l'écran, on se demande bien ce qu'il fait, d'autant plus qu'il parle comme s'il était une femme. La lettre commence par « Dear Chris »",
-    "payoff": "À la fin du film, @T parvient à écrire la lettre qui tatata le deuil de son mariage. Elle commence par « Dear Catherine », qui fait un écho net avec le « Dear Chris » du début du film."
+    "payoff": "À la fin du film, @T parvient à écrire la lettre qui enterrinera le deuil de son mariage. Elle commence par « Dear Catherine », qui fait un écho net avec le « Dear Chris » du début du film."
   },
   {
     "id": 3,
@@ -149,9 +149,6 @@
     "time": 154.22,
     "duree": 38.34,
     "content": "C'est le soir, @T est un des derniers à quitter son travail. Il salue l'hôte d'accueil, un admirateur.",
-    "events": [
-      67
-    ],
     "numero": 2,
     "decor": "Entreprise de @T",
     "sous_decor": "Accueil",
@@ -166,9 +163,6 @@
     "time": 192.56,
     "duree": 15.34,
     "content": "@T prend l'ascenseur pour quitter son travail.",
-    "events": [
-      75
-    ],
     "numero": 3,
     "decor": "Entreprise de @T",
     "sous_decor": "Ascenseur",
@@ -286,6 +280,14 @@
     "lieu": "int",
     "effet": "jour",
     "sceneType": "expo"
+  },
+  {
+    "id": 189,
+    "type": "event",
+    "titre": "Emménagement heureux",
+    "time": 332.88,
+    "duree": 41.26,
+    "content": "Flashback : @T et @CA emménagent dans leur nouvel appartement. Ils sont radieux, rayonnent de bonheur."
   },
   {
     "id": 168,

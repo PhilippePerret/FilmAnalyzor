@@ -2,9 +2,14 @@
 
 const APPFOLDER = path.resolve('.')
 
+function WhenAllIsReallyReady(){
+  // FAPersonnage.dataEditor.open()
+  // FABrin.dataEditor.open()
+  // current_analyse.openDocInDataEditor('fondamentales')
+}
 
 $(document).ready(() => {
-  log.info("DOM ready")
+  log.info("--- DOM ready ---")
   console.clear()
 
   var d = ipc.sendSync('get-screen-dimensions')
@@ -20,4 +25,6 @@ $(document).ready(() => {
   // `App.onReady` QUI DÉTERMINE VRAIMENT LA FIN
   // DU CHARGEMENT DE L'APPLICATION ET LE DÉMARRAGE
 
+  // SI ON VEUT VRAIMENT JOUER DU CODE TOUT À LA FIN, UTILISER
+  // LA MÉTHODE `WhenAllIsReallyReady` ci-dessus
 })

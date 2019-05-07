@@ -17,13 +17,15 @@ Object.assign(FAnalyse.prototype,{
     méthode crée une association simple en dehors des textes.
   **/
   associateDropped(obj, dropped){
+    log.info('-> FAnalyse#associateDropped')
     var dropped_type = dropped.attr('data-type')
     if(undefined === dropped) throw(T('data-type-required-for-association'))
     var dropped_id = dropped.attr('data-id') // pas toujours défini
     if (dropped_id && dropped_id.match(/^([0-9]+)$/)) dropped_id = parseInt(dropped_id,10)
     if(dropped_type === 'time') dropped_id = this.locator.currentTime
     else if(dropped_type === 'document') dropped_id = dropped_id||FAWriter.currentDoc.id || FAWriter.currentDoc.type
-    obj.associer({type: dropped_type, id: dropped_id})
+    log.info(`   Associer ${obj.type}#${obj.id} (obj.type#obj.id) à ${dropped_type}#${dropped_id} (dropped_type#dropped_id)`)
+    return obj.associer({type: dropped_type, id: dropped_id})
   }
 
 
@@ -105,6 +107,9 @@ getBaliseAssociation(obj, domEl, e){
     case 'time':
       balise = `{{time:${domEl.attr('data-time')}}}`
       break;
+    case 'personnage':
+      balise = `@${domEl.attr('data-dim')}`
+      break
     default:
       throw("Le type de l'élément droppé est inconnu. Je ne sais pas comment le traiter…", domEl_type)
       return false

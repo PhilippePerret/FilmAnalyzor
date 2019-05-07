@@ -34,8 +34,8 @@
 .fwindow-listing-type .body {
   padding:2em;
   overflow:auto;
-  height:418px;
-  max-height:418px;
+  height:458px;
+  max-height:458px;
 }
 
 .fwindow-listing-type .footer {
@@ -50,4 +50,18 @@
 .fwindow-listing-type .footer button {
   font-size:inherit;
   margin-top:4px;
+}
+
+
+.body li {
+  list-style:none;
+  border:1px solid #DDDDDD;
+  padding:4px 12px;
+}
+.body a.lkedit {
+  background-color:green;
+  color:white;
+  font-size:9pt;
+  padding:0 3px;
+  cursor:pointer;
 }

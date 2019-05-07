@@ -10,7 +10,7 @@ function showTime(time){
 
 // Permet d'éditer ou d'afficher l'event voulu (pour le moment, de l'éditer)
 function showEvent(event_id){
-  current_analyse.editEvent(event_id)
+  FAEvent.edit(event_id)
 }
 
 // Permet d'éditer un document

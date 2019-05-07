@@ -1,5 +1,8 @@
 'use strict'
 
+function isNotAscii(str){
+  return str.replace(/[a-zA-Z0-9_]/g,'') != ''
+}
 
 function asPourcentage(expected, actual){
   return `${pourcentage(expected,actual)} %`
@@ -81,6 +84,7 @@ function getValOrNull(domId, options){
   if(domId.substr(0,1)!='#') domId = `#${domId}`
   var field = $(`${domId}`)
   if(field.length === 0 || field.val() === null) return null
+
   var value ;
   switch (options.type) {
     case 'horloge':
@@ -94,10 +98,14 @@ function getValOrNull(domId, options){
         return null
       }
   }
-  if ( value === "" ) return null
-  else if(options.type === 'number')  value = parseInt(value,10)
-  else if(options.type === 'float')   value = parseFloat(value)
+  return valOrNull(value)
+}
 
+function valOrNull(value, options){
+  value = value.trim()
+  if ( value === "" ) return null
+  else if(options && options.type === 'number')  return parseInt(value,10)
+  else if(options && options.type === 'float')   return parseFloat(value)
   return value
 }
 

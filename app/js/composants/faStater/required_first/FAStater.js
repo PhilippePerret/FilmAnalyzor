@@ -38,7 +38,7 @@ const FAStater = {
   if(this.a){
     // Quand on clique sur la jauge d'avancement, ça ouvre le
     // détail
-    $('#statebar-jauger label[for="statebar-jauger"]').on('click', this.a.displayAnalyseState.bind(this.a))
+    $('#statebar-jauger label[for="statebar-jauger"]').on('click', this.a.toggleAnalyseState.bind(this.a))
     // Quand on clique sur la dernière étape, ça ouvre la fenêtre
     // de protocol
     $('#statebar-last-step-protocole, label[for="statebar-last-step-protocole"]').on('click', this.a.protocole.show.bind(this.a.protocole))
@@ -266,7 +266,7 @@ const FAStater = {
     this.setNombreDocuments(`${this.documentsCount} + ${this.ActualCustomDocsCount}`)
   }
 
-, displayFullState(){
+, toggleFullState(){
     F.notify('Je vais afficher l’avancement dans le détail')
     var method = require('./js/tools/building/fondamentales.js')
     this.a.method.bind(this.a)()

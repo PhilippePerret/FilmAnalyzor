@@ -1,36 +1,28 @@
 'use strict'
 
 Object.assign(FABrin.prototype,{
-addDocument(doc_id){
-  this.addToList('documents', doc_id)
-}
-,
-addEvent(ev_id){
-  this.addToList('events', ev_id)
-}
-,
-addTime(time){
-  this.addToList('times', otime.seconds)
-}
-,
-addBrin(brin_id){
-  if(this.id === brin_id){
-    return F.notify('Un brin ne peut pas être associé à lui-même, voyons…', {error: true})
+
+/**
+  Méthodes d'association et de dissociation
+
+  Ce sont des méthodes de l'instance FAEvent, même si ce ne sont
+  pas des events qui sont traités. Cela tient au fait que ces méthodes
+  touchent les mêmes propriétés des objets et qu'elles concernent le plus
+  souvent les evènements.
+**/
+  associer(asso){
+    log.info(`-> ${this.toString()}#associer`, {type: asso.type, id: asso.id})
+    let res = FAEvent.associer(this, asso)
+    log.info(`<- ${this.toString()}#associer (return ${res})`)
+    return res
   }
-  this.addToList('brins', brin_id)
-}
-,
-addToList(list_id, foo_id){
-  // console.log("addToList:", list_id, foo_id)
-  if(undefined === this.data[list_id] || this.data[list_id].indexOf(foo_id) < 0){
-    if (undefined === this.data[list_id]) this.data[list_id] = []
-    this.data[list_id].push(foo_id)
-    // console.log(`this.data[${list_id}] vaut maintenant:`,this.data[list_id])
-    this.modified = true
-  } else {
-    F.notify(`Le brin est déjà lié à cet élément « ${list_id} ».`)
+, dissocier(asso){
+    log.info(`-> ${this.toString()}#dissocier`, {type: asso.type, id: asso.id})
+    let res = FAEvent.dissocier(this, asso)
+    log.info(`<- ${this.toString()}#dissocier (return ${res})`)
+    return res
   }
-}
+
 })
 Object.defineProperties(FABrin.prototype,{
 id:{get(){return this.data.id}}
@@ -99,10 +91,10 @@ scenes:{
       for(var ev_id of this.events){
         ev = this.a.ids[ev_id]
         if(ev){
-          qsc = ev.scene
+          sc = ev.scene
           arr[sc.numero] = sc
         }
-        else {
+        else if (!FAEvent.exists(ev_id)){// il peut être en création
           console.error(`GRAVE PROBLÈME : l'event #${ev_id} n'existe pas dans l'analyse… Or il est associé à un brin. L'analyse doit être corrigée.`)
         }
       }

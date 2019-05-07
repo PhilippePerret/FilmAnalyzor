@@ -2,8 +2,20 @@
 
 ### Traiter :
 
-  - Vérifier que les trois temps soient bien enregistrés (startFilmTime, endFilmTime et
-    endGenericFilmTime — ou similaire)
+* Personnages
+  - Poursuivre l'affichage du listing
+  - checker qu'on puisse bien n'afficher qu'un seul personnage
+  - implémenter le helper propre à chaque draggable de personnage (avec attribut 'data-dim')
+
+* DATAEDITOR
+  - Faire un fichier pfa alt (les mettre dans min.js)
+  - Faire la même chose pour les variables ?
+  - Faire la même chose pour les infos du film ?
+  - Pour les brins, et peut-être aussi les personnages, il faudrait exploiter
+    les propriétés 'events', 'documents', 'times', 'brins' (qui s'enregistrent maintenant dans le fichier YAML).
+    => Propriété général 'associable' qui construit un div, comme pour le
+       div parent dans l'eventform, sur lequel on peut glisser des éléments
+    - les afficher quand ils sont définis
 
 * CHECK ANALYSE
   - Poursuivre le check de la validité des données (app/js/tools/analyse_checker.js)
@@ -124,6 +136,8 @@
 * Implémenter la redéfinition des temps des events lorsqu'un temps de début de film est redéfini.
 
 * Pouvoir suivre en même temps deux endroits dans le film (donc deux visualiseurs avec chacun leur vidéo !)
+
+
 
 # PEUT-ÊTRE UN JOUR
 

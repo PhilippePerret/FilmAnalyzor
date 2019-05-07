@@ -21,12 +21,29 @@
     "content": "Une petite note."
   },
   {
+    "id": 12,
+    "type": "note",
+    "titre": "Une note avec notes",
+    "time": 39.1,
+    "duree": 10,
+    "content": "Cette note contient une note ici{{event:11}} et une autre note là{{event:13}}."
+  },
+  {
+    "id": 15,
+    "type": "event",
+    "titre": "Un event associé",
+    "time": 39.1,
+    "duree": 10,
+    "content": "Pour voir l'event associé."
+  },
+  {
     "id": 13,
     "type": "note",
     "titre": "Autre note",
     "time": 39.1,
     "duree": 10,
-    "content": "Une autre note"
+    "content": "Une autre note",
+    "noteType": "importante"
   },
   {
     "id": 4,
@@ -48,6 +65,14 @@
     "sous_decor": "chambre",
     "lieu": "int",
     "effet": "jour"
+  },
+  {
+    "id": 14,
+    "type": "info",
+    "titre": "Une info",
+    "time": 93.64,
+    "duree": 10,
+    "content": "L'information."
   },
   {
     "id": 10,

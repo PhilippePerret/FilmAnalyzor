@@ -1,0 +1,131 @@
+'use strict'
+
+const PanelPersos = {
+  toggle(){
+    this.fwindow.toggle()
+  }
+
+, build(){
+    let divsPersonnages = this.personnages.map(perso => perso.domListing())
+    return [
+      DCreate('DIV', {class: 'header', append:[
+          DCreate('BUTTON', {type:'button', class:'btn-close'})
+        , DCreate('H3', {inner: `Personnages`})
+        ]})
+    , DCreate('DIV', {class:'body', append: [
+        DCreate('UL', {class:'personnages', append:divsPersonnages})]})
+    , DCreate('DIV', {class:'footer', append:[
+        DCreate('IMG', {class:'update fleft', src:'img/update-2.png'})
+      , DCreate('BUTTON', {type:'button', inner: 'Tous', class: 'btn-show-all'})
+      , DCreate('BUTTON', {type:'button', inner: 'OK', class: 'btn-ok'})
+      ]})
+    ]
+  }
+
+, observe(){
+
+    // On rend tous les personnages draggable
+    this.jqObj.find('li.li-perso').draggable({
+        helper: ()=>{return '<div>HELPER PERSONNAGE À DÉFINIR</div>'}
+      , revert: true
+    })
+
+    // Les boutons edit permettent d'éditer les personnages
+    this.personnages.map(p => p.observe())
+
+    this.jqObj.find('.btn-ok').on('click', this.fwindow.toggle.bind(this.fwindow))
+    this.jqObj.find('.footer img.update').on('click', this.update.bind(this))
+    this.btnShowAll.on('click', this.showAll.bind(this))
+    this.btnShowAll.css('visibility','hidden')
+  }
+
+/**
+  Met le personnage +perso_id+ en exergue
+  En fait, on masque tous les autres sauf celui-là.
+  Et on affiche un bouton "Voir tous" qui remettra tous les personnages
+
+  @param {String} perso_id  Identifiant du personnage
+
+**/
+, select(perso_id){
+    this.jqObj.find('li.li-perso').hide()
+    this.jqObj.find(`li.li-perso#li-perso-${perso_id}`).show()
+    this.btnShowAll.css('visibility','visible')
+  }
+
+, showAll(){
+    this.jqObj.find('li.li-perso').show()
+    this.btnShowAll.css('visibility','hidden')
+  }
+
+/**
+  Pour actualiser la liste des personnages (après modification autre part)
+**/
+, update(){
+    this.ulPersos.html('')
+    this.personnages.map(p => p = null)
+    delete this._personnages
+    this.personnages.map(p => {
+      this.ulPersos.append(p.domListing())
+      p.observe()
+    })
+    F.notify("Actualisation effectuée avec succès.")
+  }
+}
+Object.defineProperties(PanelPersos, {
+  personnages:{get(){
+    if(undefined === this._personnages){
+      this._personnages = FAPersonnage.personnages.map(p => new PanelPersonnage(p))
+    }
+    return this._personnages
+  }}
+, ulPersos:{get(){return this._ulPersos || defP(this,'_ulPersos',this.jqObj.find('ul.personnages'))}}
+, btnShowAll:{get(){return this.jqObj.find('button.btn-show-all')}}
+, jqObj:{get(){return this.fwindow.jqObj}}
+, fwindow:{
+    get(){return this._fwindow||defP(this,'_fwindow', new FWindow(this,{class:'fwindow-listing-type personnages', x:10, y:10}))}
+  }
+
+})
+
+/**
+  Class PanelPersonnage pour les personnages du panneau
+**/
+class PanelPersonnage {
+
+constructor(instance){
+  this.instance = this.i = instance
+}
+
+domListing(){
+  var divs = []
+  divs.push(DCreate('A', {class:'lkedit edit fright', inner: 'edit'}))
+  divs.push(DCreate('SPAN', {class:`pseudo ${this.i.domC('pseudo')}`, inner: this.pseudo}))
+  if(this.i.prenom || this.i.nom){
+    divs.push(DCreate('DIV', {class:'patronyme', append:[
+      DCreate('SPAN', {class:`prenom ${this.i.domC('prenom')}`, inner: this.i.prenom})
+    , DCreate('SPAN', {class:`nom ${this.i.domC('nom')}`, inner: this.i.nom})
+    ]}))
+  }
+  if(this.i.ages){
+    divs.push(DCreate('DIV',{class:`ages ${this.i.domC('ages')}`, inner: this.i.f_ages}))
+  }
+  divs.push(DCreate('DIV',{class:`description ${this.i.domC('description')}`, inner:this.i.f_description}))
+
+  return DCreate('LI', {id:`li-perso-${this.id}` , class:'li-perso', append:divs})
+}
+
+observe(){
+  this.li.find('a.edit').on('click', this.edit.bind(this))
+}
+
+edit(){
+    FAPersonnage.edit(this.id)
+  }
+
+get id(){return this.instance.id}
+get pseudo(){return this.instance.pseudo}
+get li(){return this._li||defP(this,'_li',PanelPersos.jqObj.find(`li#li-perso-${this.id}`))}
+}
+
+module.exports = PanelPersos

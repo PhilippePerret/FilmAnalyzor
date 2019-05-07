@@ -20,8 +20,11 @@
  */
 const DATA_DOCUMENTS = {
 
-  infos:            {hname: 'Informations/variables', format: 'yaml', type:'data'}
-, building_script:  {hname: 'Script d’assemblage', format:'md', type:'data'}
+  building_script:  {hname: 'Script d’assemblage', format:'md', type:'data'}
+
+, separatorInfos: 'separator'
+
+, infos:            {hname: 'Informations/variables', format: 'yaml', type:'data'}
 
 , separator2: 'separator'
 
@@ -30,9 +33,10 @@ const DATA_DOCUMENTS = {
 
 , separator3: 'separator'
 
-, dpersonnages:     {hname: 'Personnages (data)', format:'yaml', type:'data'}
-, dbrins:           {hname: 'Brins (data)', format:'yaml', type:'data'}
-, fondamentales:    {hname: 'Fondamentales (data)', format: 'yaml', type:'data'}
+, dpersonnages:     {hname: 'Personnages', format:'yaml', type:'data', dataeditor: true}
+, dbrins:           {hname: 'Brins', format:'yaml', type:'data', dataeditor: true}
+, fondamentales:    {hname: 'Fondamentales', format: 'yaml', type:'data', dataeditor: true}
+, fondamentales_alt:{hname: 'Fondamentales (Alt)', format: 'yaml', type:'data', dataeditor: true}
 , recompenses:      {hname: 'Récompenses (data)', format: 'yaml', type:'data'}
 
 , separator1: 'separator'
@@ -48,6 +52,7 @@ const DATA_DOCUMENTS = {
 , annexes:          {hname: 'Annexes', type: 'real'}
 
 , customdoc:        {hname: 'Personnalisé', type:'real', menu: false}
+, anydoc:           {hname: 'Quelconque', type: 'data', menu: false, abs:true}
 
 // --- Pour les documents des données absolues ---
 // La clé doit être le nom du fichier dans ./js/data/

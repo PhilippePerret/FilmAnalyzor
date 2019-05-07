@@ -142,14 +142,28 @@ static get count(){
   +dtype+ peut être soit le type, par exemple 'introduction', 'personnages',
           soit un nombre pour un document propre à l'analyse courante.
   +id+    Id du document propre à l'analyse, si +dtype+ vaut 'customdoc'.
+
+  @param {String} dtype   L'affixe du document, ou 'customdoc' pour un document
+                          d'analyse quelconque, ou 'anydoc' pour un document
+                          quelconque lorsque +docPath+ est fourni
+  @param {Number} id      Pour un 'customdoc', l'identifiant unique du document
+                          OU le path absolu si c'est un document de type 'anydoc'
+  @param {String} docPath Le path absolu du document, lorsque c'est un document
+                          de dtype 'anydoc'. Un fichier quelconque
 **/
 constructor(dtype, id){
   if(undefined === dtype) throw("Impossible d'instancier un document sans type ou ID.")
-  if ('number' === typeof dtype || dtype.match(/^([0-9]+)$/)){
+  if ('number' === typeof(dtype) || dtype.match(/^([0-9]+)$/)){
     [dtype, id] = ['customdoc', parseInt(dtype,10)]
   }
   this.type = dtype
-  this.id   = id // pour les customdoc
+  this.id   = id // pour les customdoc et les anydoc
+  if(dtype === 'anydoc'){
+    id || raise("Il faut absolument fournir le path")
+    fs.existsSync(id) || raise(`Le path "${id}" est introuvable. Je ne peux pas éditer ce document.`)
+    this._path  = id
+    this.id     = id.replace(/[^a-z]/g,'')
+  }
 }
 
 // ---------------------------------------------------------------------
@@ -180,18 +194,6 @@ displayContents(){
 // Pour afficher la taille du document dans l'interface (gadget)
 displaySize(){
   $('#section-writer #text-size').html(this.contents.length)
-}
-
-// ---------------------------------------------------------------------
-// Méthodes d'helpers
-
-asAssociate(opts){
-  return DCreate('SPAN', {inner: `Doc : ${this.id}`, attrs:{title:`Document « ${DFormater(this.title)} »`}})
-}
-
-as_link(options){
-  if(undefined === options) options = {}
-  return `« <a onclick="showDocument('${this.id||this.type}')" class="doclink">${options.title || this.title}</a> »`
 }
 
 // ---------------------------------------------------------------------
@@ -457,8 +459,14 @@ get firstContent(){
 **/
 get iofile(){return this._iofile||defP(this,'_iofile', new IOFile(this))}
 
-// Les données absolues, en fonction du type
-get dataType(){return this._data||defP(this,'_data', DATA_DOCUMENTS[this.type])}
+/**
+  Les données absolues, en fonction du type
+  Ces données sont définies quand le type du document est défini dans
+  min.js
+**/
+get dataType(){
+  return this._data||defP(this,'_data', DATA_DOCUMENTS[this.type])
+}
 
 // L'extension (par défaut, 'md', sinon, définie dans DATA_DOCUMENTS)
 get extension(){

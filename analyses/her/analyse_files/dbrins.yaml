@@ -30,3 +30,10 @@
   type: theme
   description: >
     Ce brin suit tout ce qui concerne les lettres qu'écrit @T à son travail, depuis son quotidien dans la première scène jusqu'à l'édition d'un panel de lettres choisi par @S.
+
+-
+  id: instance_divorce
+  title: L’instance de divorce
+  type: intrigue
+  description: >
+    Ce brin contient tous les moments de scène qui concernent le divorce de @T, depuis les flashbacks présentant son passé avec sa femme @CA, le bonheur passé, jusqu'au mention de l'avocat et le rendez-vous pour signer les papiers.

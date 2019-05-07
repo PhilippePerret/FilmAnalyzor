@@ -29,7 +29,7 @@ Object.defineProperties(FAnalyse.prototype,{
         , filmStartTime:      this.filmStartTime
         , filmEndTime:        this.filmEndTime
         , filmEndGenericFin:  this.filmEndGenericFin
-        , videoPath:          this.videoPath
+        , videoPath:          this.videoPathAsRelative
         , lastCurrentTime:    this.lastCurrentTime
         , stopPoints:         spoints
       }
@@ -41,7 +41,7 @@ Object.defineProperties(FAnalyse.prototype,{
       this.filmStartTime        = v.filmStartTime || 0
       this.filmEndTime          = v.filmEndTime
       this.filmEndGenericFin    = v.filmEndGenericFin
-      this._videoPath           = v.videoPath
+      this._videoPath           = this.resolvePath(v.videoPath)
       this.lastCurrentTime      = v.lastCurrentTime || 0
       this.stopPoints           = (v.stopPoints || []).map(st => new OTime(st))
     }
@@ -55,6 +55,16 @@ Object.defineProperties(FAnalyse.prototype,{
     }
   }
 
+/**
+  Si la vidéo est contenu dans le dossier, on enregistre son path
+  relatif. L'avantage, c'est que le dossier peut être alors déplacé
+  sans problème.
+**/
+, videoPathAsRelative:{get(){
+    if(!this.videoPath) return
+    let reg = new RegExp(`^${this.folder}`)
+    return this.videoPath.replace(reg, '.')
+  }}
 , title: {
     get(){return this._title || defP(this,'_title', path.basename(this.folder))}
   , set(v){this._title = v ; this.modified = true}

@@ -51,7 +51,7 @@ static get current(){return this._current||defP(this,'_current',this.getCurrent(
 static set current(s){
   if(s instanceof(FAEscene)) log.info(`Scène courante de FAEscene mise à ${s} (${s.numero})`)
   this._current = s
-  this.a.videoController.markCurrentScene.html(s ? s.asPitch() : '...')
+  this.a.videoController.markCurrentScene.html(s ? s.asPitch().innerHTML : '...')
 }
 static getCurrent(){
   if(this.count === 0) return
