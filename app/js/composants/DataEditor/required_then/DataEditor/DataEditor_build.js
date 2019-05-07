@@ -97,6 +97,9 @@ Object.assign(DataEditor.prototype,{
       this.dataPanels.map(panel => panel.DOMOnglet.on('click', panel.activate.bind(panel)))
     }
 
+    // On rend les champs d'édition sensible au drop d'event, de temps
+    UI.setDroppable(this.jqObj, {elements: 'all'})
+
     // S'il y a un item courant, on le met en édition
     if(this.data.current){
       this.editCurrent(this.data.current)

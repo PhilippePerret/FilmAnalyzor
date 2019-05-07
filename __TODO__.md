@@ -3,26 +3,10 @@
 ### Traiter :
 
 * DATAEDITOR
+  - les helper de drop de type '.personnage' doivent avec l'attribut 'data-dim' qui contient le diminutif (pour former la balise)
   - implémenter la méthode FAPersonnage.show (afficher la liste et mettre en exergue — scroller — jusqu'au personnage demandé)
   - pour les dataFields des personnages :
-    + une méthode pour transformer la valeur du champ de l'age ou des ages
-    + une méthode pour checker cette valeur (un age ou une liste d'ages)
-  - si la qdf (id) est définie => bouton pour la voir
-    Essayer avec une propriété 'afterField' qui pourrait appeler une méthode qui renverrait quelque chose à mettre dans le champ après
-  - si la rdf (id) est définie => bouton pour la voir
-  - si le personnage fondamental est défini => bouton pour le voir
-  - si l'antagoniste est défini => bouton pour le voir
-  - rendre les champs perso_id, antagoniste_id sensibles au drop de personnage
-  - Il faut rendre les textarea et input-text sensible à tout drop (event, times, brins)
-  => Dans la définition des dataFields, pouvoir mettre un paramètre
-  observe: 'click' => methode, 'drop' => methode
-  'drop'=>method entrainerait un travail plus conséquent puisqu'il faudrait
-  rentre le champ droppable. Dans ce cas là, la valeur, au lieu d'être une
-  méthode, serait les options de droppable
-  'drop'=>{data drop}
-  => Documenter la propriété 'observe'
-  - Pouvoir glisser une QD sur le champ id de la RDF
-  - Faire un fichier fondamentales alt, et pfa alt (les mettre dans min.js)
+  - Faire un fichier pfa alt (les mettre dans min.js)
   - Faire la même chose pour les variables ?
   - Faire la même chose pour les infos du film ?
   - Pour les brins, et peut-être aussi les personnages, il faudrait exploiter

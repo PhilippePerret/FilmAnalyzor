@@ -31,6 +31,16 @@ const UI = {
     this.inited = true
   }
 
+, setDroppable(container, options){
+    let dataDrop = Object.assign({}, DATA_DROPPABLE, {
+      drop(e, ui){
+        var balise = current_analyse.getBaliseAssociation(undefined, ui.helper, e)
+        if(balise) $(e.target).insertAtCaret(balise)
+      }
+    })
+    container.find('textarea, input[type="text"]').droppable(dataDrop)
+  }
+
 , setDimensions(){
 
   }

@@ -749,7 +749,7 @@ observe(container){
   o.draggable({
       revert: true
     // , helper: 'clone'
-    , helper: () => {return `<div style="z-index:2000;" data-type="${this.type}" data-id="${this.id}">${this.toString()}</div>`}
+    , helper: () => {return `<div style="z-index:2000;" data-type="event" data-etype="${this.type}" data-id="${this.id}">${this.toString()}</div>`}
     , cursorAt: {left:40, top:20}
     // , stack: 'section#section-eventers div.eventer div.pan-events'
     // , start: function(event, ui) { $(this).css("z-index", a++); }

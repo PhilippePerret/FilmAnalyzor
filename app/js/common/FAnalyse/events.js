@@ -107,6 +107,9 @@ getBaliseAssociation(obj, domEl, e){
     case 'time':
       balise = `{{time:${domEl.attr('data-time')}}}`
       break;
+    case 'personnage':
+      balise = `@${domEl.attr('data-dim')}`
+      break
     default:
       throw("Le type de l'élément droppé est inconnu. Je ne sais pas comment le traiter…", domEl_type)
       return false
