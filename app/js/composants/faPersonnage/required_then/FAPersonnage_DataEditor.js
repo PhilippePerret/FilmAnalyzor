@@ -72,12 +72,14 @@ Object.defineProperties(FAPersonnage,{
       , {label:'Nom', type:'text', prop:'nom'}
       , {label:'Age(s)', type:'text', prop:'ages', exemple:'12 ou 23, 68'
           , getValueMethod:(v)=>{
+              if(!v) return v
               v = v.split(',').map(a => parseInt(a.trim(),10))
               if(v.length == 1) return v[0]
               else return v
             }
           , checkValueMethod:(v) => {
               // Doit être un âge ou une liste d'âges
+              if(!v) return
               if(! Array.isArray(v)) v = [v]
               var errors = []
               v.map(a => {if(isNaN(a)){errors.push("doit être un nombre ou une liste de nombres séparés par des virgules")}})

@@ -30,7 +30,7 @@ Object.assign(DataEditor.prototype,{
     log.info(`-> DataEditor#updateCurrentItem(data=${JSON.stringify(formData)})`)
     /**
       Si le data-editor fonctionne par panneau à onglets, il faut recomposer
-      une vrai données.
+      une vraie donnée.
       Par exemple, quand l'identifiant du champ sera `...fd1-perso_id`, où
       `fd1` est l'identifiant du panneau, la table formData devra posséder
       une clé `fd1` qui sera un object définissant 'perso_id'
@@ -49,6 +49,15 @@ Object.assign(DataEditor.prototype,{
     let nitem = this.mainClass.DEUpdateItem(formData)
     nitem || raise("La méthode DEUpdateItem doit impérativement retourner l'élément actualisé")
     this.data.items[this.currentItemIndex] = nitem
+
+    // On actualise l'objet grâce à sa méthode onUpdate qui va répercuter les
+    // changement sur tous les éléments affichés de l'élément
+    if('function' == typeof(this.currentItem.onUpdate)){
+      this.currentItem.onUpdate()
+    } else {
+      F.notify(`Si les éléments de class ${this.mainClass.name} possédait la méthode 'onUpdate', il pourrait être corrigés partout immédiatement.`)
+    }
+
     F.notify(`Élément ${this.currentItemRef} actualisé.`)
     log.info('<- DataEditor#updateCurrentItem')
   }

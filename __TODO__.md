@@ -2,10 +2,12 @@
 
 ### Traiter :
 
+* Personnages
+  - Poursuivre l'affichage du listing
+  - checker qu'on puisse bien n'afficher qu'un seul personnage
+  - implémenter le helper propre à chaque draggable de personnage (avec attribut 'data-dim')
+
 * DATAEDITOR
-  - les helper de drop de type '.personnage' doivent avec l'attribut 'data-dim' qui contient le diminutif (pour former la balise)
-  - implémenter la méthode FAPersonnage.show (afficher la liste et mettre en exergue — scroller — jusqu'au personnage demandé)
-  - pour les dataFields des personnages :
   - Faire un fichier pfa alt (les mettre dans min.js)
   - Faire la même chose pour les variables ?
   - Faire la même chose pour les infos du film ?
@@ -134,6 +136,8 @@
 * Implémenter la redéfinition des temps des events lorsqu'un temps de début de film est redéfini.
 
 * Pouvoir suivre en même temps deux endroits dans le film (donc deux visualiseurs avec chacun leur vidéo !)
+
+
 
 # PEUT-ÊTRE UN JOUR
 

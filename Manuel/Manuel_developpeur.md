@@ -17,6 +17,7 @@
   * [Filtrage des events](#filtering_events)
 * [Autres données de l'analyse](#analyse_autres_donnees)
   * [DataEditor, l'éditeur de données](#data_editor)
+  * [Actualisation automatique des éléments affichés lors des modifications](#autoupdate_after_edit)
 * [Ajout de préférences globales](#add_global_prefs)
   * [Utilisation des préférences globales](#use_global_prefs})
 * [Ajout de préférence analyse](#add_analyse_pref)
@@ -354,6 +355,41 @@ Un objet *data-editorable* doit répondre aux méthodes :
 * `DERemoveItem(data)`. Qui doit permettre de détruire l'élément d'identifiant `data.id`
 
 Note : s'inspirer des fonctions définies dans `app/js/composants/faPersonnage/required_then/FAPersonnage_DataEditor.js` pour les personnages ou `app/js/composants/faBrin/required_then/FABrin_DataEditor.js` pour les brins.
+
+## Actualisation automatique des éléments affichés lors des modifications {#autoupdate_after_edit}
+
+Le système adopté pour actualiser automatiquement l'affichage lors de modification est de fonctionner avec une classe qui contienne la définition de ce qu'est l'élément.
+
+Un exemple tout simple, avec les personnages. Lorsqu'un personnage est modifié, disons son pseudo, automatiquement, tous les éléments (span essentiellement) possédant la classe `perso-<ID perso>-pseudo` sont modifiés pour refléter le changement.
+
+Donc, la classe est construite avec :
+
+```
+
+  <prefixe objet>-<identifiant objet>-<propriété>
+
+```
+
+Chaque classe doit posséder une méthode d'instance `onUpdate` qui corrige les éléments. Elle peut se résumer à :
+
+```javascript
+
+onUpdate(){
+  this.constructor.PROPS.map(prop => {
+    $(this.domCP(prop)).html(this[`f_${prop}`]||this[prop])
+  })  
+}
+domC(prop){return `${this.prefix}-${this.id}-${prop}`}
+domCP(prop){return `.${this.domC(prop)}`}
+get prefix(){return 'perso' /* À DÉFINIR */}
+
+```
+
+Avec comme prérequis que :
+
+* `PROPS` contient la liste de toutes les propriétés actualisables.
+* chaque propriété spéciale possède une méthode `f_<propriété>` qui formate cette propriété pour l'affichage. Le cas échéant, c'est la valeur de la propriété elle-même qui est utilisée.
+
 
 ---------------------------------------------------------------------
 

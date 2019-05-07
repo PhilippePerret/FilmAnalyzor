@@ -10,8 +10,8 @@ class FAPersonnage {
 //  CLASS
 
 static show(perso_id){
-  console.log("show:",perso_id)
-  F.notify("Je dois afficher le personnage #"+(perso_id||'--inconnu--'))
+  this.a.togglePanneauPersonnages()
+  PanelPersos.select(perso_id)
 }
 
 /**
@@ -122,9 +122,35 @@ constructor(analyse, data){
 
 toString(){return `${this.pseudo} (#${this.id})`}
 
+/**
+  Méthode qui actualise automatiquement toutes les informations affichées
+  du personnage après sa modification.
+**/
+onUpdate(){
+  this.constructor.PROPS.map(prop => {
+    $(this.domCP(prop)).html(this[`f_${prop}`]||this[prop])
+  })
+}
+
+static get PROPS(){return ['id', 'pseudo','dim','prenom', 'nom','dimensions','ages','description','fonction']}
+
+// La class commune à toute
+domC(prop){
+  if(undefined === this._prefClass){this._prefClass = `perso-${this.id}-`}
+  return `${this._prefClass}${prop}`
+}
+domCP(prop){return `.${this.domC(prop)}`}
 get pseudo(){return this._pseudo}
 get id(){return this._id}
+get prenom(){return this._prenom}
+get nom(){return this._nom}
 get dim(){return this._dim}
+get ages(){return this._ages}
+get f_ages(){
+  let a = Array.isArray(this.ages) ? this.ages : [this.ages]
+  return a.map(n => `${n} ans`).join(', ')
+}
 get dimensions(){return this._dimensions}
 get description(){return this._description}
+get f_description(){return DFormater(this.description)}
 }
