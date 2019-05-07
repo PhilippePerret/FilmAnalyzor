@@ -85,6 +85,7 @@ get fds(){
   return this._fds
 }
 
+get id(){return this.affixe}
 get iofile(){return this._iofile||defP(this,'_iofile', new IOFile(this))}
 // Path au fichier des fondamentales
 get path(){return this._path}

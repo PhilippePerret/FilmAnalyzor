@@ -82,7 +82,7 @@ Par exemple, quand je travaillais sur le MiniWriter, plutôt que de chaque fois 
 
 ```javascript
 Sandbox.run = function(){
-  current_analyse.editEvent(0)
+  FAEvent.edit(0)
   MiniWriter.new(DGet('event-0-content'))
 }
 ```
@@ -300,7 +300,34 @@ Voilà les données générales :
   , aide:     'texte ajouté en petit à côté du libellé'
   , validities: flag pour tester la validité de (UNIQ, REQUIRED, ASCII)
   , values:   <valeurs pour un select, soit [{value: inner}...], soit [[value, inner]...]
+  , editLink: <function>
+        /**
+          Si définie, un lien est placé après le champ d'édition pour éditer la
+          chose qui correspond au champ d'édition avec la fonction spécifiée.
+          Par exemple, si c'est un champ contenu un ID de QRD, un lien pour
+          éditer la QRD sera créé.
+
+          La méthode spécifiée doit IMPÉRATIVEMENT pouvoir recevoir en premier
+          argument la valeur du champ courant (par exemple l'identifiant de la
+          QRD à éditer).
+
+          [2] Si la méthode existe au moment de la définition de ce editLink, on
+          peut utiliser la tournure : `editLink:MONObjet.method.bind(MONObjet)`
+          Si elle n'existe pas, on utilisera la formule :
+            `editLink:(v)=>{MONObjet.method.bind(MONObjet)(v)}`
+
+        **/
+  , showLink: <function>
+        /**
+          Même fonctionnement que pour la propriété editLink ci-dessus, mais
+          pour les éléments qui ne s'éditent pas.
+
+          La méthode spécifiée doit IMPÉRATIVEMENT pouvoir recevoir en premier
+          argument la valeur du champ courant (par exemple l'identifiant de la
+          personnage à afficher).
+        **/
   , updateValuesMethod:  <function> // si select, la méthode pour actualiser
+                          // [OPTIONNEL]
 
   , getValueMethod: (v) => { return "la valeur réelle à prendre en compte"}
   , setValueMethod: (v) => { return "la valeur à mettre dans le champ (if any)"}

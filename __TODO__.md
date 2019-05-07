@@ -3,12 +3,12 @@
 ### Traiter :
 
 * DATAEDITOR
-  - [BUG] Quand on crée un nouveau personnage, il s'affiche bien dans la liste, il
-    s'enregistre bien dans le fichier yaml, mais quand on le choisit dans le menu,
-    ses données ne s'affichent pas.
-  - [BUG] Un élément supprimé reste dans le fichier ymal (avec les personnages en tout cas)
-
+  - implémenter la méthode FAPersonnage.show (afficher la liste et mettre en exergue — scroller — jusqu'au personnage demandé)
+  - pour les dataFields des personnages :
+    + une méthode pour transformer la valeur du champ de l'age ou des ages
+    + une méthode pour checker cette valeur (un age ou une liste d'ages)
   - si la qdf (id) est définie => bouton pour la voir
+    Essayer avec une propriété 'afterField' qui pourrait appeler une méthode qui renverrait quelque chose à mettre dans le champ après
   - si la rdf (id) est définie => bouton pour la voir
   - si le personnage fondamental est défini => bouton pour le voir
   - si l'antagoniste est défini => bouton pour le voir

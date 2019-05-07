@@ -62,10 +62,12 @@ Object.assign(DataEditor.prototype,{
 , afterBuilding(){
     this.peupleItems()
 
+
     // Si l'interface est composée de panneaux, il faut activer le premier
     if(this.dataPanels){
       this.dataPanels[0].activate()
     }
+
   }
 
 , idFor(suf){ return `${this.id}-${suf}`}
@@ -93,6 +95,11 @@ Object.assign(DataEditor.prototype,{
     // sur chaque onglet
     if(this.dataPanels){
       this.dataPanels.map(panel => panel.DOMOnglet.on('click', panel.activate.bind(panel)))
+    }
+
+    // S'il y a un item courant, on le met en édition
+    if(this.data.current){
+      this.editCurrent(this.data.current)
     }
 
   }

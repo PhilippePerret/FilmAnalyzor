@@ -9,6 +9,19 @@ class FAPersonnage {
 // ---------------------------------------------------------------------
 //  CLASS
 
+static show(perso_id){
+  console.log("show:",perso_id)
+  F.notify("Je dois afficher le personnage #"+(perso_id||'--inconnu--'))
+}
+
+/**
+  Pour éditer le personnage +perso_id+ (avec le DataEditor)
+**/
+static edit(perso_id){
+  if(NONE === typeof(DataEditor)) return this.a.loadDataEditor(this.edit.bind(this,perso_id))
+  DataEditor.openPerType('dpersonnages', perso_id)
+}
+
 /**
   Boucle la fonction +fn+ sur chaque personnage
   Si la fonction retourne exactement false, on breake.

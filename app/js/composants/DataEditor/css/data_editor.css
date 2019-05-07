@@ -3,6 +3,17 @@
   background-color:#EEEEFF;
 }
 
+/* ---------------------------------------------------------------------
+    GÉNÉRALITÉS
+ */
+.dataeditor img.link, .dataeditor span.link img {
+  width:20px;
+  margin-left:8px;
+}
+
+/* ---------------------------------------------------------------------
+    BODY
+ */
 .dataeditor .body:not(.plain) {
   padding:12px;
 }

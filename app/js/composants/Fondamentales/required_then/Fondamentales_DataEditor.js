@@ -49,6 +49,8 @@ Object.defineProperties(Fondamentales,{
             {label: '', type:'hidden', prop:'path'}
           , {label:'Id perso', type:'text', class:'medium', prop:'perso_id', validities:REQUIRED
               , checkValueMethod:(v)=>{return FAPersonnage.get(v) != undefined}
+              , showLink: FAPersonnage.show.bind(FAPersonnage)
+              , editLink: FAPersonnage.edit.bind(FAPersonnage)
             }
           , {label:'Description', type:'textarea', prop:'description', validities:REQUIRED}
           , {label:'Facteur U', type:'textarea', prop:'Ufactor', aide:'universalité de cette fondamentale'}
@@ -72,6 +74,7 @@ Object.defineProperties(Fondamentales,{
                 let qrd = FAEvent.get(parseInt(v,10))
                 if(undefined===qrd || qrd.type != 'qrd') return "requiert impérativement un identifiant de QRD existante"
               }
+              , editLink:(v)=>{FAEvent.edit.bind(FAEvent)(v)}
             }
           , {label:'Objectif', type:'text', prop:'objectif'}
           , {label:'Description', type:'textarea', prop:'description', validities:REQUIRED}
@@ -88,6 +91,7 @@ Object.defineProperties(Fondamentales,{
         , dataFields: [
             {label:'Antagonisme', type:'text', prop:'antagonisme', validities:REQUIRED}
           , {label:'ID antagoniste', type:'text', prop:'antagoniste_id'
+            , showLink:FAPersonnage.show.bind(FAPersonnage)
             , observe:{
                 'drop':{accept:'.qrd', tolerance:'intersect', classes:{'ui-droppable-hover':'survoled'}
                         , drop:(e,ui) => $(e.target).val(ui.helper.attr('data-id'))
@@ -120,6 +124,7 @@ Object.defineProperties(Fondamentales,{
                 let qrd = FAEvent.get(parseInt(v,10))
                 if(undefined===qrd || qrd.type != 'qrd') return "requiert impérativement un identifiant de QRD existante"
               }
+              , editLink:(v)=>{FAEvent.edit.bind(FAEvent)(v)}
             }
           , {label:'Réponse', type:'select', prop:'reponse', values:{oui:'Positive',non:'Négative'}, validities:REQUIRED}
           , {label:'Paradoxale', type:'checkbox', prop:'paradoxale'}

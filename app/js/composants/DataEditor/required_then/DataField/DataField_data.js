@@ -16,6 +16,8 @@ Object.defineProperties(DataField.prototype,{
 , observe:    {get(){return this.data.observe}}
 , defValue:   {get(){return this.data.defValue}}
 , exemple:    {get(){return this.data.exemple}}
+, showLink:   {get(){return this.data.showLink}}
+, editLink:   {get(){return this.data.editLink}}
 , aide:       {get(){return this.data.aide}}
 , setValueMethod:{get(){return this.data.setValueMethod}}
 , getValueMethod:{get(){return this.data.getValueMethod}}

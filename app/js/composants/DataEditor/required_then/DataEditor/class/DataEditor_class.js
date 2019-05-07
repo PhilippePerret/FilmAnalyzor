@@ -13,28 +13,31 @@ Object.assign(DataEditor,{
 /**
   Méthode appelée par les menus
   @param {String} dtype   Le type, par exemple dpersonnages, ou dbrins, etc.
+  @param {String|Number} argCurrent   L'élément courant à afficher
 **/
-, openPerType(dtype){
-    let owner = (typ => {
+, openPerType(dtype, argCurrent){
+    let [owner, current] = (typ => {
       switch(typ){
-        case 'dpersonnages':  return FAPersonnage
-        case 'dbrins':        return FABrin
-        case 'fondamentales': return Fondamentales
-        case 'fondamentales_alt': throw("Je ne vois pas encore comment éditer les fondamentales alternatives comme ça")
+        case 'dpersonnages':      return [FAPersonnage]
+        case 'dbrins':            return [FABrin]
+        case 'fondamentales':     return [Fondamentales, typ]
+        case 'fondamentales_alt': return [Fondamentales, typ]
       }
     })(dtype)
     owner || raise(`Le possesseur de type ${dtype} est inconnu…`)
-    this.init(owner).open()
+    this.init(owner, undefined, argCurrent||current).open()
   }
 /**
   Méthode principale appelée pour ouvrir l'éditeur de données
   @param {Class}  owner   La classe (ou object) principale. Pe FAPersonnage, FABrin
   @param {Object} data    Définition des données pour le data-éditor
+  @param {String|Number} current  L'élément à mettre en argument courant.
 **/
-, init(owner, data){
+, init(owner, data, current){
     if (undefined === data) data = owner.DataEditorData
     data != undefined   || raise(T('deditor-data-required'))
-    data.mainClass = owner
+    data.mainClass  = owner
+    data.current    = current
     if(this.isValidData(data)){
       return new DataEditor(owner, data)
     } else {

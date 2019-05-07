@@ -26,6 +26,12 @@ Object.assign(DataField.prototype,{
       this.dataEditor.jqObj.find(`.update-${this.prop}-values`).on('click', this.updateSelectValues.bind(this))
       this.dataEditor.jqObj.find(`.open-${this.prop}-values`).on('click', this.openValues.bind(this))
     }
+    if(this.showLink){
+      this.dataEditor.jqObj.find(`img#${this.domId}-show-link`).on('click',this.execShowLink.bind(this))
+    }
+    if(this.editLink){
+      this.dataEditor.jqObj.find(`img#${this.domId}-edit-link`).on('click',this.execEditLink.bind(this))
+    }
 
     if (this.observe){
       // Cf. le manuel développeur
@@ -52,13 +58,20 @@ Object.assign(DataField.prototype,{
   @return Array des champs à ajouter, ou undefined si aucun
  */
 , extraFiedls(){
+    var divs = []
     if(this.isSelectUpdatable){
-      return [
-        DCreate('IMG', {class:`update update-${this.prop}-values`, src:'img/update-2.png'})
-      , DCreate('IMG', {class:`open open-${this.prop}-values`, src:'img/btn-edit.png'})
-      ]
+      divs.push(DCreate('IMG', {class:`update update-${this.prop}-values`, src:'img/update-2.png'}))
+      divs.push(DCreate('IMG', {class:`open open-${this.prop}-values`, src:'img/btn-edit.png'}))
     }
-    return
+    if(this.showLink){
+      divs.push(DCreate('IMG', {id:`${this.domId}-show-link`, class:'link show-link', src: 'img/btn-show.png'}))
+    }
+    if(this.editLink){
+      divs.push(DCreate('IMG', {id:`${this.domId}-edit-link`, class:'link edit-link', src: 'img/btn-edit.png'}))
+    }
+
+    if(divs.length) return divs
+    // Sinon rien
   }
 /**
   Définir le label

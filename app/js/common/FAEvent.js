@@ -27,6 +27,13 @@ static get(event_id){
 }
 
 /**
+  Pour mettre l'event +event_id+ en édition
+**/
+static edit(event_id){
+  return EventForm.editEvent.bind(EventForm, this.get(event_id))()
+}
+
+/**
   @return {Number} Le nombre d'events actuels
 **/
 static count(){
