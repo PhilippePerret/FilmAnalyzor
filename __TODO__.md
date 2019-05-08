@@ -3,8 +3,10 @@
 ### Traiter :
 
 * Personnages
-  - checker qu'on puisse bien n'afficher qu'un seul personnage (méthode 'show')
-  - implémenter le helper propre à chaque draggable de personnage (avec attribut 'data-dim')
+  = l'association fonctionne !
+  - Simplifier la propriété 'associates' à l'enregistrement pour ne prendre que les listes qui sont non vides.
+
+- Utiliser la nouvelle façon d'associer, avec `ASSOCIATES_COMMON_METHODS` `ASSOCIATES_COMMON_PROPERTIES` pour tous les autres éléments (Brins, Documents, Events si possible) avec FAEvent (noter que pour le moment, c'est la classe qui gère les associations ; il faut que ce soit chaque instance)
 
 * DATAEDITOR
   - Faire un fichier pfa alt (les mettre dans min.js)

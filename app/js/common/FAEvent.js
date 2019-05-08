@@ -4,7 +4,7 @@ class FAEvent {
 // ---------------------------------------------------------------------
 //  CLASSE
 
-static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duree', 'parent', ['content', 'longtext1'], 'events', 'documents', 'times', 'brins']}
+static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duree', 'parent', ['content', 'longtext1'], 'events', 'documents', 'times', 'brins', 'personnages']}
 static get TEXT_PROPERTIES(){return ['titre', 'content']}
 
 static get ALL_PROPS(){
@@ -126,9 +126,10 @@ static prepareDissociation(datadis){
   datadis.owner.id !== undefined || raise("Il faut fournir l'id du propriétaire")
   let owner = ((typ, id) => {
     switch (typ) {
-      case 'event':     return FAEvent.get(id)
-      case 'document':  return FADocument.get(id)
-      case 'brin':      return FABrin.get(id)
+      case 'event':       return FAEvent.get(id)
+      case 'document':    return FADocument.get(id)
+      case 'brin':        return FABrin.get(id)
+      case 'personnage':  return FAPersonnage.get(id)
       default:
         throw(`Le type de possesseur "${typ}" n'est pas encore traité pour la dissociation`)
     }
@@ -136,10 +137,11 @@ static prepareDissociation(datadis){
 
   let owned = ((typ, id) => {
     switch (typ) {
-      case 'time':      return new OTime(id)
-      case 'event':     return FAEvent.get(id)
-      case 'document':  return FADocument.get(id)
-      case 'brin':      return FABrin.get(id)
+      case 'time':        return new OTime(id)
+      case 'event':       return FAEvent.get(id)
+      case 'document':    return FADocument.get(id)
+      case 'brin':        return FABrin.get(id)
+      case 'personnage':  return FAPersonnage.get(id)
       default:
       throw(`Le type de possédé "${typ}" n'est pas encore traité pour la dissociation`)
     }
@@ -254,10 +256,11 @@ constructor(analyse, data){
 
   // Valeurs par défaut indispensables
   // Les associations possibles
-  this.events     = this.events     || []
-  this.documents  = this.documents  || []
-  this.times      = this.times      || []
-  this.brins      = this.brins      || []
+  this.events       = this.events       || []
+  this.documents    = this.documents    || []
+  this.times        = this.times        || []
+  this.brins        = this.brins        || []
+  this.personnages  = this.personnages  || []
 
 }
 

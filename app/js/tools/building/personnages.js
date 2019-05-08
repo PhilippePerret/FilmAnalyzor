@@ -6,6 +6,10 @@ const PanelPersos = {
     else this.fwindow[opened?'show':'hide']()
   }
 
+, beforeHide(){
+    FAPersonnage.saveIfModify()
+  }
+
 , build(){
     let divsPersonnages = this.personnages.map(perso => perso.domListing())
     return [
@@ -25,13 +29,8 @@ const PanelPersos = {
 
 , observe(){
 
-    // On rend tous les personnages draggable
-    this.jqObj.find('li.li-perso').draggable({
-        helper: ()=>{return '<div>HELPER PERSONNAGE À DÉFINIR</div>'}
-      , revert: true
-    })
-
-    // Les boutons edit permettent d'éditer les personnages
+    // L'observation de chaque élément, dont, notamment, la gestion du bouton
+    // 'edit' et le drag de l'élément.
     this.personnages.map(p => p.observe())
 
     this.jqObj.find('.btn-ok').on('click', this.fwindow.toggle.bind(this.fwindow))
@@ -74,13 +73,15 @@ const PanelPersos = {
   }
 }
 Object.defineProperties(PanelPersos, {
-  personnages:{get(){
+  opened:{get(){return !!this.fwindow.visible}}
+, personnages:{get(){
     if(undefined === this._personnages){
       this._personnages = FAPersonnage.personnages.map(p => new PanelPersonnage(p))
     }
     return this._personnages
   }}
 , ulPersos:{get(){return this._ulPersos || defP(this,'_ulPersos',this.jqObj.find('ul.personnages'))}}
+, btnOK:{get(){return this.jqObj.find('button.btn-ok')}}
 , btnShowAll:{get(){return this.jqObj.find('button.btn-show-all')}}
 , jqObj:{get(){return this.fwindow.jqObj}}
 , fwindow:{
@@ -97,6 +98,8 @@ class PanelPersonnage {
 constructor(instance){
   this.instance = this.i = instance
 }
+
+toString(){return this._tostring||defP(this,'_tostring',`<span class="${this.domC('pseudo')}">${this.pseudo}</span> (#${this.id})`)}
 
 domListing(){
   var divs = []
@@ -115,6 +118,7 @@ domListing(){
   divs.push(DCreate('DIV',{class:`description ${this.i.domC('description')}`, inner:this.i.f_description}))
 
   if(this.i.fonctions){
+    // console.log("this.i.fonctions:",this.i.fonctions)
     divs.push(DCreate('DIV',{class:`fonctions ${this.i.domC('fonctions')}`, inner:this.i.f_fonctions}))
   }
 
@@ -128,11 +132,26 @@ domListing(){
   }
 
   // On construit le LI final
-  return DCreate('LI', {id:`li-perso-${this.id}` , class:'li-perso personnage', append:divs})
+  return DCreate('LI', {id:`li-perso-${this.id}` , class:'li-perso personnage', append:divs, attrs:{
+      'data-type':'personnage', 'data-id':this.id
+    }})
 }
 
 observe(){
+
+  // Le bouton edit doit permettre d'éditer le personnage
   this.li.find('a.edit').on('click', this.edit.bind(this))
+
+  // Le LI doit réagir au drop d'élément
+  this.li.droppable(DATA_DROPPABLE /* comme donnée universelle */)
+
+  // Chaque élément est draggable
+  this.li.draggable({
+      revert: true
+    , helper: () => {return this.i.dragHelper()}
+    // , helper: () => {return `<div class="personnage" data-type="personnage" data-id="${this.id}" data-dim="${this.dim}">${this.pseudo} (#${this.id})</div>`}
+    , cursorAt: {left:40, top:20}
+  })
 }
 
 edit(){

@@ -19,17 +19,4 @@ const EDITABLE  = 512 // L'élément est lié à son édition
 // utilisée comme flag quand on doit placer le texte, par
 // exemple, dans l'attribut `title` d'une balise.
 const ESCAPED   = 1024
-
-/**
-  Données communes pour dropper les events, documents et times
-  @usage
-    <set jquery>.droppable(
-      Object.assign({),DATA_DROPPABLE, {drop: function(i,o){...}})
-    )
-**/
-const DATA_DROPPABLE = {
-  accept: '.event, .doc, .dropped-time, .brin, .personnage'
-, tolerance: 'intersect'
-, drop: null
-, classes: {'ui-droppable-hover': 'survoled'}
-}
+const DISSOCIABLE = 2048  // pour ajouter un lien pour dissocier l'élément

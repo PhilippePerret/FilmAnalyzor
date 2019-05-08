@@ -4,9 +4,30 @@
 **/
 
 .lkedit,
-.lkshow {
+.lkshow,
+.lkdisso,
+.lktool
+{
   cursor:pointer;
 }
+
+.lktool
+{
+  font-size:9pt;
+  vertical-align:top;
+  border:1px solid #CCCCCC;
+  padding:0px 3px;
+  opacity:0.5;
+}
+.lktool:hover
+{
+  opacity:1;
+}
+
+span + .lktool {
+  margin-left:8px;
+}
+
 
 label {
 

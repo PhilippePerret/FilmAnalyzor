@@ -9,10 +9,12 @@ class FAPersonnage {
 // ---------------------------------------------------------------------
 //  CLASS
 
+static get modified(){return this._modified}
+static set modified(v){
+  this._modified = v
+}
+
 static show(perso_id){
-  // if(NONE === typeof(PanelPersos)){
-  //   const PanelFonds = require('./js/tools/building/fondamentales.js')
-  // }
   this.a.togglePanneauPersonnages(true/*ouvert*/)
   PanelPersos.select(perso_id)
 }
@@ -109,6 +111,16 @@ static get hpersonnages(){
   return this._hpersonnages
 }
 
+static saveIfModify(){
+  if(!this.modified) return
+  // On doit reconstituer this._data
+  var hdata = {}
+  this.forEachPersonnage(perso => hdata[perso.id] = perso.getData())
+  this._data = hdata
+  hdata = null
+  this.DESave()
+}
+
 // Retourne le nombre de personnages
 static get count(){return this._count||defP(this,'_count', Object.keys(this.data).length)}
 
@@ -122,9 +134,25 @@ static get a(){return current_analyse}
 constructor(analyse, data){
   this.analyse = this.a = analyse
   for(var prop in data){this[`_${prop}`] = data[prop]}
+  this.type = 'personnage' // utile pour les associations
 }
 
 toString(){return `${this.pseudo} (#${this.id})`}
+
+/**
+  Retourne les données du personnage pour enregistrement
+**/
+getData(){
+  var hdata = {}, v
+  this.constructor.PROPS.map(p => {
+    v = this[p]
+    if(undefined === v || null === v ) return
+    if (Array.isArray(v) && v.length==0) return
+    if ('object' === typeof(v) && Object.keys(v).length == 0) return
+    hdata[p] = v
+  })
+  return hdata
+}
 
 /**
   Méthode qui actualise automatiquement toutes les informations affichées
@@ -132,11 +160,17 @@ toString(){return `${this.pseudo} (#${this.id})`}
 **/
 onUpdate(){
   this.constructor.PROPS.map(prop => {
+    if (!this[prop]) return
     $(this.domCP(prop)).html(this[`f_${prop}`]||this[prop])
   })
 }
 
-static get PROPS(){return ['id', 'pseudo','dim','prenom', 'nom','dimensions','ages','description','fonctions', 'associates']}
+static get PROPS(){
+  if(undefined === this._props){
+    this._props = ['id','pseudo','dim','prenom','nom','dimensions','ages','description','fonctions','associates']
+  }
+  return this._props
+}
 
 // La class commune à toute
 domC(prop){
@@ -144,6 +178,15 @@ domC(prop){
   return `${this._prefClass}${prop}`
 }
 domCP(prop){return `.${this.domC(prop)}`}
+
+get modified(){return this._modified}
+set modified(v){
+  this._modified = v
+  this.constructor.modified = v
+  if(v) this.onUpdate()
+  if(PanelPersos.opened) PanelPersos.btnOK.html(v ? 'Enregistrer' : 'OK')
+}
+
 get pseudo(){return this._pseudo}
 get id(){return this._id}
 get prenom(){return this._prenom}
@@ -153,5 +196,4 @@ get ages(){return this._ages}
 get fonctions(){return this._fonctions}
 get dimensions(){return this._dimensions}
 get description(){return this._description}
-get associates(){return this._associates}
 }

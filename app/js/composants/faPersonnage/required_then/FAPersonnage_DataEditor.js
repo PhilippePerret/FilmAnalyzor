@@ -7,8 +7,12 @@ Object.assign(FAPersonnage,{
 **/
   DESave(){
     this.contents = YAML.dump(this.data)
-    this.iofile.save()
+    console.log("Dans DESave, this.contents = ", this.contents)
+    this.iofile.save({after: this.DEAfterSave.bind(this)})
     FAWriter.resetDocument('dpersonnages')
+  }
+, DEAfterSave(){
+    this.modified = false
   }
 /**
   Méthode utilisée par DataEditor pour créer un item

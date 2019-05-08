@@ -16,9 +16,11 @@
   * [Enregistrement des events](#saving_events)
 * [Travail avec les events](#working_with_events)
   * [Filtrage des events](#filtering_events)
+  * [Association des events](#associations_elements)
 * [Autres données de l'analyse](#analyse_autres_donnees)
   * [DataEditor, l'éditeur de données](#data_editor)
   * [Actualisation automatique des éléments affichés lors des modifications](#autoupdate_after_edit)
+  * [Association des éléments](#associations_elements)
 * [Ajout de préférences globales](#add_global_prefs)
   * [Utilisation des préférences globales](#use_global_prefs})
 * [Ajout de préférence analyse](#add_analyse_pref)
@@ -402,6 +404,42 @@ Avec comme prérequis que :
 
 * `PROPS` contient la liste de toutes les propriétés actualisables.
 * chaque propriété spéciale possède une méthode `f_<propriété>` qui formate cette propriété pour l'affichage. Le cas échéant, c'est la valeur de la propriété elle-même qui est utilisée.
+
+### Association des éléments {#associations_elements}
+
+Tous les types d'éléments d'une analyse peuvent être associés, à savoir les types `event`, `personnage`, `document`, `brin` et `time`.
+
+Pour rendre une classe *associable*, les requis sont les suivants.
+
+* Définir l'élément sur lequel on pourra *dropper* un autre élément. Il suffit pour cela d'utiliser la ligne de code `$(element).droppable(DATA_DROPPABLE)` ([1]).
+* Étendre la classe avec `ASSOCIATES_COMMON_METHODS` avec la ligne de code :
+      Object.assign(CLASSE.prototype, ASSOCIATES_COMMON_METHODS)
+* Étendre la classe avec `ASSOCIATES_COMMON_PROPERTIES` avec la ligne de code :
+      Object.defineProperties(CLASSE.prototype, ASSOCIATES_COMMON_PROPERTIES)
+* Définir les propriétés obligatoires :
+  * `CLASSE#type`, propriété d'instance qui retourne le type de l'élément. Ce type doit être *plurielisable* simplement en ajoutant un « s ». Par exemple `event` qui donnera `events`.
+  * `CLASSE#id` propriété d'instance qui retourne l'identifiant de l'élément (celui qui permettra de le récupérer en utilisant la méthode de classe `get` — cf. ci-dessous).
+* Définir les méthodes obligatoires :
+  * `CLASSE#toString()`, méthode d'instance qui retourne la référence simplifiée de l'élément (sert notamment pour le helper qu'on déplacera pour dragguer l'élément). Cette méthode sert aussi pour tous les messages traitant de l'élément.
+  * `CLASSE::get(<element id>)`, méthode de classe qui retourne une instance de l'élément.
+* Modifier `ASSOCIATES_COMMON_METHODS` :
+  * Ajouter le type de l'élément à sa liste `types`.
+  * Ajouter la propriété `<type>s: []` (qui sera la liste des éléments du nouveau type).
+
+> [1] Auparavant, il fallait redéfinir la méthode `drop` des données droppable, mais maintenant la méthode est générique et appelle toujours la méthode `associer` de l'analyse courante avec en arguments le possesseur et le possédé.
+
+La table `ASSOCIATES_COMMON_METHODS` apporte toutes les méthodes et propriétés utiles pour les associations, et notamment :
+
+* la méthode d'helper `dragHelper` qui retourne l'helper à utiliser pour les éléments draggable. On l'utilise en définissant :
+      ```javascript
+      $(element).draggable({
+          revert: true
+        , helper: () => {return this.dragHelper()}
+        , cursorAt:{left:40, top:20}
+      })
+      ```
+* la propriété `associates` qui est une table qui contient en clé le type de l'associé (**au singulier**) et en valeur la liste des identifiants des associés de chaque type.
+* la méthode `divsAssociates([<options>])` qui retourne les divs de tous les associés (au format `options.as` qui peut être soit 'dom' (défaut) soit 'string')
 
 
 ---------------------------------------------------------------------
