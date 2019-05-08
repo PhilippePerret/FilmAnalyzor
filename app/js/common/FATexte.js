@@ -180,7 +180,7 @@ static defineTableDims(){
   var tbl = {}, reg
   for(var dim in this.dimsData){
     reg = new RegExp(`(^|[^a-zA-Z0-9_])@${dim}([^a-zA-Z0-9_]|$)`, 'g')
-    tbl[dim] = {dim: dim, value: `$1${this.dimsData[dim]}$2`, regexp: reg}
+    tbl[dim] = {dim: dim, value: `$1<a class="lkshow" onclick="showPersonnage('${this.dimsData[dim].id}')">${this.dimsData[dim].pseudo}</a>$2`, regexp: reg}
   }
   return tbl
 }
@@ -353,7 +353,7 @@ deTimeTags(str){
   str = str.replace(FATexte.REGEXP_TIME_TAG, function(){
     groups = arguments[arguments.length - 1]
     txt = groups.text || new OTime(parseFloat(groups.time)).horloge_simple
-    return `<span onclick="goToTime(${groups.time})">${txt}</span>`
+    return `<a class="lkshow" onclick="showTime(${groups.time})">${txt}</a>`
   })
   // console.log(str)
   return str

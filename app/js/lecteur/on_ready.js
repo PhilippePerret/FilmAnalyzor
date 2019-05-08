@@ -6,6 +6,7 @@ function WhenAllIsReallyReady(){
   // FAPersonnage.dataEditor.open()
   // FABrin.dataEditor.open()
   // current_analyse.openDocInDataEditor('fondamentales')
+  current_analyse.togglePanneauPersonnages()
 }
 
 $(document).ready(() => {

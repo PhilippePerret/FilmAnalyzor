@@ -1,0 +1,43 @@
+/* ---------------------------------------------------------------------
+    Styles propres aux personnages
+    - pour l'affichage général
+    - pour l'affichage dans le dataeditor
+ */
+
+.li-perso {
+  margin-bottom:1em;
+}
+
+.prenom + .nom {
+  margin-left:0.31em;
+}
+
+.personnage .pseudo {
+  font-weight:bold;
+}
+
+.personnage .references {
+  font-size:0.78em;
+}
+.personnage .description,
+.personnage .dimensions,
+.personnage .fonctions
+{
+  font-size:0.85em;
+}
+.personnage .description {
+  padding:1em;
+}
+.personnage .fonctions,
+.personnage .dimensions {
+  padding:0 1em 1em 1em;
+}
+
+.personnage .fonctions .fonction {
+  margin-right:0.5em;
+}
+.personnage .fonctions .fonction:before{content:'• '}
+
+.personnage .ages {
+  font-size:0.85em;
+}

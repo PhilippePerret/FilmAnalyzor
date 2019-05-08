@@ -4,7 +4,7 @@
 
 * Personnages
   - Poursuivre l'affichage du listing
-  - checker qu'on puisse bien n'afficher qu'un seul personnage
+  - checker qu'on puisse bien n'afficher qu'un seul personnage (méthode 'show')
   - implémenter le helper propre à chaque draggable de personnage (avec attribut 'data-dim')
 
 * DATAEDITOR
@@ -141,4 +141,5 @@
 
 # PEUT-ÊTRE UN JOUR
 
+* Pouvoir entrer l'année de l'histoire et définir les âges des personnages en donnant leur date de naissance.
 * API qui permettrait de récupérer les data des films online (au format json).

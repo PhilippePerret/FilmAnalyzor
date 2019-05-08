@@ -88,6 +88,7 @@ Object.defineProperties(FAPersonnage,{
             }
         }
       , {label:'Description', type:'textarea', prop:'description', validities:REQUIRED}
+      , {label:'Fonctions', type:'textarea', prop:'fonctions', aide:'une fonction par ligne', exemple:'Protagoniste\nAdjuvant\nPermet de relancer le suspense'}
       , {label:'Dimensions', type:'textarea', prop:'dimensions', aide:'1 par ligne (&lt;type&gt;: &lt;description&gt;)'
           , exemple:'religieuse: @T croit en Dieu.\nprofessionnelle: @T travaille pour lui.'
           , setValueMethod: (v)=>{

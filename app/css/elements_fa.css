@@ -1,0 +1,27 @@
+/**
+  Aspect des autres éléments que les events, partout (personnages,
+  liens, etc.)
+**/
+
+.lkedit,
+.lkshow {
+  cursor:pointer;
+}
+
+label {
+
+}
+label:after{content:' : '}
+
+/* Un label qui suit un span laisse toujour de l'air */
+span + label {}
+span + label:before{content:' • '}
+
+div h3:nth-child(1) {
+  /* margin-top:0; */
+  margin-block-start:0;
+  margin-block-end:0.3em;
+}
+
+/* ---------------------------------------------------------------------
+ */

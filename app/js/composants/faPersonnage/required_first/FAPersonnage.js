@@ -10,7 +10,8 @@ class FAPersonnage {
 //  CLASS
 
 static show(perso_id){
-  this.a.togglePanneauPersonnages()
+  this.a.togglePanneauPersonnages(true/*ouvert*/)
+  return
   PanelPersos.select(perso_id)
 }
 
@@ -72,7 +73,8 @@ static get diminutifs(){
     this._diminutifs = {}
     for(var pseudo in this.data){
       if(this.data[pseudo].dim){
-        this._diminutifs[this.data[pseudo].dim] = this.data[pseudo].pseudo
+        // this._diminutifs[this.data[pseudo].dim] = this.data[pseudo].pseudo
+        this._diminutifs[this.data[pseudo].dim] = this.data[pseudo]
       }
     }
   }
@@ -132,7 +134,7 @@ onUpdate(){
   })
 }
 
-static get PROPS(){return ['id', 'pseudo','dim','prenom', 'nom','dimensions','ages','description','fonction']}
+static get PROPS(){return ['id', 'pseudo','dim','prenom', 'nom','dimensions','ages','description','fonctions', 'associates']}
 
 // La class commune à toute
 domC(prop){
@@ -146,11 +148,8 @@ get prenom(){return this._prenom}
 get nom(){return this._nom}
 get dim(){return this._dim}
 get ages(){return this._ages}
-get f_ages(){
-  let a = Array.isArray(this.ages) ? this.ages : [this.ages]
-  return a.map(n => `${n} ans`).join(', ')
-}
+get fonctions(){return this._fonctions}
 get dimensions(){return this._dimensions}
 get description(){return this._description}
-get f_description(){return DFormater(this.description)}
+get associates(){return this._associates}
 }

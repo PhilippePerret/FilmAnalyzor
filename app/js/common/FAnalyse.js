@@ -263,9 +263,9 @@ togglePanneauFondamentales(){
   const PanelFonds = require('./js/tools/building/fondamentales.js')
   PanelFonds.toggle()
 }
-togglePanneauPersonnages(){
+togglePanneauPersonnages(opened){
   const PanelPersos = require('./js/tools/building/personnages.js')
-  PanelPersos.toggle()
+  PanelPersos.toggle(opened)
 }
 togglePanneauStatistiques(){
   const PanelStatistiques = require('./js/tools/building/statistiques.js')

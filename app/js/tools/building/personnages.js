@@ -1,8 +1,9 @@
 'use strict'
 
 const PanelPersos = {
-  toggle(){
-    this.fwindow.toggle()
+  toggle(opened){
+    if(undefined === opened) this.fwindow.toggle()
+    else this.fwindow[opened?'show':'hide']()
   }
 
 , build(){
@@ -101,6 +102,7 @@ domListing(){
   var divs = []
   divs.push(DCreate('A', {class:'lkedit edit fright', inner: 'edit'}))
   divs.push(DCreate('SPAN', {class:`pseudo ${this.i.domC('pseudo')}`, inner: this.pseudo}))
+  divs.push(DCreate('DIV', {class:`references`, inner:this.i.f_references /* id et DIM */}))
   if(this.i.prenom || this.i.nom){
     divs.push(DCreate('DIV', {class:'patronyme', append:[
       DCreate('SPAN', {class:`prenom ${this.i.domC('prenom')}`, inner: this.i.prenom})
@@ -112,7 +114,21 @@ domListing(){
   }
   divs.push(DCreate('DIV',{class:`description ${this.i.domC('description')}`, inner:this.i.f_description}))
 
-  return DCreate('LI', {id:`li-perso-${this.id}` , class:'li-perso', append:divs})
+  if(this.i.fonctions){
+    divs.push(DCreate('DIV',{class:`fonctions ${this.i.domC('fonctions')}`, inner:this.i.f_fonctions}))
+  }
+
+  if(this.i.dimensions){
+    divs.push(DCreate('DIV',{class:`dimensions ${this.i.domC('dimensions')}`, inner:this.i.f_dimensions}))
+  }
+
+  // S'il y a des éléments associés, on les marque
+  if(this.i.associates){
+    divs.push(DCreate('DIV',{class:`associates ${this.i.domC('associates')}`, inner:this.i.f_associates}))
+  }
+
+  // On construit le LI final
+  return DCreate('LI', {id:`li-perso-${this.id}` , class:'li-perso personnage', append:divs})
 }
 
 observe(){
