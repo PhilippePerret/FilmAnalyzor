@@ -10,8 +10,10 @@ class FAPersonnage {
 //  CLASS
 
 static show(perso_id){
+  // if(NONE === typeof(PanelPersos)){
+  //   const PanelFonds = require('./js/tools/building/fondamentales.js')
+  // }
   this.a.togglePanneauPersonnages(true/*ouvert*/)
-  return
   PanelPersos.select(perso_id)
 }
 

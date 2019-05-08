@@ -3,7 +3,6 @@
 ### Traiter :
 
 * Personnages
-  - Poursuivre l'affichage du listing
   - checker qu'on puisse bien n'afficher qu'un seul personnage (méthode 'show')
   - implémenter le helper propre à chaque draggable de personnage (avec attribut 'data-dim')
 

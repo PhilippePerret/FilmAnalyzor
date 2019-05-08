@@ -15,6 +15,14 @@ const App = {
     }
   }
 
+/**
+  Pour charger un module se trouvant dans le dossier app/js/tools
+**/
+, loadTool(affixe){
+    if(!affixe.endsWith('.js')) affixe += '.js'
+    return require(`./js/tools/${affixe}`)
+  }
+
 , runHandTests(options){
     if('undefined' === typeof(HandTests)) return this.loadHandTests(this.runHandTests.bind(this))
     HandTests.initAndRun(options)

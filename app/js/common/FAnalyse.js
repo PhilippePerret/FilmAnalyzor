@@ -252,23 +252,25 @@ displayPFA(){
   this.PFA.toggle()
 }
 togglePanneauInfosFilm(){
-  let iPanelInfosFilm = require('./js/tools/building/infos_film.js')
+  window.iPanelInfosFilm = window.iPanelInfosFilm || App.loadTool('building/infos_film')
   iPanelInfosFilm.toggle()
 }
 togglePanneauDecors(){
-  const iPanelDecors = require('./js/tools/building/decors.js')
+  window.iPanelDecors = window.iPanelDecors || App.loadTool('building/decors')
   iPanelDecors.toggle()
 }
 togglePanneauFondamentales(){
-  const PanelFonds = require('./js/tools/building/fondamentales.js')
+  window.PanelFonds = window.PanelFonds || App.loadTool('building/fondamentales')
   PanelFonds.toggle()
 }
 togglePanneauPersonnages(opened){
-  const PanelPersos = require('./js/tools/building/personnages.js')
+  window.PanelPersos = window.PanelPersos || App.loadTool('building/personnages')
   PanelPersos.toggle(opened)
 }
 togglePanneauStatistiques(){
-  const PanelStatistiques = require('./js/tools/building/statistiques.js')
+  if(undefined === window.PanelStatistiques){
+    window.PanelStatistiques = require('./js/tools/building/statistiques.js')
+  }
   PanelStatistiques.toggle()
 }
 togglePanneauBrins(){ FABrin.toggle() }

@@ -7,6 +7,7 @@
 * [Essais/travail du code](#travail_code_sandbox_run)
 * [Chargement de dossier de modules](#loading_modules_folders)
   * [Chargement de dossiers JS au lancement de l'application](#load_folders_at_launching)
+  * [Chargement d'outils particuliers (tools)](#load_tools)
 * [Création/modification des events](#creation_event)
   * [Mise en forme des events](#event_mise_en_forme)
   * [Bouton Play/Stop des events](#bouton_playstop_event)
@@ -102,6 +103,18 @@ C'est cette formule qu'on utilise par exemple pour charger le *FAWriter* qui per
 Grâce au module `system/App.js`, on peut charger des dossiers javascript sans les coder en dur dans le fichier HTML de l'application.
 
 Il suffit de les inscrire dans la constante `AppLoader::REQUIRED_MODULES` et ils sont chargés de façon asynchrone.
+
+## Chargement d'outils particuliers (tools) {#load_tools}
+
+Pour charger un module se trouvant dans le dossier des outils `app/js/tools`, utiliser la méthode `App.loadTool(<affixe>)` avec l'affixe du fichier en argument.
+
+Par exemple, pour charger le module `./app/js/tools/building/fondamentales.js`, utiliser :
+
+```javascript
+
+window.PanelFonds = App.loadTool('building/fondamentales')
+
+```
 
 ## Création/modification des events {#creation_event}
 
