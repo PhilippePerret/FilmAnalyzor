@@ -417,3 +417,5 @@ get tempPath(){
   return this._tempPath || defP(this,'_tempPath', `${this.path}.temp`)
 }
 }
+
+module.exports = IOFile

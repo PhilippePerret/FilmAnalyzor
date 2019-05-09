@@ -5,7 +5,7 @@
 Object.assign(FABrin.prototype,{
 
 toString(){
-  if(undefined === this._tostring) this._tostring = `<<BRIN id=${this.id}>>`
+  if(undefined === this._tostring) this._tostring = `Brin « ${this.title} » (#${this.id})`
   return this._tostring
 }
 
@@ -87,7 +87,7 @@ toString(){
     if(opts.owner){
       // Si les options définissent un owner, on ajoute un lien pour pouvoir
       // dissocier le temps de son possesseur
-      divs.push(FAEvent.linkDissocier({owner: opts.owner, owned: this}))
+      divs.push(this.dissociateLink())
     }
     return divs
   }
@@ -102,124 +102,41 @@ toString(){
 
 
 /**
-  Sortie pour le livre édité
+  Sortie pour le livre édité (et pour le listing des brins)
 **/
 , asDiv(options){
   if(undefined === options) options = {}
-  var divs = [
-      DCreate('SPAN', {class: 'brin-title', inner: `Brin #${this.numero}. ${this.title}`})
-    , this.miniTimeline
-  ]
+  var divs = []
+
   if(this.description){
-    divs.push(DCreate('SPAN', {class: 'brin-description small', inner: this.description}))
+    divs.push(DCreate('DIV', {class: 'description brin-description', inner: this.description}))
   }
 
-  let infosMasked = [
-    DCreate('DIV', {class:'brin-associateds-detailled', append: this.divAssociateds()})
+  divs.push(
     // La partie statistique du brin
-  , DCreate('DIV', {class: 'brin-statistiques', append:[
-      DCreate('H4', {inner: 'Présence'})
+    DCreate('DIV', {class: 'brin-statistiques statistiques', append:[
+      DCreate('H3', {inner: 'Statistiques'})
+    , DCreate('H4', {inner: 'Présence'})
     , DCreate('LABEL', {inner: 'Durée du brin dans le film : '})
     , DCreate('SPAN', {class: 'brin-temps-presence', inner: `${this.stats.tempsPresence()} (${this.stats.pourcentagePresence()})`})
     ]})
+  )
 
-  ]
-  if(options.forBook === true){
-    divs.push(DCreate('DIV', {class:'brin-infos-masked', append: infosMasked}))
-  } else {
-
-    // S'il y a des associés
-    let divsAss = this.associateds()
-    if(divsAss){
-      divsAss.unshift(DCreate('LABEL', {inner: 'Associés :'}))
-      divs.push(DCreate('DIV', {class: 'brin-associateds small', append:divsAss}))
-    }
-
-    divs.push(DCreate('BUTTON', {type:'button', class: 'toggle-next'}))
-    divs.push(DCreate('DIV', {class:'brin-infos-masked', style:'display:none;', append: infosMasked}))
+  // S'il y a des associés
+  if(this.hasAssociates()){
+    divs.push(DCreate('DIV', {class: `associates ${this.domC('associates')}`, append:this.divsAssociates({title: true})}))
   }
-  divs.push(DCreate('DIV', {style:'clear:both;'}))
 
-  return DCreate('DIV', {class: 'brin', append:divs, attrs:{'data-type':'brin', 'data-id': this.id}})
+  return DCreate('LI', {class: 'li-element brin', attrs:{'data-type':'brin', 'data-id': this.id}, append:[
+      // La barre de titre qui contient les spécificités du brin et le
+      // bouton pour afficher ses informations
+      DCreate('DIV',{class:'bar-title', append:[
+          DCreate('IMG', {class: 'toggle-container', src:'img/folder_closed.png', attrs:{'data-container-id':`${this.domId}-content`}})
+        , DCreate('DIV', {class: 'brin-title', inner: `Brin « ${this.title} » (${this.id})`})
+        , this.miniTimeline
+        ]})
+    , DCreate('DIV',{id:`${this.domId}-content`, class:'element-content not-visible', append:divs})
+    ]})
 }
-,
 
-divAssociateds(){
-  var divs = [ DCreate('H4', {inner:'Associés'}) ]
-    , id, ass, time
-    , assExiste, inner
-  for(id of this.documents){
-    if(ass = FADocument.get(id)){
-      divs.push(DCreate('DIV', {attrs:{'data-type':'document', 'data-id': ass.id}, append:[
-        DCreate('LI', {class:'document-title', inner: ass.as('associate',FORMATED|LINKED|LABELLED,{no_warm:true})})
-      ]}))
-    } else {
-      console.error(`ERREUR Document introuvable. #${id}`)
-    }
-  }
-  // Liste des events
-  // Un event peut ne pas exister encore s'il n'a pas été enregistré, si on
-  // l'associe depuis le formulaire. Pour le savoir, on utilise la méthode
-  // FAEvent.exist?(id) qui vérifie dans l'analyse courante et dans un
-  // formulaire existant
-  for(id of this.events){
-    if(FAEvent.exists(id)){
-      ass = FABrin.a.ids[id]
-      inner = ass ? ass.as('associate',LINKED,{no_warm:true, notes:false, owner:{type:'brin', id:this.id}}) : `NOUVEL EVENT #${id}`
-      divs.push(DCreate('DIV', {attrs:{'data-type':'event', 'data-id': id}, append:[
-        // DCreate('LI', {class:'event-title', inner: ass.as('short',FORMATED|LINKED|LABELLED,{no_warm:true, notes:false})})
-        DCreate('LI', {class:'event-title', inner:inner})
-      ]}))
-    } else {
-      console.error(`EVENT INTROUVABLE. ID: #${id}. C'est une erreur grave, l'analyse a besoin d'être fixée.`)
-    }
-  }
-  for(time of this.times){
-    ass = new OTime(time)
-    divs.push(DCreate('DIV', {attrs:{'data-type':'time', 'data-time': time}, append:[
-      DCreate('LI', {class:'time', inner: `<a onclick="showTime(${id})">Temps : ${ass.horloge_simple}</a>`})
-    ]}))
-  }
-  return divs
-}
-,
-/**
-  Retourne la liste des éléments associés, en mode court (il suffit de glisser la souris sur l'ID pour le lire)
-
-  TODO: Peut-être que cette méthode devrait être plus universelle, notamment
-  pour traiter les nouveaux events non encore enregistrés.
-**/
-associateds(opts){
-  var ass = [], id, ev
-  for(id of this.documents){
-    ass.push(FADocument.get(id).asAssociate(opts))
-  }
-  for(id of this.events){
-    ev = FABrin.a.ids[id]
-    // Lorsque l'on glisse un nouvel event depuis son formulaire de création jusque sur
-    // la fenêtre des brins, cet event n'existe pas encore. Dans ce cas, on met juste la
-    // marque 'NEW EVENT #XXX'
-    // Noter qu'on pourrait très bien récupérer ses valeurs dans le formulaire, mais bon…
-    if(ev){
-      ass.push(DCreate('SPAN',{inner:`Ev#${id}`, attrs:{title:ev.as('short',ESCAPED,{no_warm:true})}}))
-    } else {
-      ass.push(DCreate('SPAN',{inner: `NEW EVENT #${id}`}))
-    }
-  }
-  for(id of this.times){
-    ass.push(DCreate('SPAN', {append:[
-        DCreate('LABEL', {inner: 'temps :'})
-      , DCreate('SPAN',  {inner: new OTime(id).horloge_simple})
-      ]}))
-  }
-  if (ass.length){
-    return ass
-  } else {
-    return null
-  }
-}
-})
-
-Object.defineProperties(FABrin.prototype,{
-
-})
+})//assign

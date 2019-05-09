@@ -2,13 +2,37 @@
 
 ### Traiter :
 
-* Personnages
-  - Modifier les styles css pour que les associés s'affichent comme la description et les dimensions
-    Note : penser à faire un truc css qui soit commun pour tous les éléments, ne pas refaire les mêmes choses chaque fois
-  - Simplifier la propriété 'associates' à l'enregistrement pour ne prendre que les listes qui sont non vides.
+* [BUG] `associates` ne doit pas être mis dans le fichier YAML quand elle est indéfinie
+* [BUG] Redocumenter le manuel développeur pour dire qu'il suffit d'extendre
+        avec `FAElement` MAIS qu'il faut penser à ajouter `super()` au
+        constructor de l'élément.
+
+* Brins
+  - Modifier le bouton 'OK' pour 'Enregistrer', dans le listing, quand on a associé des éléments
+  - Si le FAElement fonctionne pour les brins :
+    + supprimer le fichier FAPersonnage.associates.js
+    + modifier le manuel developpeur en indiquant qu'il suffit d'extendre la classe avec
+      FAElement pour qu'il profite de tout
+  - quand un élément d'un listing est toggelisable (img toggleContainer ou toggle-next), il faut ajouter un bouton général pour tout fermer ou ouvrir
+  - faire le listing des brins (en s'inspirant beaucoup, notamment pour les tags et les
+    classes, du listing de personnage)
+  - voir comment est traité la propriété `associable: true` dans le DataEditor. Il faut :
+    1. Qu'on puisse dragguer un élément associable sur la fenêtre d'édition
+    2. Qu'on puisse dragguer depuis la fenêtre d'édition un petit picto (comme pour les documents) pour associer l'élément à un autre
+    3. Ça doit ajouter un div contenant les associables, comme dans le listing, avec des boutons 'dissocier'
+  - dans le listing, ne pas mettre de numéro #1 au brin, on a l'impression que c'est son identifiant.
+  Implémenter pour les brins la nouvelle façon d'associer les éléments
+  - À quoi sert le numéro du brin ?
+
+- Réimplémenter le check des résolutions des QRD pour qu'il se fasse seulement quand toutes les classes sont chargées — + quand on vient d'en créer une. Il faut appeler `FAEqrd#checkResolution()`. Voir aussi sur les procédés à résolution ?
 
 - Utiliser la nouvelle façon d'associer, avec `ASSOCIATES_COMMON_METHODS` `ASSOCIATES_COMMON_PROPERTIES` pour tous les autres éléments (Brins, Documents, Events si possible) avec FAEvent (noter que pour le moment, c'est la classe qui gère les associations ; il faut que ce soit chaque instance)
-  - Penser que les listes, maintenant, ont des clés en minuscule
+  - FABrins
+  - FADocuments
+  - FAEvent (est-ce possible ? c'est peut-être plus compliqué… — NON)
+
+
+  - Penser que les listes, maintenant, ont des CLÉS AU SINGULIER
   - Penser à supprimer la définition des 'documents', 'brins', etc.
     Voir d'abord où ils sont utilisés et les remplacer par les nouvelles méthodes.
   - simplifier tout ce qui peut l'être
@@ -25,6 +49,8 @@
 
 * CHECK ANALYSE
   - Poursuivre le check de la validité des données (app/js/tools/analyse_checker.js)
+
+* Poursuivre l'utilisation de first_requirements.js pour retirer du code dans analyser.html
 
 * Quand l'analyse de Her sera suffisamment conséquente, on s'en servira pour avoir une analyse de test qui contienne à peu près tout. Notamment pour tester les sorties, les affichages.
 

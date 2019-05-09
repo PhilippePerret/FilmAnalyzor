@@ -4,9 +4,6 @@
     - pour l'affichage dans le dataeditor
  */
 
-.li-perso {
-  margin-bottom:1em;
-}
 
 .prenom + .nom {
   margin-left:0.31em;
@@ -19,19 +16,15 @@
 .personnage .references {
   font-size:0.78em;
 }
+
 .personnage .description,
 .personnage .dimensions,
-.personnage .fonctions,
-.personnage .associates
+.personnage .fonctions
 {
   font-size:0.85em;
 }
-.personnage .description {
-  padding:1em;
-}
 .personnage .fonctions,
-.personnage .dimensions,
-.personnage .associates
+.personnage .dimensions
 {
   padding:0 1em 1em 1em;
 }

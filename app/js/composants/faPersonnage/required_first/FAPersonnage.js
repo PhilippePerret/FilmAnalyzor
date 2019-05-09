@@ -5,7 +5,7 @@
   Gestion des personnages
 **/
 
-class FAPersonnage {
+class FAPersonnage extends FAElement {
 // ---------------------------------------------------------------------
 //  CLASS
 
@@ -132,6 +132,7 @@ static get a(){return current_analyse}
 // ---------------------------------------------------------------------
 //  INSTANCE
 constructor(analyse, data){
+  super()
   this.analyse = this.a = analyse
   for(var prop in data){this[`_${prop}`] = data[prop]}
   this.type = 'personnage' // utile pour les associations
@@ -155,17 +156,6 @@ getData(){
   return hdata
 }
 
-/**
-  Méthode qui actualise automatiquement toutes les informations affichées
-  du personnage après sa modification.
-**/
-onUpdate(){
-  this.constructor.PROPS.map(prop => {
-    if (!this[prop]) return
-    $(this.domCP(prop)).html(this[`f_${prop}`]||this[prop])
-  })
-}
-
 static get PROPS(){
   if(undefined === this._props){
     this._props = ['id','pseudo','dim','prenom','nom','dimensions','ages','description','fonctions','associates']
@@ -173,14 +163,6 @@ static get PROPS(){
   return this._props
 }
 
-// La class commune à toute
-domC(prop){
-  if(undefined === this._prefClass){this._prefClass = `perso-${this.id}-`}
-  return `${this._prefClass}${prop}`
-}
-domCP(prop){return `.${this.domC(prop)}`}
-
-get modified(){return this._modified}
 set modified(v){
   this._modified = v
   this.constructor.modified = v

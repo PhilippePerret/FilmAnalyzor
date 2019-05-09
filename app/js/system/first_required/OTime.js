@@ -150,3 +150,5 @@ updateSeconds(s){
 
 
 }
+
+module.exports = OTime

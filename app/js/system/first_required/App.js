@@ -20,7 +20,7 @@ const App = {
 **/
 , loadTool(affixe){
     if(!affixe.endsWith('.js')) affixe += '.js'
-    return require(`./js/tools/${affixe}`)
+    return require(`${APPFOLDER}/app/js/tools/${affixe}`)
   }
 
 , runHandTests(options){
@@ -134,3 +134,5 @@ const AppLoader = {
 
 // On démarre le chargement
 AppLoader.start()
+
+module.exports = App

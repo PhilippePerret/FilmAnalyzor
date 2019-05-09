@@ -96,7 +96,8 @@ constructor(analyse, data){
   super(analyse, data)
   // Après la création de la qrd, on vérifie toujours pour savoir s'il
   // faut l'inscrire dans la "warning-section" des procédés sans résolution
-  this.checkResolution()
+  // NON : IL FAUT LE FAIRE UNE FOIS QUE TOUT EST CHARGÉ
+  // this.checkResolution()
 }
 
 get isValid(){

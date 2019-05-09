@@ -132,7 +132,7 @@ domListing(){
   }
 
   // On construit le LI final
-  return DCreate('LI', {id:`li-perso-${this.id}` , class:'li-perso personnage', append:divs, attrs:{
+  return DCreate('LI', {id:`li-perso-${this.id}` , class:'li-element li-perso personnage', append:divs, attrs:{
       'data-type':'personnage', 'data-id':this.id
     }})
 }

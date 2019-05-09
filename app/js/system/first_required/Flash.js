@@ -210,3 +210,5 @@ Object.defineProperties(Flash,{
 const F = Flash ;
 
 Flash.message = Flash.notice
+
+module.exports = Flash

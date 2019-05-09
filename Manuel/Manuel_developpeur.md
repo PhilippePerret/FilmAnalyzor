@@ -411,20 +411,27 @@ Tous les types d'éléments d'une analyse peuvent être associés, à savoir les
 
 Pour rendre une classe *associable*, les requis sont les suivants.
 
-* Définir l'élément sur lequel on pourra *dropper* un autre élément. Il suffit pour cela d'utiliser la ligne de code `$(element).droppable(DATA_DROPPABLE)` ([1]).
+* Le nom de la classe doit impérativement être `FA<type titleisé`. Par exemple, pour le type `brin`, la classe s'appelle `FABrin`, pour le type `personnage`, la classe s'appelle `FAPersonnage`.
 * Étendre la classe avec `ASSOCIATES_COMMON_METHODS` avec la ligne de code :
-      Object.assign(CLASSE.prototype, ASSOCIATES_COMMON_METHODS)
+Object.assign(CLASSE.prototype, ASSOCIATES_COMMON_METHODS)
 * Étendre la classe avec `ASSOCIATES_COMMON_PROPERTIES` avec la ligne de code :
-      Object.defineProperties(CLASSE.prototype, ASSOCIATES_COMMON_PROPERTIES)
+Object.defineProperties(CLASSE.prototype, ASSOCIATES_COMMON_PROPERTIES)
+* Définir l'élément sur lequel on pourra *dropper* un autre élément. Il suffit pour cela d'utiliser la ligne de code `$(element).droppable(DATA_DROPPABLE)` ([1]).
+* Définir l'élément qui sera déplaçable (peut-être le même) pour associer l'élément avec un autre élément droppable :
+        `$(element).draggable(DATA_ASSOCIATES_DRAGGABLE)`
 * Définir les propriétés obligatoires :
-  * `CLASSE#type`, propriété d'instance qui retourne le type de l'élément. Ce type doit être *plurielisable* simplement en ajoutant un « s ». Par exemple `event` qui donnera `events`.
+  * `CLASSE#type`, propriété d'instance qui retourne le type de l'élément.
   * `CLASSE#id` propriété d'instance qui retourne l'identifiant de l'élément (celui qui permettra de le récupérer en utilisant la méthode de classe `get` — cf. ci-dessous).
 * Définir les méthodes obligatoires :
-  * `CLASSE#toString()`, méthode d'instance qui retourne la référence simplifiée de l'élément (sert notamment pour le helper qu'on déplacera pour dragguer l'élément). Cette méthode sert aussi pour tous les messages traitant de l'élément.
+  * `CLASSE#toString()`, méthode d'instance qui retourne la référence simplifiée de l'élément (sert pour le helper qu'on déplacera pour dragguer l'élément). Cette méthode sert aussi pour tous les messages traitant de l'élément.
+  * `CLASSE#as('associate')` qui doit retourner le div de l'associé pour affichage (dans un listing par exemple). Cette méthode doit utiliser le lien `dissociateLink([options])` pour dissocier l'élément.
   * `CLASSE::get(<element id>)`, méthode de classe qui retourne une instance de l'élément.
 * Modifier `ASSOCIATES_COMMON_METHODS` :
-  * Ajouter le type de l'élément à sa liste `types`.
-  * Ajouter la propriété `<type>s: []` (qui sera la liste des éléments du nouveau type).
+  * Ajouter le type de l'élément à sa liste `types`. Rappel : il est maintenant toujours au singulier
+* Si le type d'élément définissait les anciennes valeurs d'associations, il faut détruire ses méthodes ou propriétés `documents`, `events`, `brins` et `personnages`.
+* Ajouter la propriété `associates` aux propriété de l'élément (surtout celles qui doivent être enregistrées).
+* Vérifier que l'élément utilise bien la méthode `associatesEpured` pour définir les associés à enregistrer.
+* Si la classe de l'élément utilise le `DataEditor`, il suffit d'ajouter `associable: true` dans la table `DataEditorData` pour rendre l'élément associable dans les deux sens en édition.
 
 > [1] Auparavant, il fallait redéfinir la méthode `drop` des données droppable, mais maintenant la méthode est générique et appelle toujours la méthode `associer` de l'analyse courante avec en arguments le possesseur et le possédé.
 
@@ -432,6 +439,8 @@ Pour rendre une classe *associable*, les requis sont les suivants.
 
 La table `ASSOCIATES_COMMON_METHODS` et la table `ASSOCIATES_COMMON_PROPERTIES` apportent toutes les méthodes et propriétés utiles pour les associations, et notamment :
 
+* Les méthodes `<type>s` et `instances_<type>s` qui retournent respectivement la liste des identifiants et la liste des instances de chaque type associé. Par exemple, la propriété `<instance brin>.documents` des brins retourne la liste des identifiants des documents tandis que la propriété `<instance brin>.instances_documents` retourne la liste des instances `{FADocument}` des documents du brin en question.
+* La méthode `hasAssociates()` qui retourne true si l'élément possède des associés
 * la méthode d'helper `dragHelper` qui retourne l'helper à utiliser pour les éléments draggable. On l'utilise en définissant :
       ```javascript
       $(element).draggable({
@@ -442,7 +451,7 @@ La table `ASSOCIATES_COMMON_METHODS` et la table `ASSOCIATES_COMMON_PROPERTIES` 
       ```
 * la méthode d'helper `dissociateLink([options])` qui retourne un lien pour dissocier l'élément (elle peut être utile, mais c'est elle qui est utilisée, de toute façon, lorsqu'on utilise la méthode `divAssociates` — cf. ci-dessous — pour lister les associés),
 * la propriété `associates` qui est une table qui contient en clé le type de l'associé (**au singulier**) et en valeur la liste des identifiants des associés de chaque type.
-* la méthode `divsAssociates([<options>])` qui retourne les divs de tous les associés (au format `options.as` qui peut être soit 'dom' (défaut) soit 'string')
+* la méthode `divsAssociates([<options>])` qui retourne les divs de tous les associés (au format `options.as` qui peut être soit 'dom' (défaut) soit 'string'). Noter que si l'option `title: true` ou `title: "Le titre à donner"` est utilisée, la liste retournée contient le titre donné ou « Éléments associés » par défaut, dans un `H3`.
 * La méthode `associatesEpured()` qui retourne la liste des assiociés épurée des valeurs nulles (listes vides) pour l'enregistrement. Placer simplement la ligne suivante dans la méthode qui constitue les données à enregistrer :
 
       data2save.associates = this.associatesEpured()
@@ -613,7 +622,7 @@ On implémente ces boutons simplement en inscrivant dans le code :
 
 ```
 
-… puis en appelant la méthode `BtnToggleNext.observe(cont)` où `cont` est le set jQuery qui contient le bouton en question.
+… puis en appelant la méthode `BtnToggleContainer.observe(cont)` où `cont` est le set jQuery qui contient le bouton en question.
 
 Si le bouton est le dernier élément, on peut ajouter un div-clear après lui, pour qu'il ne soit pas rogné. Par exemple :
 

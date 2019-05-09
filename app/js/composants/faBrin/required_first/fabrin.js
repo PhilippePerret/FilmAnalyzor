@@ -1,6 +1,14 @@
 'use strict'
 
-class FABrin {
+class FABrin extends FAElement {
+
+static get PROPS(){
+  if(undefined === this._props){
+    this._props = ['id','title', 'description','bType','associates']
+  }
+  return this._props
+}
+
 /**
   Instancie un nouveau brin
 
@@ -8,17 +16,13 @@ class FABrin {
                           fichier `dbrins.yaml` s'il existe.
 **/
 constructor(dbrin){
+  super()
   this.a = current_analyse
   this.data   = dbrin
   this.numero = FABrin.newNumero()
   this.type   = 'brin' // cohérence avec event, document et times
   this.bType  = dbrin.bType // type de brin
 
-  // --- Associés ---
-  this.events     = this.events     || []
-  this.documents  = this.documents  || []
-  this.brins      = this.brins      || []
-  this.times      = this.times      || []
 }
 
 dataEpured(){

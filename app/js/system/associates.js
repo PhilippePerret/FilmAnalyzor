@@ -12,7 +12,8 @@
     )
 **/
 const DATA_DROPPABLE = {
-  accept: '.event, .doc, .dropped-time, .brin, .personnage'
+  what: 'Donnée drop pour un élément qui peut recevoir des associables'
+, accept: '.event, .doc, .dropped-time, .brin, .personnage'
 , tolerance: 'intersect'
 , drop:(e, ui) => {
     let target = $(e.target)
@@ -23,6 +24,14 @@ const DATA_DROPPABLE = {
   }
 , classes: {'ui-droppable-hover': 'survoled'}
 }
+
+const DATA_ASSOCIATES_DRAGGABLE = {
+      what:'Données drag pour un élément associable'
+      // revert: true
+    , helper: () => {return this.dragHelper()}
+    , cursorAt:{left:40, top:20}
+  ,
+  }
 
 /**
   Méthodes communes qui permettent de gérer tous les éléments associés de
@@ -69,7 +78,10 @@ let ASSOCIATES_COMMON_METHODS = {
 /**
   Retourne les divs des éléments associés, s'il y en a
   @param {Object|Undefined} options   Table d'options
-                                      as:'dom'/'string'(default)
+              as:     'dom'/'string'(default)
+              title:  true/false/string. Si true ou string, le titre donné ou
+                      « Éléments associés » sera ajouté, dans un H3 au début des
+                      divs.
   @return {DOMElement|String} en fonction des options, contenant tous les
                               éléments associés.
 **/
@@ -87,6 +99,8 @@ let ASSOCIATES_COMMON_METHODS = {
     } else {
       divs.push(DCreate('DIV',{class:'italic small indent2', inner:'(Aucun élément associé)'}))
     }
+
+    if(options.title) divs.unshift(DCreate('H3',{inner:(options.title||'Éléments associés')}))
 
     // On retourne le résultat
     switch (options.as) {
@@ -171,6 +185,8 @@ let ASSOCIATES_COMMON_METHODS = {
     return h
   }
 
+, hasAssociates(){return this.associatesCounter > 0}
+
 }//assign
 
 let ASSOCIATES_COMMON_PROPERTIES = {
@@ -215,6 +231,37 @@ let ASSOCIATES_COMMON_PROPERTIES = {
       }
       return this._associatesCounter
     }
-  , set(v){this.associatesCounter = v}
+  , set(v){this._associatesCounter = v}
 }
+}
+
+// On essaie d'ajouter les propriétés plurielles, c'est-à-dire `documents` qui
+// retourne la liste des documents, `events` qui retourne la liste des events,
+// etc.
+ASSOCIATES_COMMON_METHODS.types_associates.map(atype => {
+  var prop_plur = `${atype}s`
+  var p_inst_plur_tir = `_instances_${prop_plur}`
+  ASSOCIATES_COMMON_PROPERTIES[prop_plur] = {
+    get(){return this.associates[atype] || []}
+  }
+  ASSOCIATES_COMMON_PROPERTIES[`instances_${prop_plur}`] = {
+    get(){
+      if(undefined === this[p_inst_plur_tir]){
+        var classe = eval(`FA${atype.titleize()}`)
+        this[p_inst_plur_tir] = this.associates[atype].map(eid => classe.get(eid))
+      }
+      return this[p_inst_plur_tir]
+    }
+  }
+})
+
+
+// console.log("ASSOCIATES_COMMON_PROPERTIES:", ASSOCIATES_COMMON_PROPERTIES)
+
+
+module.exports = {
+  ASSOCIATES_COMMON_PROPERTIES: ASSOCIATES_COMMON_PROPERTIES
+, ASSOCIATES_COMMON_METHODS: ASSOCIATES_COMMON_METHODS
+, DATA_ASSOCIATES_DRAGGABLE: DATA_ASSOCIATES_DRAGGABLE
+, DATA_DROPPABLE: DATA_DROPPABLE
 }

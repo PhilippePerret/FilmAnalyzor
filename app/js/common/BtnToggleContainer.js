@@ -1,14 +1,15 @@
 'use strict'
 /**
-  Les boutons ToggleNext permettent d'ouvrir (expand) ou fermer (collapse)
-  le div qui les suit, avec une marque commune
+  Les boutons ToggleNext et ToggleContainer permettent d'ouvrir (expand)
+  ou de fermer (collapse) le div spécifié ou le div qui les suit, avec une
+  marque commune
 
   @usage
 
   Si le conteneur à ouvrir fermer est le node suivant, on met simplement :
-    <button class="toggle-next"></button>
+    <img class="toggle-next"></button>
   Si on veut ouvrir un container qui se trouve autre part :
-    <button class="toggle-next" container="#idContainer"></button>
+    <img class="toggle-container" data-container-id="<#idContainer>"></button>
   Note : ne pas oublier le '#' ou le '.'
 
   CONTAINER OUVERT AU DÉPART
@@ -18,13 +19,13 @@
 
 **/
 
-class BtnToggleNext {
+class BtnToggleContainer {
 // ---------------------------------------------------------------------
 //  CLASS
 
 static observe(container){
-  $(container).find('button.toggle-next').each(function(i, o){
-    new BtnToggleNext(o)
+  $(container).find('img.toggle-next, img.toggle-container').each(function(i, o){
+    new BtnToggleContainer(o)
   })
 }
 
@@ -41,7 +42,7 @@ constructor(domButton){
 toggle(){
   let newState = this.isOpened() ? 'closed' : 'opened'
   this.container.toggle()
-  this.domImg.src = `img/folder_${newState}.png`
+  this.domBtn.src = `img/folder_${newState}.png`
   this.jqBtn.attr('data-state', newState)
 }
 
@@ -53,14 +54,13 @@ state(){return this.jqBtn.attr('data-state')}
 **/
 build(){
   let jqb = this.jqBtn
-    , curState = jqb.attr('data-state') || 'closed'
+    , curState = this.jqBtn.attr('data-state') || 'closed'
   if (curState === 'opened'){
     // Ouvrir le container
   } else {
-    jqb.attr('data-state', curState)
+    this.jqBtn.attr('data-state', curState)
   }
-  jqb.append(DCreate('IMG', {attrs:{src: `img/folder_${curState}.png`}}))
-  jqb = null
+  this.domBtn.src = `img/folder_${curState}.png`
 }
 
 observe(){
@@ -70,12 +70,14 @@ observe(){
 // Le bouton (jQuery)
 get jqBtn(){return this._jqBtn}
 // L'image (DOMElement)
-get domImg(){return this._domImg||defP(this,'_domImg',this.jqBtn.find('img')[0])}
+get domBtn(){return this._domBtn||defP(this,'_domBtn',this.jqBtn[0])}
 // Le container (jQuery)
 get container(){
   if(undefined===this._container){
-    if(this.jqBtn.attr('container')){
-      this._container = $(this.jqBtn.attr('container'))
+    if(this.jqBtn.attr('data-container-id')){
+      var id = this.jqBtn.attr('data-container-id')
+      if(!(id.startsWith('.') ||id.startsWith('#'))) id = `#${id}`
+      this._container = $(id)
     } else {
       this._container = this.jqBtn.next()
     }

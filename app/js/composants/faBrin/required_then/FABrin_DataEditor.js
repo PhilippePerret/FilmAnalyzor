@@ -6,7 +6,7 @@ Object.assign(FABrin,{
   Méthode pour sauver les données éditées par le DataEditor
 **/
   DESave(){
-    this.saveData()
+    this.save()
     FAWriter.resetDocument('dbrins')
   }
 /**
@@ -75,6 +75,7 @@ Object.defineProperties(FABrin,{
     , title: 'BRINS'
     , items: Object.values(this.brins)
     , titleProp: 'title'
+    , associable: true
     /**
       Définition des champs d'édition d'un élément
     **/

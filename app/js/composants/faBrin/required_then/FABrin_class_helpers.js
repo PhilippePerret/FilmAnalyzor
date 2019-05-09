@@ -4,44 +4,50 @@
 **/
 Object.assign(FABrin,{
 
-toggle(){this.fwindow.toggle()}
+  toggle(){
+    log.info("-> FABrin::toggle()")
+    if(!this.loaded) return log.warn('Impossible d’afficher la liste des brins. Ils ne sont pas encore chargés.')
+    this.fwindow.toggle()
+  }
 
 , display(){
     this.fwindow.show()
   }
 
 , build(){
+    log.info("-> FABrin::build")
     var divbrins = []
     this.forEachBrin(brin => divbrins.push(brin.asDiv()))
-    return [
+    let divs = [
       DCreate('DIV', {class:'header', append:[
           DCreate('BUTTON',{type:'button', class:'btn-close'})
         , DCreate('H3', {inner: 'Brins du film'})
       ]})
     , DCreate('DIV', {class:'body', append:[
-          DCreate('DIV', {class:'explication small', inner: "(glissez les events/documents/times sur le cadre du brin à lier)"})
         , DCreate('DIV', {class:'div-brins', append:divbrins})
       ]})
     , DCreate('DIV', {class:'footer right', append:[
-          DCreate('BUTTON', {type:'button', class:'update', id:'btn-update-listing-brins', inner:'<img src="img/update-2.png" class="update" />'})
+          DCreate('IMG', {src:'img/update-2.png', class:'update fleft', id:'btn-update-listing-brins'})
         , DCreate('BUTTON', {type:'button', id:'btn-open-data-brins', inner:'Éditer les brins'})
       ]})
     ]
+    log.info("<- FABrin::build")
+    return divs
   }
 
 , observe(){
+    log.info("-> FABrin::observe")
     // Tous les brins doivent réagir au drop avec des events,
     // des documents et tout le tralala
     // Ils peuvent aussi être glissé sur d'autres éléments
     this.fwindow.jqObj.find('.brin')
-      .droppable(
-        Object.assign({}, DATA_DROPPABLE, {drop: this.onDrop.bind(this)})
-      )
-      .draggable({revert:true, helper:'clone'})
+      .droppable(DATA_DROPPABLE)
+      .draggable(DATA_ASSOCIATES_DRAGGABLE)
 
     this.fwindow.jqObj.find('#btn-open-data-brins').on('click',this.openDocData.bind(this))
     this.fwindow.jqObj.find('#btn-update-listing-brins').on('click',this.updateListing.bind(this))
-    BtnToggleNext.observe(this.fwindow.jqObj)
+    BtnToggleContainer.observe(this.fwindow.jqObj)
+    log.info("<- FABrin::observe")
   }
 
 , updateListing(e){
@@ -49,14 +55,6 @@ toggle(){this.fwindow.toggle()}
     this.fwindow.update.bind(this.fwindow)()
     this.display()
     log.info('<- FABrin#updateListing')
-  }
-
-, onDrop(e, ui){
-    log.info('-> FABrin::onDrop')
-    let b = $(e.target)
-      , brin = this.brins[b.attr('data-id')]
-    this.a.associateDropped(brin, ui.helper)
-    log.info('<- FABrin::onDrop')
   }
 
 })

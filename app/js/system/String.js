@@ -1,4 +1,7 @@
 'use strict'
+
+const RC = `
+`
 /**
  * Extension de la classe String
  */

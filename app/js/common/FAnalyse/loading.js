@@ -152,7 +152,6 @@ load(){
   }
 
 
-
 // Charger le fichier +path+ pour la propriété +prop+ de façon
 // asynchrone.
 , loadFile(fpath, prop){

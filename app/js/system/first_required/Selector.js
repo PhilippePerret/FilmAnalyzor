@@ -201,3 +201,5 @@ defaultize(compris, options){
   return [compris, options]
 }
 }
+
+module.exports = Selector

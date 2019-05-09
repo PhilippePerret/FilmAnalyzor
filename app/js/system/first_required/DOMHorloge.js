@@ -203,3 +203,8 @@ class DOMDuration extends DOMHorloge {
     return this._oendtime
   }
 }
+
+module.exports = {
+  DOMHorloge: DOMHorloge
+, DOMDuration: DOMDuration
+}

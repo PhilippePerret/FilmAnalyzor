@@ -1,4 +1,8 @@
 'use strict'
+const path  = require('path')
+const fs    = require('fs')
+const glob  = require('glob')
+
 /**
  * Object System
  * -------------
@@ -82,7 +86,7 @@ loadComponant(compName, fn_callback){
       this.loadNextFolder()
     }
   }
-  
+
 , loadCSSFolder(folder){
   if(!fs.existsSync(folder)) return // pas de dossier css => finir
   glob(`${folder}/**/*.css`, (err, files) => {
@@ -94,3 +98,5 @@ loadComponant(compName, fn_callback){
   })
 }
 }
+
+module.exports = System
