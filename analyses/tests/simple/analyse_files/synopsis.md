@@ -1,3 +1,0 @@
-Super
-
-Nouveau texte

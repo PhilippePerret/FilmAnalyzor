@@ -4,6 +4,13 @@
 
 * Documents
   - hériter de FAElement et de toutes les méthodes d'association
+  - Non : ce sont les méthodes de drag&drop sur un texte qui doivent être
+    rationnalisés et utilisées partout.
+    =>
+      1. Les définir (elles doivent retourner une balise)
+      2. En faire un mixin compatible avec les FAElement et les autres
+          comme les documents.
+          
 
 * Brins
   - voir comment est traité la propriété `associable: true` dans le DataEditor. Il faut :
