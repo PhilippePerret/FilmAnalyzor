@@ -21,6 +21,23 @@
   width:90;
 }
 
+select, select option {
+  all:unset;
+  font-size:inherit;
+  font-family:inherit;
+  font-style:normal;
+  border:1px solid;
+}
+
+select {
+  padding:2px 8px;
+  width:400px;
+}
+select.main {
+  font-weight:bold;
+  font-size:1.1em;
+}
+
 .warning{color:red;}
 
 .cadre{border:1px solid;padding:0.1em 0.5em;}

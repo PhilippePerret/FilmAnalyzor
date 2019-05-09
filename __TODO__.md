@@ -2,15 +2,10 @@
 
 ### Traiter :
 
+* Documents
+  - hériter de FAElement et de toutes les méthodes d'association
+
 * Brins
-  - Modifier le bouton 'OK' pour 'Enregistrer', dans le listing, quand on a associé des éléments
-  - Si le FAElement fonctionne pour les brins :
-    + supprimer le fichier FAPersonnage.associates.js
-    + modifier le manuel developpeur en indiquant qu'il suffit d'extendre la classe avec
-      FAElement pour qu'il profite de tout
-  - quand un élément d'un listing est toggelisable (img toggleContainer ou toggle-next), il faut ajouter un bouton général pour tout fermer ou ouvrir
-  - faire le listing des brins (en s'inspirant beaucoup, notamment pour les tags et les
-    classes, du listing de personnage)
   - voir comment est traité la propriété `associable: true` dans le DataEditor. Il faut :
     1. Qu'on puisse dragguer un élément associable sur la fenêtre d'édition
     2. Qu'on puisse dragguer depuis la fenêtre d'édition un petit picto (comme pour les documents) pour associer l'élément à un autre

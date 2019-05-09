@@ -14,23 +14,24 @@ const FAWriter = {
 
 , currentDoc: undefined //l'instance FADocument courante (elle doit toujours exister)
 
+// Ouvre un fichier quelconque (par son path)
 , openAnyDoc(path){
     if(false === this.checkCurrentDocModified()) return
     if(undefined === this.writerDocs) this.writerDocs = {}
-    let ndoc = new FADocument('anydoc', path)
+    let ndoc = new FADocument('any', null, path)
     this.writerDocs[ndoc.id] = ndoc
-    this.makeCurrent(ndoc.id)
+    this.makeCurrent('any', ndoc.id)
   }
 
-  /**
-   * Ouverture du document de type +typeDoc+ (p.e. 'introduction')
+/**
+ * Ouverture du document d'id +docid+ (p.e. 'introduction' ou 'custom-12')
 
-   ATTENTION : pour un document quelconque, utiliser la méthode
-   `openAnyDoc`
-   */
-, openDoc(dtype){
-    this.message(`Document de type "${dtype}" en préparation…`)
-    if(undefined === dtype || '' == dtype){
+ ATTENTION : pour un document quelconque, utiliser la méthode
+ `openAnyDoc`
+ */
+, openDoc(docid){
+    let dtype, idx
+    if(undefined === docid || '' == docid){
       // <= Aucun type de document n'a été choisi (note : cela se produit
       //    par exemple lorsque l'on choisit d'ouvrir le writer par le menu)
       // => On prend le document par défaut, c'est-à-dire l'introduction
@@ -39,10 +40,15 @@ const FAWriter = {
         else return false
       } else {
         this.menuTypeDoc.value = 'introduction'
-        dtype = 'introduction'
+        dtype = 'regular'
+        docid = 'introduction'
       }
+    } else {
+      [dtype, idx] = (docid||'').split('-')
+      if(dtype !== 'custom') dtype = 'regular'
     }
-    this.makeCurrent(dtype)
+    this.message(`Document ${dtype} "${docid}" est en préparation…`)
+    this.makeCurrent(dtype, docid)
     this.message('Document prêt à être travaillé.')
   }
 
@@ -52,10 +58,19 @@ const FAWriter = {
    * +kdoc+   Pour les types non customisés, ça correspond à 'type'
    *          Pour les autres, de type 'customdoc', c'est l'identifiant
    */
-, makeCurrent(kdoc){
+, makeCurrent(dtype, docid) {
+    let kdoc ;
+    if(undefined === docid){
+      // C'est que c'est le kdoc qui a été envoyé
+      [dtype, docid, kdoc] = [...dtype.split('^^^'), dtype]
+    } else {
+      kdoc = `${dtype}^^^${docid}`
+    }
     if(false === this.checkCurrentDocModified()) return
     if(undefined === this.writerDocs) this.writerDocs = {}
-    if(undefined === this.writerDocs[kdoc]) this.writerDocs[kdoc] = new FADocument(kdoc)
+    if(undefined === this.writerDocs[kdoc]){
+      this.writerDocs[kdoc] = new FADocument(dtype, docid)
+    }
     this.currentDoc = this.writerDocs[kdoc]
     if(!this.isOpened) this.open()
     this.currentDoc.display()
@@ -208,7 +223,7 @@ const FAWriter = {
 **/
 , setUI(){
     let my = this
-      , any = this.currentDoc.type == 'anydoc'
+      , any = this.currentDoc.dtype == 'any'
       , rpath = any ? this.currentDoc.path.replace(new RegExp(`^${APPFOLDER}`),'.'):'DOCUMENT '
     my.menuTypeDoc[any?'hide':'show']()
     my.section.find('.header #writer-doc-title select')[any?'hide':'show']()
@@ -319,14 +334,13 @@ const FAWriter = {
     var doctitle = DCreate('DIV',{
       id: 'writer-doc-title'
     , append: [
-        DCreate('LABEL', {class: 'small', inner: 'DOCUMENT '})
-      , DCreate('SELECT', {id: 'document-type'})
+      DCreate('SELECT', {id: 'document-type', class: 'main'})
       , spa
     ]
     })
 
     var divmodeles = DCreate('DIV', {
-      class: 'div-modeles'
+      class: 'div-modeles right'
     , append: [
         DCreate('LABEL', {class: 'small', inner: 'MODÈLES '})
       , DCreate('SELECT', {id: 'modeles-doc'})]
@@ -378,18 +392,18 @@ const FAWriter = {
 , afterBuilding(){
   // Peupler la liste des types de document
   var m = this.menuTypeDoc, dOpt
-  for(var dType in DATA_DOCUMENTS){
-    var ddoc = DATA_DOCUMENTS[dType]
+  for(var did in DATA_DOCUMENTS){
+    var ddoc = DATA_DOCUMENTS[did]
     if(ddoc.menu === false) continue
     if(ddoc === 'separator') dOpt = {class: 'separator', disabled: true}
-    else dOpt = {value: dType, inner: ddoc.hname}
+    else dOpt = {value: `regular^^^${did}`, inner: ddoc.hname}
     m.append(DCreate('OPTION', dOpt))
   }
   // Pour séparer les documents propres à cette analyse
   m.append(DCreate('OPTION', {class: 'separator', disabled: true}))
   // La liste des documents propres à cette analyse
   this.forEachUserDocument(function(wdoc){
-    m.append(DCreate('OPTION', {value: wdoc.id, inner: wdoc.title}))
+    m.append(DCreate('OPTION', {value: `custom^^^${wdoc.id}`, inner: wdoc.title}))
   })
 }
 // Appelé par la FWindow
@@ -403,11 +417,12 @@ const FAWriter = {
     my.menuThemes.on('change', my.onChooseTheme.bind(my))
 
     // On observe le champ de texte
-    my.docField.on('change',    my.onContentsChange.bind(my))
-    my.docField.on('focus',     my.onFocusContents.bind(my))
-    my.docField.on('blur',      my.onBlurContents.bind(my))
-    my.docField.on('keydown',   my.onKeyDown.bind(my))
-    my.docField.on('keyup',     my.onKeyUp.bind(my))
+    my.docField
+      .on('change',    my.onContentsChange.bind(my))
+      .on('focus',     my.onFocusContents.bind(my))
+      .on('blur',      my.onBlurContents.bind(my))
+      .on('keydown',   my.onKeyDown.bind(my))
+      .on('keyup',     my.onKeyUp.bind(my))
 
     // On rend le champ de texte droppable pour pouvoir y déposer
     // n'importe quel event ou n'importe quel autre document
@@ -476,10 +491,10 @@ Object.defineProperties(FAWriter,{
       if(undefined === this._customDocuments){
         this._customDocuments = []
         var last_id = 0
-        var files = glob.sync(path.join(this.a.folderFiles, '**', 'doc-*.md'))
+        var files = glob.sync(path.join(this.a.folderFiles, '**', 'custom-*.md'))
         for(var file of files){
           var doc_id = parseInt(path.basename(file,path.extname(file)).split('-')[1],10)
-          this._customDocuments.push(new FADocument(doc_id))
+          this._customDocuments.push(new FADocument('custom', doc_id))
           if(doc_id > last_id) last_id = 0 + doc_id
         }
         // On renseigne le dernier identifiant utilisé

@@ -17,7 +17,7 @@ const {
 class FAElement {
 // ---------------------------------------------------------------------
 //  CLASSE
-static get modified(){return this._modified}
+static get modified(){return this._modified || false}
 static set modified(v){this._modified = v}
 
 // ---------------------------------------------------------------------

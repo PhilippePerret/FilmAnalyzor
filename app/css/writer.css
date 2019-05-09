@@ -46,13 +46,6 @@ section#section-writer div.footer {
   padding-top:3px;
 }
 
-section#section-writer div.header #writer-doc-title,
-section#section-writer div.header #writer-doc-title select,
-section#section-writer div.header #writer-doc-title select option
-{
-  font-weight:bold;
-  font-size:1.11em;
-}
 
 /* Le bouton pour créer un nouveau document */
 section#section-writer div.header button#writer-btn-new-doc {

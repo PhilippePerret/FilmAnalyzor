@@ -12,11 +12,11 @@ as(format, flag, opts){
   if (undefined === flag) flag = 0
   if (undefined === opts) opts = {}
 
-  opts.owner = {type: 'document', id: this.id || this.type}
+  opts.owner = {type: 'document', id: this.id}
 
   var divs = []
 
-  if(flag & LABELLED) divs.push(DCreate('LABEL', {inner: `DOC #${this.id || this.type}`}))
+  if(flag & LABELLED) divs.push(DCreate('LABEL', {inner: `DOC #${this.id}`}))
 
   switch (format) {
     case 'short':
@@ -86,13 +86,7 @@ as(format, flag, opts){
   }
 
 // asAssociate est défini ailleurs
-, linkedToEdit(str){return `<a onclick="showDocument(${this.argId})">${str}</a>`}
-, linked(str){return `<a onclick="showDocument(${this.argId})">${str}</a>`}
+, linkedToEdit(str){return `<a onclick="showDocument(${this.id})">${str}</a>`}
+, linked(str){return `<a onclick="showDocument(${this.id})">${str}</a>`}
 
 }) // /fin Object.assign
-
-Object.defineProperties(FADocument.prototype,{
-  argId:{
-    get(){return this._argId||defP(this,'_argId', this.id||`'${this.type}'`)}
-  }
-})

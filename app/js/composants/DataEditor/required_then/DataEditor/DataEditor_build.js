@@ -44,7 +44,7 @@ Object.assign(DataEditor.prototype,{
     let classBody = ['body']
     if(this.dataPanels) classBody.push('plain')
     divs.push(DCreate('DIV',{class:classBody.join(' '), append:[
-        DCreate('SELECT',{id:my.idFor('menu_items'), class:'menu-items'})
+        DCreate('SELECT',{id:my.idFor('menu_items'), class:'menu-items main'})
       , ...divsForm
       ]}))
 

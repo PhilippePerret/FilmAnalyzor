@@ -287,7 +287,7 @@ newVersionRequired(){
  */
 openDocInWriter(dtype){
   if('undefined' === typeof Snippets) return FAnalyse.loadSnippets(this.openDocInWriter.bind(this, dtype))
-  if(dtype.startsWith('fondamentales') && NONE === typeof(Fondamentales)){
+  if(dtype && dtype.startsWith('fondamentales') && NONE === typeof(Fondamentales)){
     return this.loadFondamentales(this.openDocInWriter.bind(this, dtype))
   }
   if(!FAWriter.inited) FAWriter.init()
