@@ -2,11 +2,6 @@
 
 ### Traiter :
 
-* [BUG] `associates` ne doit pas être mis dans le fichier YAML quand elle est indéfinie
-* [BUG] Redocumenter le manuel développeur pour dire qu'il suffit d'extendre
-        avec `FAElement` MAIS qu'il faut penser à ajouter `super()` au
-        constructor de l'élément.
-
 * Brins
   - Modifier le bouton 'OK' pour 'Enregistrer', dans le listing, quand on a associé des éléments
   - Si le FAElement fonctionne pour les brins :

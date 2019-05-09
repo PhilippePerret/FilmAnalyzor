@@ -113,8 +113,9 @@ let ASSOCIATES_COMMON_METHODS = {
 // MÉTHODES D'ASSOCIATION
 
 , associer(element){
-    this.addToAssoList(element.type, element.id)
-    ++ this.associatesCounter
+    if (this.addToAssoList(element.type, element.id)){
+      ++ this.associatesCounter
+    }
   }
 /**
   @param {Instance} element Contrairement à `associer`, ici, la méthode reçoit
@@ -122,8 +123,9 @@ let ASSOCIATES_COMMON_METHODS = {
                             pour pouvoir notamment demander confirmation.
 **/
 , dissocier(element){
-    this.remToAssoList(element.type, element.id)
-    -- this.associatesCounter
+    if (this.remToAssoList(element.type, element.id)){
+      -- this.associatesCounter
+    }
   }
 
 /**
@@ -181,7 +183,7 @@ let ASSOCIATES_COMMON_METHODS = {
     for(var atype in this.associates){
       if(this.associates[atype].length) h[atype] = this.associates[atype]
     }
-    if(Object.keys(h).length == 0) return undefined
+    if(Object.keys(h).length == 0) return
     return h
   }
 

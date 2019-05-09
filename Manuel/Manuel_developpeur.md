@@ -18,6 +18,7 @@
   * [Filtrage des events](#filtering_events)
   * [Association des events](#associations_elements)
 * [Autres données de l'analyse](#analyse_autres_donnees)
+  * [Éléments propres de l'analyse (Personnages, Brins, etc.)](#elements_analyse)
   * [DataEditor, l'éditeur de données](#data_editor)
   * [Actualisation automatique des éléments affichés lors des modifications](#autoupdate_after_edit)
   * [Association des éléments](#associations_elements)
@@ -262,6 +263,36 @@ L'analyse contient d'autres données contenues le plus souvent dans des document
 
 La plupart de ces données peuvent se définir par le menu `Documents`.
 
+### Éléments de l'analyse {#elements_analyse}
+
+Les éléments propres à l'analyse, dont le nombre est variable, peuvent se définir par héritage de la classe `FAElement`. Cette classe, outre certaines méthodes utiles, apporte toutes les méthodes permettant de gérer les associations avec les autres éléments.
+
+Pour définir un tel élément, il suffit de faire, comme pour les personnages :
+
+```javascript
+
+class FAPersonnage extends FAElement {
+
+constructor(data){
+  super()
+  // ...
+}  
+
+}
+
+```
+
+> Noter le constructeur qui doit appeler la superclasse.
+
+Le nom d'un tel élément doit impérativement :
+
+* commencer par `FA` et être au singulier, comme `FAPersonnage`, `FABrin`.
+* définir la propriété `Classe#id` contenant l'identifiant de l'instance,
+* définir la propriété `Classe#type` retournant le type de l'instance (par exemple, une instance `FAPersonnage` a le type `personnage`),
+* définir la méthode de classe `Classe::get(identifiant)` qui reçoit un identifiant et retourne l'instance correspondante.
+
+Voir dans [Association des éléments](#associations_elements) tout ce qu'on peut faire avec l'élément, en tant qu'élément associable à un autre élément.
+
 ### DataEditor, l'éditeur de données {#data_editor}
 
 Parmi les données précédentes, on trouve des données qui peuvent s'éditer à l'aide du `DataEditor`. Ce sotn par exemple les personnages, les brins, les Fondamentales, etc.
@@ -407,19 +438,17 @@ Avec comme prérequis que :
 
 ### Association des éléments {#associations_elements}
 
+Cette partie concerne maintenant les [éléments de l'analyse](#elements_analyse) en tant que classe étendue de `FAElement`. Dès qu'une classe hérite de cette superclasse, elle hérite des méthodes d'association décrites ci-dessous.
+
 Tous les types d'éléments d'une analyse peuvent être associés, à savoir les types `event`, `personnage`, `document`, `brin` et `time`.
 
 Pour rendre une classe *associable*, les requis sont les suivants.
 
-* Le nom de la classe doit impérativement être `FA<type titleisé`. Par exemple, pour le type `brin`, la classe s'appelle `FABrin`, pour le type `personnage`, la classe s'appelle `FAPersonnage`.
-* Étendre la classe avec `ASSOCIATES_COMMON_METHODS` avec la ligne de code :
-Object.assign(CLASSE.prototype, ASSOCIATES_COMMON_METHODS)
-* Étendre la classe avec `ASSOCIATES_COMMON_PROPERTIES` avec la ligne de code :
-Object.defineProperties(CLASSE.prototype, ASSOCIATES_COMMON_PROPERTIES)
+* L'élément doit être conforme aux requis définis dans [éléments de l'analyse](#elements_analyse).
 * Définir l'élément sur lequel on pourra *dropper* un autre élément. Il suffit pour cela d'utiliser la ligne de code `$(element).droppable(DATA_DROPPABLE)` ([1]).
 * Définir l'élément qui sera déplaçable (peut-être le même) pour associer l'élément avec un autre élément droppable :
         `$(element).draggable(DATA_ASSOCIATES_DRAGGABLE)`
-* Définir les propriétés obligatoires :
+* Définir les propriétés obligatoires (requis pour tous les éléments) :
   * `CLASSE#type`, propriété d'instance qui retourne le type de l'élément.
   * `CLASSE#id` propriété d'instance qui retourne l'identifiant de l'élément (celui qui permettra de le récupérer en utilisant la méthode de classe `get` — cf. ci-dessous).
 * Définir les méthodes obligatoires :
@@ -429,8 +458,8 @@ Object.defineProperties(CLASSE.prototype, ASSOCIATES_COMMON_PROPERTIES)
 * Modifier `ASSOCIATES_COMMON_METHODS` :
   * Ajouter le type de l'élément à sa liste `types`. Rappel : il est maintenant toujours au singulier
 * Si le type d'élément définissait les anciennes valeurs d'associations, il faut détruire ses méthodes ou propriétés `documents`, `events`, `brins` et `personnages`.
-* Ajouter la propriété `associates` aux propriété de l'élément (surtout celles qui doivent être enregistrées).
-* Vérifier que l'élément utilise bien la méthode `associatesEpured` pour définir les associés à enregistrer.
+* Ajouter la propriété `associates` aux propriété de l'élément (surtout celles qui doivent être enregistrées). Dans la propriété `constructor.PROPS` qui peut être inspirée de celle de `FAPersonnage` ou `FABrin` par exemple.
+* Vérifier que l'élément utilise bien la méthode `associatesEpured()` pour définir les associés à enregistrer.
 * Si la classe de l'élément utilise le `DataEditor`, il suffit d'ajouter `associable: true` dans la table `DataEditorData` pour rendre l'élément associable dans les deux sens en édition.
 
 > [1] Auparavant, il fallait redéfinir la méthode `drop` des données droppable, mais maintenant la méthode est générique et appelle toujours la méthode `associer` de l'analyse courante avec en arguments le possesseur et le possédé.
@@ -453,9 +482,11 @@ La table `ASSOCIATES_COMMON_METHODS` et la table `ASSOCIATES_COMMON_PROPERTIES` 
 * la propriété `associates` qui est une table qui contient en clé le type de l'associé (**au singulier**) et en valeur la liste des identifiants des associés de chaque type.
 * la méthode `divsAssociates([<options>])` qui retourne les divs de tous les associés (au format `options.as` qui peut être soit 'dom' (défaut) soit 'string'). Noter que si l'option `title: true` ou `title: "Le titre à donner"` est utilisée, la liste retournée contient le titre donné ou « Éléments associés » par défaut, dans un `H3`.
 * La méthode `associatesEpured()` qui retourne la liste des assiociés épurée des valeurs nulles (listes vides) pour l'enregistrement. Placer simplement la ligne suivante dans la méthode qui constitue les données à enregistrer :
-
+      ```javascript
       data2save.associates = this.associatesEpured()
-
+      if(!data2save.associates) delete data2save.associates
+      ```
+* La propriété `associatesCounter` qui retourne le nombre courant d'associés.
 
 
 ---------------------------------------------------------------------

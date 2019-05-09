@@ -7,7 +7,7 @@ Object.assign(FAPersonnage,{
 **/
   DESave(){
     this.contents = YAML.dump(this.data)
-    console.log("Dans DESave, this.contents = ", this.contents)
+    // console.log("Dans DESave, this.contents = ", this.contents)
     this.iofile.save({after: this.DEAfterSave.bind(this)})
     FAWriter.resetDocument('dpersonnages')
   }

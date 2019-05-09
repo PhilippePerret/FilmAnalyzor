@@ -153,6 +153,7 @@ getData(){
     hdata[p] = v
   })
   hdata.associates = this.associatesEpured()
+  if(!hdata.associates) delete hdata.associates
   return hdata
 }
 
