@@ -78,10 +78,14 @@ let ASSOCIATES_COMMON_METHODS = {
     if(undefined === options.as) options.as = 'string'
     if(Object.keys(this.associates).length == 0) return options.as == 'string' ? '' : undefined
     var divs = []
-    for(var assoType in this.associates){
-      this.associates[assoType].map(assid => {
-        divs.push(this.a.instanceOfElement({type:assoType,id:assid}).as('associate', DISSOCIABLE|LABELLED, {owner: this, as:'dom'}))
-      })
+    if(this.associatesCounter){
+      for(var assoType in this.associates){
+        this.associates[assoType].map(assid => {
+          divs.push(this.a.instanceOfElement({type:assoType,id:assid}).as('associate', DISSOCIABLE|LABELLED, {owner: this, as:'dom'}))
+        })
+      }
+    } else {
+      divs.push(DCreate('DIV',{class:'italic small indent2', inner:'(Aucun élément associé)'}))
     }
 
     // On retourne le résultat
@@ -96,6 +100,7 @@ let ASSOCIATES_COMMON_METHODS = {
 
 , associer(element){
     this.addToAssoList(element.type, element.id)
+    ++ this.associatesCounter
   }
 /**
   @param {Instance} element Contrairement à `associer`, ici, la méthode reçoit
@@ -104,6 +109,7 @@ let ASSOCIATES_COMMON_METHODS = {
 **/
 , dissocier(element){
     this.remToAssoList(element.type, element.id)
+    -- this.associatesCounter
   }
 
 /**
@@ -161,6 +167,7 @@ let ASSOCIATES_COMMON_METHODS = {
     for(var atype in this.associates){
       if(this.associates[atype].length) h[atype] = this.associates[atype]
     }
+    if(Object.keys(h).length == 0) return undefined
     return h
   }
 
@@ -169,16 +176,45 @@ let ASSOCIATES_COMMON_METHODS = {
 let ASSOCIATES_COMMON_PROPERTIES = {
   /**
     Tables des associés telle qu'elle est enregistrée dans la donnée
+
+    Mais dans la donnée, seules les listes contenant des éléments sont
+    enregistrées. Donc on peut se retrouver avec une valeur pour associates
+    qui est donnée, mais une clé inexistante (par exemple la clé 'brin')
+
+    Au premier appel de `associates`, il faut donc s'assurer que toutes les
+    listes d'associés soit préparées.
+
   **/
   associates:{
     get(){
-      if(undefined === this._associates){
+      if (undefined === this._associates) {
         this._associates = {}
         ASSOCIATES_COMMON_METHODS.types_associates.map(typ => {
           this._associates[typ] = []
         })
+      } else if (undefined === this._associates_inited){
+        ASSOCIATES_COMMON_METHODS.types_associates.map(typ => {
+          if(undefined === this._associates[typ]) this._associates[typ] = []
+        })
+        this._associates_inited = true
       }
       return this._associates
     }
   }
+
+/**
+  Retourne ou définit le nombre d'associés.
+**/
+, associatesCounter:{
+    get(){
+      if(undefined === this._associatesCounter){
+        this._associatesCounter = 0
+        for(var atype in this.associates){
+          this._associatesCounter += this.associates[atype].length
+        }
+      }
+      return this._associatesCounter
+    }
+  , set(v){this.associatesCounter = v}
+}
 }
