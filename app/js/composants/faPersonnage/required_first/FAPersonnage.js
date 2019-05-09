@@ -151,6 +151,7 @@ getData(){
     if ('object' === typeof(v) && Object.keys(v).length == 0) return
     hdata[p] = v
   })
+  hdata.associates = this.associatesEpured()
   return hdata
 }
 

@@ -21,7 +21,8 @@
 }
 .personnage .description,
 .personnage .dimensions,
-.personnage .fonctions
+.personnage .fonctions,
+.personnage .associates
 {
   font-size:0.85em;
 }
@@ -29,7 +30,9 @@
   padding:1em;
 }
 .personnage .fonctions,
-.personnage .dimensions {
+.personnage .dimensions,
+.personnage .associates
+{
   padding:0 1em 1em 1em;
 }
 

@@ -3,10 +3,15 @@
 ### Traiter :
 
 * Personnages
-  = l'association fonctionne !
+  - Modifier les styles css pour que les associés s'affichent comme la description et les dimensions
+    Note : penser à faire un truc css qui soit commun pour tous les éléments, ne pas refaire les mêmes choses chaque fois
   - Simplifier la propriété 'associates' à l'enregistrement pour ne prendre que les listes qui sont non vides.
 
 - Utiliser la nouvelle façon d'associer, avec `ASSOCIATES_COMMON_METHODS` `ASSOCIATES_COMMON_PROPERTIES` pour tous les autres éléments (Brins, Documents, Events si possible) avec FAEvent (noter que pour le moment, c'est la classe qui gère les associations ; il faut que ce soit chaque instance)
+  - Penser que les listes, maintenant, ont des clés en minuscule
+  - Penser à supprimer la définition des 'documents', 'brins', etc.
+    Voir d'abord où ils sont utilisés et les remplacer par les nouvelles méthodes.
+  - simplifier tout ce qui peut l'être
 
 * DATAEDITOR
   - Faire un fichier pfa alt (les mettre dans min.js)

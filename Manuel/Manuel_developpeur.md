@@ -428,7 +428,9 @@ Pour rendre une classe *associable*, les requis sont les suivants.
 
 > [1] Auparavant, il fallait redéfinir la méthode `drop` des données droppable, mais maintenant la méthode est générique et appelle toujours la méthode `associer` de l'analyse courante avec en arguments le possesseur et le possédé.
 
-La table `ASSOCIATES_COMMON_METHODS` apporte toutes les méthodes et propriétés utiles pour les associations, et notamment :
+#### Apports des mixins ASSOCIATES
+
+La table `ASSOCIATES_COMMON_METHODS` et la table `ASSOCIATES_COMMON_PROPERTIES` apportent toutes les méthodes et propriétés utiles pour les associations, et notamment :
 
 * la méthode d'helper `dragHelper` qui retourne l'helper à utiliser pour les éléments draggable. On l'utilise en définissant :
       ```javascript
@@ -438,8 +440,13 @@ La table `ASSOCIATES_COMMON_METHODS` apporte toutes les méthodes et propriété
         , cursorAt:{left:40, top:20}
       })
       ```
+* la méthode d'helper `dissociateLink([options])` qui retourne un lien pour dissocier l'élément (elle peut être utile, mais c'est elle qui est utilisée, de toute façon, lorsqu'on utilise la méthode `divAssociates` — cf. ci-dessous — pour lister les associés),
 * la propriété `associates` qui est une table qui contient en clé le type de l'associé (**au singulier**) et en valeur la liste des identifiants des associés de chaque type.
 * la méthode `divsAssociates([<options>])` qui retourne les divs de tous les associés (au format `options.as` qui peut être soit 'dom' (défaut) soit 'string')
+* La méthode `associatesEpured()` qui retourne la liste des assiociés épurée des valeurs nulles (listes vides) pour l'enregistrement. Placer simplement la ligne suivante dans la méthode qui constitue les données à enregistrer :
+
+      data2save.associates = this.associatesEpured()
+
 
 
 ---------------------------------------------------------------------
