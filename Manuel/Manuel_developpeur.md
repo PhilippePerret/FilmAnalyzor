@@ -274,7 +274,7 @@ Pour définir un tel élément, il suffit de faire, comme pour les personnages 
 class FAPersonnage extends FAElement {
 
 constructor(data){
-  super()
+  super(data)
   // ...
 }  
 
@@ -282,7 +282,8 @@ constructor(data){
 
 ```
 
-> Noter le constructeur qui doit appeler la superclasse.
+Noter le constructeur qui doit appeler la superclasse avec les données. Toutes ces données seront dispatchées en les mettant dans les propriétés `_<prop>`. Donc la propriété `pseudo` (`data['pseudo']`) renseignera la propriété d'instance `this._pseudo`.
+
 
 Le nom d'un tel élément doit impérativement :
 

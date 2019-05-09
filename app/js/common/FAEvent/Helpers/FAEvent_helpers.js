@@ -30,6 +30,7 @@ toString(){
                           :forBook    Si true, s'est une transformation pour le
                                       livre. Affecte les liens, pour le moment.
                           :altText    Texte alternatif pour le spanRef.
+                          as:   'dom' ou 'string'
 **/
 , as(format, flag, opts){
   // console.log("-> as", format, flag, opts)
@@ -82,6 +83,8 @@ toString(){
   // Avec tous ses éléments ajoutés en fonction des choix
   // console.log("domEls:",domEls)
   let divAs = DCreate('DIV', {class:`${this.type} EVT${this.id}`, append: domEls})
+
+  if(opts.as === 'dom') return divAs
 
   // --- LE STRING FINAL ---
   // La version string résultant du travail d'assemblage

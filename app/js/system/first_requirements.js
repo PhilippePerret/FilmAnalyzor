@@ -7,6 +7,7 @@ const {DOMHorloge, DOMDuration} = require('./js/system/first_required/DOMHorloge
 // let h = new DOMHorloge('1:10:10')
 // console.log("horloge:",h)
 
+const Hash = require('./js/system/first_required/Hash.js')
 const Flash = require('./js/system/first_required/Flash.js')
 const F = Flash
 const Selector = require('./js/system/first_required/Selector.js')

@@ -24,6 +24,8 @@
   opacity:1;
 }
 
+.lkdisso:hover {background-color:#CC0000;color:white;}
+
 span + .lktool {
   margin-left:8px;
 }
@@ -50,9 +52,10 @@ div h3:nth-child(1) {
 /*
   Une image qui permet d'ouvrir un contenu
 **/
-img.toggle-container {
+img.toggle-container, img.toggle-next {
   float:right;
   margin-left:4px;
+  cursor:pointer;
 }
 
 /* ---------------------------------------------------------------------

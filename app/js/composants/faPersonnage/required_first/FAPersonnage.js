@@ -132,9 +132,8 @@ static get a(){return current_analyse}
 // ---------------------------------------------------------------------
 //  INSTANCE
 constructor(analyse, data){
-  super()
+  super(data)
   this.analyse = this.a = analyse
-  for(var prop in data){this[`_${prop}`] = data[prop]}
   this.type = 'personnage' // utile pour les associations
 }
 

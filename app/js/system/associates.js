@@ -89,7 +89,13 @@ let ASSOCIATES_COMMON_METHODS = {
     if(undefined === options) options = {}
     if(undefined === options.as) options.as = 'string'
     if(Object.keys(this.associates).length == 0) return options.as == 'string' ? '' : undefined
+
     var divs = []
+
+    if(options.title){
+      if(true === options.title) options.title = 'Éléments associés'
+      divs.push(DCreate('H3',{inner:options.title}))
+    }
     if(this.associatesCounter){
       for(var assoType in this.associates){
         this.associates[assoType].map(assid => {
@@ -100,11 +106,9 @@ let ASSOCIATES_COMMON_METHODS = {
       divs.push(DCreate('DIV',{class:'italic small indent2', inner:'(Aucun élément associé)'}))
     }
 
-    if(options.title) divs.unshift(DCreate('H3',{inner:(options.title||'Éléments associés')}))
-
     // On retourne le résultat
     switch (options.as) {
-      case 'string': return DCreate('DIV',{append:divs}).innerHTML
+      case 'string': return DCreate('DIV', {append:divs}).innerHTML
       default: return divs // liste des divs
     }
   }

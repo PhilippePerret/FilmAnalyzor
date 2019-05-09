@@ -15,7 +15,16 @@ const {
 
 **/
 class FAElement {
+// ---------------------------------------------------------------------
+//  CLASSE
+static get modified(){return this._modified}
+static set modified(v){this._modified = v}
 
+// ---------------------------------------------------------------------
+//  INSTANCE
+constructor(data){
+  for(var prop in data){this[`_${prop}`] = data[prop]}
+}
   /**
     Méthode qui actualise automatiquement toutes les informations affichées
     du personnage après sa modification.
@@ -27,6 +36,20 @@ class FAElement {
     })
   }
 
+/**
+  Retourne les données à enregistrer épurée.
+  L'élément doit définir `PROPS` listant les propriétés.
+  Chaque propriété peut posséder une méthode `<prop>Epured` qui sera appelée
+  pour composer la donnée.
+**/
+dataEpured(){
+  var h = {}, m
+  this.constructor.PROPS.map(prop => {
+    m = `${prop}Epured`
+    h[prop] = ('function' === typeof(this[m])) ? this[m]() : this[prop]
+  })
+  return Hash.compact(h)
+}
 
 // La class commune à toute
 domC(prop){

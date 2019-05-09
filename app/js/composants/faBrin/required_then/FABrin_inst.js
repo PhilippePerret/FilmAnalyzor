@@ -9,7 +9,7 @@ Object.defineProperties(FABrin.prototype,{
     get(){return this._modified || false}
   , set(v){
       this._modified = v
-      if (true === v) FABrin.modified = true
+      if (true === v) this.constructor.modified = true
     }
   }
 
@@ -48,9 +48,9 @@ Object.defineProperties(FABrin.prototype,{
         // Note : on met d'abord les scènes dans une table avec en clé le
         // numéro de la scène, pour ne pas les doubler ou avoir à vérifier
         var sc, arr = {}, ev
-        console.log("this:", this)
-        console.log("this.associates:", this.associates)
-        console.log("this.times:", this.times)
+        // console.log("this:", this)
+        // console.log("this.associates:", this.associates)
+        // console.log("this.times:", this.times)
         for(var time of this.times){
           sc = FAEscene.at(time)
           arr[sc.numero] = sc
@@ -59,7 +59,8 @@ Object.defineProperties(FABrin.prototype,{
           ev = this.a.ids[ev_id]
           if(ev){
             sc = ev.scene
-            arr[sc.numero] = sc
+            // La scène n'est peut-être pas définie.
+            if(sc) arr[sc.numero] = sc
           }
           else if (!FAEvent.exists(ev_id)){// il peut être en création
             console.error(`GRAVE PROBLÈME : l'event #${ev_id} n'existe pas dans l'analyse… Or il est associé à un brin. L'analyse doit être corrigée.`)

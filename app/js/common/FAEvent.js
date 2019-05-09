@@ -122,6 +122,7 @@ static get folderModifieds(){
                             d'un autre élément
 **/
 static prepareDissociation(datadis){
+  log.warn("La méthode `FAEvent#prepareDissociation` devra être supprimée quand tous les éléments utiliseront FAElement ou les méthodes d'association.")
   datadis.owner.type || raise('Il faut fournir le type du propriétaire.')
   datadis.owner.id !== undefined || raise("Il faut fournir l'id du propriétaire")
   let owner = ((typ, id) => {

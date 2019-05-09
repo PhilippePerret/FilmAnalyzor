@@ -77,7 +77,8 @@ reset(){
   }
 , afterSaving(){
     if(this.analyseWasNotModified) this.a.modified = false
-    this.saving = false
+    this.modified = false
+    this.saving   = false
   }
 
 /**
@@ -139,12 +140,13 @@ Object.defineProperties(FABrin,{
   , set(v){
       if(v && this.a.locked) return F.notify(T('analyse-locked-no-save'))
       this._modified = v
-      if (true === v && !this.timerSave){
-        this.analyseWasNotModified = !this.a._modified
-        this.a.modified = true
-        this.timerSave  = setTimeout(this.save.bind(this), 3000)
-        this.updateListing()
-      }
+      this.btnOK.html(v ? 'Enregistrer' : 'OK')
+      // if (true === v && !this.timerSave){
+      //   this.analyseWasNotModified = !this.a._modified
+      //   this.a.modified = true
+      //   this.timerSave  = setTimeout(this.save.bind(this), 3000)
+      //   this.updateListing()
+      // }
     }
   }
 

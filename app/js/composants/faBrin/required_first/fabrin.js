@@ -16,23 +16,12 @@ static get PROPS(){
                           fichier `dbrins.yaml` s'il existe.
 **/
 constructor(dbrin){
-  super()
+  super(dbrin)
   this.a = current_analyse
   this.data   = dbrin
   this.numero = FABrin.newNumero()
-  this.type   = 'brin' // cohérence avec event, document et times
-  this.bType  = dbrin.bType // type de brin
+  this.type   = 'brin' // pour FAElement et les associations
 
-}
-
-dataEpured(){
-  var h = {}
-  for(var k in this.data){
-    var v = this.data[k]
-    if(v === null || v === undefined || (Array.isArray(v) && v.length == 0) || ('object' === typeof(v) && Object.keys(v).length == 0)) continue
-    h[k] = v
-  }
-  return h
 }
 
 reset(){

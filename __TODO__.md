@@ -19,6 +19,10 @@
   Implémenter pour les brins la nouvelle façon d'associer les éléments
   - À quoi sert le numéro du brin ?
 
+* Possibilité de prendre une image n'importe où et de l'insérer dans le texte
+  - possibilité de voir toutes les images faites et de les insérer en les déplaçant
+* Possibilité de faire une sortie de type "rapport de visionnage" à expérimenter avec le film de Jean-François. Je pense qu'il suffit de déterminer le building-script.
+
 - Réimplémenter le check des résolutions des QRD pour qu'il se fasse seulement quand toutes les classes sont chargées — + quand on vient d'en créer une. Il faut appeler `FAEqrd#checkResolution()`. Voir aussi sur les procédés à résolution ?
 
 - Utiliser la nouvelle façon d'associer, avec `ASSOCIATES_COMMON_METHODS` `ASSOCIATES_COMMON_PROPERTIES` pour tous les autres éléments (Brins, Documents, Events si possible) avec FAEvent (noter que pour le moment, c'est la classe qui gère les associations ; il faut que ce soit chaque instance)

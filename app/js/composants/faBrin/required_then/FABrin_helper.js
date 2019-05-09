@@ -123,8 +123,9 @@ toString(){
   )
 
   // S'il y a des associés
+  console.log("this.hasAssociates():",this.hasAssociates())
   if(this.hasAssociates()){
-    divs.push(DCreate('DIV', {class: `associates ${this.domC('associates')}`, append:this.divsAssociates({title: true})}))
+    divs.push(DCreate('DIV', {class: `associates ${this.domC('associates')}`, append:this.divsAssociates({title:true, as:'dom'})}))
   }
 
   return DCreate('LI', {class: 'li-element brin', attrs:{'data-type':'brin', 'data-id': this.id}, append:[
