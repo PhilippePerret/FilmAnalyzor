@@ -123,7 +123,6 @@ toString(){
   )
 
   // S'il y a des associés
-  console.log("this.hasAssociates():",this.hasAssociates())
   if(this.hasAssociates()){
     divs.push(DCreate('DIV', {class: `associates ${this.domC('associates')}`, append:this.divsAssociates({title:true, as:'dom'})}))
   }

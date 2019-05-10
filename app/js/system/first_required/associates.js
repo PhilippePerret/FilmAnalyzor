@@ -1,37 +1,9 @@
 'use strict'
 /**
-  Des méthodes/constantes communes à tous les éléments
+  Des méthodes/constantes communes à tous les éléments pour les associations
 **/
 
 
-/**
-  Données communes pour dropper les events, documents et times
-  @usage
-    <set jquery>.droppable(
-      Object.assign({drop: function(i,o){...}},DATA_DROPPABLE)
-    )
-**/
-const DATA_DROPPABLE = {
-  what: 'Donnée drop pour un élément qui peut recevoir des associables'
-, accept: '.event, .doc, .dropped-time, .brin, .personnage'
-, tolerance: 'intersect'
-, drop:(e, ui) => {
-    let target = $(e.target)
-      , helper = ui.helper
-      , owner = {type: target.attr('data-type'), id: target.attr('data-id')}
-      , owned = {type: helper.attr('data-type'), id:helper.attr('data-id')}
-    current_analyse.associer(owner, owned)
-  }
-, classes: {'ui-droppable-hover': 'survoled'}
-}
-
-const DATA_ASSOCIATES_DRAGGABLE = {
-      what:'Données drag pour un élément associable'
-      // revert: true
-    , helper: () => {return this.dragHelper()}
-    , cursorAt:{left:40, top:20}
-  ,
-  }
 
 /**
   Méthodes communes qui permettent de gérer tous les éléments associés de
@@ -53,6 +25,9 @@ let ASSOCIATES_COMMON_METHODS = {
   types_associates: ['event','personnage', 'document', 'time', 'brin']
 
 
+, acceptableTypes(){
+    return this.types_associates.map(t => `.${t}`).join(', ')
+  }
 // ---------------------------------------------------------------------
 //  MÉTHODES D'HELPER
 
@@ -241,6 +216,37 @@ let ASSOCIATES_COMMON_PROPERTIES = {
 }
 }
 
+
+/**
+  Données communes pour dropper les events, documents et times
+  @usage
+    <set jquery>.droppable(
+      Object.assign({drop: function(i,o){...}},DATA_DROPPABLE)
+    )
+**/
+const DATA_DROPPABLE = {
+  what: 'Donnée drop pour un élément qui peut recevoir des associables'
+, accept: ASSOCIATES_COMMON_METHODS.acceptableTypes()
+, tolerance: 'intersect'
+, drop:(e, ui) => {
+    let target = $(e.target)
+      , helper = ui.helper
+      , owner = {type: target.attr('data-type'), id: target.attr('data-id')}
+      , owned = {type: helper.attr('data-type'), id:helper.attr('data-id')}
+    current_analyse.associer(owner, owned)
+  }
+, classes: {'ui-droppable-hover': 'survoled'}
+}
+
+const DATA_ASSOCIATES_DRAGGABLE = {
+      what:'Données drag pour un élément associable'
+      // revert: true
+    , helper: () => {return this.dragHelper()}
+    , cursorAt:{left:40, top:20}
+  ,
+  }
+
+
 // On essaie d'ajouter les propriétés plurielles, c'est-à-dire `documents` qui
 // retourne la liste des documents, `events` qui retourne la liste des events,
 // etc.
@@ -262,6 +268,63 @@ ASSOCIATES_COMMON_METHODS.types_associates.map(atype => {
 })
 
 
+/**
+  Cette constante est le mixin qui doit apporter toutes les
+  méthode de drag&drop sur un champ de texte, qui doit donc permettre
+  d'inscrire une balise quand on glisse l'élément sur le champ de texte
+**/
+const TEXTFIELD_ASSOCIATES_METHS = {
+  what:'Methodes d’association pour les champs de texte'
+/**
+  Méthode pour rendre tous les champs de texte de +container+ sensibles
+  au drag d'éléments associables
+
+  Si +owner+ est défini, c'est un élément qui répond à 'type' et à 'id',
+  qui permettra de le retrouver/connaitre lorsqu'on droppera un élément sur
+  le champ. Mais en règle générale, il est inutile de le connaitre puisque
+  c'est juste dans le champ qu'on va coller la balise de l'élément
+**/
+, setTextFieldsAssociableIn(container, owner){
+    let jqSet = $(container).find('TEXTAREA, INPUT[type="text"]')
+    jqSet.droppable(this.dataDroppableTF)
+    if(undefined !== owner){
+      jqSet
+        .attr('data-type', owner.type)
+        .attr('data-id', owner.id)
+    }
+  }
+
+/**
+  Méthode appelée au drop sur le champ de texte qui a été préparé grâce
+  à la méthode `setTextFieldsAssociable` ou qui a été rendu droppable grâce
+  à la table `this.dataDroppableTF`
+**/
+, onDropAssociableElement(e, ui){
+    let helper  = $(ui.helper)
+      , [eltype, elid]  = [helper.attr('data-type'), helper.attr('data-id')]
+      , balise = `{{${eltype}:${elid}}}`
+
+    $(e.target).insertAtCaret(balise)
+  }
+
+}
+const TEXTFIELD_ASSOCIATES_PROPS = {
+  what:{get(){'Propriétés propres aux associations pour les drops dans les champs de texte'}}
+  /**
+    Définition des propriétés et méthode pour les champs de texte
+    qui doivent répondre au droppable des éléments de l'analyse.
+  **/
+, dataDroppableTF:{get(){
+    return {
+      accept: ASSOCIATES_COMMON_METHODS.acceptableTypes()
+    , drop: this.onDropAssociableElement.bind(this)
+    , tolerance: 'intersect'
+    , classes: {'ui-droppable-hover': 'survoled'}
+    }
+  }}
+}
+
+
 // console.log("ASSOCIATES_COMMON_PROPERTIES:", ASSOCIATES_COMMON_PROPERTIES)
 
 
@@ -270,4 +333,6 @@ module.exports = {
 , ASSOCIATES_COMMON_METHODS: ASSOCIATES_COMMON_METHODS
 , DATA_ASSOCIATES_DRAGGABLE: DATA_ASSOCIATES_DRAGGABLE
 , DATA_DROPPABLE: DATA_DROPPABLE
+, TEXTFIELD_ASSOCIATES_METHS: TEXTFIELD_ASSOCIATES_METHS
+, TEXTFIELD_ASSOCIATES_PROPS: TEXTFIELD_ASSOCIATES_PROPS
 }

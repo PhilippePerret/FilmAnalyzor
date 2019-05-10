@@ -12,7 +12,7 @@ function WhenAllIsReallyReady(){
 
 $(document).ready(() => {
   log.info("--- DOM ready ---")
-  console.clear()
+  // console.clear()
 
   var d = ipc.sendSync('get-screen-dimensions')
   ScreenWidth   = d.width

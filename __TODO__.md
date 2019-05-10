@@ -10,7 +10,7 @@
       1. Les définir (elles doivent retourner une balise)
       2. En faire un mixin compatible avec les FAElement et les autres
           comme les documents.
-          
+      3. Ça doit supprimer l'utilisation de `FAnalyse#getBaliseAssociation`
 
 * Brins
   - voir comment est traité la propriété `associable: true` dans le DataEditor. Il faut :

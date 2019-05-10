@@ -41,11 +41,7 @@
 }
 
 .survoled, .survoled * {
-  background-color:#EEFFEE!important;
-}
-
-.event.survoled {
-  border:1px dashed green;
+  background-color:#CC7777!important;
 }
 
 /* --------------------------------------------------------------------- */
