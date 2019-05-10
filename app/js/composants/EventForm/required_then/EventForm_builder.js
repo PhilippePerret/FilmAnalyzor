@@ -238,6 +238,7 @@ Object.assign(EventForm.prototype,{
     this.jqObj.find('.btn-form-cancel').on('click', my.cancel.bind(my))
     this.btnSubmit.on('click', my.submit.bind(my))
     this.jqObj.find('.btn-form-destroy').on('click', my.destroy.bind(my))
+
     // Toutes les modifications de texte doivent entrainer une activation du
     // bouton de sauvegarde
     this.jqObj.find('textarea, input, select').on('change', ()=>{this.modified = true})
@@ -261,30 +262,20 @@ Object.assign(EventForm.prototype,{
       , zindex:5000
     })
 
-    let dataDrop = Object.assign({}, DATA_DROPPABLE, {
-      drop: (e, ui) => {
-        let obj = this.event || {type:'event', id: this.id}
-        var balise = this.a.getBaliseAssociation(obj, ui.helper, e)
-        if(balise){
-          if(['', 'INPUT', 'TEXTAREA'].indexOf(e.target.tagName)) $(e.target).insertAtCaret(balise)
-        } else if(e.target.className.indexOf('event-parent') > -1){
-          this.setParent(ui.helper)
-        }
-      }
-    })
+    // On rend les champs de texte associable entre éléments
+    this.setTextFieldsAssociableIn(this.jqObj)
 
-    // Les champs d'édition doit pouvoir recevoir des drops
-    my.jqObj.find('textarea, input[type="text"], select').droppable(dataDrop)
-    my.jqObj.find('.header').droppable(dataDrop)
+    // On rend le div qui peut recevoir le parent sensible au drop
+    let dataDrop = Object.assign({},DATA_DROPPABLE,{drop:(e,ui) => {this.setParent(ui.helper)}})
+    console.log("dataDrop:", dataDrop)
+    my.jqObj.find('div.event-parent').droppable(dataDrop)
+
+    // On rend l'entête du formulaire sensible au drop
+    my.jqObj.find('.header').droppable(DATA_DROPPABLE)
 
     // Les champs d'édition répondent au cmd-enter pour soumettre le
     // formulaire (enfin… façon de parler)
     my.jqObj.find('textarea, input[type="text"], input[type="checkbox"], select').on('keydown', this.onKeyDownOnTextFields.bind(this))
-
-    // Quand le div pour déposer un parent (ou autre) est affiché, on doit
-    // le rendre droppable
-    let parentField = my.jqObj.find('div.event-parent')
-    parentField.droppable(dataDrop)
 
     // Pour savoir si l'on doit éditer dans les champs de texte ou
     // dans le mini-writer
