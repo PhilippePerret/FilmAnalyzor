@@ -4,6 +4,7 @@
 
 * [Bug] cf. dans `./app/js/common/FAEvent/methods_show.js` les mêmes méthodes que dans Handies.js
 * [BUG] Il doit y avoir des problèmes avec les temps, dans les associations
+* [BUG] Il faut corriger les informations de HER (associates) avant de la recharger
 
 * Documents
   - changer 'dropped-time' pour 'time' (drag de la vidéo, je crois)

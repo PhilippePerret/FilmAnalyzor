@@ -5,9 +5,12 @@
 section#section-reader {
   width:      600px;
   min-height: 800px;
+}
+section#section-reader,
+section#section-reader *
+{
   z-index:40!important; /* pour passer sous les fwindows - mais normalement, le reader EST une fwindow */
 }
-
 
 #reader {
   display:block;

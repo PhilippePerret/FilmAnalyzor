@@ -13,4 +13,5 @@ const F = Flash
 const Selector = require('./js/system/first_required/Selector.js')
 const IOFile = require('./js/system/first_required/IOFile.js')
 const OTime = require('./js/system/first_required/OTime.js')
+const FATime = OTime // pour les associates
 const App = require('./js/system/first_required/App.js')

@@ -291,10 +291,13 @@ observe(){
       return DCreate('DIV', {
         inner: otime.horloge
       , class: 'dropped-time'
-      , attrs:{'data-type': 'time', 'data-value': otime.horloge, 'data-time': otime.seconds.round(2)}
+      , attrs:{'data-type': 'time', 'data-value': otime.horloge, 'data-id': otime.seconds.round(2)}
+      , zindex:1000
       })
     }
-  })
+  , start:()=>{$('#section-videos, #section-videos *').css('z-index','1000')}
+  , stop:()=>{$('#section-videos, #section-videos *').css('z-index','1')}
+})
 
   // Sur les parties à droite de l'horloge principale
   this.markMainPartAbs.on('click', this.onClickMarkStt.bind(this, 'Main', 'Abs'))
@@ -357,7 +360,7 @@ build(){
           , DCreate('DIV', {class: 'mark-current-scene', inner: '...'})
       ]})
       // VIDÉO
-    , DCreate('VIDEO', {id: `video-${this.id}`, class: 'video no-user-selection dropped-time', append:[
+    , DCreate('VIDEO', {id: `video-${this.id}`, class:'video no-user-selection time', append:[
             DCreate('SOURCE', {id: `video-${this.id}-src`, type: 'video/mp4', attrs:{src:""}})
       ]})
       // INDICATEUR DE POSITION (aka TIMELINE)

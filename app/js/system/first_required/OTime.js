@@ -10,66 +10,81 @@
  */
 
 class OTime {
-  /**
-   * Le temps est donné soit :
-   *  - en nombre de secondes (Number) (ou string, attention)
-   *  - en horloge (String)
-   *  - en data (Object) avec :seconds, :duree
-   *
-   */
-  constructor(v){
-    this.type = 'time'
-    switch (typeof(v)) {
-      case 'number':
-        this.seconds = v
-        break
-      case 'string':
-        if (v.match(/^[0-9\.]+$/)){this.seconds = Math.round(v)}
-        else {
-          this.horloge = v
-          this.seconds = this.h2s(v)
+
+/**
+  Pour les associations
+  Noter que c'est l'alias FATime qui est utilisé
+**/
+static get(time){
+  return new OTime(time)
+}
+// ---------------------------------------------------------------------
+// INSTANCE
+
+as(format, flag, options){
+  return this.asAssociate(options)
+}
+
+/**
+ * Le temps est donné soit :
+ *  - en nombre de secondes (Number) (ou string, attention)
+ *  - en horloge (String)
+ *  - en data (Object) avec :seconds, :duree
+ *
+ */
+constructor(v){
+  this.type = 'time'
+  switch (typeof(v)) {
+    case 'number':
+      this.seconds = v
+      break
+    case 'string':
+      if (v.match(/^[0-9\.]+$/)){this.seconds = Math.round(v)}
+      else {
+        this.horloge = v
+        this.seconds = this.h2s(v)
+      }
+      break
+    case 'object':
+      if (v instanceof(OTime)){
+        try {pourgenereuneerreur} catch (e) {
+          console.error("On ne doit pas envoyer un OTime pour initialiser un OTime.")
+          console.error(e)
         }
-        break
-      case 'object':
-        if (v instanceof(OTime)){
-          try {pourgenereuneerreur} catch (e) {
-            console.error("On ne doit pas envoyer un OTime pour initialiser un OTime.")
-            console.error(e)
-          }
-        }
-        else {
-          console.log("Le traitement par objet n'est pas encore implémenté")
-        }
-    }
+      }
+      else {
+        console.log("Le traitement par objet n'est pas encore implémenté")
+      }
   }
+}
 
-  valueOf(){return this.seconds}
-  toString(){return this._toString || defP(this,'_toString', `le temps ${this.horloge_simple}`)}
+valueOf(){return this.seconds}
+toString(){return this._toString || defP(this,'_toString', `le temps ${this.horloge_simple}`)}
 
-  // @return TRUE si le temps est entre les seconds +av+ et +ap+
-  between(av,ap){
-    return this.seconds.between(av,ap)
+// @return TRUE si le temps est entre les seconds +av+ et +ap+
+between(av,ap){
+  return this.seconds.between(av,ap)
+}
+get rtime(){ return this.seconds}
+set rtime(s){ this.updateSeconds(s.round(2))}
+get vtime(){ return this.seconds + current_analyse.filmStartTime}
+set vtime(s){ this.updateSeconds((s - current_analyse.filmStartTime).round(2))}
+
+
+set horloge(v)  { this._horloge = v }
+get horloge()   {return this._horloge || defP(this,'_horloge', this.s2h())}
+get vhorloge()  {return this._vhorloge || defP(this,'_vhorloge', this.s2h(this.vtime))}
+get horloge_simple(){
+  if(undefined === this._horloge_simple){
+    this._horloge_simple = this.s2h(this.secondsInt, {no_frames: true})
   }
-  get rtime(){ return this.seconds}
-  set rtime(s){ this.updateSeconds(s.round(2))}
-  get vtime(){ return this.seconds + current_analyse.filmStartTime}
-  set vtime(s){ this.updateSeconds((s - current_analyse.filmStartTime).round(2))}
+  return this._horloge_simple
+}
+get horloge_as_duree(){return this.hduree}
+get hduree(){return this.s2h(this.seconds,{as_duree: true, no_frames: true})}
+get duree_sec(){ return Math.round(this.seconds) }
 
-
-  set horloge(v)  { this._horloge = v }
-  get horloge()   {return this._horloge || defP(this,'_horloge', this.s2h())}
-  get vhorloge()  {return this._vhorloge || defP(this,'_vhorloge', this.s2h(this.vtime))}
-  get horloge_simple(){
-    if(undefined === this._horloge_simple){
-      this._horloge_simple = this.s2h(this.secondsInt, {no_frames: true})
-    }
-    return this._horloge_simple
-  }
-  get horloge_as_duree(){return this.hduree}
-  get hduree(){return this.s2h(this.seconds,{as_duree: true, no_frames: true})}
-  get duree_sec(){ return Math.round(this.seconds) }
-
-
+get id(){return this.seconds} // pour les associations
 /**
   Méthode qui permet de traiter les temps comme des events dans
   les associations. Pour afficher le temps courant et aussi pouvoir
@@ -78,14 +93,14 @@ class OTime {
   @param {Object} options  Des options (inutilisé ici pour le moment)
 
 */
-asAssociate(options){
-  if(undefined === options) options = {}
+asAssociate(opts){
+  if(undefined === opts) opts = {}
   var dvs = []
   dvs.push(DCreate('A', {class:'lktime', inner: this.horloge_simple, attrs:{onclick:`showTime(${this.seconds})`}}))
-  if(options.owner){
+  if(opts.owner){
     // Si les options définissent un owner, on ajoute un lien pour pouvoir
     // dissocier le temps de son possesseur
-    divs.push(this.dissociateLink({owner: opts.owner}))
+    dvs.push(this.dissociateLink({owner: opts.owner}))
   }
   return DCreate('SPAN', {class:'lktime', append: dvs})
 }

@@ -257,9 +257,14 @@ Object.assign(EventForm.prototype,{
 
     // Le petit picto pour associer tout de suite l'event édité ou créé
     // à un autre event ou document ou autre.
+    /**
+    // TODO C'est pas bon, ça, il faut utiliser aussi l'helper
+    **/
     my.jqObj.find('.event-btn-drop').draggable({
         revert:true
-      , zindex:5000
+      , zindex:1000
+      , start:()=>{this.jqObj.css('z-index','1000')}
+      , stop:()=>{this.jqObj.css('z-index', null)}
     })
 
     // On rend les champs de texte associable entre éléments

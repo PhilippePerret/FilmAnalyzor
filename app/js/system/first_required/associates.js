@@ -66,7 +66,7 @@ let ASSOCIATES_COMMON_METHODS = {
 **/
 , dissociateLink(options){
     options.owner || raise("Le propriétaire (owner) doit être défini pour construire un lien de dissociation.")
-    return DCreate('A', {class:'lktool lkdisso', inner:'dissocier', attrs:{onclick:`current_analyse.dissocier({type:'${options.owner.type}',id:'${options.owner.id}'}, {type:'${this.metaType||this.type}', id:'${this.id}'})`}})
+    return DCreate('A', {class:'lktool lkdisso', inner:'dissocier', attrs:{onclick:`current_analyse.dissocier({type:'${options.owner.metaType||options.owner.type}',id:'${options.owner.id}'}, {type:'${this.metaType||this.type}', id:'${this.id}'})`}})
   }
 
 /**
@@ -164,7 +164,7 @@ let ASSOCIATES_COMMON_METHODS = {
 
 , realAssoId(list_id, id){
     switch (list_id) {
-      case 'time':   return id instanceof(OTime) ? id.seconds : id ;
+      case 'time':   return id instanceof(OTime) ? id.seconds : parseFloat(id) ;
       case 'event':  return parseInt(id,10)
       default: return id
     }
@@ -254,8 +254,10 @@ const DATA_DROPPABLE = {
       , owner = {type: target.attr('data-type'), id: target.attr('data-id')}
       , owned = {type: helper.attr('data-type'), id:helper.attr('data-id')}
     current_analyse.associer(owner, owned)
+    return stopEvent(e)
   }
 , classes: {'ui-droppable-hover': 'survoled'}
+, greedy: true
 }
 
 const DATA_ASSOCIATES_DRAGGABLE = {
@@ -320,6 +322,7 @@ const TEXTFIELD_ASSOCIATES_METHS = {
 **/
 , setTextFieldsAssociableIn(container, owner){
     let jqSet = $(container).find('TEXTAREA, INPUT[type="text"]')
+    // console.log("this.dataDroppableTF:", this.dataDroppableTF)
     jqSet.droppable(this.dataDroppableTF)
     if(undefined !== owner){
       jqSet
@@ -339,6 +342,7 @@ const TEXTFIELD_ASSOCIATES_METHS = {
       , balise = `{{${eltype}:${elid}}}`
 
     $(e.target).insertAtCaret(balise)
+    return stopEvent(e)
   }
 
 }
@@ -354,6 +358,7 @@ const TEXTFIELD_ASSOCIATES_PROPS = {
     , drop: this.onDropAssociableElement.bind(this)
     , tolerance: 'intersect'
     , classes: {'ui-droppable-hover': 'survoled'}
+    , greedy: true
     }
   }}
 }
