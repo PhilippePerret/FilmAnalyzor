@@ -441,19 +441,6 @@ indexOfEvent(event_id){
 // --- FONCTIONS D'ASSOCIATION ---------------------------------------------
 
 /**
-  Méthodes qui fonctionnent avec le `drop` général de DATA_DROPPABLE pour
-  associer des éléments quelconques (event, personnage, document, brin, etc.)
-**/
-associer(owner_ref, owned_ref){
-  (this.instanceOfElement(owner_ref)).associer(owned_ref)
-}
-dissocier(owner_ref, owned_ref){
-  let owner = this.instanceOfElement(owner_ref)
-    , owned = this.instanceOfElement(owned_ref)
-  if(!confirm(`Dois-je vraiment dissocier ${owned.toString()} de ${owner.toString()} ?`)) return
-  owner.dissocier(owned_ref)
-}
-/**
   Retourne l'instance désignée par +ref+
 
   Pour pouvoir fonctionner, l'élément doit avoir une classe qui se trouve
@@ -696,6 +683,7 @@ get eventsIO(){
   @param {Object} v
 **/
 set eventsIO(eventsData){
+  log.info("-> FAnalyse#[set]eventsIO")
   var my = this
     , last_id = -1
     , eventData
@@ -710,9 +698,11 @@ set eventsIO(eventsData){
     if(ev.id > last_id){last_id = parseInt(ev.id,10)}
   }
   // On peut définir le dernier ID dans EventForm (pour le formulaire)
+  log.info('   Définition du lastId de EventForm', last_id)
   EventForm.lastId = last_id
   eventsData = null
   my = null
+  log.info("<- FAnalyse#[set]eventsIO")
 }
 
   /**

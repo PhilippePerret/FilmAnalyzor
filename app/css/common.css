@@ -31,7 +31,7 @@ select, select option {
 
 select {
   padding:2px 8px;
-  width:400px;
+  /* width:400px; */
 }
 select.main {
   font-weight:bold;

@@ -229,7 +229,7 @@ build(){
   return DCreate('FORM', {
     id: `form-edit-event-${this.id}`
   , class: 'form-edit-event'
-  , inner: TEMP_EVENT_FORM_BUILDER(this.type)
+  , inner: this.formsByType(this.type)
             .replace(/__EID__/g, this.id)
             .replace(/__SAVE_BUTTON_LABEL__/,this.isNew?'CRÉER':'MODIFIER')
   })
@@ -501,74 +501,6 @@ checkIfSynchronizable(e){
 // ---------------------------------------------------------------------
 //  Méthodes d'évènement
 
-observe(){
-  var my = this
-  this.jqObj.find('.btn-form-cancel').on('click', my.cancel.bind(my))
-  this.btnSubmit.on('click', my.submit.bind(my))
-  this.jqObj.find('.btn-form-destroy').on('click', my.destroy.bind(my))
-  // Toutes les modifications de texte doivent entrainer une activation du
-  // bouton de sauvegarde
-  this.jqObj.find('textarea, input, select').on('change', ()=>{this.modified = true})
-
-  // Quand le type de l'event est scene et que le résumé est vide,
-  // on synchronise le pitch avec le résumé
-  if(this.type === 'scene' && this.isNew){
-    this.jqField('titre').on('keyup', my.synchronizePitchAndResume.bind(my))
-    this.jqField('longtext1').on('keyup', my.checkIfSynchronizable.bind(my))
-  }
-
-  // Bouton pour actualiser le menu des types de tout élément et pour éditer
-  // le fichier de données
-  this.jqObj.find('.btn-update-types').on('click', my.updateTypes.bind(my))
-  this.jqObj.find('.btn-modify-types').on('click', my.modifyDataTypes.bind(my))
-
-  // Le petit picto pour associer tout de suite l'event édité ou créé
-  // à un autre event ou document ou autre.
-  my.jqObj.find('.event-btn-drop').draggable({
-      revert:true
-    , zindex:5000
-  })
-
-  let dataDrop = Object.assign({}, DATA_DROPPABLE, {
-    drop: (e, ui) => {
-      let obj = this.event || {type:'event', id: this.id}
-      var balise = this.a.getBaliseAssociation(obj, ui.helper, e)
-      if(balise){
-        if(['', 'INPUT', 'TEXTAREA'].indexOf(e.target.tagName)) $(e.target).insertAtCaret(balise)
-      } else if(e.target.className.indexOf('event-parent') > -1){
-        this.setParent(ui.helper)
-      }
-    }
-  })
-
-  // Les champs d'édition doit pouvoir recevoir des drops
-  my.jqObj.find('textarea, input[type="text"], select').droppable(dataDrop)
-  my.jqObj.find('.header').droppable(dataDrop)
-
-  // Les champs d'édition répondent au cmd-enter pour soumettre le
-  // formulaire (enfin… façon de parler)
-  my.jqObj.find('textarea, input[type="text"], input[type="checkbox"], select').on('keydown', this.onKeyDownOnTextFields.bind(this))
-
-  // Quand le div pour déposer un parent (ou autre) est affiché, on doit
-  // le rendre droppable
-  let parentField = my.jqObj.find('div.event-parent')
-  parentField.droppable(dataDrop)
-
-  // Pour savoir si l'on doit éditer dans les champs de texte ou
-  // dans le mini-writer
-  UI.miniWriterizeTextFields(this.jqObj, this.a.options.get('option_edit_in_mini_writer'))
-
-  // Si l'event est une scène, on observe le menu décor et
-  // sous décor
-  if(this.type === 'scene'){
-    this.menuDecors.on('change', this.onChooseDecor.bind(this))
-    this.menuSousDecors.on('change', this.onChooseSousDecor.bind(this))
-  } else if (this.type === 'proc'){
-    $('button.btn-info-proc').on('click', FAProcede.showDescriptionOf.bind(FAProcede,this.id))// prop aux procédés, celui-là
-    $('div.div-proc-types button.update').on('click', FAProcede.updateData.bind(FAProcede)) // ATTENTION : button commun
-  }
-  my = null
-}
 
 submit(){
   var my = this
@@ -859,6 +791,3 @@ get form(){return this._form || defP(this,'_form', DGet(`form-edit-event-${this.
 get jqObj(){return this._jqObj || defP(this,'_jqObj', $(this.form))}
 
 }
-
-// Template du formulaire d'édition de l'évènement
-const TEMP_EVENT_FORM_BUILDER = require('./js/composants/EventForm_builder.js').bind(EventForm)
