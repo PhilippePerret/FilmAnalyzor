@@ -274,6 +274,15 @@ setPlayButton(running){
 showEventsAt(time){
   this.eventsAt(time).forEach(ev => {if(!ev.shown) ev.showDiffere()})
 }
+
+/**
+  Méthode qui affiche les images autour du temps time
+  @param {OTime} time
+**/
+showImagesAt(time){
+  FAImage.imagesAt(time.vtime).forEach(img => {if(!img.shown) img.showDiffere()})
+}
+
 /**
   Méthode qui arrête la surveillance des events affichés dans
   le reader (quand on arrête la lecture)
@@ -490,6 +499,8 @@ actualizeReader(curt){
   if(undefined === curt) curt = this.currentTime
   // Afficher les events autour du temps courant
   this.showEventsAt(curt)
+  // Afficher les images autour du temps courant
+  this.showImagesAt(curt)
   // Arrêter de jouer si un temps de fin est défini et qu'il est dépassé
   if(this.wantedEndTime && this.currentTime > this.wantedEndTime){
     this.togglePlay()

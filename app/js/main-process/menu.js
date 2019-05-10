@@ -465,6 +465,10 @@ const DATA_MENUS = [
             }
           , {type: 'separator'}
           , {
+                label: 'Prendre l’image courante'
+              , click:() => {execJsOnCurrent('createShotWithCurrentPicture')}
+            }
+          , {
                 label: 'Image courante comme vignette de scène courante…'
               , click:()=>{mainW.webContents.send('current-image-for-current-scene')}
             }

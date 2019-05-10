@@ -47,9 +47,11 @@ asShort(opts){
     opts.noTime = true
     let divs = []
     divs.push(...this.asBook(opts))
-    let divAssos = this.divAssociates(opts)
-    // console.log("[FAScene#asFull] divAssos:", divAssos)
-    divAssos && divs.push(...divAssos)
+    if(this.hasAssociates()){
+      let divAssos = this.divsAssociates(Object.assign({},opts,{as:'dom'}))
+      // console.log("[FAScene#asFull] divAssos:", divAssos)
+      divs.push(...divAssos)
+    }
     return divs
   }
 
@@ -103,19 +105,6 @@ f_scene_heading(opts){
   return DCreate('SPAN', {class: 'scene-heading', append: headingElements})
 }
 
-// /**
-//  * Retourne le lien vers l'event
-//  * Pour remplacer par exemple une balise `event: <id>`
-//  *
-//  * Note : si ce texte est modifié, il faut aussi corriger les tests à :
-//  * ./app/js/TestsFIT/tests/Textes/fatexte_tests.js
-//  */
-// , asLink(alt_text){
-//     if(undefined === this._asLink){
-//       this._asLink = `<a class="lkscene" onclick="showScene(${this.numero})">[voir]</a>`
-//     }
-//     return `${alt_text || this.asPitch()} ${this._asLink}`
-//   }
 })
 
 Object.defineProperties(FAEscene.prototype,{

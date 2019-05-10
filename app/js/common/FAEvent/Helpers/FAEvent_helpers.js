@@ -10,7 +10,7 @@ Object.assign(FAEvent.prototype,{
 **/
 toString(){
   if(undefined === this._tostring){
-    this._tostring = `Event ${this.type} #${this.id}`
+    this._tostring = `Event #${this.id} (${this.isScene ? `scène ${this.numero}` : this.type})`
   }
   return this._tostring
 }
@@ -166,7 +166,7 @@ asFull(opts){
 // qu'associé dans un autre event
 asAssociate(opts){
   var divs = []
-  divs.push(this.spanRef(opts /* si texte alternatif */))
+  // divs.push(this.spanRef(opts /* si texte alternatif */))
   if(this.titre){
     divs.push(DCreate('SPAN', {class:'titre', inner: this.f_titre || DFormater(this.titre)}))
   }

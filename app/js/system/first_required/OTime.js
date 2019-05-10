@@ -72,14 +72,21 @@ set vtime(s){ this.updateSeconds((s - current_analyse.filmStartTime).round(2))}
 
 
 set horloge(v)  { this._horloge = v }
-get horloge()   {return this._horloge || defP(this,'_horloge', this.s2h())}
+get horloge()   {return this._horloge  || defP(this,'_horloge', this.s2h())}
 get vhorloge()  {return this._vhorloge || defP(this,'_vhorloge', this.s2h(this.vtime))}
 get horloge_simple(){
   if(undefined === this._horloge_simple){
-    this._horloge_simple = this.s2h(this.secondsInt, {no_frames: true})
+    this._horloge_simple = this.s2h(this.rtime, {no_frames: true})
   }
   return this._horloge_simple
 }
+get vhorloge_simple(){
+  if(undefined === this._vhorloge_simple){
+    this._vhorloge_simple = this.s2h(this.vtime, {no_frames: true})
+  }
+  return this._vhorloge_simple
+}
+
 get horloge_as_duree(){return this.hduree}
 get hduree(){return this.s2h(this.seconds,{as_duree: true, no_frames: true})}
 get duree_sec(){ return Math.round(this.seconds) }

@@ -302,12 +302,18 @@ openDocInDataEditor(dtype){
   }
   DataEditor.openPerType(dtype)
 }
+
 /**
  * Pour obtenir un nouvel "eventer", c'est-à-dire une liste filtrable
  * des events.
  */
 createNewEventer(){
   return FAEventer.createNew() // on le retourne pour les tests
+}
+
+createShotWithCurrentPicture(){
+  let method = App.loadTool('shot_with_current_picture')
+  method.bind(this)()
 }
 
 // ---------------------------------------------------------------------
@@ -349,8 +355,8 @@ addEvent(nev) {
 // Pour éditer le document d'identifiant +doc_id+
 // Note : on pourrait y aller directement, mais c'est pour compatibiliser
 // les choses
-editDocument(doc_id){
-  return FAWriter.openDoc(doc_id)
+editDocument(dtype, doc_id){
+  return FAWriter.openDoc(dtype, doc_id)
 }
 
 /**
@@ -794,6 +800,16 @@ get folderVignettesScenes(){
     this._folderVignettesScenes = path.join(this.folderImages,'vignettes_scenes')
   }
   return this._folderVignettesScenes
+}
+
+// Dossier des images prises d'après la vidéo
+get folderPictures(){
+  if(undefined === this._folderPictures){
+    if(!fs.existsSync(this.folderImages)) fs.mkdirSync(this.folderImages)
+    this._folderPictures = path.join(this.folderImages,'pictures')
+    if(!fs.existsSync(this._folderPictures)) fs.mkdirSync(this._folderPictures)
+  }
+  return this._folderPictures
 }
 
 get folderBackup(){

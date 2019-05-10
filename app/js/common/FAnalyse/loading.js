@@ -68,6 +68,7 @@ Object.assign(FAnalyse,{
     if(NONE === typeof FAProcede)     return this.loadComponant('faProcede')
     if(NONE === typeof FAReader)      return this.loadComponant('faReader')
     if(NONE === typeof FAStats)       return this.loadComponant('faStats')
+    if(NONE === typeof FAImage)       return this.loadComponant('faImage')
 
     // Si tout est OK, on peut rappeler la méthode Fanalyse.load
     log.info("   Tous les composants sont chargés.")
@@ -186,6 +187,7 @@ load(){
     FABrin.reset().init()
     EventForm.init()
     FAEscene.init()
+    FAImage.init()
     FAEqrd.reset().init()
     FAPersonnage.reset().init()
     this.options.setInMenus()

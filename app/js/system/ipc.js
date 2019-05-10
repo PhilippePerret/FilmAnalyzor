@@ -14,7 +14,6 @@ ipc.on('create-event', (ev, data) => {
 // Activé par le menu pour prendre l'image courante comme vignette de
 // la scène.
 ipc.on('current-image-for-current-scene', (ev) => {
-  // require('./app/js/tools/vignette_current_scene.js')(ev)
   require('./js/tools/vignette_current_scene.js')(ev)
 })
 

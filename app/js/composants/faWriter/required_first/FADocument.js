@@ -170,6 +170,15 @@ constructor(dtype, id, docPath){
 // ---------------------------------------------------------------------
 //  Méthodes publiques
 
+get toString(){return this._tostring||defP(this,'_tostring',this.defineToString())}
+
+defineToString(){
+  t = ['Document']
+  if(this.title) t.push(`« ${DFormater(this.title)} »`)
+  else t.push(`#${this.id}`)
+  return t.join(' ')
+}
+
 // Affiche le document
 display(){
   // console.log("-> display ", this)

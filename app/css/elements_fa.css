@@ -49,6 +49,11 @@ div h3:nth-child(1) {
 .indent1 {text-indent:1em;}
 .indent2 {text-indent:2em;}
 
+/* ---------------------------------------------------------------------
+
+    LES IMAGES
+
+*/
 /*
   Une image qui permet d'ouvrir un contenu
 **/
@@ -56,6 +61,22 @@ img.toggle-container, img.toggle-next {
   float:right;
   margin-left:4px;
   cursor:pointer;
+}
+
+/* Image pour les "pictures" (FAImage) */
+div.div-image {
+  padding:8px 1.6em;
+  background-color:#555555;
+  color:white;
+  vertical-align:middle;
+}
+div.div-image span {
+  margin-left:1em;
+  vertical-align:middle;
+}
+img.image-overview {
+  width:180px;
+  vertical-align:middle;
 }
 
 /* ---------------------------------------------------------------------

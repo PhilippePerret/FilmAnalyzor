@@ -29,8 +29,12 @@ const FAWriter = {
  ATTENTION : pour un document quelconque, utiliser la méthode
  `openAnyDoc`
  */
-, openDoc(docid){
-    let dtype, idx
+, openDoc(dtype, docid){
+    let idx
+    if(dtype && undefined === docid){
+      // Quand seul l'identifiant est transmis
+      [docid, dtype] = [dtype, undefined]
+    }
     if(undefined === docid || '' == docid){
       // <= Aucun type de document n'a été choisi (note : cela se produit
       //    par exemple lorsque l'on choisit d'ouvrir le writer par le menu)
@@ -43,7 +47,7 @@ const FAWriter = {
         dtype = 'regular'
         docid = 'introduction'
       }
-    } else {
+    } else if(!dtype) {
       [dtype, idx] = (docid||'').split('-')
       if(dtype !== 'custom') dtype = 'regular'
     }

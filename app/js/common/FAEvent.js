@@ -171,10 +171,6 @@ get isADocument(){return false}
 get isScene(){return false} // surclassé par FAEscene
 
 // ---------------------------------------------------------------------
-//  Méthodes d'helper
-
-
-// ---------------------------------------------------------------------
 //  Propriétés temporelles
 
 // Pour la correspondance de nom, aussi

@@ -2,20 +2,12 @@
 
 ### Traiter :
 
-* [Bug] cf. dans `./app/js/common/FAEvent/methods_show.js` les mêmes méthodes que dans Handies.js
-* [BUG] Il doit y avoir des problèmes avec les temps, dans les associations
-* [BUG] Il faut corriger les informations de HER (associates) avant de la recharger
-
-* Documents
-  - changer 'dropped-time' pour 'time' (drag de la vidéo, je crois)
-  - hériter de FAElement et de toutes les méthodes d'association
-  - Non : ce sont les méthodes de drag&drop sur un texte qui doivent être
-    rationnalisés et utilisées partout.
-    =>
-      1. Les définir (elles doivent retourner une balise)
-      2. En faire un mixin compatible avec les FAElement et les autres
-          comme les documents.
-      3. Ça doit supprimer l'utilisation de `FAnalyse#getBaliseAssociation`
+* Image
+  - comme associate, mettre une vignette avec l'image encore plus petit
+* Dans le reader
+  - indiquer mieux la partie "Associés"
+  - actualiser dès qu'il y a modification (vérifier qu'une association entraine la marque de modification, mais je crois que oui)
+* Supprimer l'arrière plan du mini-writer (peut-être le faire 'sortir' du bord bas ?)
 
 * Brins
   - voir comment est traité la propriété `associable: true` dans le DataEditor. Il faut :
@@ -28,7 +20,7 @@
 
 * Possibilité de prendre une image n'importe où et de l'insérer dans le texte
   - possibilité de voir toutes les images faites et de les insérer en les déplaçant
-* Possibilité de faire une sortie de type "rapport de visionnage" à expérimenter avec le film de Jean-François. Je pense qu'il suffit de déterminer le building-script.
+* Possibilité de faire une sortie de type "rapport de visionnage" à expérimenter avec le film de Jean-François. Je pense qu'il suffit de déterminer correctement le building-script en définissant que les remarques sont les notes (Par exemple 'BUILD Rapport de notes').
 
 - Réimplémenter le check des résolutions des QRD pour qu'il se fasse seulement quand toutes les classes sont chargées — + quand on vient d'en créer une. Il faut appeler `FAEqrd#checkResolution()`. Voir aussi sur les procédés à résolution ?
 

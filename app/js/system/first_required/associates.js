@@ -22,7 +22,7 @@ let ASSOCIATES_COMMON_METHODS = {
     À partir de cette liste, on construit toutes les listes des types,
     personnages:[], brins:[] etc.
   **/
-  types_associates: ['event','personnage', 'document', 'time', 'brin']
+  types_associates: ['event','personnage', 'document', 'time', 'brin', 'image']
 
   /**
 
@@ -267,8 +267,6 @@ const DATA_ASSOCIATES_DRAGGABLE = {
   , cursorAt:{left:40, top:20}
   , start: e => {
       let container = $(e.target).parent()
-      console.log("container au start:", container)
-      console.log("this.contenant:", this.contenant)
       if(container){
         container.old_overflow = container.css('overflow')
         container.css('overflow','visible')
@@ -276,8 +274,6 @@ const DATA_ASSOCIATES_DRAGGABLE = {
     }
   , stop: e => {
       let container = $(e.target).parent()
-      console.log("container au stop:", container)
-      console.log("this.contenant:", this.contenant)
       if(container){container.css('overflow', container.old_overflow)}
     }
   }
