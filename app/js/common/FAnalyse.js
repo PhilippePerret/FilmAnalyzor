@@ -438,29 +438,6 @@ indexOfEvent(event_id){
   for(;i<len;++i) { if(this.events[i].id == event_id) { return i } }
 }
 
-// --- FONCTIONS D'ASSOCIATION ---------------------------------------------
-
-/**
-  Retourne l'instance désignée par +ref+
-
-  Pour pouvoir fonctionner, l'élément doit avoir une classe qui se trouve
-  par `FA<type titleisé>` et cette classe doit posséder une méthode de classe
-  `get` qui reçoit en premier argument l'identifiant de l'élément et retourne
-  l'instance de l'élément.
-
-  @param {Object} ref   Instance d'un élément quelconque de l'analyse
-                        ref doit définir :type (personnage, brin, event, etc.)
-                        et :id (identifiant de l'élément)
-
-**/
-instanceOfElement(ref){
-  // let inst = eval(`FA${ref.type.titleize()}`).get(ref.type == 'event' ? parseInt(ref.id,10) : ref.id)
-  // console.log("instanceOfElement", ref, inst)
-  // return inst
-  // QUAND ÇA MARCHERA :
-  return eval(`FA${ref.type.titleize()}`).get(ref.type == 'event' ? parseInt(ref.id,10) : ref.id)
-}
-
 // --- FONCTIONS I/O ----------------------------------------------
 
 /**

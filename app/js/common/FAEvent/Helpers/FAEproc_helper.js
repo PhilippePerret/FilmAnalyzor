@@ -3,10 +3,6 @@
   Helpers pour les QRD
 **/
 
-Object.assign(FAEproc,{
-
-})
-
 
 Object.assign(FAEproc.prototype,{
 /**
@@ -31,8 +27,4 @@ asShort(options){
   return divs
 }
 
-})
-
-
-Object.defineProperties(FAEproc.prototype,{
 })

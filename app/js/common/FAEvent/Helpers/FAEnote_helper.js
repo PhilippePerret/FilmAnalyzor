@@ -1,11 +1,7 @@
 'use strict'
 /**
-  Helpers pour les QRD
+  Helpers pour les Notes
 **/
-
-Object.assign(FAEnote,{
-
-})
 
 
 Object.assign(FAEnote.prototype,{
@@ -34,8 +30,4 @@ asNote(options){
   }
 }
 
-})
-
-
-Object.defineProperties(FAEnote.prototype,{
 })

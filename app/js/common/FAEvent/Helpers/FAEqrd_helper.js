@@ -3,10 +3,6 @@
   Helpers pour les QRD
 **/
 
-Object.assign(FAEqrd,{
-
-})
-
 
 Object.assign(FAEqrd.prototype,{
 /**

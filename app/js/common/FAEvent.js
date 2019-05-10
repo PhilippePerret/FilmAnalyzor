@@ -4,7 +4,7 @@ class FAEvent {
 // ---------------------------------------------------------------------
 //  CLASSE
 
-static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duree', 'parent', ['content', 'longtext1'], 'events', 'documents', 'times', 'brins', 'personnages']}
+static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duree', 'parent', ['content', 'longtext1'], 'associates']}
 static get TEXT_PROPERTIES(){return ['titre', 'content']}
 
 static get ALL_PROPS(){
@@ -111,134 +111,12 @@ static get folderModifieds(){
   return this._folderModifieds
 }
 
-/**
-  Méthode qui permet de dissocier des éléments (pour le moment, des events)
-  @param {Object} datadis   Données pour effectuer la dissociation. Doit
-                            contenir : :owner_type, le type du propriétaire,
-                            par exemple 'event' ou 'doc', :owner_id, l'id du
-                            propriétaire, :type, le type de l'élément à disso-
-                            cier, par exemple 'time'
-                            :time ou :id suivant qu'il s'agit d'un temps ou
-                            d'un autre élément
-**/
-static prepareDissociation(datadis){
-  log.warn("La méthode `FAEvent#prepareDissociation` devra être supprimée quand tous les éléments utiliseront FAElement ou les méthodes d'association.")
-  datadis.owner.type || raise('Il faut fournir le type du propriétaire.')
-  datadis.owner.id !== undefined || raise("Il faut fournir l'id du propriétaire")
-  let owner = ((typ, id) => {
-    switch (typ) {
-      case 'event':       return FAEvent.get(id)
-      case 'document':    return FADocument.get(id)
-      case 'brin':        return FABrin.get(id)
-      case 'personnage':  return FAPersonnage.get(id)
-      default:
-        throw(`Le type de possesseur "${typ}" n'est pas encore traité pour la dissociation`)
-    }
-  })(datadis.owner.type, datadis.owner.id)
-
-  let owned = ((typ, id) => {
-    switch (typ) {
-      case 'time':        return new OTime(id)
-      case 'event':       return FAEvent.get(id)
-      case 'document':    return FADocument.get(id)
-      case 'brin':        return FABrin.get(id)
-      case 'personnage':  return FAPersonnage.get(id)
-      default:
-      throw(`Le type de possédé "${typ}" n'est pas encore traité pour la dissociation`)
-    }
-  })(datadis.owned.type, datadis.owned.id)
-
-  owner !== undefined || raise("Le possesseur est introuvable…")
-  owned !== undefined || raise("L'élément possédé est introuvable…")
-
-  // Demande de confirmation
-  let msg = `Dois-je vraiment dissocier : ${owned} de : ${owner} ?`
-  if(!confirm(msg)) return false
-
-  // Dissociation confirmée, on peut procéder
-  if('function' === typeof(owner.dissocier)){
-    owner.dissocier(owned)
-  } else {
-    throw(`Il faut implémenter la méthode "dissocier" pour ${owner}`)
-  }
-
-}
-
 static get a(){return this._a || current_analyse}
 static set a(v){this._a = v}
 
 static get type(){return this._type||defP(this,'_type', this.dataType.type)}
 static get shortName(){return this._shortName||defP(this,'_shortName', this.dataType.name.short.cap.sing)}
 
-// ---------------------------------------------------------------------
-//  MÉTHODES POUR LES ASSOCIATIONS
-
-/**
-  Construit un lien pour casser une association et le retourne.
-  @param {Object} datass  Données pour l'association. Doit contenir :
-                          :owner    Définition du propriétaire (:type/:id)
-                          :owned    Définition du possédé (:type/:id) ou objet
-**/
-static linkDissocier(datass){
-  if(datass.owner.type == datass.owned.type && datass.owned.id == datass.owner.id){
-    throw("Impossible de dissocier un élément de lui-même, voyons…")
-  }
-  let owner_id = datass.owner.id
-  if('number' !== typeof(owner_id)) owner_id = `'${owner_id}'`
-  let owned_id = datass.owned.id
-  if('number' !== typeof(owned_id)) owned_id = `'${owned_id}'`
-
-  return DCreate('A',{class:'lkdiss', inner: '[dissocier]', attrs:{onclick:`FAEvent.prepareDissociation.bind(FAEvent)({owned:{type:'${datass.owned.metaType||datass.owned.type}', id:${owned_id}}, owner:{type:'${datass.owner.metaType||datass.owner.type}', id:${owner_id}}})`}})
-}
-static associer(obj, asso){
-  log.info(`-> FAEvent::associer`)
-  let list_id = `${asso.type}s`
-  let res = this.addToList(list_id, obj, asso.id)
-  if (res == true){
-    obj.modified = true
-    if('function'===typeof(obj.updateInReader)){
-      obj.updateInReader()
-    }
-  }
-  log.info(`<- FAEvent::associer (return ${res})`)
-  return res
-}
-// ATTENTION : LA MÊME MÉTHODE EXISTE PLUS HAUT
-static dissocier(obj, asso){
-  let list_id = `${asso.metaType||asso.type}s`
-  let res = this.supFromList(list_id, obj, asso.id)
-  if (res == true){
-    obj.modified = true
-    if('function'===typeof(obj.updateInReader)){
-      obj.updateInReader()
-    }
-  }
-  return res
-}
-
-static addToList(list_id, obj, asso_id){
-  log.info(`-> FAEvent::addToList(list_id="${list_id}", obj={type:${obj.type},id:${obj.id}}, asso_id=${asso_id})`)
-  // console.log("addToList:", list_id, foo_id)
-  if(list_id == 'times' && (asso_id instanceof(OTime))) asso_id = asso_id.seconds
-  if(obj[list_id].indexOf(asso_id) < 0){
-    log.info(`   Ajout id #${asso_id} à liste ${list_id} de ${obj.toString()}`)
-    obj[list_id].push(asso_id)
-    return true
-  } else {
-    F.notify(`Les deux éléments sont déjà liés.`)
-    return false
-  }
-}
-static supFromList(list_id, obj, asso_id){
-  if(list_id == 'times' && (asso_id instanceof(OTime))) asso_id = asso_id.seconds
-  var off = obj[list_id].indexOf(asso_id)
-  if(off > -1){
-    obj[list_id].splice(off, 1)
-    return true
-  } else {
-    return false
-  }
-}
 // ---------------------------------------------------------------------
 //  INSTANCE
 
@@ -254,14 +132,6 @@ constructor(analyse, data){
   this.dispatch(data)
 
   this.id = parseInt(this.id,10)
-
-  // Valeurs par défaut indispensables
-  // Les associations possibles
-  this.events       = this.events       || []
-  this.documents    = this.documents    || []
-  this.times        = this.times        || []
-  this.brins        = this.brins        || []
-  this.personnages  = this.personnages  || []
 
 }
 
@@ -356,33 +226,6 @@ setParent(event_id){
 unsetParent(){
   delete this.parent
   this.modified = true
-}
-
-/**
-Méthode pour associer et dissocier l'élément +asso+ de l'event courant
-**/
-associer(asso) {return FAEvent.associer(this, asso)}
-dissocier(asso){return FAEvent.dissocier(this, asso)}
-
-/**
-
-  Répète la méthode +fn+ sur tous les events associés de
-  type +type+ (le nom du type au pluriel, comme la propriété)
-
-  @param {String} type  Soit 'events', 'documents', 'times'
-  @return {Void}
-
-**/
-forEachAssociate(type, fn){
-  if(type==='times' || type === 'time'){
-    for(var assoEvent of this[type]){
-      if(false === fn(new OTime(assoEvent))) break;
-    }
-  } else {
-    for(var assoEvent of this[type]){
-      if(false === fn(this.a.ids[assoEvent])) break;
-    }
-  }
 }
 
 /**
@@ -628,20 +471,19 @@ defineContenu(){
 get fatexte(){return this._fatext||defP(this,'_fatext', new FATexte(this.content))}
 
 /**
- * Les données qui seront enregistrées
+ * Les données qui seront enregistrées (épurées)
  */
 get data(){
   var d = {}, prop
   for(prop of this.constructor.ALL_PROPS){
-    // cf. ci-dessous dans `dispatch`
-    if('string' !== typeof(prop)) prop = prop[0]
-    // On n'enregistre pas les données non définies ou null
-    if(null === this[prop] || undefined === this[prop]) continue
-    // On n'enregistre pas les listes vides
-    if(Array.isArray(this[prop]) && this[prop].length == 0) continue
-    d[prop] = this[prop]
+    if('string' !== typeof(prop)) prop = prop[0] // quand définition par paire
+    if('function' === typeof(this[`${prop}Epured`])){
+      d[prop] = this[`${prop}Epured`]()
+    } else {
+      d[prop] = this[prop]
+    }
   }
-  return d
+  return Hash.compact(d)
 }
 
 /**
@@ -738,40 +580,20 @@ observe(container){
   * On rend l'event droppable pour qu'il puisse recevoir d'autres events
   * ainsi que des documents
   **/
-  o.droppable(
-    Object.assign({}, DATA_DROPPABLE, {drop: function(e,ui){
-        my.a.associateDropped(my, ui.helper)
-      }})
-  )
-  /**
-   * On rend l'event draggable pour pouvoir le déplacer sur un élément
-   * dans lequel il doit être ajouté.
-   * Mais pour que ça fonctionne, il faut le overflow du container soit
-   * momentanément retiré, sinon l'event passe "en dessous" quand on le
-   * déplace.
-   */
-  o.draggable({
-      revert: true
-    // , helper: 'clone'
-    , helper: () => {return `<div style="z-index:2000;" data-type="event" data-etype="${this.type}" data-id="${this.id}">${this.toString()}</div>`}
-    , cursorAt: {left:40, top:20}
-    // , stack: 'section#section-eventers div.eventer div.pan-events'
-    // , start: function(event, ui) { $(this).css("z-index", a++); }
-    , classes:{
-        'ui-draggable-dragging': 'myHighlight'
-      }
-    , start: ev => {
-        if(container){
-          container.old_overflow = container.css('overflow')
-          container.css('overflow','visible')
-        }
-      }
-    , stop: ev => {
-        if(container){
-          container.css('overflow', container.old_overflow)
-        }
-      }
-  })
+  o.droppable(DATA_DROPPABLE)
+
+  /*
+    On rend l'event draggable pour pouvoir le déplacer sur un élément
+    dans lequel il doit être ajouté.
+    Mais pour que ça fonctionne, il faut le overflow du container soit
+    momentanément retiré, sinon l'event passe "en dessous" quand on le
+    déplace.
+  */
+  let dataDrag = Object.assign(
+     {},
+     DATA_ASSOCIATES_DRAGGABLE,
+     {helper:()=>{return my.dragHelper()}})
+  o.draggable(dataDrag)
 }
 
 get locator(){return this.analyse.locator}
@@ -788,4 +610,7 @@ defineDomReaderObj(){
   return obj
 }
 
-}
+} // /class FAEvent
+
+Object.assign(FAEvent.prototype,ASSOCIATES_COMMON_METHODS)
+Object.defineProperties(FAEvent.prototype,ASSOCIATES_COMMON_PROPERTIES)

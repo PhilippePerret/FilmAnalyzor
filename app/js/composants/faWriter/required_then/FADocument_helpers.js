@@ -75,7 +75,7 @@ as(format, flag, opts){
   if(opts.owner){
     // Si les options définissent un owner, on ajoute un lien pour pouvoir
     // dissocier le temps de son possesseur
-    divs.push(FAEvent.linkDissocier({owner: opts.owner, owned: this}))
+    divs.push(this.dissociateLink({owner: opts.owner}))
   }
   return divs
 }

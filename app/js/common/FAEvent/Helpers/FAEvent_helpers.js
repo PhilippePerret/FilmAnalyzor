@@ -10,8 +10,7 @@ Object.assign(FAEvent.prototype,{
 **/
 toString(){
   if(undefined === this._tostring){
-    // this._tostring = `<<EVENT type=${this.type} id=${this.id}>>`
-    this._tostring = `l'Event ${this.type} #${this.id}`
+    this._tostring = `Event ${this.type} #${this.id}`
   }
   return this._tostring
 }
@@ -82,7 +81,7 @@ toString(){
 
   // Avec tous ses éléments ajoutés en fonction des choix
   // console.log("domEls:",domEls)
-  let divAs = DCreate('DIV', {class:`${this.type} EVT${this.id}`, append: domEls})
+  let divAs = DCreate('DIV', {class:`event ${this.type} EVT${this.id}`, append: domEls, attrs:{'data-type':'event', 'data-id':this.id}})
 
   if(opts.as === 'dom') return divAs
 
@@ -156,7 +155,7 @@ asFull(opts){
   if(undefined === opts) opts = {}
   opts.no_warm = true // pour la version short
   divs.push(...this.asShort(opts))
-  let divAssos = this.divAssociates(opts)
+  let divAssos = this.divsAssociates(Object.assign({},opts,{as:'dom'}))
   // console.log("divAssos:", divAssos)
   divAssos && divs.push(...divAssos)
   // console.log("divs:", divs)
@@ -175,57 +174,11 @@ asAssociate(opts){
   if(opts.owner){
     // Si les options définissent un owner, on ajoute un lien pour pouvoir
     // dissocier le temps de son possesseur
-    divs.push(FAEvent.linkDissocier({owner: opts.owner, owned: this}))
+    // divs.push(FAEvent.linkDissocier({owner: opts.owner, owned: this}))
+    divs.push(this.dissociateLink({owner: opts.owner}))
   }
   return DCreate('DIV', {class:`associate ${this.type} EVT${this.id}`, append:divs})
 }
-
-/**
-
-  Retourne le div contenant les associés de type +type+ ou un
-  string vide.
-
-  @param  {String} type Le type ('event', 'document' ou 'time')
-          {Object} Les options.
-  @return {String} Le code HTML
-**/
-, divAssociates(type){
-    let my = this
-    var options
-    switch (typeof type) {
-      case 'string':
-        options = {types: [type]}
-        break
-      case 'object':
-        options = type
-        if(undefined === options.types){
-          options.types = ['events','documents','times']
-        }
-        break
-      default:
-        log.warn("Mauvais argument pour divAssociates: ", type)
-        return // indefined
-    }
-    var divs = []
-      , divsAss = []
-    for(type of options.types){
-      // console.log("Traitement du type", type)
-      if(this[type].length === 0) continue
-      divs.push(DCreate('H3', {inner:`${FATexte.htypeFor(type, {title: true, after: 'associé_e_s'})}`}))
-      this.forEachAssociate(type, function(ev){
-        if(undefined === ev){
-          log.error(`[FAEvent#divAssociates] Event non défini dans la boucle "forEachAssociate" de l'event #${my.id}:${my.type}`)
-        } else {
-          options.owner = {type:'event', id: my.id}
-          divsAss.push(ev.asAssociate(options))
-        }
-      })
-      // console.log("[FAEvent#divAssociates] divsAss:", divsAss)
-      divs.push(DCreate('DIV', {append:divsAss, class:`associates ${type}`}))
-    }
-    // console.log("divs associateds:", divs)
-    if(divs.length) return divs
-  }
 
 })
 

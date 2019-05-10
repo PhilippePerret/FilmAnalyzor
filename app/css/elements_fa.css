@@ -24,7 +24,7 @@
   opacity:1;
 }
 
-.lkdisso:hover {background-color:#CC0000;color:white;}
+.lkdisso:hover {background-color:#CC0000!important;color:white!important;}
 
 span + .lktool {
   margin-left:8px;

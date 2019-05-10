@@ -267,7 +267,6 @@ Object.assign(EventForm.prototype,{
 
     // On rend le div qui peut recevoir le parent sensible au drop
     let dataDrop = Object.assign({},DATA_DROPPABLE,{drop:(e,ui) => {this.setParent(ui.helper)}})
-    console.log("dataDrop:", dataDrop)
     my.jqObj.find('div.event-parent').droppable(dataDrop)
 
     // On rend l'entête du formulaire sensible au drop

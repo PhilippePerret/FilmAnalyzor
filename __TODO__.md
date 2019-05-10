@@ -2,7 +2,11 @@
 
 ### Traiter :
 
+* [Bug] cf. dans `./app/js/common/FAEvent/methods_show.js` les mêmes méthodes que dans Handies.js
+* [BUG] Il doit y avoir des problèmes avec les temps, dans les associations
+
 * Documents
+  - changer 'dropped-time' pour 'time' (drag de la vidéo, je crois)
   - hériter de FAElement et de toutes les méthodes d'association
   - Non : ce sont les méthodes de drag&drop sur un texte qui doivent être
     rationnalisés et utilisées partout.

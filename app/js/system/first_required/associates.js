@@ -24,6 +24,25 @@ let ASSOCIATES_COMMON_METHODS = {
   **/
   types_associates: ['event','personnage', 'document', 'time', 'brin']
 
+  /**
+
+    Répète la méthode +fn+ sur tous les éléments associés de
+    type +type+ (le nom du type au singulier)
+
+    @param {String} type  Soit 'event', 'document', 'time', etc.
+
+  **/
+, forEachAssociate(type, fn){
+    if(type === 'time'){
+      for(var assoEvent of this[`${type}s`]){
+        if(false === fn(new OTime(assoEvent))) break;
+      }
+    } else {
+      for(var iAsso of this[`instances_${type}s`]){
+        if(false === fn(iAsso)) break;
+      }
+    }
+  }
 
 , acceptableTypes(){
     return this.types_associates.map(t => `.${t}`).join(', ')
@@ -32,7 +51,7 @@ let ASSOCIATES_COMMON_METHODS = {
 //  MÉTHODES D'HELPER
 
 , dragHelper(){
-    return `<div class="${this.type}" data-type="${this.type}" data-id="${this.id}">${this.toString()}</div>`
+    return `<div class="${this.metaType||this.type}" data-type="${this.metaType||this.type}" data-id="${this.id}">${this.toString()}</div>`
   }
 
 
@@ -47,7 +66,7 @@ let ASSOCIATES_COMMON_METHODS = {
 **/
 , dissociateLink(options){
     options.owner || raise("Le propriétaire (owner) doit être défini pour construire un lien de dissociation.")
-    return DCreate('A', {class:'lktool lkdisso', inner:'dissocier', attrs:{onclick:`current_analyse.dissocier({type:'${options.owner.type}',id:'${options.owner.id}'}, {type:'${this.type}', id:'${this.id}'})`}})
+    return DCreate('A', {class:'lktool lkdisso', inner:'dissocier', attrs:{onclick:`current_analyse.dissocier({type:'${options.owner.type}',id:'${options.owner.id}'}, {type:'${this.metaType||this.type}', id:'${this.id}'})`}})
   }
 
 /**
@@ -197,6 +216,7 @@ let ASSOCIATES_COMMON_PROPERTIES = {
       }
       return this._associates
     }
+  , set(v){this._associates = v} // par exemple pour les events
   }
 
 /**
@@ -239,11 +259,25 @@ const DATA_DROPPABLE = {
 }
 
 const DATA_ASSOCIATES_DRAGGABLE = {
-      what:'Données drag pour un élément associable'
-      // revert: true
-    , helper: () => {return this.dragHelper()}
-    , cursorAt:{left:40, top:20}
-  ,
+    what:'Données drag pour un élément associable'
+    // revert: true
+  , helper: () => { return this.dragHelper() }
+  , cursorAt:{left:40, top:20}
+  , start: e => {
+      let container = $(e.target).parent()
+      console.log("container au start:", container)
+      console.log("this.contenant:", this.contenant)
+      if(container){
+        container.old_overflow = container.css('overflow')
+        container.css('overflow','visible')
+      }
+    }
+  , stop: e => {
+      let container = $(e.target).parent()
+      console.log("container au stop:", container)
+      console.log("this.contenant:", this.contenant)
+      if(container){container.css('overflow', container.old_overflow)}
+    }
   }
 
 

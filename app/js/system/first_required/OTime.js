@@ -85,7 +85,7 @@ asAssociate(options){
   if(options.owner){
     // Si les options définissent un owner, on ajoute un lien pour pouvoir
     // dissocier le temps de son possesseur
-    divs.push(FAEvent.linkDissocier({owner: opts.owner, owned: this}))
+    divs.push(this.dissociateLink({owner: opts.owner}))
   }
   return DCreate('SPAN', {class:'lktime', append: dvs})
 }
@@ -148,7 +148,13 @@ updateSeconds(s){
   this.seconds = s
 }
 
-
 }
+const {
+  ASSOCIATES_COMMON_METHODS
+, ASSOCIATES_COMMON_PROPERTIES
+} = require('./associates.js')
+
+Object.assign(OTime.prototype,ASSOCIATES_COMMON_METHODS)
+Object.defineProperties(OTime.prototype,ASSOCIATES_COMMON_PROPERTIES)
 
 module.exports = OTime

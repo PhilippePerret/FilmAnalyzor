@@ -19,7 +19,3 @@ asFull(options){
 }
 
 })
-
-
-Object.defineProperties(FAEdialog.prototype,{
-})
