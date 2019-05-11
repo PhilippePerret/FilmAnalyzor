@@ -4,10 +4,10 @@ const {
   ASSOCIATES_COMMON_METHODS
 , ASSOCIATES_COMMON_PROPERTIES
 , DATA_ASSOCIATES_DRAGGABLE
-, DATA_DROPPABLE
+, DATA_ASSOCIATES_DROPPABLE
 , TEXTFIELD_ASSOCIATES_METHS
 , TEXTFIELD_ASSOCIATES_PROPS
-} = require('./js/system/first_required/associates.js')
+} = require('./js/system/first_required/FA_associates.js')
 
 /**
   Classe dont doit hériter tout élément de l'application, comme les
@@ -21,6 +21,35 @@ class FAElement {
 //  CLASSE
 static get modified(){return this._modified || false}
 static set modified(v){this._modified = v}
+
+static save(){
+  // Ne rien faire si l'analyse est verrouillée
+  if(this.saving || this.a.locked) return
+  this.saving = true
+  this.contents = this.getData() // À DÉFINIR DANS LA CLASSE HÉRITIÈRE
+  this.iofile.save({after:this.afterSave.bind(this)})
+}
+static afterSave(){
+  this.saving = false
+  if('function' === this.methodAfterSaving){
+    this.methodAfterSaving()
+  }
+}
+
+// Le type, c'est le nom de la classe, en minuscule, sans le "fa"
+static get type(){return this._type || defP(this,'_type',this.defineType())}
+static defineType(){
+  return this.name.toLowerCase().replace(/^fa_?/,'')
+}
+
+static edit(element_id){
+  // console.log("classe.name", this.name /* FAImage, par exemple */)
+  var element = this.get(element_id)
+  // console.log("element:", element)
+}
+
+static get iofile(){return this._iofile || defP(this,'_iofile', new IOFile(this))}
+static get a(){return this._a || defP(this,'_a', current_analyse)}
 
 // ---------------------------------------------------------------------
 //  INSTANCE
@@ -54,11 +83,9 @@ dataEpured(){
 }
 
 // La class commune à toute
-domC(prop){
-  if(undefined === this._prefClass){this._prefClass = `${this.type}-${this.id}-`}
-  return `${this._prefClass}${prop}`
-}
+domC(prop){ return `${this.domClass}-${prop}` }
 domCP(prop){return `.${this.domC(prop)}`}
+get domClass(){return this._domId || defP(this,'_domId',`${this.type}-${this.id}`)}
 
 get modified(){return this._modified}
 set modified(v){

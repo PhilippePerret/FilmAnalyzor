@@ -264,8 +264,14 @@ togglePanneauFondamentales(){
   PanelFonds.toggle()
 }
 togglePanneauPersonnages(opened){
-  window.PanelPersos = window.PanelPersos || App.loadTool('building/personnages')
-  PanelPersos.toggle(opened)
+  // window.PanelPersos = window.PanelPersos || App.loadTool('building/personnages')
+  // PanelPersos.toggle(opened)
+  FAPersonnage.listing || App.loadTool('building/listing_personnages')
+  FAPersonnage.listing && FAPersonnage.listing.toggle(opened) // seulement si valide
+}
+togglePanneauImages(opened){
+  FAImage.listing || App.loadTool('building/listing_images')
+  FAImage.listing && FAImage.listing.toggle(opened) // seulement si valide
 }
 togglePanneauStatistiques(){
   if(undefined === window.PanelStatistiques){

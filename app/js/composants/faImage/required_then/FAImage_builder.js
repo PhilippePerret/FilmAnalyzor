@@ -43,14 +43,21 @@ Object.assign(FAImage.prototype,{
       my.observe()
     }
     my.makeAppear() // c'est l'opacité qui masque l'event affiché
-    // Trop mou ou trop rapide avec scrollIntoView. Rien de vaut la méthode
-    // old-school
-    my.domReaderObj.parentNode.scrollTop = this.domReaderObj.offsetTop
+
+    // Déplacé dans makeAppear
+    // my.domReaderObj.parentNode.scrollTop = this.domReaderObj.offsetTop
     my.shown = true
   }
 
 , makeAppear(){
     this.jqReaderObj.animate({opacity:1}, 600)
+    // Trop mou ou trop rapide avec scrollIntoView. Rien de vaut la méthode
+    // old-school
+    if(this.domReaderObj){
+      this.domReaderObj.parentNode.scrollTop = this.domReaderObj.offsetTop
+    } else {
+      log.warn("Bizarrement, le domReaderObj de l'image suivante est introuvable : ", this.id, `div#${this.domId}`)
+    }
   }
 , observe(){
     let my = this

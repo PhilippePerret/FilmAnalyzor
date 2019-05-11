@@ -271,11 +271,11 @@ Object.assign(EventForm.prototype,{
     this.setTextFieldsAssociableIn(this.jqObj)
 
     // On rend le div qui peut recevoir le parent sensible au drop
-    let dataDrop = Object.assign({},DATA_DROPPABLE,{drop:(e,ui) => {this.setParent(ui.helper)}})
+    let dataDrop = Object.assign({},DATA_ASSOCIATES_DROPPABLE,{drop:(e,ui) => {this.setParent(ui.helper)}})
     my.jqObj.find('div.event-parent').droppable(dataDrop)
 
     // On rend l'entête du formulaire sensible au drop
-    my.jqObj.find('.header').droppable(DATA_DROPPABLE)
+    my.jqObj.find('.header').droppable(DATA_ASSOCIATES_DROPPABLE)
 
     // Les champs d'édition répondent au cmd-enter pour soumettre le
     // formulaire (enfin… façon de parler)

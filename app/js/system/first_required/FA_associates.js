@@ -51,7 +51,7 @@ let ASSOCIATES_COMMON_METHODS = {
 //  MÉTHODES D'HELPER
 
 , dragHelper(){
-    return `<div class="${this.metaType||this.type}" data-type="${this.metaType||this.type}" data-id="${this.id}">${this.toString()}</div>`
+    return `<div class="${this.metaType||this.type} draghelper" data-type="${this.metaType||this.type}" data-id="${this.id}">${this.toString()}</div>`
   }
 
 
@@ -241,10 +241,10 @@ let ASSOCIATES_COMMON_PROPERTIES = {
   Données communes pour dropper les events, documents et times
   @usage
     <set jquery>.droppable(
-      Object.assign({drop: function(i,o){...}},DATA_DROPPABLE)
+      Object.assign({drop: function(i,o){...}},DATA_ASSOCIATES_DROPPABLE)
     )
 **/
-const DATA_DROPPABLE = {
+const DATA_ASSOCIATES_DROPPABLE = {
   what: 'Donnée drop pour un élément qui peut recevoir des associables'
 , accept: ASSOCIATES_COMMON_METHODS.acceptableTypes()
 , tolerance: 'intersect'
@@ -263,7 +263,15 @@ const DATA_DROPPABLE = {
 const DATA_ASSOCIATES_DRAGGABLE = {
     what:'Données drag pour un élément associable'
     // revert: true
-  , helper: () => { return this.dragHelper() }
+  , helper: (e) => {
+      if('function' === typeof(this.dragHelper)){
+        return this.dragHelper()
+      } else {
+        var t = $(e.currentTarget)
+          , i = current_analyse.instanceOfElement({type:t.attr('data-type'), id:t.attr('data-id')})
+        return i.dragHelper()
+      }
+    }
   , cursorAt:{left:40, top:20}
   , start: e => {
       let container = $(e.target).parent()
@@ -367,7 +375,7 @@ module.exports = {
   ASSOCIATES_COMMON_PROPERTIES: ASSOCIATES_COMMON_PROPERTIES
 , ASSOCIATES_COMMON_METHODS: ASSOCIATES_COMMON_METHODS
 , DATA_ASSOCIATES_DRAGGABLE: DATA_ASSOCIATES_DRAGGABLE
-, DATA_DROPPABLE: DATA_DROPPABLE
+, DATA_ASSOCIATES_DROPPABLE: DATA_ASSOCIATES_DROPPABLE
 , TEXTFIELD_ASSOCIATES_METHS: TEXTFIELD_ASSOCIATES_METHS
 , TEXTFIELD_ASSOCIATES_PROPS: TEXTFIELD_ASSOCIATES_PROPS
 }

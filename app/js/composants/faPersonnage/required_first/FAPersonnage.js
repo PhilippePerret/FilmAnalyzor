@@ -16,7 +16,7 @@ static set modified(v){
 
 static show(perso_id){
   this.a.togglePanneauPersonnages(true/*ouvert*/)
-  PanelPersos.select(perso_id)
+  this.listing.select(perso_id)
 }
 
 /**
@@ -25,6 +25,16 @@ static show(perso_id){
 static edit(perso_id){
   if(NONE === typeof(DataEditor)) return this.a.loadDataEditor(this.edit.bind(this,perso_id))
   DataEditor.openPerType('dpersonnages', perso_id)
+}
+
+static destroy(perso_id){
+  delete this.data[perso_id]
+  this.reset()
+  if(this.listing){
+    this.listing._items = this.personnages
+    this.listing.update()
+  }
+  this.modified = true
 }
 
 /**

@@ -174,7 +174,7 @@ updateSeconds(s){
 const {
   ASSOCIATES_COMMON_METHODS
 , ASSOCIATES_COMMON_PROPERTIES
-} = require('./associates.js')
+} = require('./FA_associates.js')
 
 Object.assign(OTime.prototype,ASSOCIATES_COMMON_METHODS)
 Object.defineProperties(OTime.prototype,ASSOCIATES_COMMON_PROPERTIES)

@@ -19,6 +19,7 @@
   * [Association des events](#associations_elements)
 * [Autres données de l'analyse](#analyse_autres_donnees)
   * [Éléments propres de l'analyse (Personnages, Brins, etc.)](#elements_analyse)
+  * [FAListing, listing des éléments](#falisting_elements)
   * [DataEditor, l'éditeur de données](#data_editor)
   * [Actualisation automatique des éléments affichés lors des modifications](#autoupdate_after_edit)
   * [Association des éléments](#associations_elements)
@@ -294,6 +295,76 @@ Le nom d'un tel élément doit impérativement :
 
 Voir dans [Association des éléments](#associations_elements) tout ce qu'on peut faire avec l'élément, en tant qu'élément associable à un autre élément.
 
+### FAListing, listing des éléments {#falisting_elements}
+
+La classe `FAListing` permet de faire des listings des éléments des analyses.
+
+Code à insérer pour utiliser les listings :
+
+```javascript
+
+// Par exemple dans un fichier ./app/js/tools/building/listing_element.js
+
+if (NONE === typeof(FAListing)) window.FAListing = require('./js/system/FA_Listing')
+
+// Pour étendre la classe `FAClasse`
+FAListing.extend(FAClasse) // ajoute la propriété `listing` (instance de FAListing)
+
+// Pour afficher/masquer le listing
+FAClasse.listing.toggle()
+
+```
+
+Pour pouvoir fonctionner, la classe `FAClasse` doit définir :
+
+```javascript
+
+FAClasse.DataFAListing = {
+  items: [/* liste des instances d'éléments de la classe (filtrée ou non) */]
+, asListItem(item, opts){/* cf. ci-dessous */}
+
+// Propriétés optionnelles
+, mainTitle: '/* le titre principal de la fenêtre (par défaut, la classe au pluriel) */'
+, editable: true/false  // Si true, un bouton 'edit' est ajouté, permettant
+                        // d'éditer l'élément avec un méthode de classe `edit`
+                        // qui doit exister et recevoir en premier argument
+                        // l'identifiant de l'élément.
+, removable: true/false   // si true, un petit bouton permet de détruire l'élément
+                          // Il faut que la classe réponde à la méthode 'destroy'
+                          // qui doit recevoir l'identifiant en argument.
+, associable: true/false  // Si true, on pourrait dragguer l'élément sur un autre
+                          // et l'élément pourra recevoir un autre élément.
+, displayAssociates: true // si true (par défaut), on affiche les associés, sinon,
+                          // on ne les affiche pas
+, item_options: {/* options à envoyer à asListItem */}
+, only:  '/* identifiant du seul item à montrer */'
+, selected: /* alias de only */
+
+}
+
+```
+
+#### Fonction `DataFAListing.asListItem(item, opts)`
+
+Cette fonction doit retourner le LI de l'item `item`, comme `DOMElement`.
+
+Le LI lui-même n'a pas besoin de définir son `id` ou ses autres attributs comme `data-type` ou `data-id` car ils seront automatiquement ajoutés si `associable` est `true` dans les données. Il suffit de définir sa classe si elle est différente du type (qui pourra servir à le mettre en forme précisément dans `faListing.css`) et son contenu :
+
+```javascript
+
+, asListItem(item, opts){
+    return DCreate(LI,{class:'maclassedifferente', append:[
+
+      ]})
+  }
+```
+
+Si `editable` est `true`, un bouton `edit` est automatiquement ajoutés.
+
+Si `associable` est `true`, les attributs `data-type` et `data-id` sont automatiquements ajoutés.
+
+Si `displayAssociates` est `true`, on ajoute le div des associés retourné par la méthode commune `divsAssociates()`.
+
 ### DataEditor, l'éditeur de données {#data_editor}
 
 Parmi les données précédentes, on trouve des données qui peuvent s'éditer à l'aide du `DataEditor`. Ce sotn par exemple les personnages, les brins, les Fondamentales, etc.
@@ -446,7 +517,7 @@ Tous les types d'éléments d'une analyse peuvent être associés, à savoir les
 Pour rendre une classe *associable*, les requis sont les suivants.
 
 * L'élément doit être conforme aux requis définis dans [éléments de l'analyse](#elements_analyse).
-* Définir l'élément sur lequel on pourra *dropper* un autre élément. Il suffit pour cela d'utiliser la ligne de code `$(element).droppable(DATA_DROPPABLE)` ([1]).
+* Définir l'élément sur lequel on pourra *dropper* un autre élément. Il suffit pour cela d'utiliser la ligne de code `$(element).droppable(DATA_ASSOCIATES_DROPPABLE)` ([1]).
 * Définir l'élément qui sera déplaçable (peut-être le même) pour associer l'élément avec un autre élément droppable :
         `$(element).draggable(DATA_ASSOCIATES_DRAGGABLE)`
 * Définir les propriétés obligatoires (requis pour tous les éléments) :

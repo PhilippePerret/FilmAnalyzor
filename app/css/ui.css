@@ -38,7 +38,7 @@ button.btn-close:hover {
   Ils utilisent l'image 'img/update-2.png'
  */
 button.update {
-  all:unset;
+  /* all:unset; ÇA POSE PROBLÈME DANS LES FENÊTRES LISTING */
   vertical-align:baseline;
   padding:0 8px;
 }

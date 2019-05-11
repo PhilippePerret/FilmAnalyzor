@@ -25,7 +25,7 @@ Object.assign(FAnalyse.prototype,{
   }
 
   /**
-	  Méthodes qui fonctionnent avec le `drop` général de DATA_DROPPABLE pour
+	  Méthodes qui fonctionnent avec le `drop` général de DATA_ASSOCIATES_DROPPABLE pour
 	  associer des éléments quelconques (event, personnage, document, brin, etc.)
 	**/
 , associer(owner_ref, owned_ref){

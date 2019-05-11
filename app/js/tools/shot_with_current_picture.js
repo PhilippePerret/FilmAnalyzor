@@ -11,7 +11,11 @@ module.exports = function(){
   var callback = function(err, stdout, stderr){
     if(stderr) console.error(stderr)
     if (fs.existsSync(imgPath)){
-      F.notify("L'image courante a été figée avec succès ! Pour l'insérer, glisser son icône depuis le reader.")
+      if (FAImage.listing && FAImage.listing.opened){
+        setTimeout(FAImage.add.bind(FAImage,imgName),500)
+      } else {
+        F.notify("L'image courante a été figée avec succès ! Pour l'insérer, glisser son icône depuis le reader.")
+      }
     } else {
       F.error("Bizarrement, l'image courante n'a pas été créée. Consulter la console pour en trouver la raison.")
     }

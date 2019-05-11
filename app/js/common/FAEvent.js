@@ -576,7 +576,7 @@ observe(container){
   * On rend l'event droppable pour qu'il puisse recevoir d'autres events
   * ainsi que des documents
   **/
-  o.droppable(DATA_DROPPABLE)
+  o.droppable(DATA_ASSOCIATES_DROPPABLE)
 
   /*
     On rend l'event draggable pour pouvoir le déplacer sur un élément
@@ -585,11 +585,11 @@ observe(container){
     momentanément retiré, sinon l'event passe "en dessous" quand on le
     déplace.
   */
-  let dataDrag = Object.assign(
-     {},
-     DATA_ASSOCIATES_DRAGGABLE,
-     {helper:()=>{return my.dragHelper()}})
-  o.draggable(dataDrag)
+  // let dataDrag = Object.assign(
+  //    {},
+  //    DATA_ASSOCIATES_DRAGGABLE,
+  //    {helper:()=>{return my.dragHelper()}})
+  o.draggable(DATA_ASSOCIATES_DRAGGABLE)
 }
 
 get locator(){return this.analyse.locator}

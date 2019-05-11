@@ -2,18 +2,30 @@
 
 ### Traiter :
 
+* Utiliser FAListing pour :
+  - les brin
+  - les personnages
+  - les décors
+
+* Essayer de généraliser l'utilisation de `iofile`, `save`, `getData` pour tous les éléments, afin de réduire considérablement les méthodes. Voir dans FAElement.js et FAImage.js
+
+* DataEditor pour les images (juste pour pouvoir ajouter une légende)
+  - Penser, quand on prend une nouvelle image, à l'incrémenter dans FAImage
+  
+
 * Image
-  - comme associate, mettre une vignette avec l'image encore plus petit
+  - comme associate, mettre une vignette avec l'image encore plus petite
+  - pouvoir éditer une image avec dataeditor, pour lui mettre une légende
+
 * Dans le reader
   - indiquer mieux la partie "Associés"
   - actualiser dès qu'il y a modification (vérifier qu'une association entraine la marque de modification, mais je crois que oui)
 * Supprimer l'arrière plan du mini-writer (peut-être le faire 'sortir' du bord bas ?)
 
-* Brins
-  - voir comment est traité la propriété `associable: true` dans le DataEditor. Il faut :
-    1. Qu'on puisse dragguer un élément associable sur la fenêtre d'édition
-    2. Qu'on puisse dragguer depuis la fenêtre d'édition un petit picto (comme pour les documents) pour associer l'élément à un autre
-    3. Ça doit ajouter un div contenant les associables, comme dans le listing, avec des boutons 'dissocier'
+* Voir comment est traité la propriété `associable: true` dans le DataEditor. Il faut :
+  1. Qu'on puisse dragguer un élément associable sur la fenêtre d'édition
+  2. Qu'on puisse dragguer depuis la fenêtre d'édition un petit picto (comme pour les documents) pour associer l'élément à un autre
+  3. Ça doit ajouter un div contenant les associables, comme dans le listing, avec des boutons 'dissocier'
   - dans le listing, ne pas mettre de numéro #1 au brin, on a l'impression que c'est son identifiant.
   Implémenter pour les brins la nouvelle façon d'associer les éléments
   - À quoi sert le numéro du brin ?

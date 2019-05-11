@@ -32,7 +32,7 @@ const UI = {
   }
 
 , setDroppable(container, options){
-    let dataDrop = Object.assign({}, DATA_DROPPABLE, {
+    let dataDrop = Object.assign({}, DATA_ASSOCIATES_DROPPABLE, {
       drop(e, ui){
         var balise = current_analyse.getBaliseAssociation(undefined, ui.helper, e)
         if(balise) $(e.target).insertAtCaret(balise)

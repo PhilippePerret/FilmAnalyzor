@@ -47,7 +47,7 @@ Object.assign(FABrin,{
     // des documents et tout le tralala
     // Ils peuvent aussi être glissé sur d'autres éléments
     this.fwindow.jqObj.find('.brin')
-      .droppable(DATA_DROPPABLE)
+      .droppable(DATA_ASSOCIATES_DROPPABLE)
       .draggable(DATA_ASSOCIATES_DRAGGABLE)
 
     // Le bouton OK soit pour fermer soit pour enregistrer

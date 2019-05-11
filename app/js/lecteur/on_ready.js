@@ -7,12 +7,13 @@ function WhenAllIsReallyReady(){
   // FABrin.dataEditor.open()
   // current_analyse.openDocInDataEditor('fondamentales')
   // current_analyse.togglePanneauBrins()
-  // current_analyse.togglePanneauPersonnages()
+  current_analyse.togglePanneauImages()
+  current_analyse.togglePanneauPersonnages()
 }
 
 $(document).ready(() => {
   log.info("--- DOM ready ---")
-  console.clear()
+  // console.clear()
 
   var d = ipc.sendSync('get-screen-dimensions')
   ScreenWidth   = d.width

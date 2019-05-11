@@ -207,6 +207,16 @@ load(options){
   })
 }
 
+loadSync(options){
+  var my = this
+  if (!options) options = {}
+  if(options.format)  this._format = options.format
+  if(options.after)   this.methodAfterLoading = options.after
+  my.loaded = false
+  my.code = fs.readFileSync(this.path, 'utf8')
+  my.endLoad(true)
+}
+
 // La différence avec la méthode précédente, c'est qu'elle ne génère pas
 // d'erreur en cas d'inexistence du fichier
 loadIfExists(options, fn_pour_suivre){

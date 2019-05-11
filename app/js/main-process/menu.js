@@ -27,7 +27,7 @@ const CURRENT_THING_MENUS = [
   'display-timeline', 'display-analyse-state', 'display-last-report',
   'display-protocole', 'option-locked', 'new-version', 'display-brins',
   'goto-last-scene', 'display-decors', 'check-data-validity',
-  'display-personnages'
+  'display-personnages', 'display-images'
 ]
 // Note : les ID des menus de documents seront ajoutés "à la volée"
 
@@ -362,6 +362,13 @@ const DATA_MENUS = [
               , accelerator: 'CmdOrCtrl+Alt+Shift+D'
               , enabled: false
               , click: ()=>{execJsOnCurrent('togglePanneauDecors')}
+            }
+          , {
+                label: "Images"
+              , id: 'display-images'
+              , accelerator: 'CmdOrCtrl+Alt+Shift+G'
+              , enabled: false
+              , click: ()=>{execJsOnCurrent('togglePanneauImages')}
             }
           , {
                 label: "Statistiques"

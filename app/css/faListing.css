@@ -1,0 +1,44 @@
+/*
+Pour les listings d'éléments gérés par FAListing
+*/
+
+/* Le div contenant tous les LI */
+div.falisting {
+
+}
+div.falisting > li {
+  margin-bottom:0.75em;
+  /* clear:both; */
+}
+div.falisting > li:after{
+  display:block;
+  content:' ';
+  clear:both;
+}
+
+div.falisting > li .element-content:not(.visible) { display: none }
+
+div.falisting > li .description,
+div.falisting > li .associates,
+div.falisting > li .statistiques
+{
+  font-size:0.85em;
+}
+div.falisting > li .description {
+  padding:1em;
+}
+div.falisting > li .associates,
+div.falisting > li .statistiques
+{
+  padding:0 1em 1em 1em;
+}
+
+
+/* ---------------------------------------------------------------------
+    PARTICULIERS AUX ÉLÉMENTS
+ */
+
+ div.falisting li img.vignette {
+   width:180px;
+   margin-right:0.7em;
+ }

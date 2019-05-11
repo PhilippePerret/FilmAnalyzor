@@ -164,7 +164,7 @@ observe(){
   this.textField.on('keyup',    this.onKeyUp.bind(this))
 
   // On peut déposer des éléments quelconques sur le champ de texte
-  this.jqObj.droppable(DATA_DROPPABLE)
+  this.jqObj.droppable(DATA_ASSOCIATES_DROPPABLE)
 }
 
 onKeyDown(e){
