@@ -8,7 +8,7 @@ function WhenAllIsReallyReady(){
   // current_analyse.openDocInDataEditor('fondamentales')
   // current_analyse.togglePanneauBrins()
   current_analyse.togglePanneauImages()
-  current_analyse.togglePanneauPersonnages()
+  // current_analyse.togglePanneauPersonnages()
 }
 
 $(document).ready(() => {

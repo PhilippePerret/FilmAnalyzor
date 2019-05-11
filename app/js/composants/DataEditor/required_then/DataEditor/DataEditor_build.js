@@ -62,7 +62,6 @@ Object.assign(DataEditor.prototype,{
 , afterBuilding(){
     this.peupleItems()
 
-
     // Si l'interface est composée de panneaux, il faut activer le premier
     if(this.dataPanels){
       this.dataPanels[0].activate()

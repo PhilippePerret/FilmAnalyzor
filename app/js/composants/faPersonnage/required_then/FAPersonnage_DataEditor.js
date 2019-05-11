@@ -51,7 +51,8 @@ Object.defineProperties(FAPersonnage,{
   }
   // Le IOFile qui sert pour le DataEditor (pas quand le document est visualisé
   // dans le Writer)
-, iofile:{get(){return this._iofile||defP(this,'_iofile',new IOFile(this))}}
+  // Mais normalement, il est défini par FAElement
+// , iofile:{get(){return this._iofile||defP(this,'_iofile',new IOFile(this))}}
 
 /**
   Les données utiles pour l'instanciation d'un dataeditor pour l'élément

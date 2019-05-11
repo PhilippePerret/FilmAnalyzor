@@ -56,17 +56,26 @@ static get a(){return this._a || defP(this,'_a', current_analyse)}
 constructor(data){
   for(var prop in data){this[`_${prop}`] = data[prop]}
 }
-  /**
-    Méthode qui actualise automatiquement toutes les informations affichées
-    du personnage après sa modification.
-  **/
-  onUpdate(){
-    this.constructor.PROPS.map(prop => {
-      if (!this[prop]) return
-      $(this.domCP(prop)).html(this[`f_${prop}`]||this[prop])
-    })
-  }
 
+/**
+  Méthode qui actualise automatiquement toutes les informations affichées
+  du personnage après sa modification.
+**/
+onUpdate(){
+  this.constructor.PROPS.map(prop => {
+    if (!this[prop]) return
+    $(this.domCP(prop)).html(this[`f_${prop}`]||this[prop])
+  })
+}
+
+/**
+  Dispatch les données +newdata+ dans l'instance, par les propriété `_<prop>`
+**/
+dispatch(newdata){
+  for(var k in newdata){
+    this[`_${k}`] = newdata[k]
+  }
+}
 /**
   Retourne les données à enregistrer épurée.
   L'élément doit définir `PROPS` listant les propriétés.

@@ -415,6 +415,7 @@ Voilà les données générales :
       /* Cas spécial du drop : */
       , 'drop': {<data pour droppable>}
     }
+  , editable:  /* si false, la valeur ne pourra pas être éditée */
   , exemple:  'placeholder affiché quand aucune donnée'
   , aide:     'texte ajouté en petit à côté du libellé'
   , validities: flag pour tester la validité de (UNIQ, REQUIRED, ASCII)

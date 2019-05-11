@@ -5,12 +5,11 @@ class FAImage extends FAElement {
 // ---------------------------------------------------------------------
 //  CLASS
 
-static get PROPS(){return ['id','legend','time','path', 'fname', 'associates']}
+static get PROPS(){return ['id','legend','time','path','fname','associates']}
 
-static get(img_fname){
+static get(img_id){
   if(undefined === this._images) this.getAllPictures()
-  if(undefined === this._images[img_fname]) this._images[img_fname] = new FAImage(img_fname)
-  return this._images[img_fname]
+  return this._images[img_id]
 }
 
 static show(image_id){
@@ -18,8 +17,18 @@ static show(image_id){
   this.listing.select(image_id)
 }
 
+static edit(image_id){
+  if(NONE === typeof(DataEditor)) return this.a.loadDataEditor(this.edit.bind(this,image_id))
+  DataEditor.open(this, image_id)
+}
+
+static fname2id(fname){
+  return fname.replace(/[\.\-]/g,'')
+}
+
 static add(image_fname){
-  let newimage = new FAImage(image_fname)
+  let img_id = this.fname2id(image_fname)
+  let newimage = new FAImage(img_id, image_fname)
   this.images[newimage.id] = newimage
   this.decomposeData(Object.assign({},this.images))
   this.updateListingIfNecessary()
@@ -55,7 +64,7 @@ static imagesAt(time){
   this.forEachByTime(img => {
     if(img.time < time - 10) return true
     if(img.time > time + 10) return false // pour arrêter
-    arr.push(this.get(img.fname))
+    arr.push(this.get(img.id))
   })
   return arr
 }
@@ -95,9 +104,10 @@ static decomposeData(data){
   if(data){
     for(var imgid in data){
       img = new FAImage(imgid)
+      img.dispatch(data[imgid])
       if (fs.existsSync(img.path)) {
         my._images[img.id] = img
-        my._byTimes.push({time: my._images[img.id].otime.seconds, fname: img.id})
+        my._byTimes.push({time: my._images[img.id].otime.seconds, id:img.id, fname:img.fname})
       } else {
         log.warn(`Impossible de trouver l'image "${img.path}". Je la retire des données.`)
       }
@@ -107,9 +117,10 @@ static decomposeData(data){
   // le dossier
   glob.sync(`${this.a.folderPictures}/*.*`).forEach(function(file){
     var fname = path.basename(file)
-    if(undefined === my._images[fname]){
-      my._images[fname] = new FAImage(fname)
-      my._byTimes.push({time: my._images[fname].otime.seconds, fname: fname})
+      , imgid = my.fname2id(fname)
+    if(undefined === my._images[imgid]){
+      my._images[imgid] = new FAImage(imgid, fname)
+      my._byTimes.push({time: my._images[imgid].otime.seconds, id:imgid, fname: fname})
       log.info(`   Ajout de l'image "${fname}" qui n'était pas dans les données images`)
     }
   })
@@ -126,18 +137,21 @@ static get path(){return this._path || defP(this,'_path', path.join(this.a.folde
 //  INSTANCE
 
 // On instancie avec le nom (complet) du fichier
-constructor(fname){
+constructor(imgid, fname){
   super()
   this.a = this.analyse = current_analyse
-  this.fname  = fname
+  this.id = imgid
+  if(undefined !== fname) this._fname = fname
   this.type   = 'image'
 }
 
 toString(){return `Image à ${this.otime.horloge_simple}`}
 
-get id(){return this.fname} // pour associés
+get id(){return this._id} // pour associés
+set id(v){this._id = v}
 get legend(){return this._legend}
-get f_legend(){return DFormater(this.legend||`Légende de ${this.id}`)}
+get fname(){return this._fname}
+get f_legend(){return DFormater(this.legend||`Légende de ${this.fname}`)}
 get path(){return this._path || defP(this,'_path',path.join(current_analyse.folderPictures,this.fname))}
 get affixe(){return this._affixe || defP(this,'_affixe',path.basename(this.fname,path.extname(this.fname)))}
 

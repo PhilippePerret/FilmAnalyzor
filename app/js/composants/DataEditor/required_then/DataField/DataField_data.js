@@ -15,6 +15,7 @@ Object.defineProperties(DataField.prototype,{
 // Propriétés exceptionnelles
 , observe:    {get(){return this.data.observe}}
 , defValue:   {get(){return this.data.defValue}}
+, editable:   {get(){return this.data.editable}}
 , exemple:    {get(){return this.data.exemple}}
 , showLink:   {get(){return this.data.showLink}}
 , editLink:   {get(){return this.data.editLink}}
@@ -125,6 +126,7 @@ Object.assign(DataField.prototype,{
     if(this.class) tagAtt.class = this.class
     tagAtt.attrs  = {}
     if(this.exemple) tagAtt.attrs.placeholder = this.exemple
+    if(this.editable === false) tagAtt.attrs.readonly = 'readonly'
     return tagAtt
   }
 
