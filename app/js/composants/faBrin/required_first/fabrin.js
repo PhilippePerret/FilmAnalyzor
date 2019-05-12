@@ -2,6 +2,7 @@
 
 class FABrin extends FAElement {
 
+static get TEXT_PROPERTIES(){return ['title', 'description']}
 static get PROPS(){
   if(undefined === this._props){
     this._props = ['id','title', 'description','bType','associates']

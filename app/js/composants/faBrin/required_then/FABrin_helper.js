@@ -100,16 +100,8 @@ toString(){
     return DCreate('A', {class:'lkevent', inner:'[voir]', attrs:{onclick: `showBrin('${this.id}')`}})
   }
 
-, divStatistiques(opts){
-    var divs = []
-    divs.push(DCreate('H3', {inner:'Statistiques'}))
-    divs.push(DCreate('H4', {inner:'Présence'}))
-    divs.push(DCreate(DIV,{append:[
-        DCreate(LABEL,{inner:'Durée du brin dans le film'})
-      , DCreate(SPAN, {inner:`${this.stats.tempsPresence()} (${this.stats.pourcentagePresence()})`})
-      ]}))
-    return DCreate(DIV,{class:'statistiques', append:divs})
-  }
+, divStatistiques(opts){return this.stats.divStatistiques()}
+
 
 })//assign
 Object.defineProperties(FABrin.prototype,{

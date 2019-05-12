@@ -38,7 +38,23 @@ calcDuree(){
     return this.owner.scene.duree
   } else if (undefined !== this.owner.scenes){
     var duree = 0
-    for(var scene of this.owner.scenes){
+    let listeScenes
+    if(Array.isArray(this.owner.scenes)) listeScenes = this.owner.scenes
+    else listeScenes = Object.values(this.owner.scenes)
+
+    let firstscene = listeScenes[0]
+
+    if(firstscene){
+      if(Array.isArray(firstscene) && firstscene.length == 2){
+        // => La scène est définie comme pour les décors, avec en première
+        // valeur le numéro (oui, sûr, pas l'id) et en deuxième valeur le nombre
+        // d'utilisation. Dans ce cas-là, il faut changer la liste de scènes
+        listeScenes = listeScenes.map(duo => FAEscene.getByNumero(duo[0]))
+      }
+    }
+
+    for(var scene of listeScenes){
+      scene instanceof(FAEscene) || raise("Les scènes doivent être des instances de FAEscene…")
       if(scene && 'number' === typeof(scene.duree)){
         duree += scene.duree
       } else {
@@ -58,5 +74,49 @@ calcDuree(){
   }
 }
 
-
+personnagesCount(){
+  return `${this.personnages.length}`
 }
+
+personnagesList(){
+  return this.personnages.map(perso => `<span class="${perso.domC('pseudo')}">${perso.pseudo}</span>${perso.editLink()}`).join(', ') +'.'
+}
+
+get personnages(){
+  if(undefined === this._personnages){
+    // console.log("-> FAStats.personnages")
+
+    this._personnages = []
+
+    // On commence à chercher dans les associations
+    let persos = this.owner.personnages
+    persos = Array.isArray(persos) ? persos : Object.values(persos)
+    // console.log('persos:', persos)
+    if(persos.length > 0){
+      let firstperso = persos[0]
+      if(!(firstperso instanceof(FAPersonnage))){
+        if('string' == typeof(firstperso)){
+          // <= C'est l'identifiant
+          // => On transforme toute la liste
+          persos = persos.map(perso_id => FAPersonnage.get(perso_id))
+        }
+      }
+      this._personnages.push(...persos)
+    }
+
+    // Ensuite, on cherche dans les propriétés textuelles. Si la description,
+    // par exemple, compte un personnage, on le prend.
+    if(this.owner.constructor.TEXT_PROPERTIES){
+      this.owner.constructor.TEXT_PROPERTIES.map( tprop => {
+        var res = FAPersonnage.getPersonnagesIn(this.owner[tprop])
+        res && this._personnages.push(...res)
+      })
+    }
+
+    // console.log("this._personnages:", this._personnages)
+    // console.log("<- FAStats.personnages")
+  }
+  return this._personnages
+}
+
+} // /class FAStats

@@ -108,6 +108,7 @@ static get personnages(){
   }
   return this._personnages
 }
+
 static get hpersonnages(){
   if(undefined === this._hpersonnages) this.personnages
   return this._hpersonnages
@@ -121,6 +122,25 @@ static saveIfModify(){
   this._data = hdata
   hdata = null
   this.DESave()
+}
+
+/**
+  Méthode utilitaire (utilisée pour les statistiques pour le moment) qui
+  retourne sous forme d'instance la liste des personnages qu'on peut trouver
+  dans le texte +str+.
+
+  @return {Array of FAPersonnage|Undefined} La liste des personnages trouvés par
+  leur diminutif (@X) ou undefined si aucun
+
+**/
+static get REG_DIM_PERSO(){return this._regdimperso||defP(this,'_regdimperso', new RegExp('@([a-zA-Z0-9_]+)', 'g'))}
+static getPersonnagesIn(str){
+  if(!str.match(/\@/)) return
+  // Note : puis REG_DIM_PERSO est défini avec 'g', tous les résultats
+  // trouvés se trouvent dans `dims` qui est une simple liste des diminutifs
+  var dims = str.match(this.REG_DIM_PERSO)
+  if(dims.length == 0) return
+  return dims.map(dim => this.get(this.diminutifs[dim.substring(1,dim.length)].id))
 }
 
 // Retourne le nombre de personnages

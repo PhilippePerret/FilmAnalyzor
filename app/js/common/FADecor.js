@@ -226,18 +226,14 @@ forEachScene(fn){
   }
 }
 
+// ---------------------------------------------------------------------
+//  Statistiques
+
+get stats(){return this._stats||defP(this,'_stats', new FAStats(this))}
 /**
   Retourne le div contenant les statistiques à propos du décors
 **/
-divStatistiques(){
-  /**
-    // TODO Implementer
-  **/
-  return DCreate(DIV,{class:'statistiques', append:[
-      DCreate(H3,{inner:'Statistiques'})
-    , DCreate(H4,{inner:'Présence'})
-    ]})
-}
+divStatistiques(){ return this.stats.divStatistiques() }
 
 get sousDecorsCount(){return Object.keys(this.sousDecors).length}
 get scenesCount(){ return this.scenes_numeros.length}

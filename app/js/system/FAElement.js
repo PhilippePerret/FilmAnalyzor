@@ -134,6 +134,10 @@ set modified(v){
   if(v) this.onUpdate()
 }
 
+editLink(opts){
+  return DCreate('A',{class:'lktool lkedit', inner:'edit', attrs:{onclick:`${this.constructor.name}.edit('${this.id}', event)`}}).outerHTML
+}
+
 get domReaderId(){return this._domreaderid||defP(this,'_domreaderid',`reader-${this.domId}`)}
 get domReaderObj(){return this._domreaderobj||defP(this,'_domreaderobj',this.jqReaderObj?this.jqReaderObj[0]:undefined)}
 get jqReaderObj(){
