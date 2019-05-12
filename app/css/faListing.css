@@ -55,3 +55,26 @@ div.falisting > li .statistiques
    width:180px;
    margin-right:0.7em;
  }
+
+
+ /* ---------------------------------------------------------------------
+    LISTE DES DÉCORS
+  */
+
+.falisting div.decor {
+  font-variant:small-caps;
+  font-weight:bold;
+  font-size:1.2em;
+}
+.falisting div.sous-decors {
+  margin-left:1.5em;
+}
+.falisting div.sous-decors div.sous-decor {
+  font-variant:small-caps;
+  font-weight:bold;
+}
+.falisting div.sous-decors div.scenes {
+  margin-left:1.5em;
+  font-size:0.85em;
+  line-height:0.9em;
+}

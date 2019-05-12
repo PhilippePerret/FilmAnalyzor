@@ -74,8 +74,8 @@ toString(){
   // if(flag & DUREE) str += ` (${this.hduree})`
   if(flag & DUREE) domEls.push(DCreate(SPAN,{class:'duree', inner:` (${this.hduree})`}))
 
-  if(flag & EDITABLE) domEls.push(this.editLink(opts))
-  else if (flag & LINKED) domEls.push(this.showLink(opts))
+  if (flag & LINKED)   domEls.push(this.showLink(opts))
+  if (flag & EDITABLE) domEls.push(this.editLink(opts))
 
   // --- LE DIV FINAL ---
 
@@ -134,11 +134,11 @@ toString(){
   C'est le lien utilisé quand le drapeau contient EDITABLE
 **/
 , editLink(){
-  return DCreate('A', {class:'lkevent', inner:'[edit]', attrs:{onclick:`EventForm.editEvent.bind(EventForm)(${this.id})`}})
+  return DCreate('A', {class:'lktool lkedit', inner:'edit', attrs:{onclick:`EventForm.editEvent.bind(EventForm)(${this.id})`}})
 }
 
 , showLink(){
-  return DCreate('A', {class:'lkevent', inner:'[voir]', attrs:{onclick:`showEvent(${this.id})`}})
+  return DCreate('A', {class:'lktool btn', inner:'voir', attrs:{onclick:`showEvent(${this.id})`}})
 }
 
 // Version livre commune

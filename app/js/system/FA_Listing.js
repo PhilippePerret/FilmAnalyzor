@@ -326,7 +326,9 @@ Object.assign(FAListing,{
       it = null
 
       // La classe doit répondre à la méthode save()
-      'function'===typeof(classe.save) || raise('faliste-owner-save-required')
+      if(data.editable||data.creatable||data.removable){
+        'function'===typeof(classe.save) || raise('faliste-owner-save-required')
+      }
 
       data.editable === true && 'function'!==typeof(classe.edit) && raise('faliste-edit-function-required')
 

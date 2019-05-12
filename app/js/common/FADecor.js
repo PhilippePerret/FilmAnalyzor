@@ -11,6 +11,14 @@ class FADecor {
 // ---------------------------------------------------------------------
 //  CLASS
 
+static get type(){return this._type || defP(this,'_type','decor')}
+
+// Pour donner un ID volatile au décor
+static newId(){
+  if(undefined === this.lastid) this.lastid = 0
+  return ++ this.lastid
+}
+
 static resetAll(){
   delete this._data
   this.resetForSort()
@@ -132,6 +140,7 @@ static forEachDecor(fn){
 //  INSTANCE FADecor
 
 constructor(name, data){
+  this.id = this.constructor.newId()
   this.name           = name
   this.data           = data
   this.scenes         = []
@@ -217,8 +226,25 @@ forEachScene(fn){
   }
 }
 
+/**
+  Retourne le div contenant les statistiques à propos du décors
+**/
+divStatistiques(){
+  /**
+    // TODO Implementer
+  **/
+  return DCreate(DIV,{class:'statistiques', append:[
+      DCreate(H3,{inner:'Statistiques'})
+    , DCreate(H4,{inner:'Présence'})
+    ]})
+}
+
 get sousDecorsCount(){return Object.keys(this.sousDecors).length}
 get scenesCount(){ return this.scenes_numeros.length}
+
+get domId(){return this._domid||defP(this,'_domid',`decor-${this.id}`)}
+get domClass(){return this._domclass||defP(this,'_domclass','decors')}
+
 }// /fin FAdecor
 
 
@@ -228,12 +254,19 @@ get scenesCount(){ return this.scenes_numeros.length}
 
 
 class FASousDecor {
+// ---------------------------------------------------------------------
+//  CLASS
+static newId(){
+  if(undefined === this.lastid) this.lastid = 0
+  return ++ this.lastid
+}
 
 // ---------------------------------------------------------------------
 //  INSTANCE FASousDecor
 
 constructor(decor, name, data){
   this.decor  = decor
+  this.id     = this.constructor.newId()
   this.name   = name
   this.data   = data // rien pour le moment
   this.scenes         = []
@@ -261,4 +294,7 @@ forEachScene(fn){
   }
 }
 get scenesCount(){return this.scenes_numeros.length}
+
+get domId(){return this._domid || defP(this,'_domid',`decor-${this.decor.id}-sdecor-${this.id}`)}
+
 }

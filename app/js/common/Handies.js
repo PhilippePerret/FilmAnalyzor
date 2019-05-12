@@ -10,7 +10,8 @@ function showTime(time){
 
 // Permet d'éditer ou d'afficher l'event voulu (pour le moment, de l'éditer)
 function showEvent(event_id){
-  FAEvent.edit(event_id)
+  let ev = FAEvent.get(event_id)
+  ev.reveal()
 }
 
 // Permet d'éditer un document

@@ -271,6 +271,12 @@ showDiffere(){
     this.timerShow = setTimeout(my.show.bind(my), diff)
   }
 }
+
+// Comme la méthode show(), mais en plus, place le curseur à l'endroit
+// du film. C'est la méthode utilisée par le bouton 'voir'
+reveal(){
+  this.a.locator.setTime(this.otime)
+}
 /**
  * Pour afficher l'évènement dans le reader de l'analyse
  */

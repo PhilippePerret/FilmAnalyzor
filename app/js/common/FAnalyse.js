@@ -255,24 +255,27 @@ togglePanneauInfosFilm(){
   window.iPanelInfosFilm = window.iPanelInfosFilm || App.loadTool('building/infos_film')
   iPanelInfosFilm.toggle()
 }
-togglePanneauDecors(){
-  window.iPanelDecors = window.iPanelDecors || App.loadTool('building/decors')
-  iPanelDecors.toggle()
-}
 togglePanneauFondamentales(){
   window.PanelFonds = window.PanelFonds || App.loadTool('building/fondamentales')
   PanelFonds.toggle()
 }
 togglePanneauPersonnages(opened){
-  // window.PanelPersos = window.PanelPersos || App.loadTool('building/personnages')
-  // PanelPersos.toggle(opened)
   FAPersonnage.listing || App.loadTool('building/listing_personnages')
   FAPersonnage.listing && FAPersonnage.listing.toggle(opened) // seulement si valide
 }
+
+togglePanneauDecors(opened){
+  // window.iPanelDecors = window.iPanelDecors || App.loadTool('building/decors')
+  // iPanelDecors.toggle()
+  FADecor.listing || App.loadTool('building/listing_decors')
+  FADecor.listing && FADecor.listing.toggle(opened) // seulement si valide
+}
+
 togglePanneauImages(opened){
   FAImage.listing || App.loadTool('building/listing_images')
   FAImage.listing && FAImage.listing.toggle(opened) // seulement si valide
 }
+
 togglePanneauBrins(opened){
   if(FABrin.loaded){
     FABrin.listing || App.loadTool('building/listing_brins')
