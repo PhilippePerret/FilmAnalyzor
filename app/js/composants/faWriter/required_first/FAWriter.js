@@ -19,7 +19,7 @@ const FAWriter = {
     if(false === this.checkCurrentDocModified()) return
     if(undefined === this.writerDocs) this.writerDocs = {}
     let ndoc = new FADocument('any', null, path)
-    this.writerDocs[ndoc.id] = ndoc
+    this.writerDocs[`any^^^${ndoc.id}`] = ndoc
     this.makeCurrent('any', ndoc.id)
   }
 

@@ -82,15 +82,6 @@ reset(){
   }
 
 /**
-  Pour éditer le brin d'identifiant +brin_id+
-
-**/
-, edit(brin_id, e){
-  if(e) stopEvent(e) // cf. N0001
-  this.openDocData()
-}
-
-/**
   Pour détruire le brin
 **/
 , destroy(brin_id){
@@ -99,12 +90,8 @@ reset(){
   }
 /**
   Demande l'ouverture du document des données
-  (appelée par le bouton dédié)
-  // TODO pourvoir ouvrir aussi dans DataEditor
 **/
-, openDocData(){
-    FAWriter.openDoc('dbrins')
-  }
+, openDocData(){ FAWriter.openDoc('dbrins') }
 
 /**
   Méthode qui reconstitue les data pour le fichier (utilisé par
@@ -154,12 +141,6 @@ Object.defineProperties(FABrin,{
       if(v && this.a.locked) return F.notify(T('analyse-locked-no-save'))
       this._modified = v
       this.btnOK.html(v ? 'Enregistrer' : 'OK')
-      // if (true === v && !this.timerSave){
-      //   this.analyseWasNotModified = !this.a._modified
-      //   this.a.modified = true
-      //   this.timerSave  = setTimeout(this.save.bind(this), 3000)
-      //   this.updateListing()
-      // }
     }
   }
 
