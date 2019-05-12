@@ -20,7 +20,12 @@ class FAElement {
 // ---------------------------------------------------------------------
 //  CLASSE
 static get modified(){return this._modified || false}
-static set modified(v){this._modified = v}
+static set modified(v){
+  this._modified = v
+  if(this.listing){
+    this.listing.btnOK.html(v ? 'Enregistrer' : 'OK')
+  }
+}
 
 static save(){
   log.info("-> FAElement::save")

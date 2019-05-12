@@ -140,7 +140,7 @@ Object.defineProperties(FABrin,{
   , set(v){
       if(v && this.a.locked) return F.notify(T('analyse-locked-no-save'))
       this._modified = v
-      this.btnOK.html(v ? 'Enregistrer' : 'OK')
+      this.listing.btnOK.html(v ? 'Enregistrer' : 'OK')
     }
   }
 

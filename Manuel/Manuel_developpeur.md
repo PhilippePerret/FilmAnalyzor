@@ -332,6 +332,8 @@ FAClasse.DataFAListing = {
                         // d'éditer l'élément avec un méthode de classe `edit`
                         // qui doit exister et recevoir en premier argument
                         // l'identifiant de l'élément.
+, creatable: true/false   // Si true, un '+' est ajouté en haut de liste pour
+                          // pouvoir créer un nouvel élément avec le DataEditor
 , removable: true/false   // si true, un petit bouton permet de détruire l'élément
                           // Il faut que la classe réponde à la méthode 'destroy'
                           // qui doit recevoir l'identifiant en argument.

@@ -26,9 +26,13 @@ Object.defineProperty(FAPersonnage,'DataFAListing',{get(){return {
 
     return DCreate(LI,{append:divs})
   }
-, editable:   true
-, associable: true
-, removable: true
+, editable:     true
+, creatable:    true
+, associable:   true
+, associates:   true
+, collapsable:  true
+, collapsed:    true
+, removable:    true
 }}})
 
 

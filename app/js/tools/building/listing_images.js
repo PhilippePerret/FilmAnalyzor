@@ -22,13 +22,14 @@ Object.defineProperty(FAImage,'DataFAListing',{get(){return {
       ]})
   }
 , explication: T('explication-images-listing')
-, editable:   true
-, associable: true
-, removable:  true
-, associates: true
+, editable:     true
+, creatable:    false
+, associable:   true
+, removable:    true
+, associates:   true
 , statistiques: false // pas besoin
-, collapsable: true
-, collapsed:   true
+, collapsable:  true
+, collapsed:    true
 }}})
 
 

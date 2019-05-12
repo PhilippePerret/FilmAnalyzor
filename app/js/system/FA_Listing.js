@@ -27,7 +27,6 @@ constructor(classeFAElement){
 }
 // Pour ouvrir et fermer le panneau
 toggle(force_opened){
-  console.log("[toggle] this.items:", this.items)
   if(undefined === force_opened) this.fwindow.toggle()
   else this.fwindow[force_opened?'show':'hide']()
 }
@@ -47,10 +46,13 @@ build(){
   /**
     // TODO Si collapsable add a general button to show/hide additionnal infos
   **/
-  var header = DCreate(DIV,{class:'header', append:[
-      DCreate(BUTTON, {type:'button', class:'btn-close'})
-    , DCreate('H3', {inner: this.mainTitle})
-    ]})
+  var divsHeader = []
+  divsHeader.push(DCreate(BUTTON, {type:'button', class:'btn-close'}))
+  if(this.data.creatable) {
+    divsHeader.push(DCreate(BUTTON, {type:'button', class:'btn-add', inner: '+'}))
+  }
+  divsHeader.push(DCreate('H3', {inner: this.mainTitle}))
+  var header = DCreate(DIV,{class:'header', append:divsHeader})
 
   var divsBody = []
   if(this.data.explication) divsBody.push(DCreate(DIV,{class:'explication', inner:this.data.explication}))
@@ -83,6 +85,11 @@ observe(){
   if (this.collapsable){
     BtnToggleContainer.observe(this.jqObj)
     this.jqObj.find('.body .additionnal-infos')[this.collapsed?'hide':'show']()
+  }
+
+  if(this.data.creatable){
+    // Le bouton '+' doit être surveillé, pour créer un nouvel item
+    this.jqObj.find('.header .btn-add').on('click', this.createItem.bind(this))
   }
   // Le bouton OK doit être surveillé
   this.btnOK.on('click', this.onOK.bind(this))
@@ -127,6 +134,19 @@ showAll(){
 // ---------------------------------------------------------------------
 //  Méthodes de construction
 
+/**
+  Méthode appelée par le bouton "+" pour créer un nouvel item du genre
+  listé.
+**/
+createItem(e){
+  if(e) stopEvent(e) // cf. note N0001
+  this.owner.edit()
+}
+
+/**
+  Actualisation de la liste (normalement, c'est automatique, mais on ne
+  sait jamais)
+**/
 update(){
   this.listing.html('')
   this.divsItems().map(div => this.listing.append(div))

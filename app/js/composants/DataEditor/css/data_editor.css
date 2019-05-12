@@ -53,18 +53,6 @@
   display:block;
 }
 
-.dataeditor button.btn-add,
-.dataeditor button.btn-del
-{
-  all:unset;
-  float:right;
-  background-color:inherit;
-  color:white;
-  font-size:20pt;
-  border-left:2px solid #CCCCCC;
-  padding:2px 14.5px;
-}
-
 .dataeditor .body.plain select.menu-items {
   margin:12px 0 0 12px;
 }

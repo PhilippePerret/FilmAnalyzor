@@ -20,6 +20,7 @@ Object.defineProperty(FABrin,'DataFAListing',{get(){return {
     ]})
   }
 , editable:     true
+, creatable:    true
 , associable:   true
 , removable:    true
 , associates:   true

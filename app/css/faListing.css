@@ -6,6 +6,19 @@ Pour les listings d'éléments gérés par FAListing
 div.falisting {
 
 }
+
+.fwindow-listing-type .header button.btn-add,
+.fwindow-listing-type .header button.btn-del
+{
+  all:unset;
+  float:right;
+  background-color:inherit;
+  color:white;
+  font-size:20pt;
+  border-left:2px solid #CCCCCC;
+  padding:2px 14.5px;
+}
+
 div.falisting > li {
   margin-bottom:0.75em;
   /* clear:both; */
