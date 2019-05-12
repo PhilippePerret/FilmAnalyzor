@@ -273,13 +273,21 @@ togglePanneauImages(opened){
   FAImage.listing || App.loadTool('building/listing_images')
   FAImage.listing && FAImage.listing.toggle(opened) // seulement si valide
 }
+togglePanneauBrins(opened){
+  if(FABrin.loaded){
+    FABrin.listing || App.loadTool('building/listing_brins')
+    FABrin.listing && FABrin.listing.toggle(opened) // seulement si valide
+  } else {
+    // Si les brins ne sont pas encore chargés, on attend
+    setTimeout(this.togglePanneauBrins.bind(this, opened), 200)
+  }
+}
 togglePanneauStatistiques(){
   if(undefined === window.PanelStatistiques){
     window.PanelStatistiques = require('./js/tools/building/statistiques.js')
   }
   PanelStatistiques.toggle()
 }
-togglePanneauBrins(){ FABrin.toggle() }
 
 toggleAnalyseState(){ FAStater.toggleFullState() }
 

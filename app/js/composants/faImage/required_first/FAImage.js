@@ -44,7 +44,6 @@ static init(){
   this.getAllPictures()
 }
 
-
 static updateListingIfNecessary(){
   if(undefined === this.listing) return
   this.listing.items = Object.values(this.images)

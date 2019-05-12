@@ -6,8 +6,9 @@ function WhenAllIsReallyReady(){
   // FAPersonnage.dataEditor.open()
   // FABrin.dataEditor.open()
   // current_analyse.openDocInDataEditor('fondamentales')
-  // current_analyse.togglePanneauBrins()
-  current_analyse.togglePanneauImages()
+  current_analyse.togglePanneauBrins()
+  // setTimeout(current_analyse.togglePanneauBrins.bind(current_analyse),1000)
+  // current_analyse.togglePanneauImages()
   // current_analyse.togglePanneauPersonnages()
 }
 

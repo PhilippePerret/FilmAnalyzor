@@ -52,6 +52,13 @@ static edit(item_id, e){
   DataEditor.open(this, item_id)
 }
 
+/**
+  Si la classe héritière définit `tableItemKeys` avec le nom de la table
+  qui contient tous les éléments (par exemple 'brins'), cette méthode peut
+  retourner le nombre d'éléments.
+**/
+static get count(){return Object.keys(this[this.tableItemsKey]).length}
+
 
 static get iofile(){return this._iofile || defP(this,'_iofile', new IOFile(this))}
 static get a(){return this._a || defP(this,'_a', current_analyse)}

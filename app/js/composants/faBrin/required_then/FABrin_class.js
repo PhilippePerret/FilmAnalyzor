@@ -82,14 +82,21 @@ reset(){
   }
 
 /**
-  Pour éditer le brin d'identifiant +bid+
+  Pour éditer le brin d'identifiant +brin_id+
 
-  Pour le moment, on ouvre simplement le document qui contient la définition
-  des brins, mais pour l'avenir, on pourra imaginer que ce soit un formulaire
-  qui permette de le faire en toute souplesse.
 **/
-, edit(bid){ this.openDocData() }
+, edit(brin_id, e){
+  if(e) stopEvent(e) // cf. N0001
+  this.openDocData()
+}
 
+/**
+  Pour détruire le brin
+**/
+, destroy(brin_id){
+    F.error("La destruction du brin est à implémenter")
+    log.error("La destruction du brin est à implémenter (FABrin::destroy(brin_id))")
+  }
 /**
   Demande l'ouverture du document des données
   (appelée par le bouton dédié)
@@ -112,6 +119,12 @@ reset(){
 Object.defineProperties(FABrin,{
   // L'analyse courante
   a:{get(){return current_analyse}}
+
+/**
+  Nom de la table des éléments, qui permet à FAElement de proposer des méthodes
+  génériques comme `count` ou autre.
+**/
+, tableItemsKey:{get(){return this._tblitemskey||defP(this,'_tblitemskey','brins')}}
 
 , brins:{
     get(){
@@ -150,14 +163,7 @@ Object.defineProperties(FABrin,{
     }
   }
 
-/**
-  @return {Number} Le nombre de brins définis
-**/
-, count:{
-    get(){return Object.keys(this.brins).length}
-  }
-
-, iofile:{get(){return this._iofile||defP(this,'_iofile', new IOFile(this, this.path))}}
+// , iofile:{get(){return this._iofile||defP(this,'_iofile', new IOFile(this, this.path))}}
 , path:{get(){return this._path||defP(this,'_path',path.join(this.a.folderFiles,'dbrins.yaml'))}}
 
 

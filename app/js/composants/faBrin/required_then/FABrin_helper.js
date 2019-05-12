@@ -21,7 +21,7 @@ toString(){
 
     var divs = [], str
 
-    if(flag & LABELLED) divs.push(DCreate('LABEL', {inner: `${this.htype} #${this.id}`}))
+    if(flag & LABELLED) divs.push(DCreate(LABEL, {inner: `${this.htype} #${this.id}`}))
 
     switch (format) {
       case 'short':
@@ -43,9 +43,9 @@ toString(){
     }
 
 
-    if(flag & DUREE) divs.push(DCreate('SPAN', {class:'duree', inner: ` (${this.hduree})`}))
+    if(flag & DUREE) divs.push(DCreate(SPAN, {class:'duree', inner: ` (${this.hduree})`}))
     if(flag & EDITABLE) divs.push(this.editLink(opts))
-    else if (flag & LINKED) divs.push(this.lienVoir(opts))
+    else if (flag & LINKED) divs.push(this.showLink(opts))
 
     if(flag & ESCAPED){
       // Note : il exclut editable et linked
@@ -61,10 +61,10 @@ toString(){
 
 , asShort(opts){
     return [
-      DCreate('SPAN', {class:'short brin-short', append:[
-        DCreate('LABEL',{inner: 'Brin'})
-      , DCreate('SPAN', {class:'brin-numero', inner: this.numero})
-      , DCreate('SPAN', {inner: DFormater(this.title)})
+      DCreate(SPAN, {class:'short brin-short', append:[
+        DCreate(LABEL,{inner: 'Brin'})
+      , DCreate(SPAN, {class:'brin-numero', inner: this.numero})
+      , DCreate(SPAN, {inner: this.f_title})
       ]})
     ]
   }
@@ -75,9 +75,9 @@ toString(){
 
 , asFull(opts){
     var divs = []
-    divs.push(DCreate('SPAN', {class:'libelle brin-libelle', inner: DFormater(this.libelle)}))
+    divs.push(DCreate(SPAN, {class:'libelle brin-libelle', inner: DFormater(this.libelle)}))
     if(this.description){
-      divs.push(DCreate('SPAN', {class:'description brin-description', inner: DFormater(this.description)}))
+      divs.push(DCreate(SPAN, {class:'description brin-description', inner: this.f_description}))
     }
     return divs
   }
@@ -96,47 +96,27 @@ toString(){
     return DCreate('A', {class:'lkedit', inner: '[edit]', attrs:{onclick:`FABrin.edit('${this.id}')`}})
   }
 
-, lienVoir(opts){
+, showLink(opts){
     return DCreate('A', {class:'lkevent', inner:'[voir]', attrs:{onclick: `showBrin('${this.id}')`}})
   }
 
-
-/**
-  Sortie pour le livre édité (et pour le listing des brins)
-**/
-, asDiv(options){
-  if(undefined === options) options = {}
-  var divs = []
-
-  if(this.description){
-    divs.push(DCreate('DIV', {class: 'description brin-description', inner: this.description}))
+, divStatistiques(opts){
+    var divs = []
+    divs.push(DCreate('H3', {inner:'Statistiques'}))
+    divs.push(DCreate('H4', {inner:'Présence'}))
+    divs.push(DCreate(DIV,{append:[
+        DCreate(LABEL,{inner:'Durée du brin dans le film'})
+      , DCreate(SPAN, {inner:`${this.stats.tempsPresence()} (${this.stats.pourcentagePresence()})`})
+      ]}))
+    return DCreate(DIV,{class:'statistiques', append:divs})
   }
-
-  divs.push(
-    // La partie statistique du brin
-    DCreate('DIV', {class: 'brin-statistiques statistiques', append:[
-      DCreate('H3', {inner: 'Statistiques'})
-    , DCreate('H4', {inner: 'Présence'})
-    , DCreate('LABEL', {inner: 'Durée du brin dans le film : '})
-    , DCreate('SPAN', {class: 'brin-temps-presence', inner: `${this.stats.tempsPresence()} (${this.stats.pourcentagePresence()})`})
-    ]})
-  )
-
-  // S'il y a des associés
-  if(this.hasAssociates()){
-    divs.push(DCreate('DIV', {class: `associates ${this.domC('associates')}`, append:this.divsAssociates({title:true, as:'dom'})}))
-  }
-
-  return DCreate('LI', {class: 'li-element brin', attrs:{'data-type':'brin', 'data-id': this.id}, append:[
-      // La barre de titre qui contient les spécificités du brin et le
-      // bouton pour afficher ses informations
-      DCreate('DIV',{class:'bar-title', append:[
-          DCreate('IMG', {class: 'toggle-container', src:'img/folder_closed.png', attrs:{'data-container-id':`${this.domId}-content`}})
-        , DCreate('DIV', {class: 'brin-title', inner: `Brin « ${this.title} » (${this.id})`})
-        , this.miniTimeline
-        ]})
-    , DCreate('DIV',{id:`${this.domId}-content`, class:'element-content not-visible', append:divs})
-    ]})
-}
 
 })//assign
+Object.defineProperties(FABrin.prototype,{
+  f_title:{get(){return DFormater(this.title)}}
+, f_description:{get(){
+    if(this.description) return DFormater(this.description)
+    else return '---'
+  }}
+, f_type:{get(){return (this.htype && this.htype != '') ? this.htype : '---'}}
+})

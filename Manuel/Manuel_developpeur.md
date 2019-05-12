@@ -335,10 +335,17 @@ FAClasse.DataFAListing = {
 , removable: true/false   // si true, un petit bouton permet de détruire l'élément
                           // Il faut que la classe réponde à la méthode 'destroy'
                           // qui doit recevoir l'identifiant en argument.
-, associable: true/false  // Si true, on pourrait dragguer l'élément sur un autre
-                          // et l'élément pourra recevoir un autre élément.
-, displayAssociates: true // si true (par défaut), on affiche les associés, sinon,
-                          // on ne les affiche pas
+, associable: true/false  // Si true, on peut dragguer l'élément sur un autre
+                          // et l'élément peut recevoir un autre élément.
+, associates: true        // pour afficher les associés (false par défaut)
+, statistiques: true      // Pour afficher les statistiques (false par défaut)
+, collapsable: true       // Si true, les informations supplémentaires sont
+                          // masquables/affichables.
+                          // Noter que si collapsable est true, la description
+                          // de l'élément, si elle existe, est automatiquement
+                          // ajouter.
+, collapsed: false        // Si true (défaut) les informations supplémentaires
+                          // sont masquées. Sinon, elles sont affichées.
 , item_options: {/* options à envoyer à asListItem */}
 , only:  '/* identifiant du seul item à montrer */'
 , selected: /* alias de only */

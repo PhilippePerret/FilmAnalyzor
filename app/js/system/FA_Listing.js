@@ -27,6 +27,7 @@ constructor(classeFAElement){
 }
 // Pour ouvrir et fermer le panneau
 toggle(force_opened){
+  console.log("[toggle] this.items:", this.items)
   if(undefined === force_opened) this.fwindow.toggle()
   else this.fwindow[force_opened?'show':'hide']()
 }
@@ -42,15 +43,19 @@ forEachItem(fn){
 
 
 build(){
+
+  /**
+    // TODO Si collapsable add a general button to show/hide additionnal infos
+  **/
   var header = DCreate(DIV,{class:'header', append:[
       DCreate(BUTTON, {type:'button', class:'btn-close'})
     , DCreate('H3', {inner: this.mainTitle})
     ]})
 
-  var body = DCreate(DIV,{class:'body', append:[
-      DCreate(DIV,{class:'explication', inner:T('explication-images-listing')})
-    , DCreate(DIV,{class:'falisting', append:this.divsItems()})
-    ]})
+  var divsBody = []
+  if(this.data.explication) divsBody.push(DCreate(DIV,{class:'explication', inner:this.data.explication}))
+  divsBody.push(DCreate(DIV,{class:'falisting', append:this.divsItems()}))
+  var body = DCreate(DIV,{class:'body', append: divsBody})
 
   var footer = DCreate(DIV,{class:'footer', append:[
       DCreate(BUTTON, {type:'button', class:'btn small update fleft', inner:'Update'})
@@ -73,6 +78,12 @@ observe(){
 
   this.observeListing()
 
+  // Si les infos supplémentaires sont masquables/affichables, il faut les
+  // mettre dans leur état par défaut
+  if (this.collapsable){
+    BtnToggleContainer.observe(this.jqObj)
+    this.jqObj.find('.body .additionnal-infos')[this.collapsed?'hide':'show']()
+  }
   // Le bouton OK doit être surveillé
   this.btnOK.on('click', this.onOK.bind(this))
   // Le bouton pour actualiser la liste
@@ -138,9 +149,31 @@ divsItems(){
     if (this.removable){
       li.prepend(this.buildRemoveButton(it))
     }
-    if(this.displayAssociates){
-      it.hasAssociates() && li.append(DCreate(DIV,{class:'associates', append:it.divsAssociates(Object.assign({}, this.itemOptions, {title:true}))}))
+
+    if(this.displayAssociates || this.displayStatistiques || it.description){
+      var disAddInfos = []
+      if(it.description){
+        disAddInfos.push(DCreate(DIV,{class:`description ${it.domC('description')}`, inner: it.f_description}))
+      }
+      if(this.displayAssociates && it.hasAssociates()){
+        disAddInfos.push(DCreate(DIV,{class:'associates', append:it.divsAssociates(Object.assign({}, this.itemOptions, {title:true}))}))
+      }
+      if(this.displayStatistiques){
+        disAddInfos.push(it.divStatistiques(this.itemOptions))
+      }
+      let hasAddInfos = disAddInfos.length > 0
+
+      if (hasAddInfos) {
+        disAddInfos.unshift(DCreate(DIV,{style:'clear:both;'}))
+        li.append(DCreate(DIV,{id:`${it.domId}-additionnal-infos`, class:'additionnal-infos', append:disAddInfos}))
+        // On ajoute le bouton pour montrer/masquer les informations
+        // supplémentaires que s'il y en a.
+        if (this.collapsable){
+          li.prepend(this.buildCollapseButton(it))
+        }
     }
+    }
+
     if (this.associable){
       Object.assign(attrs,{'data-id':it.id, 'data-type':(it.metaType||it.type)})
     }
@@ -164,6 +197,9 @@ buildEditButton(item){
 buildRemoveButton(item){
   let attrs = {onclick:`${item.constructor.name}.destroy('${item.id}')`}
   return DCreate('A',{class:'lkdel lktool fright',inner:' x ',attrs:attrs})
+}
+buildCollapseButton(item){
+  return DCreate(IMG, {class: 'toggle-container', src:'img/folder_closed.png', attrs:{'data-container-id':`${item.domId}-additionnal-infos`}})
 }
 
 // ---------------------------------------------------------------------
@@ -193,13 +229,27 @@ get associable(){return this.data.associable}
 get removable(){return this.data.removable}
 // ID de l'élément à sélectionner
 get selected(){return this.data.selected}
+// True si on doit pouvoir masquer/afficher les infos supplémentaires
+get collapsable(){return this.data.collapsable}
+// True si on doit masquer les informations à l'ouverture
+get collapsed(){
+  if(undefined === this._collapsed){
+    if(undefined === this.data.collapsed) this.data.collapsed = true
+    this._collapsed = this.data.collapsed
+  }
+  return this._collapsed
+}
 // False si les associés ne doivent pas être affichés (true par défaut)
 get displayAssociates(){
-  if(undefined === this._displayAssociates){
-    if(undefined === this.data.displayAssociates)this.data.displayAssociates = true
-    this._displayAssociates = !!this.data.displayAssociates
+  if(undefined === this._displayassos){
+    if(undefined === this.data.associates) this.data.associates = true
+    this._displayassos = !!this.data.associates
   }
-  return this._displayAssociates
+  return this._displayassos
+}
+get displayStatistiques(){
+  if(undefined === this._displaystats)this._displaystats = !!this.data.statistiques
+  return this._displaystats
 }
 asListItem(it,ops){return this.data.asListItem(it,ops)}
 get data(){return this._data||defP(this,'_data',this.owner.DataFAListing)}
@@ -231,7 +281,8 @@ Object.assign(FAListing,{
       // instance et en cas d'échec, on ne teste pas.
       let it = data.items[0]
       if(it){
-        res = data.asListItem(it)
+        try{res = data.asListItem(it)}
+        catch(e){console.error("Erreur en essayant de construire le premier élément :",res)}
         res || raise('falist-aslistitem-bad-return')
         'string' === typeof(res.outerHTML) || raise('falist-aslistitem-bad-return')
         res.tagName === LI || raise('falist-aslistitem-required')

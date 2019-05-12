@@ -67,12 +67,12 @@ toString(){
       domEls.push(this.asAssociate(opts, flag))
       break
     default:
-      domEls.push(DCreate('SPAN',{class:'titre',inner: this.title}))
+      domEls.push(DCreate(SPAN,{class:'titre',inner: this.title}))
   }
 
 
   // if(flag & DUREE) str += ` (${this.hduree})`
-  if(flag & DUREE) domEls.push(DCreate('SPAN',{class:'duree', inner:` (${this.hduree})`}))
+  if(flag & DUREE) domEls.push(DCreate(SPAN,{class:'duree', inner:` (${this.hduree})`}))
 
   if(flag & EDITABLE) domEls.push(this.editLink(opts))
   else if (flag & LINKED) domEls.push(this.showLink(opts))
@@ -81,7 +81,7 @@ toString(){
 
   // Avec tous ses éléments ajoutés en fonction des choix
   // console.log("domEls:",domEls)
-  let divAs = DCreate('DIV', {class:`event ${this.type} EVT${this.id}`, append: domEls, attrs:{'data-type':'event', 'data-id':this.id}})
+  let divAs = DCreate(DIV, {class:`event ${this.type} EVT${this.id}`, append: domEls, attrs:{'data-type':'event', 'data-id':this.id}})
 
   if(opts.as === 'dom') return divAs
 
@@ -107,14 +107,14 @@ toString(){
 , asRef(opts){
     var str = DFormater(this.f_titre || this.titre || this.pitch || this.content)
     if(str.length > 100) str = `${str.substring(0,99)}…` // des balises peuvent être coupées…
-    return DCreate('SPAN', {class:'ref', inner: str})
+    return DCreate(SPAN, {class:'ref', inner: str})
   }
 
 // Version courte commune
 , asShort(opts){
     let divs = []
-    if(this.titre) divs.push(DCreate('SPAN',{class:'titre',inner: DFormater(this.titre)}))
-    divs.push(DCreate('SPAN',{class:'content', inner: DFormater(this.content)}))
+    if(this.titre) divs.push(DCreate(SPAN,{class:'titre',inner: DFormater(this.titre)}))
+    divs.push(DCreate(SPAN,{class:'content', inner: DFormater(this.content)}))
     return divs
   }
 
@@ -124,7 +124,7 @@ toString(){
 **/
 , spanRef(opts){
   if(undefined === opts) opts = {}
-  let span = DCreate('SPAN', {class:'ref', inner: `${opts.altText || this.tinyName} #${this.id}`})
+  let span = DCreate(SPAN, {class:'ref', inner: `${opts.altText || this.tinyName} #${this.id}`})
   if(opts.as === 'string') return span.outerHTML
   else return span
 }
@@ -168,16 +168,16 @@ asAssociate(opts){
   var divs = []
   // divs.push(this.spanRef(opts /* si texte alternatif */))
   if(this.titre){
-    divs.push(DCreate('SPAN', {class:'titre', inner: this.f_titre || DFormater(this.titre)}))
+    divs.push(DCreate(SPAN, {class:'titre', inner: this.f_titre || DFormater(this.titre)}))
   }
-  divs.push(DCreate('SPAN', {class:'content', inner: DFormater(this.content)}))
+  divs.push(DCreate(SPAN, {class:'content', inner: DFormater(this.content)}))
   if(opts.owner){
     // Si les options définissent un owner, on ajoute un lien pour pouvoir
     // dissocier le temps de son possesseur
     // divs.push(FAEvent.linkDissocier({owner: opts.owner, owned: this}))
     divs.push(this.dissociateLink({owner: opts.owner}))
   }
-  return DCreate('DIV', {class:`associate ${this.type} EVT${this.id}`, append:divs})
+  return DCreate(DIV, {class:`associate ${this.type} EVT${this.id}`, append:divs})
 }
 
 })
@@ -198,19 +198,19 @@ Object.defineProperties(FAEvent.prototype,{
         var asFlag = FORMATED
         if(this.type !== 'scene') asFlag = asFlag | LABELLED
         // L'horloge des outils
-        var h = DCreate('SPAN',{
+        var h = DCreate(SPAN,{
           class:'horloge horloge-event'
         , attrs:{'data-id': this.id}
         , inner: this.otime.horloge
         })
-        var be = DCreate('BUTTON', {class: 'btn-edit', inner: '<img src="./img/btn/edit.png" class="btn" />'})
-        var br = DCreate('BUTTON', {class: 'btnplay left', attrs: {'size': 22}})
+        var be = DCreate(BUTTON, {class: 'btn-edit', inner: '<img src="./img/btn/edit.png" class="btn" />'})
+        var br = DCreate(BUTTON, {class: 'btnplay left', attrs: {'size': 22}})
 
-        var etools = DCreate('DIV',{class: 'e-tools', append:[br, be, h]})
-        var cont = DCreate('DIV', {class:'content', inner: this.as('full', asFlag)})
+        var etools = DCreate(DIV,{class: 'e-tools', append:[br, be, h]})
+        var cont = DCreate(DIV, {class:'content', inner: this.as('full', asFlag)})
 
-        this._div = DCreate('DIV',{
-          id: this.domId
+        this._div = DCreate(DIV,{
+          id: this.domReaderId
         , class: `reader-event event ${this.type} EVT${this.id}`
         , style: 'opacity:0;'
         , attrs: {'data-time':this.time, 'data-id':this.id, 'data-type': 'event'}
