@@ -78,9 +78,10 @@ resetBeyond(from_time, to_time){
 **/
 append(ev){
   let div = ev.div
-  console.log("typeof(div):", typeof(div), `${div.id}`)
-  div.id = `reader-${div.id}`
-  console.log("Insertion dans le reader de :",div)
+  if(!div.id.startsWith('reader-')){
+    log.warn("L'identifiant de l'élément suivant devrait commencer par `reader-` :", div)
+    div.id = `reader-${div.id}`
+  }
   var my = this
     , hasBeenInserted = false
   this.forEachEventNode(function(ne){
