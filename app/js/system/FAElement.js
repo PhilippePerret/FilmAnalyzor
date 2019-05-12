@@ -64,6 +64,20 @@ static edit(item_id, e){
 **/
 static get count(){return Object.keys(this[this.tableItemsKey]).length}
 
+/**
+  Actualisation de la liste d'éléments.
+**/
+static update(){
+  if(undefined === this.tableItemsKey){
+    log.warn("Pour utiliser la méthode générique `FAElement::update`, il faut définir MaClasse::tableItemsKey (nom de la table qui contient tous les éléments).")
+  } else {
+    if(this.listing){
+      this.listing.items = Object.values(this[this.tableItemsKey])
+      this.listing.update()
+    }
+  }
+}
+
 
 static get iofile(){return this._iofile || defP(this,'_iofile', new IOFile(this))}
 static get a(){return this._a || defP(this,'_a', current_analyse)}

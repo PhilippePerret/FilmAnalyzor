@@ -5,7 +5,6 @@
 * Il peut arriver souvent qu'un associé n'existe plus. Il faut donc bien checker dans toutes les méthodes qui les passent en revue.
 
 * Utiliser FAListing pour :
-  - les brins
   - les décors
 
 * Essayer de généraliser l'utilisation de `iofile`, `save`, `getData` pour tous les éléments, afin de réduire considérablement les méthodes. Voir dans FAElement.js et FAImage.js

@@ -37,7 +37,7 @@ static closeAll(container){
 }
 static toggleAll(container, force_opened){
   $(container).find('img.toggle-next, img.toggle-container').each(function(i, o){
-    new BtnToggleContainer(o).toggle(force_opened)
+    new BtnToggleContainer(o).toggle(null, force_opened)
   })
 }
 
@@ -51,9 +51,8 @@ constructor(domButton){
   this.build()
   this.observe()
 }
-toggle(force_opened){
+toggle(e, force_opened){
   let newState
-  console.log("force_opened:",force_opened)
   if(undefined === force_opened){
     newState = this.isOpened() ? 'closed' : 'opened'
   } else {

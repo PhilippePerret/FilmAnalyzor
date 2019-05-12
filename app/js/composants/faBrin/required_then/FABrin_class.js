@@ -85,8 +85,10 @@ reset(){
   Pour détruire le brin
 **/
 , destroy(brin_id){
-    F.error("La destruction du brin est à implémenter")
-    log.error("La destruction du brin est à implémenter (FABrin::destroy(brin_id))")
+    let brin = this.get(brin_id)
+    if(confirm(T('confirm-destroy-brin',{ref: brin.ref||brin.toString()}))){
+      this.DERemoveItem(brin)
+    }
   }
 /**
   Demande l'ouverture du document des données

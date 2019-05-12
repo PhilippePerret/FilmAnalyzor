@@ -7,6 +7,7 @@ Object.assign(FABrin,{
 **/
   DESave(){
     this.save()
+    this.update()
     FAWriter.resetDocument('dbrins')
   }
 /**
@@ -28,7 +29,7 @@ Object.assign(FABrin,{
   }
 
 /**
-  Méthode utilisée par DataEditor pour supprimer un item
+  Méthode utilisée par DataEditor (et lising) pour supprimer un item
 **/
 , DERemoveItem(dbrin){
     delete this._brins[dbrin.id]
