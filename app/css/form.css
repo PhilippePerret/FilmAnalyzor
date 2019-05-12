@@ -15,6 +15,11 @@ img.update, img.open {
   vertical-align:middle;
 }
 
+input[type="text"][readonly="readonly"]{
+  opacity:0.5;
+  font-style:italic;
+}
+
 select:hover {
   cursor:ns-resize;
 }

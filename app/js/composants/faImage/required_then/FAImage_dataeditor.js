@@ -35,7 +35,7 @@ Object.defineProperties(FAImage,{
         {type:'image', class:'image', prop:'path'}
       , {label:'Id', type:'text', prop:'id', editable:false, validities:UNIQ|REQUIRED|ASCII}
       , {label:'Légende', type:'text', prop:'legend'}
-      , {label:'Fichier', type:'text', prop:'fname', editable:false}
+      , {label:'Fichier', type:'text', prop:'fname', editable:false, validities:REQUIRED}
       ]
     }
   }}
