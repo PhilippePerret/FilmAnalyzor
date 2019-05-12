@@ -7,7 +7,7 @@ function WhenAllIsReallyReady(){
   // FABrin.dataEditor.open()
   // current_analyse.openDocInDataEditor('fondamentales')
   // current_analyse.togglePanneauBrins()
-  current_analyse.togglePanneauImages()
+  // current_analyse.togglePanneauImages()
   // current_analyse.togglePanneauPersonnages()
 }
 

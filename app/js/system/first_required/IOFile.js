@@ -214,7 +214,7 @@ loadSync(options){
   if(options.after)   this.methodAfterLoading = options.after
   my.loaded = false
   my.code = fs.readFileSync(this.path, 'utf8')
-  my.endLoad(true)
+  return my.endLoad(true)
 }
 
 // La différence avec la méthode précédente, c'est qu'elle ne génère pas
@@ -246,6 +246,9 @@ endLoad(success){
   delete this._decodedCode
   if('function' === typeof this.methodAfterLoading){
     this.methodAfterLoading(success ? this.decodedCode : null /* ou raw code */)
+  } else {
+    // Quand loadSync est utilisé
+    return success ? this.decodedCode : null
   }
 }
 

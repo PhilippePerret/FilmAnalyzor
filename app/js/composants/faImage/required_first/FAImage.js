@@ -80,6 +80,7 @@ static get images() { return this._images }
 static get byTimes(){ return this._byTimes }
 
 static getAllPictures(){
+  log.info('-> FAImage::getAllPictures')
   let my = this
   this._images  = {}
   this._byTimes = []
@@ -87,6 +88,7 @@ static getAllPictures(){
     this.decomposeData(this.iofile.loadSync())
   }
   this.pickupImagesInFoler()
+  log.info('<- FAImage::getAllPictures')
 }
 /**
   @param {Object} data Données des images, enregistrées dans le fichier JSON
