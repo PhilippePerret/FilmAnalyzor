@@ -294,7 +294,7 @@ afterSavingPerType(){
 addToMenuIfNew(){
   if (this.isNewCustom){
     delete this.title // Pour forcer sa relecture
-    FAWriter.menuTypeDoc.append(DCreate('OPTION', {value: this.id, inner: this.title}))
+    FAWriter.menuTypeDoc.append(DCreate(OPTION, {value: this.id, inner: this.title}))
     FAWriter.menuTypeDoc.val(this.id)
   }
 }

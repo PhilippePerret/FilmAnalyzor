@@ -54,7 +54,7 @@ Object.assign(FAWriter, {
 
     var opts = []
     var themes = {'': 'Thème…', 'real-theme': 'Normal', 'data-theme':'Données', 'musical-theme':'Musical'}
-    for(var theme in themes){ opts.push(DCreate('OPTION', {value: theme, inner: themes[theme]}))}
+    for(var theme in themes){ opts.push(DCreate(OPTION, {value: theme, inner: themes[theme]}))}
     var selThemes = DCreate('SELECT', {
       id: 'writer-theme'
     , class: 'fleft'
@@ -87,13 +87,13 @@ Object.assign(FAWriter, {
     if(ddoc.menu === false) continue
     if(ddoc === 'separator') dOpt = {class: 'separator', disabled: true}
     else dOpt = {value: `regular^^^${did}`, inner: ddoc.hname}
-    m.append(DCreate('OPTION', dOpt))
+    m.append(DCreate(OPTION, dOpt))
   }
   // Pour séparer les documents propres à cette analyse
-  m.append(DCreate('OPTION', {class: 'separator', disabled: true}))
+  m.append(DCreate(OPTION, {class: 'separator', disabled: true}))
   // La liste des documents propres à cette analyse
   this.forEachUserDocument(function(wdoc){
-    m.append(DCreate('OPTION', {value: `custom^^^${wdoc.id}`, inner: wdoc.title}))
+    m.append(DCreate(OPTION, {value: `custom^^^${wdoc.id}`, inner: wdoc.title}))
   })
 }
 // Appelé par la FWindow

@@ -45,12 +45,15 @@ Object.assign(DataField.prototype,{
     }
   }
 
+/**
+  Définit et retourne le DIV pour le champ courant
+**/
 , defineFormDiv(){
     var divs = [], extras
-    divs.push(DCreate('LABEL', {inner:this.f_label, class:this.type}))
+    this.label && divs.push(DCreate(LABEL, {inner:this.f_label, class:this.type}))
     divs.push(DCreate(this.tagName, this.tagAttributes))
     if(extras = this.extraFiedls()) divs.push(...extras)
-    return DCreate('DIV', {class:'div-form', append:divs})
+    return DCreate(DIV, {class:'div-form', append:divs})
   }
 
 /**
@@ -60,21 +63,21 @@ Object.assign(DataField.prototype,{
 , extraFiedls(){
     var divs = []
     if(this.isSelectUpdatable){
-      divs.push(DCreate('IMG', {class:`update update-${this.prop}-values`, src:'img/update-2.png'}))
-      divs.push(DCreate('IMG', {class:`open open-${this.prop}-values`, src:'img/btn-edit.png'}))
+      divs.push(DCreate(IMG, {class:`update update-${this.prop}-values`, src:'img/update-2.png'}))
+      divs.push(DCreate(IMG, {class:`open open-${this.prop}-values`, src:'img/btn-edit.png'}))
     }
     if(this.showLink){
-      divs.push(DCreate('IMG', {id:`${this.domId}-show-link`, class:'link show-link', src: 'img/btn-show.png'}))
+      divs.push(DCreate(IMG, {id:`${this.domId}-show-link`, class:'link show-link', src: 'img/btn-show.png'}))
     }
     if(this.editLink){
-      divs.push(DCreate('IMG', {id:`${this.domId}-edit-link`, class:'link edit-link', src: 'img/btn-edit.png'}))
+      divs.push(DCreate(IMG, {id:`${this.domId}-edit-link`, class:'link edit-link', src: 'img/btn-edit.png'}))
     }
 
     if(divs.length) return divs
     // Sinon rien
   }
 /**
-  Définir le label
+  Définir le label (s'il y en a un)
 **/
 , defineLabel(){
     var lab = `${this.label}`

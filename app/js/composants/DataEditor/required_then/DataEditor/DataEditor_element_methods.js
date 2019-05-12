@@ -65,7 +65,7 @@ Object.assign(DataEditor.prototype,{
     this.data.items.push(nitem)
     // Ajout au menu (inutile de le sélectionner, ça le fera avec
     // la méthode d'édition)
-    this.menuItems.append(DCreate('OPTION',{value: data.id, inner: DFormater(nitem[this.titleProp])}))
+    this.menuItems.append(DCreate(OPTION,{value: data.id, inner: DFormater(nitem[this.titleProp])}))
   }
 
 // Méthode appelée par le bouton "+"

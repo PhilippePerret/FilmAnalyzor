@@ -22,12 +22,12 @@ Object.assign(DataEditor.prototype,{
       // On finalise divsForm en mettant vraiment des objets DOM
       divsForm = [
         DCreate(DIV, {class:'dataeditor-onglets', append: divsForm.onglets})
-      , DCreate('FORM', {id: my.idFor('form_item'), class:'dataeditor-form_item dataeditor-panels', append: divsForm.panels})
+      , DCreate(FORM, {id: my.idFor('form_item'), class:'dataeditor-form_item dataeditor-panels', append: divsForm.panels})
       ]
     } else {
       // Il n'y a pas de panneau, c'est un affichage simple
       this.dataFields.map(dfield => divsForm.push(dfield.formDiv))
-      var divsForm = [DCreate('FORM', {id: my.idFor('form_item'), class: 'dataeditor-form_item', append: divsForm})]
+      var divsForm = [DCreate(FORM, {id: my.idFor('form_item'), class: 'dataeditor-form_item', append: divsForm})]
     }
 
     var divsHeader = []

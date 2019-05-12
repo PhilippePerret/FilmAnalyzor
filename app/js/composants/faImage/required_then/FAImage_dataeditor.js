@@ -32,8 +32,8 @@ Object.defineProperties(FAImage,{
       Définition des champs d'édition d'un élément
     **/
     , dataFields: [
-        // {type:'image', class:'image'}
-        {label:'Id', type:'text', prop:'id', editable:false, validities:UNIQ|REQUIRED|ASCII}
+        {type:'image', class:'image', prop:'path'}
+      , {label:'Id', type:'text', prop:'id', editable:false, validities:UNIQ|REQUIRED|ASCII}
       , {label:'Légende', type:'text', prop:'legend'}
       , {label:'Fichier', type:'text', prop:'fname', editable:false}
       ]

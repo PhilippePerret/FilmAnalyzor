@@ -14,7 +14,7 @@ init(){
 , peupleItems(){
     let my = this
     this.menuItems.html('<option value="">Éditer l’élément…</option>')
-    this.items.map(item => this.menuItems.append(DCreate('OPTION',{value:item.id, inner: DFormater(item[my.titleProp])})))
+    this.items.map(item => this.menuItems.append(DCreate(OPTION,{value:item.id, inner: DFormater(item[my.titleProp])})))
   }
 
 /**

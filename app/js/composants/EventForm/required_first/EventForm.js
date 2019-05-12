@@ -277,10 +277,10 @@ afterBuilding(){
   if (typ === 'stt'){
     var dataStt = (this.a._PFA || require('./js/common/PFA/PFA-mini')).DATA_STT_NODES
     var mstt = jqo.find('.stt-types')
-    mstt.append(DCreate('OPTION', {value: '', inner: 'Choisir l’ID du nœud'}))
+    mstt.append(DCreate(OPTION, {value: '', inner: 'Choisir l’ID du nœud'}))
     for(var nid in dataStt){
       var dstt = dataStt[nid]
-      mstt.append(DCreate('OPTION', {value: nid, inner: dstt.hname}))
+      mstt.append(DCreate(OPTION, {value: nid, inner: dstt.hname}))
     }
   } else if (typ === 'scene'){
     // Si c'est une scène il faut peupler avec les décors existants
