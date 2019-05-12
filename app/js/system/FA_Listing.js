@@ -80,13 +80,6 @@ observe(){
 
   this.observeListing()
 
-  // Si les infos supplémentaires sont masquables/affichables, il faut les
-  // mettre dans leur état par défaut
-  if (this.collapsable){
-    BtnToggleContainer.observe(this.jqObj)
-    this.jqObj.find('.body .additionnal-infos')[this.collapsed?'hide':'show']()
-  }
-
   if(this.data.creatable){
     // Le bouton '+' doit être surveillé, pour créer un nouvel item
     this.jqObj.find('.header .btn-add').on('click', this.createItem.bind(this))
@@ -100,6 +93,14 @@ observe(){
 
 }
 observeListing(){
+
+  // Si les infos supplémentaires sont masquables/affichables, il faut les
+  // mettre dans leur état par défaut
+  if (this.collapsable){
+    BtnToggleContainer.observe(this.jqObj)
+    this.jqObj.find('.body .additionnal-infos')[this.collapsed?'hide':'show']()
+  }
+
   if(this.associable){
     // Les LI doivent être rendus draggable et droppable
     this.jqObj.find('.falisting > LI')
