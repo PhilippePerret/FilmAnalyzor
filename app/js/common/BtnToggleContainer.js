@@ -29,6 +29,18 @@ static observe(container){
   })
 }
 
+static openAll(container){
+  this.toggleAll(container, true)
+}
+static closeAll(container){
+  this.toggleAll(container, false)
+}
+static toggleAll(container, force_opened){
+  $(container).find('img.toggle-next, img.toggle-container').each(function(i, o){
+    new BtnToggleContainer(o).toggle(force_opened)
+  })
+}
+
 // ---------------------------------------------------------------------
 //  INSTANCE
 
@@ -39,9 +51,15 @@ constructor(domButton){
   this.build()
   this.observe()
 }
-toggle(){
-  let newState = this.isOpened() ? 'closed' : 'opened'
-  this.container.toggle()
+toggle(force_opened){
+  let newState
+  console.log("force_opened:",force_opened)
+  if(undefined === force_opened){
+    newState = this.isOpened() ? 'closed' : 'opened'
+  } else {
+    newState = force_opened ? 'opened' : 'closed'
+  }
+  newState != this.state() && this.container.toggle()
   this.domBtn.src = `img/folder_${newState}.png`
   this.jqBtn.attr('data-state', newState)
 }

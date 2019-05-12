@@ -21,6 +21,16 @@
   width:90;
 }
 
+a.btn {
+  border:1px solid #CCCCCC;
+  padding:0 4px;
+}
+* + a.btn {margin-left:4px;}
+a.btn:hover{
+  background-color:darkgreen!important;
+  color:white!important;
+}
+
 select, select option {
   all:unset;
   font-size:inherit;

@@ -43,9 +43,6 @@ forEachItem(fn){
 
 build(){
 
-  /**
-    // TODO Si collapsable add a general button to show/hide additionnal infos
-  **/
   var divsHeader = []
   divsHeader.push(DCreate(BUTTON, {type:'button', class:'btn-close'}))
   if(this.data.creatable) {
@@ -55,6 +52,15 @@ build(){
   var header = DCreate(DIV,{class:'header', append:divsHeader})
 
   var divsBody = []
+  if(this.collapsable){
+    divsBody.push(
+      DCreate(DIV,{class:'right', append:[
+        DCreate(SPAN,{class:'tiny', inner:'Tout…'})
+      , DCreate('A',{class:'tiny btn btn-uncollapse-all', inner:'ouvrir'})
+      , DCreate('A',{class:'tiny btn btn-collapse-all', inner:'fermer'})
+      ]})
+    )
+  }
   if(this.data.explication) divsBody.push(DCreate(DIV,{class:'explication', inner:this.data.explication}))
   divsBody.push(DCreate(DIV,{class:'falisting', append:this.divsItems()}))
   var body = DCreate(DIV,{class:'body', append: divsBody})
@@ -84,6 +90,10 @@ observe(){
     // Le bouton '+' doit être surveillé, pour créer un nouvel item
     this.jqObj.find('.header .btn-add').on('click', this.createItem.bind(this))
   }
+  if(this.data.collapsable){
+    this.jqObj.find('.body .btn-collapse-all').on('click', this.setCollapseAll.bind(this,true))
+    this.jqObj.find('.body .btn-uncollapse-all').on('click', this.setCollapseAll.bind(this,false))
+  }
   // Le bouton OK doit être surveillé
   this.btnOK.on('click', this.onOK.bind(this))
   // Le bouton pour actualiser la liste
@@ -91,6 +101,11 @@ observe(){
   // Le bouton pour montrer tous les éléments
   this.btnShowAll.on('click', this.showAll.bind(this))
 
+}
+setCollapseAll(collapsed, e){
+  if(e) stopEvent(e) // cf. note N0001
+  // this.jqObj.find('.body .additionnal-infos')[collapsed?'hide':'show']()
+  BtnToggleContainer[collapsed?'closeAll':'openAll'](this.jqObj)
 }
 observeListing(){
 
