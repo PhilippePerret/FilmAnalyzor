@@ -157,9 +157,10 @@ setHeight(){
 // ---------------------------------------------------------------------
 // MÉTHODES DE CONSTRUCTION POUR LES ITEMS
 buildEditButton(item){
-  let attrs = {onclick:`${item.constructor.name}.edit('${item.id}')`}
-  return DCreate('A',{class:'lkedit lktool fright',inner:'edit',attrs:attrs})
+  let attrs = {onclick:`${item.constructor.name}.edit('${item.id}', event)`}
+  return DCreate('A',{id:this.editBtnUID, class:'lkedit lktool fright',inner:'edit',attrs:attrs})
 }
+
 buildRemoveButton(item){
   let attrs = {onclick:`${item.constructor.name}.destroy('${item.id}')`}
   return DCreate('A',{class:'lkdel lktool fright',inner:' x ',attrs:attrs})
@@ -209,7 +210,7 @@ get listing()   {return this._listing||defP(this,'_listing', this.jqObj.find('.f
 get btnOK()     {return this.fwindow.jqObj.find('.footer .btn-ok')}
 get btnShowAll(){return this.fwindow.jqObj.find('.footer .btn-show-all')}
 get jqObj()     {return this.fwindow.jqObj}
-get fwindow()   {return this._fwindow||defP(this,'_fwindow', new FWindow(this,{class:'fwindow-listing-type images', x:200,y:100}))}
+get fwindow()   {return this._fwindow||defP(this,'_fwindow', new FWindow(this,{name:`${this.owner.name}-FAListing`, class:'fwindow-listing-type images', x:200,y:100}))}
 }
 
 

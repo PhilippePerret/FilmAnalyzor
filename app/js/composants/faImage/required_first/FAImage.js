@@ -17,7 +17,8 @@ static show(image_id){
   this.listing.select(image_id)
 }
 
-static edit(image_id){
+static edit(image_id, e){
+  if(e) stopEvent(e) // cf. note N0001
   if(NONE === typeof(DataEditor)) return this.a.loadDataEditor(this.edit.bind(this,image_id))
   DataEditor.open(this, image_id)
 }
@@ -91,11 +92,13 @@ static getAllPictures(){
   if(fs.existsSync(this.path)){
     this.decomposeData(this.iofile.loadSync())
   }
+  this.pickupImagesInFoler()
 }
 /**
   @param {Object} data Données des images, enregistrées dans le fichier JSON
 **/
 static decomposeData(data){
+  log.info(`-> FAImage::decomposeData(${JSON.stringify(data||{})})`)
   // console.log("data:", data)
   let my = this
   var imgid, img
@@ -113,17 +116,27 @@ static decomposeData(data){
       }
     }
   }
-  // Par mesure de prudence, on regarde s'il y a de nouvelles images dans
-  // le dossier
+  log.info(`   valeur de _byTimes après décomposition : ${my._byTimes}`)
+  log.info('<- FAImage::decomposeData')
+}
+
+/**
+  Méthode qui s'assure que toutes les images du dossier des pictures aient
+  été chargées dans la donnée. Les ajoute à la donnée générale le cas échéant.
+**/
+static pickupImagesInFoler(){
+  let my = this
+  log.info('-> FAImage::pickupImagesInFoler')
   glob.sync(`${this.a.folderPictures}/*.*`).forEach(function(file){
     var fname = path.basename(file)
       , imgid = my.fname2id(fname)
     if(undefined === my._images[imgid]){
       my._images[imgid] = new FAImage(imgid, fname)
       my._byTimes.push({time: my._images[imgid].otime.seconds, id:imgid, fname: fname})
-      log.info(`   Ajout de l'image "${fname}" qui n'était pas dans les données images`)
+      log.info(`   ADD Image "${fname}" (#${imgid}) qui n'était pas dans le fichier des data images.`)
     }
   })
+  log.info('<- FAImage::pickupImagesInFoler')
 }
 
 static getData(){

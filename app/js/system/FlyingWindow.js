@@ -16,6 +16,7 @@ Avec <data> qui doit contenir au moins :
   class       La classe CSS à appliquer
   x           Position horizontale (en pixels)
   y           Position verticale (en pixels)
+  name        Nom de la fenêtre, simplement utilisée pour le débuggage
 
 Au minimum, le propriétaire, un objet, doit définir les méthodes :
   - `build`   doit retourner l'élément DOM à insérer dans la f-window
@@ -60,11 +61,22 @@ static newId(){
 **/
 // Méthode mettant la fenêtre +wf+ en fenêtre au premier plan
 static setCurrent(wf, e){
-  // console.log("On met cette fenêtre en fenêtre courante:", wf)
-  if(this.current && this.current.id == wf.id) return
-  if(this.current) this.current.bringToBack()
-  this.current = wf
-  this.current.bringToFront()
+  log.info(`-> FWindow.setCurrent(fwindow ${wf.ref})`)
+  // cf. Manuel Developpeur N0001
+  // if (this.currentizing) return
+  // else this.currentizing = true
+  if(this.current && this.current.id == wf.id){
+    log.info(`    ${wf.ref} est déjà la fenêtre courante`)
+  } else {
+    log.info(`    ${wf.ref} doit être mis en fenêtre courante.`)
+    if(this.current){
+      this.current.bringToBack()
+      log.info(`    ${this.current.ref} en arrière plan.`)
+    }
+    this.current = wf
+    this.current.bringToFront()
+    // this.currentizing = false
+  }
   /**
     Ne surtout pas :
       this.checkOverlaps(wf)
@@ -79,6 +91,7 @@ static setCurrent(wf, e){
     car sinon, lorsqu'on clique sur un checkbox
     par exemple, c'est bloqué.
   **/
+  log.info(`<- FWindow.setCurrent(fwindow #${wf.ref})`)
 }
 /**
 * Méthode qui vérifie que la flying-window +wf+ ne soit pas placée
@@ -153,6 +166,7 @@ constructor(owner, data){
   for(var k in data){this[`_${k}`] = data[k]}
   this.id    = data.id || this.constructor.newId()
   if(data.id) this._domId = data.id
+  if(data.name) this.name = data.name
   this.built = false
 
 }
@@ -161,15 +175,15 @@ toggle(){
   this[this.visible?'hide':'show']()
 }
 show(){
-  log.info(`-> FWindow.show() [built:${this.built}, visible:${this.visible}]`)
+  log.info(`-> ${this.ref}.show() [built:${this.built}, visible:${this.visible}]`)
   if(!this.built) this.build().observe()
   if ('function' === typeof this.owner.beforeShow) this.owner.beforeShow()
   this.jqObj.show()
   this.visible = true
-  this.constructor.setCurrent(this)
+  FWindow.setCurrent(this)
   FWindow.checkOverlaps(this)
   if ('function' === typeof this.owner.onShow) this.owner.onShow()
-  log.info(`<- FWindow.show() [built:${this.built}, visible:${this.visible}]`)
+  log.info(`<- ${this.ref}.show() [built:${this.built}, visible:${this.visible}]`)
 }
 hide(){
   if('function' === typeof this.owner.beforeHide){
@@ -193,11 +207,11 @@ update(){
 }
 // Pour détruire la fenêtre
 remove(){
-  log.info('-> FWindow.remove()')
+  log.info('-> ${this.ref}.remove()')
   this.constructor.unsetCurrent(this)
   this.jqObj.remove()
   this.reset()
-  log.info('<- FWindow.remove()')
+  log.info('<- ${this.ref}.remove()')
 }
 // Pour réinitialiser
 reset(){
@@ -209,15 +223,19 @@ reset(){
 // Ne pas appeler ces méthodes directement, appeler la méthode
 // de classe setCurrent
 bringToFront(){
+  log.info(`-> ${this.ref}.bringToFront`)
   this.jqObj.css('z-index', 100)
+  log.info(`<- ${this.ref}.bringToFront`)
 }
 // Pour remettre la Flying window en arrière plan
 bringToBack(){
+  log.info(`-> ${this.ref}.bringToBack`)
   this.jqObj.css('z-index', 50)
+  log.info(`<- ${this.ref}.bringToBack`)
 }
 
 build(){
-  log.info('-> FWindow.build()')
+  log.info(`-> ${this.ref}.build()`)
   // Si c'est une actualisation de la fenêtre, on a mémorisé sa
   // position dans `this.position`
   if(undefined === this.position) this.position = {}
@@ -238,7 +256,7 @@ build(){
   if('function' === typeof this.owner.observe) this.owner.observe()
 
   this.built = true
-  log.info('<- FWindow.build()')
+  log.info(`<- ${this.ref}.build()`)
   return this // chainage
 }
 
@@ -277,6 +295,11 @@ get class(){return this._class}
 // Position x/y de la fenêtre
 get x(){return this._x || 100}
 get y(){return this._y || 100}
+// Référence pour logs
+get ref(){
+  if(undefined === this._ref){this._ref = `<<fwindow ${this.name || '#'+this.id}>>` }
+  return this._ref
+}
 
 }
 

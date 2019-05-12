@@ -9,6 +9,12 @@ static get PROPS(){
   return this._props
 }
 
+static edit(brin_id, e){
+  if(e) stopEvent(e) // cf. note N0001
+  if(NONE === typeof(DataEditor)) return this.a.loadDataEditor(this.edit.bind(this,brin_id))
+  DataEditor.open(this, brin_id)
+}
+
 /**
   Instancie un nouveau brin
 

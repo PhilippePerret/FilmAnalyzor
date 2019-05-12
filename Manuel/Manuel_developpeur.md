@@ -1,6 +1,8 @@
 # Film-Analyzer
 # Manuel de développement
 
+<!-- Dernier numéro de note N0001 -->
+
 * [Point d'entrée](#point_dentree)
 * [Principes généraux](#principes_generaux)
   * [Fonctionnalité « One Key Pressed »](#one_key_pressed_feature)
@@ -51,6 +53,7 @@
     * [Commandes interprétables](#interpretable_commands)
     * [Définir les checks dynamiques](#define_dynamique_checks)
     * [Toutes les commandes de test](#all_commands_of_the_tests)
+* [Notes/explication](#notes_et_explications)
 
 <!-- Définition des liens courants -->
 [script d'assemblage]: #script_assemblage_analyse
@@ -1207,3 +1210,18 @@ checks:
   - aucun brin        Produit une failure s'il y a des brins
 
 ```
+
+---------------------------------------------------------------------
+
+## Notes/explication {#notes_et_explications}
+
+#### N0001
+
+Il faut bloquer l'entrée de `FWindow::setCurrent` pour empêcher le comportement suivant :
+
+* La fenêtre des images est ouverte (`FWindow::setCurrent` a mis le FAListing en fenêtre au premier plan),
+* je clique sur le bouton 'edit' de la première image,
+* => l'image se met en édition, donc le DataEditor s'afficher et la méthode `FWindow::setCurrent` est appelée pour le mettre au premier plan,
+* MAIS le clique sur le bouton 'edit' a lui aussi généré une demande pour (re)mettre le FAListing en premier plan, qui s'exécute en même temps que le point précédent.
+
+`currentizing` permet de bloquer le 'MAIS' ci-dessus.

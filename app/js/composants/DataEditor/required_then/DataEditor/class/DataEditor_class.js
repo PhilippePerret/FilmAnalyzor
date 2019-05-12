@@ -48,7 +48,10 @@ Object.assign(DataEditor,{
     }
   }
 
-
+/**
+  Méthode qui s'assure que les données transmises soient valides
+  (pour l'implémentation seulement)
+**/
 , isValidData(data){
     try {
       data.title          || raise(T('deditor-title-required'))

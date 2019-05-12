@@ -1,11 +1,11 @@
 'use strict'
 
 Object.assign(FAImage,{
-  DESave(){
-    this.save()
-  }
+  DESave(){this.save()}
+  
 , DEUpdateItem(dimage){
     this.images[dimage.id].dispatch(dimage)
+    return this.images[dimage.id]
   }
 , DERemoveItem(dimage){
     this.destroy(dimage.id)
