@@ -19,15 +19,6 @@ static show(perso_id){
   this.listing.select(perso_id)
 }
 
-/**
-  Pour éditer le personnage +perso_id+ (avec le DataEditor)
-**/
-static edit(perso_id, e){
-  if(e) stopEvent(e) // cf. note N0001
-  if(NONE === typeof(DataEditor)) return this.a.loadDataEditor(this.edit.bind(this,perso_id))
-  DataEditor.openPerType('dpersonnages', perso_id)
-}
-
 static destroy(perso_id){
   delete this.data[perso_id]
   this.reset()

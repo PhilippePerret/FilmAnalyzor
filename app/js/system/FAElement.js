@@ -42,11 +42,12 @@ static defineType(){
   return this.name.toLowerCase().replace(/^fa_?/,'')
 }
 
-static edit(element_id){
-  // console.log("classe.name", this.name /* FAImage, par exemple */)
-  var element = this.get(element_id)
-  // console.log("element:", element)
+static edit(item_id, e){
+  if(e) stopEvent(e) // cf. note N0001
+  if(NONE === typeof(DataEditor)) return this.a.loadDataEditor(this.edit.bind(this,item_id))
+  DataEditor.open(this, item_id)
 }
+
 
 static get iofile(){return this._iofile || defP(this,'_iofile', new IOFile(this))}
 static get a(){return this._a || defP(this,'_a', current_analyse)}

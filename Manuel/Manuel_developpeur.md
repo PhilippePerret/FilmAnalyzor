@@ -472,11 +472,30 @@ Si de plus amples vérifications doivent être faites sur la donnée, il faut ut
 
 Un objet *data-editorable* doit répondre aux méthodes :
 
-* `DECreateItem(data)`. Qui doit permettre de créer un nouvel élément avec les données `data`,
+* `DECreateItem(data)`. Qui doit permettre de créer un nouvel élément avec les données `data`, sauf si `no_new_item` est à `true`
 * `DEUpdateItem(data)`. Qui doit permettre de modifier un élément avec les nouvelles données `data`,
 * `DERemoveItem(data)`. Qui doit permettre de détruire l'élément d'identifiant `data.id`
 
 Note : s'inspirer des fonctions définies dans `app/js/composants/faPersonnage/required_then/FAPersonnage_DataEditor.js` pour les personnages ou `app/js/composants/faBrin/required_then/FABrin_DataEditor.js` pour les brins.
+
+### Les méthodes utiles
+
+`<Classe>.edit(item_id, e)` est la méthode de classe de l'élément qui va permettre d'éditer automatiquement les objets. Elle est héritée de `FAElement`. Il suffit d'utiliser :
+
+```html
+
+  <a class="lkedit lktool" onclick="MaClasse.edit('<id>',event)">edit</a>
+
+```
+
+ou :
+
+```javascript
+
+$('a#<idlien>').on('click', this.constructor.edit.bind(this.constructor,'<id>'))
+
+```
+
 
 ## Actualisation automatique des éléments affichés lors des modifications {#autoupdate_after_edit}
 

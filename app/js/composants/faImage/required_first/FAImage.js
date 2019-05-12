@@ -17,12 +17,6 @@ static show(image_id){
   this.listing.select(image_id)
 }
 
-static edit(image_id, e){
-  if(e) stopEvent(e) // cf. note N0001
-  if(NONE === typeof(DataEditor)) return this.a.loadDataEditor(this.edit.bind(this,image_id))
-  DataEditor.open(this, image_id)
-}
-
 static fname2id(fname){
   return fname.replace(/[\.\-]/g,'')
 }
