@@ -78,6 +78,5 @@ Object.defineProperties(FAImage.prototype,{
   }}
 , domId:{get(){return this._domId||defP(this,'_domId', `image-${this.affixe}`)}}
 , jqObj:{get(){return this.jqReaderObj}}
-, jqReaderObj:{get(){return $(`div#${this.domId}`)}}
 , domReaderObj:{get(){return this.jqReaderObj[0]}}
 })

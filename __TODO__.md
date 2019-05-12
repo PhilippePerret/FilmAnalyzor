@@ -2,9 +2,6 @@
 
 ### Traiter :
 
-* Style particulier pour INPUT[readonly="readonly"]
-* [BUG] Mettre un id unique pour le reader pour les images ('rimage-<id image>')
-
 * Il peut arriver souvent qu'un associé n'existe plus. Il faut donc bien checker dans toutes les méthodes qui les passent en revue.
 
 * Utiliser FAListing pour :

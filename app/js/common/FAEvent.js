@@ -440,16 +440,7 @@ hasPersonnages(filtre){
 
 // ---------------------------------------------------------------------
 
-get jqReaderObj(){
-  if(undefined === this._jq_reader_obj ){
-    this._jq_reader_obj = $(`#${this.domId}`)
-  }
-  if(this._jq_reader_obj.length == 0) this._jq_reader_obj = undefined
-  return this._jq_reader_obj
-}
-get domReaderObj(){return this._domReaderObj||defP(this,'_domReaderObj',this.defineDomReaderObj())}
-
-get domId(){ return `revent-${this.id}`}
+get domId(){ return `event-${this.id}`}
 
 
 get contenu(){return this._contenu||defP(this,'_contenu',this.defineContenu())}
@@ -566,30 +557,23 @@ observe(container){
   var my = this
     , o = this.jqReaderObj
 
-  // On rend actif les boutons d'édition
-  o.find('.e-tools button.btn-edit').on('click', EventForm.editEvent.bind(EventForm, this))
+  if(undefined === this.jqReaderObj){
+    log.warn(`BIZARREMENT, le jqReaderObj de l'event #${this.id} est introuvable dans le reader. recherché avec domReaderId:${domReaderId}`)
+  } else {
+    // On rend actif les boutons d'édition
+    o.find('.e-tools button.btn-edit').on('click', EventForm.editEvent.bind(EventForm, this))
 
-  // On rend actif les boutons play
-  BtnPlay.setAndWatch(this.jqReaderObj, this)
+    // On rend actif les boutons play
+    BtnPlay.setAndWatch(this.jqReaderObj, this)
 
-  /**
-  * On rend l'event droppable pour qu'il puisse recevoir d'autres events
-  * ainsi que des documents
-  **/
-  o.droppable(DATA_ASSOCIATES_DROPPABLE)
-
-  /*
-    On rend l'event draggable pour pouvoir le déplacer sur un élément
-    dans lequel il doit être ajouté.
-    Mais pour que ça fonctionne, il faut le overflow du container soit
-    momentanément retiré, sinon l'event passe "en dessous" quand on le
-    déplace.
-  */
-  // let dataDrag = Object.assign(
-  //    {},
-  //    DATA_ASSOCIATES_DRAGGABLE,
-  //    {helper:()=>{return my.dragHelper()}})
-  o.draggable(DATA_ASSOCIATES_DRAGGABLE)
+    /**
+    * On rend l'event droppable pour qu'il puisse recevoir d'autres events
+    * ainsi que des documents
+    **/
+    o
+      .droppable(DATA_ASSOCIATES_DROPPABLE)
+      .draggable(DATA_ASSOCIATES_DRAGGABLE)
+  }
 }
 
 get locator(){return this.analyse.locator}
@@ -599,11 +583,14 @@ get locator(){return this.analyse.locator}
 // Cf. Le manuel de développement
 get btnPlay(){return this._btnPlay||defP(this,'_btnPlay',new BtnPlay(this))}
 
-// Pour définir le dom obj de l'event dans le Reader
-defineDomReaderObj(){
-  var obj
-  if (this.jqReaderObj) obj = this.jqReaderObj[0]
-  return obj
+get domReaderId(){return this._domreaderid||defP(this,'_domreaderid',`reader-${this.domId}`)}
+get domReaderObj(){return this._domreaderobj||defP(this,'_domreaderobj',this.jqReaderObj?this.jqReaderObj[0]:undefined)}
+get jqReaderObj(){
+  if(undefined === this._jqreaderobj){
+    this._jqreaderobj = $(`#${this.domReaderId}`)
+    if(this._jqreaderobj.length == 0) delete this._jqreaderobj
+  }
+  return this._jqreaderobj
 }
 
 } // /class FAEvent

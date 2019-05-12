@@ -34,7 +34,7 @@ init(){
 show(){this.fwindow.show()}
 hide(){this.fwindow.hide()}
 build(){
-  return DCreate('DIV', {inner: 'LECTEUR', class: 'fw-title'})
+  return DCreate(DIV, {inner: 'LECTEUR', class: 'fw-title'})
 }
 afterBuilding(){
   // Peut-être supprimer le div ci-dessus avec READER dedans
@@ -77,16 +77,20 @@ resetBeyond(from_time, to_time){
   @param {FAEvent(typé)} ev Event qu'il faut insérer
 **/
 append(ev){
+  let div = ev.div
+  console.log("typeof(div):", typeof(div), `${div.id}`)
+  div.id = `reader-${div.id}`
+  console.log("Insertion dans le reader de :",div)
   var my = this
     , hasBeenInserted = false
   this.forEachEventNode(function(ne){
     if(parseFloat(ne.getAttribute('data-time')) > ev.time){
       hasBeenInserted = true
-      my.container.insertBefore(ev.div, ne)
+      my.container.insertBefore(div, ne)
       return false // pour interrompre la boucle
     }
   })
-  hasBeenInserted || this.container.append(ev.div)
+  hasBeenInserted || this.container.append(div)
 }
 
 /**

@@ -108,7 +108,17 @@ set modified(v){
   if(v) this.onUpdate()
 }
 
+get domReaderId(){return this._domreaderid||defP(this,'_domreaderid',`reader-${this.domId}`)}
+get domReaderObj(){return this._domreaderobj||defP(this,'_domreaderobj',this.jqReaderObj?this.jqReaderObj[0]:undefined)}
+get jqReaderObj(){
+  if(undefined === this._jqreaderobj){
+    this._jqreaderobj = $(`#${this.domReaderId}`)
+    if(this._jqreaderobj.length == 0) delete this._jqreaderobj
+  }
+  return this._jqreaderobj
 }
+
+}// /class
 
 Object.assign(FAElement.prototype, ASSOCIATES_COMMON_METHODS)
 Object.defineProperties(FAElement.prototype, ASSOCIATES_COMMON_PROPERTIES)
