@@ -1,10 +1,13 @@
 'use strict'
 
 Object.assign(FAImage,{
-  DESave(){this.save()}
-  
+  DESave(){
+    this.save()
+  }
+
 , DEUpdateItem(dimage){
     this.images[dimage.id].dispatch(dimage)
+    this.DESave()
     return this.images[dimage.id]
   }
 , DERemoveItem(dimage){
@@ -29,8 +32,9 @@ Object.defineProperties(FAImage,{
       Définition des champs d'édition d'un élément
     **/
     , dataFields: [
+        // {type:'image', class:'image'}
         {label:'Id', type:'text', prop:'id', editable:false, validities:UNIQ|REQUIRED|ASCII}
-      , {label:'Légende', type:'text', prop:'legend', validities:UNIQ}
+      , {label:'Légende', type:'text', prop:'legend'}
       , {label:'Fichier', type:'text', prop:'fname', editable:false}
       ]
     }

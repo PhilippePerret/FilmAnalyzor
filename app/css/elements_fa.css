@@ -37,7 +37,7 @@ span + .lktool {
 label {
 
 }
-label:after{content:' : '}
+label:after {content:' : '}
 
 /* Un label qui suit un span laisse toujour de l'air */
 span + label {}
@@ -90,3 +90,6 @@ img.image-overview {
   width:180px;
   vertical-align:middle;
 }
+
+input[type="checkbox"]+label:after{all:unset;}
+input[type="checkbox"]+label{all:inherit;vertical-align:middle;}

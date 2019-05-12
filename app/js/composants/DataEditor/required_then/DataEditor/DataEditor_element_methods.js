@@ -42,6 +42,10 @@ Object.assign(DataEditor.prototype,{
       this.createNewItem(formData)
       this.editCurrent(formData.id)
     }
+
+    // Doit-on terminer tout de suite ?
+    this.cbCloseAfterSave.checked && this.close()
+
     log.info('<- DataEditor#saveElement')
   }
 

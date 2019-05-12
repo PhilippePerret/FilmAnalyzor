@@ -23,17 +23,21 @@ static get modified(){return this._modified || false}
 static set modified(v){this._modified = v}
 
 static save(){
+  log.info("-> FAElement::save")
   // Ne rien faire si l'analyse est verrouillée
   if(this.saving || this.a.locked) return
   this.saving = true
   this.contents = this.getData() // À DÉFINIR DANS LA CLASSE HÉRITIÈRE
   this.iofile.save({after:this.afterSave.bind(this)})
+  log.info("<- FAElement::save")
 }
 static afterSave(){
+  log.info("-> FAElement::afterSave")
   this.saving = false
   if('function' === this.methodAfterSaving){
     this.methodAfterSaving()
   }
+  log.info("<- FAElement::afterSave")
 }
 
 // Le type, c'est le nom de la classe, en minuscule, sans le "fa"

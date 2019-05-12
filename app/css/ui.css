@@ -245,9 +245,6 @@ div#div-analyse-state > div.info > label {
   text-align:right;
   padding-right:12px;
 }
-div#div-analyse-state > div.info > label:after {
-  content:' :';
-}
 div#div-analyse-state > div.info > span.value {
   font-family: monospace;
   width:200px;
