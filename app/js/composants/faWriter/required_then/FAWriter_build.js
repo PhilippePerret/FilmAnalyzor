@@ -11,12 +11,12 @@ Object.assign(FAWriter, {
   build(){
     var spa, lab, sel
 
-    var btnClose = DCreate('BUTTON', {
+    var btnClose = DCreate(BUTTON, {
       id: 'btn-close-writer'
     , class: 'btn-close'
     , type: 'button'
     })
-    spa = DCreate('SPAN', {
+    spa = DCreate(SPAN, {
       class: 'writer-btn-drop document'
     , attrs: {'data-type': 'document', 'title': "Pour glisser et déposer le document sur un event ou un texte."}
     , inner: ' ⎆'
@@ -32,11 +32,11 @@ Object.assign(FAWriter, {
     var divmodeles = DCreate('DIV', {
       class: 'div-modeles right'
     , append: [
-        DCreate('LABEL', {class: 'small', inner: 'MODÈLES '})
+        DCreate(LABEL, {class: 'small', inner: 'MODÈLES '})
       , DCreate('SELECT', {id: 'modeles-doc'})]
     })
 
-    var btnNew = DCreate('BUTTON', {
+    var btnNew = DCreate(BUTTON, {
       id: 'writer-btn-new-doc'
     , inner: '+'
     , type: 'button'
@@ -64,15 +64,15 @@ Object.assign(FAWriter, {
     var footer = DCreate('DIV', {
       class: 'footer',
       append: [
-        DCreate('LABEL', {id: 'writer-message', inner: '...'})
+        DCreate(LABEL, {id: 'writer-message', inner: '...'})
       , selThemes
-      , DCreate('LABEL', {class:'fleft', inner: 'Taille du texte : '})
-      , DCreate('SPAN', {id: 'text-size', class:'fleft', inner: '...'})
-      , DCreate('LABEL', {inner: 'Visualiser', attrs:{for: 'cb-auto-visualize'}})
-      , DCreate('INPUT', {id: 'cb-auto-visualize', attrs: {type: 'checkbox'}})
-      , DCreate('LABEL', {inner: 'Auto-save', attrs:{for: 'cb-save-auto-doc'}})
-      , DCreate('INPUT', {id: 'cb-save-auto-doc', attrs: {type: 'checkbox'}})
-      , DCreate('BUTTON', {id: 'btn-save-doc', inner: 'Enregistrer', type: 'button'})
+      , DCreate(LABEL, {class:'fleft', inner: 'Taille du texte : '})
+      , DCreate(SPAN, {id: 'text-size', class:'fleft', inner: '...'})
+      , DCreate(LABEL, {inner: 'Visualiser', attrs:{for: 'cb-auto-visualize'}})
+      , DCreate(INPUT, {id: 'cb-auto-visualize', attrs: {type: 'checkbox'}})
+      , DCreate(LABEL, {inner: 'Auto-save', attrs:{for: 'cb-save-auto-doc'}})
+      , DCreate(INPUT, {id: 'cb-save-auto-doc', attrs: {type: 'checkbox'}})
+      , DCreate(BUTTON, {id: 'btn-save-doc', inner: 'Enregistrer', type: 'button'})
       ]
     })
 

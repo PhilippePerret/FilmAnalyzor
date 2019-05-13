@@ -371,7 +371,7 @@ afficheModeles(modeles){
   opts.push('<option value="">Choisir…</option>')
   for(var p of modeles){
     var n = path.basename(p, path.extname(p))
-    opts.push(`<option value="${p}">${n}</option>`)
+    opts.push(`<option value="${p}">${n.replace(/_/g,' ').titleize()}</option>`)
   }
   mModeles.html(opts)
 }

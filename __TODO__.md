@@ -1,7 +1,5 @@
 # SUR LE GRILL
 
-* Faire la propriété 'after' pour placer un texte après un champ court
-
 * Possibilité de faire une sortie de type "rapport de visionnage" à expérimenter avec le film de Jean-François. Je pense qu'il suffit de déterminer correctement le building-script en définissant que les remarques sont les notes (Par exemple 'BUILD Rapport de notes').
 
 ### Traiter :

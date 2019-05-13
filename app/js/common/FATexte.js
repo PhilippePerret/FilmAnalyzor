@@ -113,7 +113,7 @@ static deVar(str){
 /**
   Traitement des balises documents dans les strings
 **/
-static get DOC_REGEXP(){return new RegExp('\{\{document: ?(?<key>[a-zA-Z0-9_\-]+)\}\}','g')}
+static get DOC_REGEXP(){return new RegExp('\{\{document: ?(?<key>[a-zA-Z0-9_\-]+)(\\|(?<text>[^}]+))?\}\}','g')}
 
 static deDoc(str){
   var groups, doc_key
@@ -128,7 +128,7 @@ static deDoc(str){
 /**
   Traitement des balises brins dans les strings
 **/
-static get BRIN_REGEXP(){return new RegExp('\{\{brin: ?(?<key>[a-zA-Z0-9_\-]+)\}\}','g')}
+static get BRIN_REGEXP(){return new RegExp('\{\{brin: ?(?<key>[a-zA-Z0-9_\-]+)(\\|(?<text>[^}]+))?\}\}','g')}
 
 static deBrin(str){
   var groups, brin_id
@@ -288,7 +288,7 @@ setFormat(str, format){
     return this._regexp_time_tag || defP(this,'_regexp_time_tag', new RegExp('\{\{time: ?(?<time>[0-9\.]+)(\\|(?<text>[^}]+))?\}\}', 'gi'))
   }
   static defineRegExpTag(tag_type){
-    return `\\{\\{${tag_type}: ?(?<event_id>[0-9]+) ?(\\|(?<alt_text>[^\\}]+))?\\}\\}`
+    return `\\{\\{${tag_type}: ?(?<event_id>[0-9]+)(\\|(?<alt_text>[^\\}]+))?\\}\\}`
   }
 
 /**
