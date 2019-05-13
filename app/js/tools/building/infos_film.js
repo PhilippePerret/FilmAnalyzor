@@ -30,13 +30,13 @@ buildBody(){
   , [H3, 'Vidéo/analyse']
   , ['EXPLAIN', 'Ces informations doivent permettre de synchroniser votre vidéo avec l’analyse.']
   , 'separator'
-  , ['zero', '0:00:00 de l’analyse']
+  , ['zero', 'Temps 0:00:00']
   , ['first_image', 'Première image', 'optionnel']
   , ['end_time', 'Temps de fin', 'optionnel']
   , ['generic_end_time', 'Fin du générique', 'optionnel']
   , [H3, 'Analyse']
   , ['date_debut', 'Début de l’analyse']
-  , ['date_fin', 'Fin']
+  , ['date_fin', 'Fin de l’analyse']
   , ['analystes', 'Analystes']
   , ['correcteurs', 'Correcteurs/rices', 'optionnel']
   ]
@@ -67,7 +67,7 @@ build(){
   }
 
   let divs = []
-  console.log("this.dataExistent:", this.dataExistent)
+  // console.log("this.dataExistent:", this.dataExistent)
   if (this.dataExistent){
     divs = this.buildBody()
   } else {
@@ -201,13 +201,14 @@ formate_prop_time_or_warning(prop){
 formateAsPeopleList(people){
   if(!people) return
   var arr = [], nom, prenom, fonction, patro
+  console.log("people:",people)
   people.map(real => {
     [nom, prenom, fonction] = real.split(',').map(n => n.trim())
-    if(nom && nom.toLowerCase()!= 'nom' && prenom && prenom.toLowerCase()!= 'prénom'){
-      patro = `${prenom} ${nom}`
-      if(fonction) patro += ` (${fonction})`
-      arr.push(patro)
-    }
+    if(nom && nom.toLowerCase() == 'nom') return
+    if(prenom && prenom.toLowerCase() == 'prénom') return
+    patro = `${prenom||''} ${nom||''}`
+    if(fonction) patro += ` (${fonction})`
+    arr.push(patro)
   })
   if(arr.length){
     return arr.join(', ')

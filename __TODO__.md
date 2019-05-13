@@ -4,7 +4,6 @@
 * En cliquant sur l'image (dans le reader par exemple), on doit pouvoir l'éditer
 
 * RAPPORT DE VISIONNAGE
-  - Laisser plus d'air sous la scène
 
 ### Traiter :
 
