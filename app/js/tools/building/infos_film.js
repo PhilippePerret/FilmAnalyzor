@@ -24,21 +24,21 @@ buildBody(){
   , ['title', 'Titre du film']
   , ['title_fr', 'Titre français', 'optionnel']
   , ['realisation', 'Réalisation']
-  , ['production', 'Production']
+  , ['production', 'Production', 'optionnel']
   , ['ecriture', 'Écriture']
-  , ['date', 'Date de sortie']
+  , ['date', 'Date de sortie', 'optionnel']
   , [H3, 'Vidéo/analyse']
   , ['EXPLAIN', 'Ces informations doivent permettre de synchroniser votre vidéo avec l’analyse.']
   , 'separator'
   , ['zero', '0:00:00 de l’analyse']
-  , ['first_image', 'Première image']
-  , ['end_time', 'Temps de fin']
-  , ['generic_end_time', 'Fin du générique']
+  , ['first_image', 'Première image', 'optionnel']
+  , ['end_time', 'Temps de fin', 'optionnel']
+  , ['generic_end_time', 'Fin du générique', 'optionnel']
   , [H3, 'Analyse']
   , ['date_debut', 'Début de l’analyse']
   , ['date_fin', 'Fin']
   , ['analystes', 'Analystes']
-  , ['correcteurs', 'Correcteurs/rices']
+  , ['correcteurs', 'Correcteurs/rices', 'optionnel']
   ]
   arr.map( duo => {
     if(duo === 'separator'){
@@ -48,8 +48,13 @@ buildBody(){
     } else if(duo[0] == 'EXPLAIN') {
       divsInfos.push(DCreate(DIV, {inner: duo[1], class:'small explication'}))
     } else {
-      if(this[`f_${duo[0]}`]){ divsInfos.push(this.libval(...duo)) }
-      else if(duo[2]!='optionnel'){this.addError(duo[0])}
+      // Une propriété du film
+      // Note : il faut qu'elle soit définie pour qu'on la marque
+      if (this[duo[0]]){
+        if(this[`f_${duo[0]}`]){ divsInfos.push(this.libval(...duo)) }
+      } else if(duo[2]!='optionnel'){
+        this.addError(duo[0])
+      }
     }
   })
   return divsInfos
@@ -89,7 +94,7 @@ observe(){
 // Méthodes d'helper
 
 libval(prop, libelle){
-  return DLibVal(this, `f_${prop}`, libelle, undefined, {class: 'w40-60'})
+  return DLibVal(this, `f_${prop}`, libelle, undefined, {class: `w40-60 ${prop}`})
 }
 
 //  VERSIONS FORMATÉES DES DONNÉES

@@ -227,6 +227,15 @@ pre.heading {
   font-weight:bold;
 }
 
+/* --------------------------------------------------------------------- */
+
+/* === INFORMATIONS DU FILM === */
+
+section#infos-film div.title span {
+  font-size:1.4em;
+  font-variant:small-caps;
+  font-weight:bold;
+}
 
 /* --------------------------------------------------------------------- */
 

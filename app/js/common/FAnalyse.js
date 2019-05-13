@@ -314,6 +314,13 @@ openDocInWriter(dtype){
   if(!FAWriter.inited) FAWriter.init()
   FAWriter.openDoc(dtype)
 }
+
+/**
+  Pour ouvrir (depuis le menu) l'analyse dans le finder
+**/
+openAnalyseInFinder(){
+  exec(`open "${this.folder}"`)
+}
 /**
   Méthode qui ouvre le DataEditor
 **/

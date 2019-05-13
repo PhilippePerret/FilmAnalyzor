@@ -27,7 +27,7 @@ const CURRENT_THING_MENUS = [
   'display-timeline', 'display-analyse-state', 'display-last-report',
   'display-protocole', 'option-locked', 'new-version', 'display-brins',
   'goto-last-scene', 'display-decors', 'check-data-validity',
-  'display-personnages', 'display-images'
+  'display-personnages', 'display-images', 'open-in-finder'
 ]
 // Note : les ID des menus de documents seront ajoutés "à la volée"
 
@@ -267,6 +267,12 @@ const DATA_MENUS = [
                     , click:()=>{execJsOnCurrent('exportAs', 'docbook')}
                   }
             ]
+          }
+        , {
+              label:'Ouvrir sur le bureau'
+            , enabled:false
+            , id:'open-in-finder'
+            , click:()=>{execJsOnCurrent('openAnalyseInFinder')}
           }
         , {type: 'separator'}
         , {role: 'quit', label: 'Quitter', accelerator: 'CmdOrCtrl+Q'}
