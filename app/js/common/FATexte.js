@@ -43,16 +43,18 @@ static forEachDim(method){
 
 static get TYPES2HTYPES(){
   return {
-    'time':       {fr: 'temps',     genre: 'M'}
-  , 'times':      {fr: 'temps',     genre: 'M'}
-  , 'event':      {fr: 'event',     genre: 'M'}
-  , 'events':     {fr: 'events',    genre: 'M'}
-  , 'brin':       {fr: 'brin',      genre: 'M'}
+    'brin':       {fr: 'brin',      genre: 'M'}
   , 'brins':      {fr: 'brins',     genre: 'M'}
-  , 'scene':      {fr: 'scène',     genre: 'F'}
-  , 'scenes':     {fr: 'scènes',    genre: 'F'}
   , 'document':   {fr: 'document',  genre: 'M'}
   , 'documents':  {fr: 'documents', genre: 'M'}
+  , 'event':      {fr: 'event',     genre: 'M'}
+  , 'events':     {fr: 'events',    genre: 'M'}
+  , 'image':      {fr: 'image',     genre: 'F'}
+  , 'images':     {fr: 'images',    genre: 'F'}
+  , 'scene':      {fr: 'scène',     genre: 'F'}
+  , 'scenes':     {fr: 'scènes',    genre: 'F'}
+  , 'time':       {fr: 'temps',     genre: 'M'}
+  , 'times':      {fr: 'temps',     genre: 'M'}
   }
 }
 static htypeFor(type, options){

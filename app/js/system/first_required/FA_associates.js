@@ -343,9 +343,14 @@ const TEXTFIELD_ASSOCIATES_METHS = {
 , onDropAssociableElement(e, ui){
     let helper  = $(ui.helper)
       , [eltype, elid]  = [helper.attr('data-type'), helper.attr('data-id')]
-      , balise = `{{${eltype}:${elid}}}`
+      , textAdded = '|texte/légende|style'
+      , balise = `{{${eltype}:${elid}${textAdded}}}`
 
     $(e.target).insertAtCaret(balise)
+    let selector = new Selector(e.target)
+      , curOffset = selector.startOffset
+    selector.startOffset  = curOffset - 2 - textAdded.length
+    selector.endOffset    = curOffset - 2
     return stopEvent(e)
   }
 

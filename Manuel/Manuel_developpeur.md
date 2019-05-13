@@ -430,6 +430,7 @@ Voilà les données générales :
   , editable:  /* si false, la valeur ne pourra pas être éditée */
   , exemple:  'placeholder affiché quand aucune donnée'
   , aide:     'texte ajouté en petit à côté du libellé'
+  , after:    'texte ajouté après un champ court (type:"text" et class:"short")'
   , validities: flag pour tester la validité de (UNIQ, REQUIRED, ASCII)
   , values:   <valeurs pour un select, soit [{value: inner}...], soit [[value, inner]...]
   , editLink: <function>
