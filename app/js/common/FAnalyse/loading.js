@@ -227,8 +227,7 @@ load(){
 /** ---------------------------------------------------------------------
 * Chargement des composants
 **/
-,
-loadBuilder(fn_callback){
+, loadBuilder(fn_callback){
   return System.loadComponant('faBuilder', fn_callback)
 }
 ,
@@ -239,10 +238,9 @@ loadExporter(fn_callback){
 loadReporter(fn_callback){
   return System.loadComponant('faReport', fn_callback)
 }
-,
-loadTimeline(fn_callback){
-  return System.loadComponant('faTimeline', fn_callback)
-}
+, loadTimeline(fn_callback){
+    return System.loadComponant('faTimeline', fn_callback)
+  }
 , loadFondamentales(fn_callback){
     return System.loadComponant('Fondamentales', fn_callback)
 }

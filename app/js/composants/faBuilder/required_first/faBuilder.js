@@ -14,26 +14,33 @@ class FABuilder {
  * Créer une nouvelle instance de builder et la retourner (pour le chainage)
  */
 static createNew(){
+  log.info('-> FABuilder::createNew')
   this.currentBuilder = new FABuilder(current_analyse)
+  log.info('<- FABuilder::createNew (return currentBuilder)')
   return this.currentBuilder
 }
 
 // ---------------------------------------------------------------------
 //  INSTANCE
 constructor(analyse){
-  this.analyse = analyse
+  this.analyse = this.a = analyse
 }
 
 /**
  * Pour afficher l'analyse construite
  */
 show(options){
+  log.info(`-> FABuilder.show(${options})`)
   if(undefined === options) options = {}
   if(false == this.isUpToDate || options.force_update) this.build(options, this.showReally.bind(this))
+  log.info('<- FABuilder.show')
 }
+
 showReally(){
+  log.info('-> FABuilder.showReally')
   ipc.send('display-analyse')
   ipc.send('load-url-in-pubwindow', {path: this.html_path})
+  log.info('<- FABuilder.showReally')
 }
 
 /**
@@ -43,16 +50,17 @@ showReally(){
   HTML rassemblant tous les éléments.
 */
 build(options, fn_callback){
+  log.info(`-> FABuilder.build(options:${options})`)
   var my = this
-  if(undefined === this.buildLoopTries) this.buildLoopTries = 0
-  ++this.buildLoopTries
-  if(this.buildLoopTries > 10) throw('Trop de tentatives de chargement. Un composant empêche le chargement. J’interromps la procédure.')
-  // Il faut d'abord s'assurer que tous les composants soient bien
-  // chargés.
-  delete this.timerLoading
-  if(false === my.allComponantsLoaded(options, fn_callback)) return
 
-  delete this.buildLoopTries
+  // On s'assure que tous les composants soient bien chargés
+  this.buildLoopTries = 0
+  if(!this.componantsLoaded){
+    return this.loadAllComponants(this.build.bind(this, options, fn_callback))
+  } else {
+    delete this.buildLoopTries
+  }
+
   my.options = options
   my.traitedFiles = {} // tous les fichiers traités
   my.rebuildBaseFiles(fn_callback)
@@ -60,29 +68,15 @@ build(options, fn_callback){
   my.report.show()
   my.report.saveInFile()
   my = null
+  log.info('<- FABuilder.build')
 }
 
-/**
-  Chargement de tous les composants nécessaires
-
-  Note : la plupart sont déjà chargés
-**/
-allComponantsLoaded(options, callback){
-  try {
-    this.a.Fonds        || raise('Chargement de la classe Fondamentales (Fonds)')
-    this.a.Fonds.loaded || raise('Attente de fin de chargement des données fondamentales')
-  } catch (e) {
-    this.timerLoading = setTimeout(this.build.bind(this, options, callback), 50)
-    console.error(e)
-    return false
-  }
-  return true
-}
 
 /**
   Reconstruction des fichiers de base (HTML)
 **/
 rebuildBaseFiles(fn_callback){
+  log.info('-> FABuilder.rebuildBaseFiles')
   var my = this
   my.building = true
   my.log('*** Construction de l’analyse…')
@@ -94,6 +88,7 @@ rebuildBaseFiles(fn_callback){
   my.report.add('Fin de la construction de l’analyse', 'title')
   my.building = false
   my = null
+  log.info('<- FABuilder.rebuildBaseFiles')
 }
 
 /**
@@ -136,8 +131,6 @@ verifyCompletude(fn_callback){
   }
   my = false
 }
-
-
 
 
 destroyBaseFiles(){
@@ -257,7 +250,6 @@ log(msg, args){ this.constructor.log(msg, args) }
 // ---------------------------------------------------------------------
 //  Raccourcis
 
-get a(){ return this.analyse }
 get wholeHtmlPath(){return this._wholeHtmlPath||defP(this,'_wholeHtmlPath', path.join(this.folderChunks,'wholeHTML.html'))}
 get folderChunks(){
   if(undefined === this._folderChunks){
@@ -271,5 +263,26 @@ get folderChunks(){
 get md_path()   { return this.a.md_path }
 get html_path() { return this.a.html_path }
 get report(){return this._report||defP(this,'_report', new FAReport('analyse-building'))}
+
+
+// ---------------------------------------------------------------------
+//  FONCTIONS UTILITAIRES
+
+loadAllComponants(fn_callback){
+
+  // Verrou pour empêcher de boucler trop sur le chargement des composants.
+  ++this.buildLoopTries
+  this.buildLoopTries < 10 || raise(T('too-much-tries'))
+
+  // Les fondamentales
+  if(NONE == typeof(Fondamentales)) return this.a.loadFondamentales(this.loadAllComponants.bind(this,fn_callback))
+
+  // Pour indiquer à build que les composants sont chargés
+  this.componantsLoaded = true
+
+  // On en a fini, on peut appeler la fonction de callback
+  fn_callback()
+
+}
 
 }

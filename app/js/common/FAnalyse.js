@@ -232,13 +232,17 @@ displayTimeline(){MainTimeline.toggle()}
  * qu'il y aura un menu particulier pour le faire
  */
 displayFullAnalyse(forcer){
-  if(undefined === forcer) forcer = false
-  var callback = this.displayFullAnalyse.bind(this, forcer)
-  if(NONE === typeof FABuilder) return this.loadBuilder(callback)
-  if(NONE === typeof FAExporter)return this.loadExporter(callback)
-  if(NONE === typeof FAReport)return this.loadReporter(callback)
+  log.info(`-> FAnalyse.displayFullAnalyse(forcer:${forcer})`)
+  if(undefined === this.callback_dispfullana){
+    this.callback_dispfullana = this.displayFullAnalyse.bind(this, forcer||false)
+  }
+  if(NONE === typeof(FABuilder))  return this.loadBuilder(this.callback_dispfullana)
+  if(NONE === typeof(FAExporter)) return this.loadExporter(this.callback_dispfullana)
+  if(NONE === typeof(FAReport))   return this.loadReporter(this.callback_dispfullana)
+  log.info('   Composants full analyse chargés. Je peux la créer')
   FABuilder.createNew().show({force_update: forcer})
-  callback = null
+  delete this.callback_dispfullana
+  log.info('<- FAnalyse.displayFullAnalyse')
 }
 
 displayLastReport(){

@@ -14,24 +14,27 @@ close()  { this.fwindow.hide()}
   informations dans l'application que dans le livre (infos du film)
 **/
 buildBody(){
+
+  if(false === this.dataExistent) return
+
   let divsInfos = []
 
   var arr = [
-    ['H3', 'Fiche d’identité']
+    [H3, 'Fiche d’identité']
   , ['title', 'Titre du film']
   , ['title_fr', 'Titre français', 'optionnel']
   , ['realisation', 'Réalisation']
   , ['production', 'Production']
   , ['ecriture', 'Écriture']
   , ['date', 'Date de sortie']
-  , ['H3', 'Vidéo/analyse']
+  , [H3, 'Vidéo/analyse']
   , ['EXPLAIN', 'Ces informations doivent permettre de synchroniser votre vidéo avec l’analyse.']
   , 'separator'
   , ['zero', '0:00:00 de l’analyse']
   , ['first_image', 'Première image']
   , ['end_time', 'Temps de fin']
   , ['generic_end_time', 'Fin du générique']
-  , ['H3', 'Analyse']
+  , [H3, 'Analyse']
   , ['date_debut', 'Début de l’analyse']
   , ['date_fin', 'Fin']
   , ['analystes', 'Analystes']
@@ -39,11 +42,11 @@ buildBody(){
   ]
   arr.map( duo => {
     if(duo === 'separator'){
-      divsInfos.push(DCreate('DIV', {class:'separator', style:'height:12px;'}))
-    } else if(duo[0] == 'H3') {
-      divsInfos.push(DCreate('H3', {inner: duo[1]}))
+      divsInfos.push(DCreate(DIV, {class:'separator', style:'height:12px;'}))
+    } else if(duo[0] == H3) {
+      divsInfos.push(DCreate(H3, {inner: duo[1]}))
     } else if(duo[0] == 'EXPLAIN') {
-      divsInfos.push(DCreate('DIV', {inner: duo[1], class:'small explication'}))
+      divsInfos.push(DCreate(DIV, {inner: duo[1], class:'small explication'}))
     } else {
       if(this[`f_${duo[0]}`]){ divsInfos.push(this.libval(...duo)) }
       else if(duo[2]!='optionnel'){this.addError(duo[0])}
@@ -59,20 +62,22 @@ build(){
   }
 
   let divs = []
+  console.log("this.dataExistent:", this.dataExistent)
   if (this.dataExistent){
     divs = this.buildBody()
   } else {
-    divs.push(DCreate('DIV',{class:'warning', inner: 'Aucune information n’a été donnée sur les films… Éditer le fichier infos pour y remédier'}))
+    this.log('Pas de fichier analyse_files/infos.yaml => Je ne peux pas faire la fiche infos du film', {error: true})
+    divs.push(DCreate(DIV,{class:'warning', inner: 'Aucune information n’a été donnée sur les films… Éditer le fichier infos pour y remédier'}))
   }
 
   return [
-    DCreate('DIV', {class: 'header', append:[
-        DCreate('H3', {inner: 'INFORMATIONS TECHNIQUES SUR LE FILM'})
+    DCreate(DIV, {class: 'header', append:[
+        DCreate(H3, {inner: 'INFORMATIONS TECHNIQUES SUR LE FILM'})
       ]})
-  , DCreate('DIV', {class:'body', append: divs})
-  , DCreate('DIV', {class:'footer', append:[
-      DCreate('BUTTON', {inner: 'Actualiser', class: 'btn-update small fleft'})
-    , DCreate('BUTTON', {type:'button', inner: 'OK', class: 'btn-ok main-button small'})
+  , DCreate(DIV, {class:'body', append: divs})
+  , DCreate(DIV, {class:'footer', append:[
+      DCreate(BUTTON, {inner: 'Actualiser', class: 'btn-update small fleft'})
+    , DCreate(BUTTON, {type:BUTTON, inner: 'OK', class: 'btn-ok main-button small'})
     ]})
   ]
 }
@@ -99,7 +104,7 @@ get f_first_image(){
   if (this.first_image.time && this.first_image.description){
     return `à ${new OTime(this.first_image.time).horloge}, ${DFormater(this.first_image.description)}`
   } else {
-    return DCreate('DIV', {class:'warning', inner:'Il faut définir le temps et la description de la première image du film.'}).outerHTML
+    return DCreate(DIV, {class:'warning', inner:'Il faut définir le temps et la description de la première image du film.'}).outerHTML
   }
 }
 get f_end_time(){
@@ -225,4 +230,4 @@ get fwindow(){return this._fwindow||defP(this,'_fwindow', new FWindow(this,{clas
 
 }
 
-module.exports = new FAInfosFilm(current_analyse)
+module.exports = FAInfosFilm

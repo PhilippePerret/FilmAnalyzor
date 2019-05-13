@@ -2,6 +2,7 @@
 const path  = require('path')
 const fs    = require('fs')
 const glob  = require('glob')
+const log   = require('electron-log')
 
 /**
  * Object System
@@ -36,6 +37,7 @@ loadComponant(compName, fn_callback){
    * +fn_callback+  'function' à appeler à la fin du chargement.
    */
 , loadJSFolders(mainFolder, subFolders, fn_callback){
+    log.info(`-> System::loadJSFolders(mainFolder:${mainFolder}, subFolders:${JSON.stringify(subFolders)})`)
     this.folders = []
     for(var subFolder of subFolders){
       this.folders.push(path.join(mainFolder,subFolder))
@@ -45,16 +47,27 @@ loadComponant(compName, fn_callback){
   }
 
 , loadNextFolder(){
+    log.info('-> System::loadNewFolder')
     var folder = this.folders.shift()
+    log.info(`   Folder: ${folder}`)
+    // Protection contre les dossiers vides
+    if(folder && fs.existsSync(folder)){
+      if(glob.sync(`./${folder}/**/*.js`).length === 0){
+        log.info(`<- System::loadNewFolder (pas de script dans le dossier)`)
+        return this.loadNextFolder()
+      }
+    }
     if (undefined === folder || !fs.existsSync(folder) ){
       // <= On est arrivé à la fin des dossiers à charger
       // => On s'arrête là en appelant la méthode callback.
+      log.info(`   Fin des folders. Appel de la fonction callback`)
       return this.methodAfterLoadingFolders()
     }
     glob(`./${folder}/**/*.js`, (err, files) => {
       if(err)throw(err)
       this.loadScripts(files)
     })
+    log.info(`<- System::loadNewFolder(${folder})`)
   }
 
 , loadScripts(files){
