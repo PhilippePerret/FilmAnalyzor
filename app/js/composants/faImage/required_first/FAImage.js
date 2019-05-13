@@ -5,7 +5,7 @@ class FAImage extends FAElement {
 // ---------------------------------------------------------------------
 //  CLASS
 
-static get PROPS(){return ['id','legend','time','path','fname','associates']}
+static get PROPS(){return ['id','legend','size','time','path','fname','associates']}
 
 static get(img_id){
   if(undefined === this._images) this.getAllPictures()
@@ -159,7 +159,6 @@ get id(){return this._id} // pour associés
 set id(v){this._id = v}
 get legend(){return this._legend}
 get fname(){return this._fname}
-get f_legend(){return DFormater(this.legend||`Légende de ${this.fname}`)}
 get path(){return this._path || defP(this,'_path',path.join(current_analyse.folderPictures,this.fname))}
 get affixe(){return this._affixe || defP(this,'_affixe',path.basename(this.fname,path.extname(this.fname)))}
 
@@ -173,5 +172,4 @@ getImgTimeFromName(){
   // let [hrs, mns, secs] = t.match(/^([0-9])([0-9][0-9])([0-9][0-9])$/).splice(1,4).map(n => parseInt(n,10))
   return new OTime(horloge)
 }
-
-}
+}// /class FAImage

@@ -20,6 +20,7 @@ Object.defineProperties(DataField.prototype,{
 , showLink:   {get(){return this.data.showLink}}
 , editLink:   {get(){return this.data.editLink}}
 , aide:       {get(){return this.data.aide}}
+, after:      {get(){return this.data.after}}
 , setValueMethod:{get(){return this.data.setValueMethod}}
 , getValueMethod:{get(){return this.data.getValueMethod}}
 , checkValueMethod:{get(){return this.data.checkValueMethod}}

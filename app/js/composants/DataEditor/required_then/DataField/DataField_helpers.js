@@ -62,6 +62,9 @@ Object.assign(DataField.prototype,{
  */
 , extraFiedls(){
     var divs = []
+    if(this.after){
+      divs.push(DCreate(SPAN,{class:'tiny after-field', inner:this.after}))
+    }
     if(this.isSelectUpdatable){
       divs.push(DCreate(IMG, {class:`update update-${this.prop}-values`, src:'img/update-2.png'}))
       divs.push(DCreate(IMG, {class:`open open-${this.prop}-values`, src:'img/btn-edit.png'}))
@@ -85,4 +88,10 @@ Object.assign(DataField.prototype,{
     if(this.isRequired) lab += ' <span class="warning">*</span>'
     return lab
   }
-})
+
+// Si nécessaire, défini le texte 'after' le champ
+, defineAfter(){
+    return `<span class="after tiny">${this.after}</span>`
+  }
+
+})// /defineProperties

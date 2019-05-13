@@ -13,6 +13,8 @@ Object.defineProperty(FAImage,'DataFAListing',{get(){return {
           DCreate(DIV,{class:'image-time small', append:[
             DCreate(LABEL,{inner:'Temps'})
           , item.otime.asAssociate({as:'string'})
+          , DCreate(LABEL,{inner:'Taille'})
+          , DCreate(SPAN,{class:`${item.domC('size')}`, inner:item.f_size})
           ]})
         , DCreate(DIV,{class:'image-legend small', append:[
             DCreate(LABEL,{inner:'Légende'})

@@ -1,15 +1,20 @@
 # SUR LE GRILL
 
+* Faire la propriété 'after' pour placer un texte après un champ court
+
+* Possibilité de faire une sortie de type "rapport de visionnage" à expérimenter avec le film de Jean-François. Je pense qu'il suffit de déterminer correctement le building-script en définissant que les remarques sont les notes (Par exemple 'BUILD Rapport de notes').
+
 ### Traiter :
+
+* Dans le reader
+- indiquer mieux la partie "Associés"
+- actualiser dès qu'il y a modification (vérifier qu'une association entraine la marque de modification, mais je crois que oui)
+* Supprimer l'arrière plan du mini-writer (peut-être le faire 'sortir' du bord bas ?)
 
 * Il peut arriver souvent qu'un associé n'existe plus. Il faut donc bien checker dans toutes les méthodes qui les passent en revue.
 
 * Essayer de généraliser l'utilisation de `iofile`, `save`, `getData` pour tous les éléments, afin de réduire considérablement les méthodes. Voir dans FAElement.js et FAImage.js
 
-* Dans le reader
-  - indiquer mieux la partie "Associés"
-  - actualiser dès qu'il y a modification (vérifier qu'une association entraine la marque de modification, mais je crois que oui)
-* Supprimer l'arrière plan du mini-writer (peut-être le faire 'sortir' du bord bas ?)
 
 * Voir comment est traité la propriété `associable: true` dans le DataEditor. Il faut :
   1. Qu'on puisse dragguer un élément associable sur la fenêtre d'édition
@@ -19,32 +24,13 @@
   Implémenter pour les brins la nouvelle façon d'associer les éléments
   - À quoi sert le numéro du brin ?
 
-* Possibilité de prendre une image n'importe où et de l'insérer dans le texte
-  - possibilité de voir toutes les images faites et de les insérer en les déplaçant
-* Possibilité de faire une sortie de type "rapport de visionnage" à expérimenter avec le film de Jean-François. Je pense qu'il suffit de déterminer correctement le building-script en définissant que les remarques sont les notes (Par exemple 'BUILD Rapport de notes').
 
 - Réimplémenter le check des résolutions des QRD pour qu'il se fasse seulement quand toutes les classes sont chargées — + quand on vient d'en créer une. Il faut appeler `FAEqrd#checkResolution()`. Voir aussi sur les procédés à résolution ?
-
-- Utiliser la nouvelle façon d'associer, avec `ASSOCIATES_COMMON_METHODS` `ASSOCIATES_COMMON_PROPERTIES` pour tous les autres éléments (Brins, Documents, Events si possible) avec FAEvent (noter que pour le moment, c'est la classe qui gère les associations ; il faut que ce soit chaque instance)
-  - FABrins
-  - FADocuments
-  - FAEvent (est-ce possible ? c'est peut-être plus compliqué… — NON)
-
-
-  - Penser que les listes, maintenant, ont des CLÉS AU SINGULIER
-  - Penser à supprimer la définition des 'documents', 'brins', etc.
-    Voir d'abord où ils sont utilisés et les remplacer par les nouvelles méthodes.
-  - simplifier tout ce qui peut l'être
 
 * DATAEDITOR
   - Faire un fichier pfa alt (les mettre dans min.js)
   - Faire la même chose pour les variables ?
   - Faire la même chose pour les infos du film ?
-  - Pour les brins, et peut-être aussi les personnages, il faudrait exploiter
-    les propriétés 'events', 'documents', 'times', 'brins' (qui s'enregistrent maintenant dans le fichier YAML).
-    => Propriété général 'associable' qui construit un div, comme pour le
-       div parent dans l'eventform, sur lequel on peut glisser des éléments
-    - les afficher quand ils sont définis
 
 * CHECK ANALYSE
   - Poursuivre le check de la validité des données (app/js/tools/analyse_checker.js)

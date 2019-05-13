@@ -79,7 +79,7 @@ personnagesCount(){
 }
 
 personnagesList(){
-  return this.personnages.map(perso => `<span class="${perso.domC('pseudo')}">${perso.pseudo}</span>${perso.editLink()}`).join(', ') +'.'
+  return this.personnages.map(perso => `<span class="${perso.domC('pseudghi o')}">${perso.pseudo}</span>${perso.editLink()}`).join(', ') +'.'
 }
 
 get personnages(){

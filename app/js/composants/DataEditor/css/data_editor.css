@@ -11,6 +11,11 @@
   margin-left:8px;
 }
 
+.dataeditor span.after-field {
+  margin-left:12px;
+  color:#777777;
+}
+
 /* ---------------------------------------------------------------------
     BODY
  */
