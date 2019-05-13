@@ -7,6 +7,9 @@ class FAImage extends FAElement {
 
 static get PROPS(){return ['id','legend','size','time','path','fname','associates']}
 
+/**
+  Retourne l'image d'identifiant +img_id+ (instance {FAImage})
+**/
 static get(img_id){
   if(undefined === this._images) this.getAllPictures()
   return this._images[img_id]
@@ -17,8 +20,32 @@ static show(image_id){
   this.listing.select(image_id)
 }
 
+/**
+  Méthode qui prend un instantané de l'image courante ou du temps +time+
+  @param {OTime|Number} time  Le temps à prendre ou le temps courant par défaut
+**/
+static shotFrame(time){
+  if(undefined === time) time = this.a.locator.currentTime
+  this.takeAShot(time)
+  // TODO Une méthode qui remplace la source de cette image par la valeur,
+  // pour forcer son chargement
+}
+static get takeAShot(){return this._takeashot||defP(this,'_takeashot', App.loadTool('shot_picture').bind(this))}
+
 static fname2id(fname){
   return fname.replace(/[\.\-]/g,'')
+}
+
+// Reçoit un temps et retourne le nom de l'image correspondante
+static time2fname(time){
+  if(!(time instanceof(OTime))) time = new OTime(time)
+  return `at-${time.vhorloge_simple.replace(/[\:\.]/g,'')}.jpeg`
+}
+
+// Retourne le path de l'image de nom +fname+
+static pathOf(fname){
+  console.log(`pathOf(fname=${fname})`)
+  return path.resolve(path.join(this.a.folderPictures, fname))
 }
 
 static add(image_fname){
@@ -51,7 +78,7 @@ static updateListingIfNecessary(){
 }
 
 /**
-  Retourne la liste des images qui se trouvent
+  Retourne la liste des images qui se trouvent proche du temps voulu +time+
 **/
 static imagesAt(time){
   var arr = []
@@ -86,7 +113,7 @@ static getAllPictures(){
   if(fs.existsSync(this.path)){
     this.decomposeData(this.iofile.loadSync())
   }
-  this.pickupImagesInFoler()
+  this.pickupImagesInFolder()
   log.info('<- FAImage::getAllPictures')
 }
 /**
@@ -119,9 +146,9 @@ static decomposeData(data){
   Méthode qui s'assure que toutes les images du dossier des pictures aient
   été chargées dans la donnée. Les ajoute à la donnée générale le cas échéant.
 **/
-static pickupImagesInFoler(){
+static pickupImagesInFolder(){
   let my = this
-  log.info('-> FAImage::pickupImagesInFoler')
+  log.info('-> FAImage::pickupImagesInFolder')
   glob.sync(`${this.a.folderPictures}/*.*`).forEach(function(file){
     var fname = path.basename(file)
       , imgid = my.fname2id(fname)
@@ -131,7 +158,7 @@ static pickupImagesInFoler(){
       log.info(`   ADD Image "${fname}" (#${imgid}) qui n'était pas dans le fichier des data images.`)
     }
   })
-  log.info('<- FAImage::pickupImagesInFoler')
+  log.info('<- FAImage::pickupImagesInFolder')
 }
 
 static getData(){

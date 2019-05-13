@@ -141,7 +141,7 @@ module.exports = function(options){
     // le vérificateur de complétude.
     my.traitedFiles['building_script'] = {ok: true, error: null}
   } else {
-    bScriptPath = my.a.tempFilePathOf('building_script.md')
+    bScriptPath = my.a.tempFilePathOf('building_script/analyse_film.md')
   }
 
   var bScript = fs.readFileSync(bScriptPath, 'utf8')

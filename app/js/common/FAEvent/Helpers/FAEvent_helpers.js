@@ -39,6 +39,10 @@ toString(){
   // La liste dans laquelle on va mettre tous les DOMElements fabriqués
   var domEls = []
 
+  // L'event est-il lié à l'image courante de son temps ?
+  // Si oui, on la met devant l'event
+  this.needCurImage() && domEls.push(this.curImageDiv(opts))
+
   if(flag & LABELLED) domEls.push(this.spanRef(opts))
 
   switch (format) {
@@ -143,13 +147,17 @@ toString(){
 
 // Version livre commune
 , asBook(opts){
-    var divs = []
-    return divs
+    if(undefined === opts) opts = {}
+    opts.forBook = true
+    return this.inItsDiv(this.asFull(opts))
   }
 ,
-// Version complète (reader) commune
-// C'est la version qui est ajoutée au `div` contenant les
-// boutons d'édition, etc.
+/**
+  Version complète de l'event
+
+  Pour le Reader, sauf si opts.forBook, c'est alors pour le livre d'analyse
+
+**/
 asFull(opts){
   var divs = []
   if(undefined === opts) opts = {}
@@ -179,6 +187,17 @@ asAssociate(opts){
   }
   return DCreate(DIV, {class:`associate ${this.type} EVT${this.id}`, append:divs})
 }
+
+/**
+  Retourne l'event quelconque "dans son div" principal, avec les classes et
+  l'identifiant requis
+**/
+, inItsDiv(divs, opts){
+    var css = [this.type]
+    if(undefined !== this.metaType) css.push(this.metaType)
+    return DCreate(DIV,{id:this.domId, class:css.join(' '), append:divs})
+  }
+
 
 })
 

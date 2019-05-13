@@ -227,7 +227,7 @@ loadIfExists(options, fn_pour_suivre){
   // définir que s'ils sont définis.
   if(undefined !== options) my.options = options
   if(undefined !== fn_pour_suivre) my.methodAfterLoading = fn_pour_suivre
-  else if(options.after) my.methodAfterLoading = options.after
+  else if(options && options.after) my.methodAfterLoading = options.after
   if(false === this.exists()){
     my.endLoad(false)
   } else {

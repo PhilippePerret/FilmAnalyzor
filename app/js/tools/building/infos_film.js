@@ -203,7 +203,7 @@ formateAsPeopleList(people){
   var arr = [], nom, prenom, fonction, patro
   people.map(real => {
     [nom, prenom, fonction] = real.split(',').map(n => n.trim())
-    if(nom.toLowerCase()!= 'nom' && prenom.toLowerCase()!= 'prénom'){
+    if(nom && nom.toLowerCase()!= 'nom' && prenom && prenom.toLowerCase()!= 'prénom'){
       patro = `${prenom} ${nom}`
       if(fonction) patro += ` (${fonction})`
       arr.push(patro)
@@ -218,8 +218,16 @@ formateAsPeopleList(people){
 
 // Si la date est 'JJ/MM/YYYY', retourne null
 dateOrNull(dateProp){
-  if(!this.data[dateProp]) return this.data[dateProp]
-  return this.data[dateProp].match(REG_DATE) ? this.data[dateProp] : null
+  try {
+    let val = this.data[dateProp]
+    if(!val) return val
+    if('number'===typeof(val)) return `${val}` // juste l'année, par exemple
+    return val.match(REG_DATE) ? val : null
+  } catch (e) {
+    console.error(`Problème avec la propriété "${dateProp}" de valeur ${val} de typeof ${typeof(val)}`)
+    console.error(e)
+    return null
+  }
 }
 
 // Si le temps est 'H:MM:SS' ou 'H:MM:SS.fr', return null, sinon, le temps

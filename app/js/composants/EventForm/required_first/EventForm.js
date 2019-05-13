@@ -165,6 +165,62 @@ constructor(foo){
   return this
 }
 
+
+/**
+  Soumission du formulaire
+**/
+submit(){
+  var my = this
+
+  // Si c'est une modification, on prend le temps initial pour savoir
+  // s'il a bougé. S'il n'a pas bougé, il sera inutile de faire l'update
+  // dans l'analyse courante
+  var initTime = this.isNew ? null : Math.round(this.event.time)
+
+  var all_data = this.getFormValues()
+  this.isNew = all_data.is_new
+
+  // On crée ou on update l'évènement
+  if(this.isNew){
+    // CRÉATION
+    // On crée l'évènement du type voulu
+    var eClass = eval(`FAE${all_data.type}`)
+    this._event = new eClass(this.a, all_data)
+  } else {
+    this.event.dispatch(all_data)
+  }
+  // Et on dispatche les autres données
+
+
+  if (this.event.isValid) {
+    if(this.isNew){
+      // CRÉATION
+      this.a.addEvent(this.event)
+      if('function' === typeof this.event.onCreate) this.event.onCreate()
+    } else {
+      // ÉDITION
+      this.a.updateEvent(this.event, {initTime: initTime})
+      if('function' === typeof this.event.onModify) this.event.onModify()
+    }
+  }
+
+
+  if (this.event.isValid){
+    this.isNew    = false // il a été enregistré, maintenant
+    this.modified = false
+    this.endEdition()
+    // Pour être sûr qu'on traitera un event modifié par la suite, on
+    // détruit la fenêtre, quand c'est une création
+    this.fwindow.remove()
+    delete this._fwindow
+  } else if(this.event.firstErroredFieldId) {
+    // En cas d'erreur, on focus dans le premier champ erroné (s'il existe)
+    $(this.event.firstErroredFieldId).focus().select()
+  }
+
+  my = null
+}// /submit
+
 get inited(){ return this._initied || false}   // mis à true à l'initialisation
 set inited(v){ this._inited = v }
 
@@ -473,6 +529,14 @@ updateTypesScenes(){this.updateTypes(null, 'scene')}
 // /Fin méthodes scènes
 // ---------------------------------------------------------------------
 
+// ---------------------------------------------------------------------
+// AUTRES MÉTHODES
+
+// Explication de la case à cocher "Lier à l'image courante" dans le formulaire
+showExplanationCurImage(){F.notify(T('explaination-cur-image'))}
+
+// ---------------------------------------------------------------------
+
 get jqf(){return this.jqField.bind(this)}
 
 // Retourne l'ID du champ pour la propriété (ou autre) +prop+
@@ -496,62 +560,6 @@ synchronizePitchAndResume(e){
 // Méthode qui regarde si le synopsis est synchronisable avec le pitch
 checkIfSynchronizable(e){
   this.pitchAndResumeSynchronizable = this.jqField('longtext1').val() == ''
-}
-
-// ---------------------------------------------------------------------
-//  Méthodes d'évènement
-
-
-submit(){
-  var my = this
-
-  // Si c'est une modification, on prend le temps initial pour savoir
-  // s'il a bougé. S'il n'a pas bougé, il sera inutile de faire l'update
-  // dans l'analyse courante
-  var initTime = this.isNew ? null : Math.round(this.event.time)
-
-  var all_data = this.getFormValues()
-  this.isNew = all_data.is_new
-
-  // On crée ou on update l'évènement
-  if(this.isNew){
-    // CRÉATION
-    // On crée l'évènement du type voulu
-    var eClass = eval(`FAE${all_data.type}`)
-    this._event = new eClass(this.a, all_data)
-  } else {
-    this.event.dispatch(all_data)
-  }
-  // Et on dispatche les autres données
-
-
-  if (this.event.isValid) {
-    if(this.isNew){
-      // CRÉATION
-      this.a.addEvent(this.event)
-      if('function' === typeof this.event.onCreate) this.event.onCreate()
-    } else {
-      // ÉDITION
-      this.a.updateEvent(this.event, {initTime: initTime})
-      if('function' === typeof this.event.onModify) this.event.onModify()
-    }
-  }
-
-
-  if (this.event.isValid){
-    this.isNew    = false // il a été enregistré, maintenant
-    this.modified = false
-    this.endEdition()
-    // Pour être sûr qu'on traitera un event modifié par la suite, on
-    // détruit la fenêtre, quand c'est une création
-    this.fwindow.remove()
-    delete this._fwindow
-  } else if(this.event.firstErroredFieldId) {
-    // En cas d'erreur, on focus dans le premier champ erroné (s'il existe)
-    $(this.event.firstErroredFieldId).focus().select()
-  }
-
-  my = null
 }
 
 /**
@@ -638,6 +646,9 @@ setFormValues(){
           })
         }
         break
+      case 'curimage':
+        this.jqf(fieldSufid)[0].checked = !!this.event[prop]
+        break
       default:
         // Si un champ existe avec cette propriété, on peut la mettre
         if (this.jqField(fieldSufid).length){
@@ -697,6 +708,8 @@ getFormValues(){
             return val == '1'
           case 'tps_reponse':
             return new OTime(val).seconds
+          case 'curimage':
+            return (val == 'on') ? true : undefined
           default:
             return val
         }

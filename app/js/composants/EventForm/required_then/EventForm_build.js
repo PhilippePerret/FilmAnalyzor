@@ -34,25 +34,25 @@ Object.assign(EventForm.prototype,{
     let prefid = 'event-__EID__'
 
     for(prop of this.constructor.COMMON_HIDDEN_FIELDS){
-      dom.push(DCreate('INPUT', {type:'hidden', id:`${prefid}-${prop}`}))
+      dom.push(DCreate(INPUT, {type:'hidden', id:`${prefid}-${prop}`}))
     }
 
-    dom.push(DCreate('SECTION', {class: 'header no-user-selection', append:[
-        DCreate('BUTTON', {type:'button', class:'btn-close'})
-      , DCreate('SPAN', {class:'event-type', inner: type.toUpperCase()})
+    dom.push(DCreate(SECTION, {class: 'header no-user-selection', append:[
+        DCreate(BUTTON, {type:BUTTON, class:'btn-close'})
+      , DCreate(SPAN, {class:'event-type', inner: type.toUpperCase()})
       ]}))
 
     /*  Div supérieur avec temps, durée ou numéro */
-    dom.push(DCreate('DIV', {class:'div-infos-temporelles no-user-selection', append:[
+    dom.push(DCreate(DIV, {class:'div-infos-temporelles no-user-selection', append:[
       // Le petit bouton droppable pour associer l'event nouveau ou modifié
-        DCreate('SPAN', {class: 'event-btn-drop event', inner: '⎆', style: 'background:transparent;', attrs:{
+        DCreate(SPAN, {class: 'event-btn-drop event', inner: '⎆', style: 'background:transparent;', attrs:{
           title: 'Pour glisser et déposer l’event et l’associer'
         , 'data-type':'event', 'data-id':'__EID__'
         }})
-      , DCreate('BUTTON', {class:'btnplay right', attrs:{size:30}})
-      , DCreate('LABEL', {inner: 'Position'})
+      , DCreate(BUTTON, {class:'btnplay right', attrs:{size:30}})
+      , DCreate(LABEL, {inner: 'Position'})
       , DCreate('HORLOGE', {class:'small', id:my.fId('time'), value:'', inner: '...'})
-      , DCreate('LABEL', {inner: 'Durée'})
+      , DCreate(LABEL, {inner: 'Durée'})
       , DCreate('DUREE', {id: my.fId('duree'), class: 'small dureeable'})
       ]}))
 
@@ -60,36 +60,36 @@ Object.assign(EventForm.prototype,{
     if(type != 'qrd'){
       var fieldsType = []
       fieldsType.push(
-          DCreate('LABEL', {inner:type === 'stt' ? 'Type du nœud' : 'Type'})
-        , DCreate('SELECT', {id: my.fId(`${type}Type`), class: `${type}-types`, style:'max-width:270px;'})
+          DCreate(LABEL, {inner:type === 'stt' ? 'Type du nœud' : 'Type'})
+        , DCreate(SELECT, {id: my.fId(`${type}Type`), class: `${type}-types`, style:'max-width:270px;'})
       )
       if(type !== 'stt'){
         fieldsType.push(
-            DCreate('BUTTON', {type:'button', class:'update btn-update-types', title: T('tit-update-type-list'), append:[
-              DCreate('IMG', {src: 'img/update-2.png', alt: 'Actualiser la liste des types'})
+            DCreate(BUTTON, {type:BUTTON, class:'update btn-update-types', title: T('tit-update-type-list'), append:[
+              DCreate(IMG, {src: 'img/update-2.png', alt: 'Actualiser la liste des types'})
             ]})
-          , DCreate('BUTTON', {type:'button', class:'modify btn-modify-types', title: T('tit-modify-type-list'), append:[
-              DCreate('IMG', {src: 'img/btn-edit.png', alt: 'Modifier la liste des types'})
+          , DCreate(BUTTON, {type:BUTTON, class:'modify btn-modify-types', title: T('tit-modify-type-list'), append:[
+              DCreate(IMG, {src: 'img/btn-edit.png', alt: 'Modifier la liste des types'})
             ]})
-          , DCreate('BUTTON', {type:'button', class:'info btn-info-proc', append:[
-              DCreate('IMG', {src: 'img/picto_info_dark.png', alt: 'Information sur le procédé courant', style:`visibility:${type === 'proc'?'visible':'hidden'}`})
+          , DCreate(BUTTON, {type:BUTTON, class:'info btn-info-proc', append:[
+              DCreate(IMG, {src: 'img/picto_info_dark.png', alt: 'Information sur le procédé courant', style:`visibility:${type === 'proc'?'visible':'hidden'}`})
             ]})
         )
       }
-      dom.push(DCreate('DIV',{class:`div-form div-${type}-types`, append:fieldsType}))
+      dom.push(DCreate(DIV,{class:`div-form div-${type}-types`, append:fieldsType}))
     }
 
     if( type === 'scene' ){
-      dom.push(DCreate('DIV', {class:'div-form', append:[
-          DCreate('LABEL', {inner: 'Num.'})
-        , DCreate('INPUT', {type:'text', id: my.fId('numero'), class:'temps-secondes', disabled:'DISABLED'})
-        , DCreate('SELECT', {id:my.fId('lieu'), append:[
+      dom.push(DCreate(DIV, {class:'div-form', append:[
+          DCreate(LABEL, {inner: 'Num.'})
+        , DCreate(INPUT, {type:'text', id: my.fId('numero'), class:'temps-secondes', disabled:'DISABLED'})
+        , DCreate(SELECT, {id:my.fId('lieu'), append:[
             DCreate(OPTION, {value: 'int', inner: 'INT.'})
           , DCreate(OPTION, {value: 'ext', inner: 'EXT.'})
           , DCreate(OPTION, {value: 'extint', inner: 'INT. & EXT.'})
           , DCreate(OPTION, {value: 'n/d', inner: 'N/D'})
           ]})
-        , DCreate('SELECT', {id: my.fId('effet'), append: [
+        , DCreate(SELECT, {id: my.fId('effet'), append: [
             DCreate(OPTION, {value:'jour',   inner:'JOUR'})
           , DCreate(OPTION, {value:'nuit',   inner:'NUIT'})
           , DCreate(OPTION, {value:'soir',   inner:'SOIR'})
@@ -100,20 +100,28 @@ Object.assign(EventForm.prototype,{
         ]}))
     } // si scène
 
-    dom.push(DCreate('DIV', {class:'div-form', append:[
-        DCreate('LABEL', {for: my.fId('titre'), inner: type === 'scene' ? 'Pitch' : 'Titre générique (optionnel)'})
-      , DCreate('INPUT', {type:'TEXT', id:my.fId('titre'), class:'bold'})
+    dom.push(DCreate(DIV, {class:'div-form', append:[
+        DCreate(LABEL, {for: my.fId('titre'), inner: type === 'scene' ? 'Pitch' : 'Titre générique (optionnel)'})
+      , DCreate(INPUT, {type:'TEXT', id:my.fId('titre'), class:'bold'})
       ]}))
 
+    // La case à cocher pour dire que l'event est lié à l'image de son
+    // temps (qu'il faut donc l'afficher)
+    dom.push(DCreate(DIV,{class:'div-form align-middle',append:[
+        DCreate(INPUT,{type:'checkbox',id:my.fId('curimage')})
+      , DCreate(LABEL,{attrs:{for:my.fId('curimage')}, inner:'Lié à l’image courante'})
+      , DCreate(IMG, {src:'img/picto_info_dark.png', class:'info-curimage small', alt: '?'})
+    ]}))
 
-    var parentDesign = [DCreate('SPAN', {class:'small', inner:'PARENT (glisser ici l’event parent — '})]
-    if(type==='dyna') parentDesign.push(DCreate('SPAN', {class:'small italic', inner:'l’objectif du sous-objectif ou du moyen, l’obstacle du conflit, etc. — '}))
-    parentDesign.push(DCreate('SPAN', {class:'small italic', inner:'utilisez par exemple un Eventer)'}))
-    dom.push(DCreate('DIV', {class:'div-form', append:[
-        DCreate('DIV', {class:'event-parent cadre', append:[
-          DCreate('DIV', {class:'parent-designation small', append:parentDesign})
+
+    var parentDesign = [DCreate(SPAN, {class:'small', inner:'PARENT (glisser ici l’event parent — '})]
+    if(type==='dyna') parentDesign.push(DCreate(SPAN, {class:'small italic', inner:'l’objectif du sous-objectif ou du moyen, l’obstacle du conflit, etc. — '}))
+    parentDesign.push(DCreate(SPAN, {class:'small italic', inner:'utilisez par exemple un Eventer)'}))
+    dom.push(DCreate(DIV, {class:'div-form', append:[
+        DCreate(DIV, {class:'event-parent cadre', append:[
+          DCreate(DIV, {class:'parent-designation small', append:parentDesign})
         ]})
-      , DCreate('INPUT', {type:'HIDDEN', id:my.fId('parent'), value:''})
+      , DCreate(INPUT, {type:'HIDDEN', id:my.fId('parent'), value:''})
       ]}))
 
     label = (typ => {
@@ -126,10 +134,10 @@ Object.assign(EventForm.prototype,{
     })(type)
 
     if(undefined !== label){
-      dom.push(DCreate('DIV', {class:'div-form', append:[
-          DCreate('LABEL', {inner:label})
-        , DCreate('SELECT', {class:'decors', style:`display:${type==='scene'?'block':'none'};`})
-        , DCreate('INPUT', {type:'TEXT', id: my.fId('shorttext1')})
+      dom.push(DCreate(DIV, {class:'div-form', append:[
+          DCreate(LABEL, {inner:label})
+        , DCreate(SELECT, {class:'decors', style:`display:${type==='scene'?'block':'none'};`})
+        , DCreate(INPUT, {type:'TEXT', id: my.fId('shorttext1')})
       ]}))
     }
 
@@ -143,17 +151,17 @@ Object.assign(EventForm.prototype,{
     })(type)
 
     if(undefined!==label){
-      var ds = [DCreate('LABEL',{inner:label})]
-      if(type === 'scene') ds.push(DCreate('SELECT', {class:'sous_decors'}))
-      ds.push(DCreate('INPUT', {type:'TEXT', id:my.fId('shorttext2')}))
+      var ds = [DCreate(LABEL,{inner:label})]
+      if(type === 'scene') ds.push(DCreate(SELECT, {class:'sous_decors'}))
+      ds.push(DCreate(INPUT, {type:'TEXT', id:my.fId('shorttext2')}))
       if(type === 'qrd'){
-        ds.push(DCreate('DIV', {class:'right', append:[
-                  DCreate('LABEL', {inner:'Temps'})
-                , DCreate('INPUT', {type:'TEXT', class:'horloge', id:my.fId('tps_reponse')})
+        ds.push(DCreate(DIV, {class:'right', append:[
+                  DCreate(LABEL, {inner:'Temps'})
+                , DCreate(INPUT, {type:'TEXT', class:'horloge', id:my.fId('tps_reponse')})
                 ]})
         )
       }
-      dom.push(DCreate('DIV', {class:'div-form', append:ds}))
+      dom.push(DCreate(DIV, {class:'div-form', append:ds}))
     }
 
     label = (typ => {
@@ -164,8 +172,8 @@ Object.assign(EventForm.prototype,{
         default: return 'Description'
       }
     })(type)
-    dom.push(DCreate('DIV',{class:'div-form', append:[
-        DCreate('LABEL', {inner:label})
+    dom.push(DCreate(DIV,{class:'div-form', append:[
+        DCreate(LABEL, {inner:label})
       , DCreate('TEXTAREA', {id: my.fId('longtext1'), attrs:{rows: '4'}})
       ]}))
 
@@ -178,8 +186,8 @@ Object.assign(EventForm.prototype,{
       }
     })(type)
     if(undefined !== label){
-      dom.push(DCreate('DIV', {class:'div-form', append:[
-          DCreate('LABEL', {inner:label})
+      dom.push(DCreate(DIV, {class:'div-form', append:[
+          DCreate(LABEL, {inner:label})
         , DCreate('TEXTAREA', {id: my.fId('longtext2'), attrs:{rows:'4'}})
         ]}))
     }
@@ -193,8 +201,8 @@ Object.assign(EventForm.prototype,{
       }
     })(type)
     if(undefined !== label){
-      dom.push(DCreate('DIV', {class:'div-form', append:[
-          DCreate('LABEL', {inner:label})
+      dom.push(DCreate(DIV, {class:'div-form', append:[
+          DCreate(LABEL, {inner:label})
         , DCreate('TEXTAREA', {id: my.fId('longtext3'), attrs:{rows:'4'}})
         ]}))
     }
@@ -207,24 +215,24 @@ Object.assign(EventForm.prototype,{
       }
     })(type)
     if(undefined !== label){
-      dom.push(DCreate('DIV', {class:'div-form', append:[
-          DCreate('LABEL', {inner:label})
+      dom.push(DCreate(DIV, {class:'div-form', append:[
+          DCreate(LABEL, {inner:label})
         , DCreate('TEXTAREA', {id: my.fId('longtext4'), attrs:{rows:'4'}})
         ]}))
     }
 
     /*  Buttons de pas de page */
-    dom.push(DCreate('DIV', {class:'event-form-buttons no-user-selection', append:[
-        DCreate('BUTTON', {type:'button', id:my.fId('destroy'), class:'btn-form-destroy warning small fleft', inner:'Détruire'})
-      , DCreate('BUTTON', {inner:'Renoncer', class:'btn-form-cancel cancel small fleft', type:'button'})
-      , DCreate('BUTTON', {inner:'__SAVE_BUTTON_LABEL__', class:'btn-form-submit main-button', type:'button'})
+    dom.push(DCreate(DIV, {class:'event-form-buttons no-user-selection', append:[
+        DCreate(BUTTON, {type:BUTTON, id:my.fId('destroy'), class:'btn-form-destroy warning small fleft', inner:'Détruire'})
+      , DCreate(BUTTON, {inner:'Renoncer', class:'btn-form-cancel cancel small fleft', type:BUTTON})
+      , DCreate(BUTTON, {inner:'__SAVE_BUTTON_LABEL__', class:'btn-form-submit main-button', type:BUTTON})
       ]}))
 
     /*  PIED DE PAGE */
-    dom.push(DCreate('SECTION', {class:'footer no-user-selection', append:[
-        DCreate('SPAN', {class:'event-type', inner: type.toUpperCase()})
-      , DCreate('SPAN', {class:'event-id', inner: '...'})
-      , DCreate('SPAN', {class:'event-time', inner: '...'})
+    dom.push(DCreate(SECTION, {class:'footer no-user-selection', append:[
+        DCreate(SPAN, {class:'event-type', inner: type.toUpperCase()})
+      , DCreate(SPAN, {class:'event-id', inner: '...'})
+      , DCreate(SPAN, {class:'event-time', inner: '...'})
       ]}))
 
     return (DCreate('FORM', {class:'form', id:'event-__EID__-form', append: dom})).outerHTML
@@ -284,6 +292,9 @@ Object.assign(EventForm.prototype,{
     // Pour savoir si l'on doit éditer dans les champs de texte ou
     // dans le mini-writer
     UI.miniWriterizeTextFields(this.jqObj, this.a.options.get('option_edit_in_mini_writer'))
+
+    // Pour tous les events, le champ permet d'associer à une image
+    this.jqObj.find('img.info-curimage').on('click', this.showExplanationCurImage.bind(this))
 
     // Si l'event est une scène, on observe le menu décor et
     // sous décor

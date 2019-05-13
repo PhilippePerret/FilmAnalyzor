@@ -70,10 +70,10 @@ Object.assign(FAImage.prototype,{
 
 Object.defineProperties(FAImage.prototype,{
   div:{get(){
-    return DCreate('DIV',{id: this.domId, class:'div-image image', attrs:{'data-type':'image', 'data-id':this.fname}
+    return DCreate(DIV,{id: this.domId, class:'div-image image', attrs:{'data-type':'image', 'data-id':this.fname}
       , append:[
-          DCreate('IMG',{src:this.path, class:'image-overview'})
-        , DCreate('SPAN',{inner:this.fname, class:'small indent2'})
+          DCreate(IMG,{src:this.path, class:'image-overview'})
+        , DCreate(SPAN,{inner:this.fname, class:'small indent2'})
         ]})
   }}
 , domId:{get(){return this._domId||defP(this,'_domId', `image-${this.affixe}`)}}

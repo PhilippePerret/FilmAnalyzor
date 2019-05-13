@@ -4,7 +4,9 @@
 // TODO Peut-être les mettre dans des fichier JSON à requérir, en fonction de
 // la langue
 const ERRORS = {
-  "--- ANALYSE ---":""
+  "--- GÉNÉRAL ---":""
+, "too-much-tries": "Trop de tentatives de chargement. Un composant empêche le chargement. J’interromps la procédure."
+, "--- ANALYSE ---":""
 , "analyse-locked-no-save": "L'analyse est verrouillée, impossible de la modifier."
 , "invalid-folder": "Le dossier \"%{fpath}\" n’est pas un dossier d’analyse valide."
 , "already-analyse-folder": "Ce dossier est déjà un dossier d'analyse ! Utiliser le menu « Ouvrir… » pour l'ouvrir."
@@ -41,6 +43,7 @@ const ERRORS = {
 , "idee-description-required":"La description de l'idée est requise (précise si possible)"
 , "idee-setup-required":"L'installation de l'idée est requise"
 , "no-event-with-filter":"Aucun event n'a été trouvé avec le filtre demandé."
+, "explaination-cur-image":"Si cette case est cochée, l'event est lié à l'image de son temps courant, c'est-à-dire que cette image sera affichée en regard de l'affichage de l'event.\n\nOn pourra définir une légende, une taille et une position en éditant l'image depuis le listing des images."
 , "--- FLYING WINDOW ---":""
 , "fwindow-required-owner": "Pour instancier une flying-window (FWindow), le propriétaire est requis en premier argument."
 , "fwindow-required-data": "Pour instancier une Flying-Window (FWindow), il faut deux arguments : le propriétaire et les data."
@@ -76,6 +79,8 @@ const ERRORS = {
 , "confirm-destroy-brin": "Voulez-vous vraiment détruire à tout jamais le %{ref} ?"
 , "--- IMAGES ---":""
 , "explication-images-listing": "Pour ajouter des images, se placer à l'endroit voulu dans le film et utiliser le menu « Vidéo > Prendre l'image courante »."
+, "confirm-current-image":"L'image courante a été figée avec succès ! Pour l'insérer, glisser son icône depuis le reader."
+, "unfound-current-image":"Bizarrement, l'image courante n'a pas été créée. Consulter la console pour en trouver la raison."
 , "--- DIVERS ---":""
 , "otime-arg-required": "Cette méthode requiert un argument temps de type OTime"
 }

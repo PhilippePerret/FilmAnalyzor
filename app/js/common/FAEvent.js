@@ -4,7 +4,7 @@ class FAEvent {
 // ---------------------------------------------------------------------
 //  CLASSE
 
-static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duree', 'parent', ['content', 'longtext1'], 'associates']}
+static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duree', 'parent', 'curimage', ['content', 'longtext1'], 'associates']}
 static get TEXT_PROPERTIES(){return ['titre', 'content']}
 
 static get ALL_PROPS(){
@@ -127,10 +127,8 @@ static get shortName(){return this._shortName||defP(this,'_shortName', this.data
 **/
 constructor(analyse, data){
   this.analyse  = this.a = analyse
-  this.metaType = 'event' // alors que le type sera 'scene', 'dialog', etc.
-
   this.dispatch(data)
-
+  this.metaType = 'event' // alors que le type sera 'scene', 'dialog', etc.
   this.id = parseInt(this.id,10)
 
 }
@@ -589,6 +587,11 @@ get locator(){return this.analyse.locator}
 // Cf. Le manuel de développement
 get btnPlay(){return this._btnPlay||defP(this,'_btnPlay',new BtnPlay(this))}
 
+// Les events n'étant pas tout à fait des FAElement(s), il faut définir
+// ces méthodes
+domC(prop){return `${this.domClass}-${prop}`}
+get domClass(){return this._domid || defP(this,'_domid',`event-${this.id}`)}
+
 get domReaderId(){return this._domreaderid||defP(this,'_domreaderid',`reader-${this.domId}`)}
 get domReaderObj(){return this._domreaderobj||defP(this,'_domreaderobj',this.jqReaderObj?this.jqReaderObj[0]:undefined)}
 get jqReaderObj(){
@@ -598,6 +601,47 @@ get jqReaderObj(){
   }
   return this._jqreaderobj
 }
+
+// ---------------------------------------------------------------------
+//  MÉTHODES CONCERNANT L'IMAGE COURANTE
+
+/**
+  @return {FAImage} Instance de l'image de curimage, si l'event est lié
+**/
+get faimage(){
+  if(!this.needCurImage()) return
+  if(undefined === this._faimage) this._faimage = FAImage.get(this.curImageId)
+  return this._faimage
+}
+
+// Retourne le code pour afficher l'image
+curImageDiv(options){
+  let divs, div, ipath
+  if(false == this.existsCurImage()){
+    FAImage.shotFrame(this.otime)
+  } else {
+    ipath = this.curimagePath
+  }
+  divs = [DCreate(IMG,{src:ipath, class:this.domC('curimage')})]
+  if(options && !options.no_legend && this.faimage.legend){
+    divs.push(DCreate(DIV,{class:'img-legend', inner:this.faimage.f_legend}))
+  }
+  div = DCreate(DIV,{id:`div-${this.domId}-curimage`, class:'curimage', append:divs})
+
+  if(options && options.as === 'string') return div.outerHTML
+  return div
+}
+// retourne true si l'event est liée à son image courante
+needCurImage(){return !!this.curimage}
+// retourne true si l'image courante de l'event existe
+existsCurImage(){
+  return fs.existsSync(this.curImagePath)
+}
+// retourne le path de l'image courante
+get curImageId(){ return this._curimageid    || defP(this,'_curimageid',   FAImage.fname2id(this.curImageName))}
+get curImageName(){return this._curimagename || defP(this,'_curimagename', FAImage.time2fname(this.otime))}
+get curImagePath(){return this._curimagepath || defP(this,'_curimagepath', FAImage.pathOf(this.curImageName))}
+
 
 } // /class FAEvent
 

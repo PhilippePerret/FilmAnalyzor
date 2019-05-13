@@ -44,6 +44,11 @@
   background-color:#CC7777!important;
 }
 
+/* --- IMAGE COURANTE --- */
+.event .curimage {
+  width:100px!important; /* pour le moment */
+}
+
 /* --------------------------------------------------------------------- */
 /* --- SCÈNES --- */
 

@@ -2,6 +2,14 @@
 .small {
   font-size: 0.75em;
 }
+img.small {
+  width:18px;
+}
+.align-middle,
+.align-middle > *
+{
+  vertical-align:middle;
+}
 .tiny {
   font-size: 0.65em;
 }

@@ -340,8 +340,7 @@ createNewEventer(){
 }
 
 createShotWithCurrentPicture(){
-  let method = App.loadTool('shot_with_current_picture')
-  method.bind(this)()
+  FAImage.shotFrame()
 }
 
 // ---------------------------------------------------------------------

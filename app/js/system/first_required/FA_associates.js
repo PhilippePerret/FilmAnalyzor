@@ -88,21 +88,26 @@ let ASSOCIATES_COMMON_METHODS = {
 
     if(options.title){
       if(true === options.title) options.title = 'Éléments associés'
-      divs.push(DCreate('H3',{inner:options.title}))
+      divs.push(DCreate(H3,{inner:options.title}))
     }
     if(this.associatesCounter){
+      let assOpts = Object.assign({}, options)
+      assOpts.as = 'dom'
+      assOpts.owner = this
+      let flag = LABELLED
+      if(!options.forBook) flag = flag | DISSOCIABLE
       for(var assoType in this.associates){
         this.associates[assoType].map(assid => {
-          divs.push(this.a.instanceOfElement({type:assoType,id:assid}).as('associate', DISSOCIABLE|LABELLED, {owner: this, as:'dom'}))
+          divs.push(this.a.instanceOfElement({type:assoType,id:assid}).as('associate', flag, assOpts))
         })
       }
     } else {
-      divs.push(DCreate('DIV',{class:'italic small indent2', inner:'(Aucun élément associé)'}))
+      divs.push(DCreate(DIV,{class:'italic small indent2', inner:'(Aucun élément associé)'}))
     }
 
     // On retourne le résultat
     switch (options.as) {
-      case 'string': return DCreate('DIV', {append:divs}).innerHTML
+      case 'string': return DCreate(DIV, {append:divs}).innerHTML
       default: return divs // liste des divs
     }
   }

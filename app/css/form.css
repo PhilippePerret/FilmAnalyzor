@@ -84,6 +84,7 @@ form.form-edit-event .div-form input[type="text"].horloge {
 }
 
 form.form-edit-event label {
+  display:inline;
   font-size:0.85em;
   color:#555555;
   font-style:italic;

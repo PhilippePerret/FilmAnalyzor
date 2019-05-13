@@ -1,6 +1,12 @@
 # SUR LE GRILL
 
-* Possibilité de faire une sortie de type "rapport de visionnage" à expérimenter avec le film de Jean-François. Je pense qu'il suffit de déterminer correctement le building-script en définissant que les remarques sont les notes (Par exemple 'BUILD Rapport de notes').
+* RAPPORT DE VISIONNAGE
+  - Pour les events scène, mettre seulement le pitch (pas d'associés, rien)
+
+* Idée : qu'il y ait une case à cocher dans le formulaire d'event qui dise "Associer à l'image du temps". Quand cette case est cochée, pour le livre, on fait une image du temps donné.
+  => Ajouter toutes les fonctions de traitement de l'image aux events
+      C'est-à-dire : la possibilité de créer une image au temps de l'event
+      Note : cette image sera bien sûr listée dans la liste des images
 
 ### Traiter :
 

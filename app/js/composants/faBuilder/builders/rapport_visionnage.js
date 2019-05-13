@@ -9,24 +9,43 @@ module.exports = function(options){
   my.log("* Construction du rapport de visionnage du film…")
   let str = ''
   str += '<h1 id="brins-title">Rapport de visionnage</h1>'
-  str += '<section id="rapport-visionnage">'
   // str += my.generalDescriptionOf('rapport_visionnage')
-  str += new RapportVisionnageBuilder().output({format:'html'})
-  str += '</section>'
+  str += new RapportVisionnageBuilder(current_analyse).output({format:'html'})
   return str
 }
 
 class RapportVisionnageBuilder {
-
+constructor(analyse){
+  this.analyse = this.a = analyse
+}
 /**
   Pour procéder à ce rapport, on va :
     1. rassembler tous les éléments (notes, scènes, infos, etc.)
     2 les classer dans leur ordre d'arrivée
     3 les afficher dans le rapport
 **/
-output(option){
-  return '<div>Je suis le rapport de visionnage</div>'
+output(options){
+  return this.formateAllElements(options).outerHTML
+}
+
+formateAllElements(){
+  var divs = []
+    , div
+  this.a.events.map(ev => {
+    div = ev.asBook({as:'dom'})
+    if(Array.isArray(div)){
+      div = div.length == 0 ? null : ev.inItsDiv(div)
+    }
+    if(!div){
+      console.error(`asBook de l'event ${ev} ne retourne aucun élément.`)
+    } else {
+      divs.push(div)
+    }
+  })
+  let section = DCreate(SECTION,{id:'rapport-visionnage', class:'rapport-visionnage scenier', append:divs})
+  divs = null
+  return section
 }
 
 
-}// /class
+}// /class RapportVisionnageBuilder
