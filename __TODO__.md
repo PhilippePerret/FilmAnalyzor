@@ -1,16 +1,10 @@
 # SUR LE GRILL
 
 
-* Ajouter la propriété `position` aux images et mettre un menu :
-  'flottant à gauche', 'flottant à droite', 'au-dessus', 'en dessous', etc.
+* En cliquant sur l'image (dans le reader par exemple), on doit pouvoir l'éditer
 
 * RAPPORT DE VISIONNAGE
-  - Pour les events scène, mettre seulement le pitch (pas d'associés, rien)
-
-* Idée : qu'il y ait une case à cocher dans le formulaire d'event qui dise "Associer à l'image du temps". Quand cette case est cochée, pour le livre, on fait une image du temps donné.
-  => Ajouter toutes les fonctions de traitement de l'image aux events
-      C'est-à-dire : la possibilité de créer une image au temps de l'event
-      Note : cette image sera bien sûr listée dans la liste des images
+  - Laisser plus d'air sous la scène
 
 ### Traiter :
 

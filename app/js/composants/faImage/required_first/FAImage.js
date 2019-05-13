@@ -5,8 +5,20 @@ class FAImage extends FAElement {
 // ---------------------------------------------------------------------
 //  CLASS
 
-static get PROPS(){return ['id','legend','size','time','path','fname','associates']}
+static get PROPS(){return ['id','legend','size','position','time','path','fname','associates']}
 
+static get positionsValues(){
+  if(undefined === this._positionsvalues){
+    this._positionsvalues = {
+      '':'Mettre…'
+    , 'float-left': 'Flottant à gauche'
+    , 'float-right': 'Flottant à droite'
+    , 'above': 'Au-dessus'
+    , 'below': 'En dessous (inusité)'
+    }
+  }
+  return this._positionsvalues
+}
 /**
   Retourne l'image d'identifiant +img_id+ (instance {FAImage})
 **/
@@ -44,7 +56,6 @@ static time2fname(time){
 
 // Retourne le path de l'image de nom +fname+
 static pathOf(fname){
-  console.log(`pathOf(fname=${fname})`)
   return path.resolve(path.join(this.a.folderPictures, fname))
 }
 
@@ -185,6 +196,8 @@ toString(){return `Image à ${this.otime.horloge_simple}`}
 get id(){return this._id} // pour associés
 set id(v){this._id = v}
 get legend(){return this._legend}
+get position(){return this._position}
+get size(){return this._size}
 get fname(){return this._fname}
 get path(){return this._path || defP(this,'_path',path.join(current_analyse.folderPictures,this.fname))}
 get affixe(){return this._affixe || defP(this,'_affixe',path.basename(this.fname,path.extname(this.fname)))}

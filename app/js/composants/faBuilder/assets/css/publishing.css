@@ -82,6 +82,11 @@ div.curimage
   margin:0 0.85em 0.85em 0;
   float:left;
 }
+div.curimage .img-legend {
+  font-style:italic;
+  text-align:center;
+  font-size:0.85em;
+}
 
 /*
   Les liens pour voir les scènes (et autres events à ajouter ici), s'ils suivent
@@ -589,13 +594,17 @@ section#rapport-visionnage {
 
 }
 
-section#rapport-visionnage > div {
+section#rapport-visionnage > div:not(.scene) {
   margin-bottom:1em;
+}
+section#rapport-visionnage > div.scene {
+  margin-bottom:3.5em;
 }
 
 section#rapport-visionnage > div:not(.scene) {
   margin-left:2em;
 }
+
 
 section#rapport-visionnage .scene-heading .scene-numero {
   width:auto!important;
