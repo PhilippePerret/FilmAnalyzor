@@ -17,9 +17,13 @@ asNote(options){
   if(undefined === options) options = {}
   var divs = []
   if(undefined === this.indice_note) this.indice_note = FATexte.newIndiceNote()
+  if(options.curimage && this.needCurImage()){
+    divs.push(this.curImageDiv(options))
+  }
   divs.push(DCreate(SPAN,{class:'note-indice',inner:`[${this.indice_note}]`}))
   divs.push(DCreate(SPAN,{class:'', inner: DFormater(this.content)}))
   if(options.linked){divs.push(this.editLink())}
+  divs.push(DCreate(DIV,{style:'clear:both;'}))
   divs = DCreate(SPAN,{class:'note', append:divs})
   if (options.as === 'string'){
     return divs.outerHTML
@@ -29,9 +33,7 @@ asNote(options){
 }
 
 , asBook(opts){
-    if(undefined === opts) opts = {}
-    opts.forBook = true
-    return this.asNote(opts)
+    return this.asNote(Object.assign(opts||{}, {forBook:true, curimage:true}))
   }
 
 })

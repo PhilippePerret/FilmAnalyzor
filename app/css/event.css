@@ -44,9 +44,25 @@
   background-color:#CC7777!important;
 }
 
-/* --- IMAGE COURANTE --- */
-.event .curimage {
-  width:100px!important; /* pour le moment */
+/* --- IMAGE ASSOCIÉE À EVENT --- */
+
+img.curimage,
+div.curimage {
+  margin:0 0.85em 0.85em 0;
+}
+div.curimage {
+  float:left;
+}
+
+#reader .curimage,
+#reader div.curimage img
+{
+  width:100px;
+}
+*:not(.reader-event) .curimage,
+*:not(.reader-event) div.curimage img
+{
+  width:200px;
 }
 
 /* --------------------------------------------------------------------- */

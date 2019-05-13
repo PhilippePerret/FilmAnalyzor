@@ -30,14 +30,15 @@ asPitch(opts){
 asShort(opts){
   // console.log("-> FAEscene#asShort")
   let divs = []
-  divs.push(DCreate(SPAN, {class: 'scene-num', inner: `sc. ${this.numero}`}))
+  divs.push(this.f_scene_heading(opts))
+  // divs.push(DCreate(SPAN, {class: 'scene-num', inner: `sc. ${this.numero}`}))
   // Si le résumé contient le pitch, on n'a pas besoin de le marquer
+  var divsPitch = []
   if (!this.resume.match(new RegExp(`${RegExp.escape(this.pitch)}`))){
-    divs.push(DCreate(SPAN, {class: 'scene-pitch', inner: DFormater(this.pitch)}))
+    divsPitch.push(DCreate(SPAN, {class: 'scene-pitch', inner: DFormater(this.pitch)}))
   }
-  if(!(opts && opts.forBook)){
-    divs.push(DCreate(SPAN, {class:'scene-resume', inner: DFormater(this.resume)}))
-  }
+  divsPitch.push(DCreate(SPAN, {class:'scene-resume', inner: DFormater(this.resume)}))
+  divs.push(DCreate(DIV,{class:'scene-pitch', append:divsPitch}))
   return divs
 }
 

@@ -616,17 +616,11 @@ get faimage(){
 
 // Retourne le code pour afficher l'image
 curImageDiv(options){
-  let divs, div, ipath
-  if(false == this.existsCurImage()){
-    FAImage.shotFrame(this.otime)
-  } else {
-    ipath = this.curimagePath
-  }
-  divs = [DCreate(IMG,{src:ipath, class:this.domC('curimage')})]
-  if(options && !options.no_legend && this.faimage.legend){
-    divs.push(DCreate(DIV,{class:'img-legend', inner:this.faimage.f_legend}))
-  }
-  div = DCreate(DIV,{id:`div-${this.domId}-curimage`, class:'curimage', append:divs})
+  if(!this.faimage) return
+  this.existsCurImage() || FAImage.shotFrame(this.otime)
+  if(undefined === options) options = {}
+  options.imgClass = this.domC('curimage')
+  let div = this.faimage.asDiv(options)
 
   if(options && options.as === 'string') return div.outerHTML
   return div

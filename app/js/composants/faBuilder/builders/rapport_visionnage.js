@@ -32,7 +32,11 @@ formateAllElements(){
   var divs = []
     , div
   this.a.events.map(ev => {
-    div = ev.asBook({as:'dom'})
+    if(ev.type === 'scene'){
+      div = ev.asShort({as:'dom', forBook:true})
+    } else {
+      div = ev.asBook({as:'dom'})
+    }
     if(Array.isArray(div)){
       div = div.length == 0 ? null : ev.inItsDiv(div)
     }

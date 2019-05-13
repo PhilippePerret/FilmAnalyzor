@@ -63,6 +63,26 @@ pre, pre * {
   padding-left: 4em;
 }
 
+/* --- IMAGE ASSOCIÉE À EVENT --- */
+
+img.curimage,
+div.curimage
+{
+  width:200px!important; /* pour le moment */
+  margin:0 0.85em 0.85em 0;
+}
+img.curimage,
+div.curimage img
+{
+  width:200px!important; /* pour le moment */
+}
+img.curimage,
+div.curimage
+{
+  margin:0 0.85em 0.85em 0;
+  float:left;
+}
+
 /*
   Les liens pour voir les scènes (et autres events à ajouter ici), s'ils suivent
   un div (donc display:block) doivent se mettre à droite. Donc on les transforme
@@ -580,6 +600,9 @@ section#rapport-visionnage > div:not(.scene) {
 section#rapport-visionnage .scene-heading .scene-numero {
   width:auto!important;
 }
-section#rapport-visionnage .scene-content {
+section#rapport-visionnage .scene-pitch {
   margin-left:1em;
+  font-style:italic;
 }
+
+.scene-pitch + .scene-resume:before{content:' — '}
