@@ -19,6 +19,7 @@ module.exports = function(options){
 
   // console.log("cmd pandoc:", cmd)
   exec(cmd, (error, stdout, stderr) => {
+    UI.stopWait()
     if(error)throw(error)
     my.log(`=== Création du livre PDF "${dst_name}" (à partir du format ${src_format}) terminé avec succès.`)
     F.notify(`Création du livre PDF "${dst_name}" (à partir du format ${src_format}) terminé avec succès.`)

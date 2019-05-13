@@ -1,6 +1,5 @@
 # SUR LE GRILL
 
-* Mettre un boucle d'attente pendant la fabrication du PDF
 
 * Ajouter la propriété `position` aux images et mettre un menu :
   'flottant à gauche', 'flottant à droite', 'au-dessus', 'en dessous', etc.

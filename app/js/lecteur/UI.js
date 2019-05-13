@@ -56,6 +56,7 @@ const UI = {
 // ---------------------------------------------------------------------
 //  Pour les boucles d'attente
 , startWait(message){
+    if (this.waiting) return
     if(undefined !== message) message += ' Merci de patienter…'
     $('span#waiting-loop-message').html(message || '')
     this.divWaitingLoop.show()

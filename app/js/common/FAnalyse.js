@@ -213,7 +213,8 @@ setTitle(){
 //  MÉTHODES D'AFFICHAGE
 
 exportAs(format){
-  if('undefined'===typeof FABuilder) return this.loadBuilder(this.exportAs.bind(this,format))
+  UI.startWait('Export au format PDF.')
+  if(NONE === typeof(FABuilder)) return this.loadBuilder(this.exportAs.bind(this,format))
   FABuilder.createNew().exportAs(format)
 }
 

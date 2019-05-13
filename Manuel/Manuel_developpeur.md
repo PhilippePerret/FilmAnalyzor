@@ -6,6 +6,7 @@
 * [Point d'entrée](#point_dentree)
 * [Principes généraux](#principes_generaux)
   * [Fonctionnalité « One Key Pressed »](#one_key_pressed_feature)
+  * [Messages d'attente](#waiting_messages)
 * [Essais/travail du code](#travail_code_sandbox_run)
 * [Chargement de dossier de modules](#loading_modules_folders)
   * [Chargement de dossiers JS au lancement de l'application](#load_folders_at_launching)
@@ -80,6 +81,25 @@ Permet de régler des choses en tenant une touche appuyée. Par exemple, quand o
 Cette fonctionnalité est principalement définies dans le fichier `app/js/common/KeyUpAndDown.js`, dans l'objet `KeyUpAndDown`. La touche pressée est captée dans `onKeyDown` et mise dans la propriété `keyPressed` de l'objet. Si on la relève tout de suite, `keyPressed` est effacée dans `onKeyUp`. Si, en revanche, d'autres touches sont pressées avant que la touche ne soit relevée, on peut offrir des traitements.
 
 On peut définir dans la propriété `methodOnKeyPressedUp` de l'objet `KeyUpAndDown` la méthode qui doit être appelée quand on relève la touche. Cela permet de ne pas multiplier un traitement coûteux à répétition. Par exemple, sans cette méthode, avec la touche « v » appuyée, on changerait la taille de la vidéo **et on l'enregistrerait dans le fichier `options.json`** chaque fois que la touche flèche haut ou bas serait appuyée. Puisque c'est une touche « à répétition » (i.e. qu'on peut maintenir pour répéter la touche), l'enregistrement serait appelé de façon intensive. Au lieu de ça, la taille de la vidéo n'est enregistrée que lorsqu'on relève la touche (cf. dans la fichier `KeyUpAndDown.js` le détail de cette implémentation).
+
+
+### Messages d'attente {#waiting_messages}
+
+Pour afficher un message d'attente, utiliser :
+
+```javascript
+
+UI.startWait('<message>')
+
+```
+
+Pour interrompre le message d'attene, utiliser :
+
+```javascript
+
+UI.stopWait()
+
+```
 
 ---------------------------------------------------------------------
 
