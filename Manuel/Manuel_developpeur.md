@@ -18,6 +18,7 @@
   * [Actualisation automatique du numéro de scène courante](#autoupdate_scene_courante)
   * [Enregistrement des events](#saving_events)
 * [Travail avec les events](#working_with_events)
+  * [Affichage de la liste des events](#display_falisting_events)
   * [Filtrage des events](#filtering_events)
   * [Association des events](#associations_elements)
 * [Autres données de l'analyse](#analyse_autres_donnees)
@@ -259,6 +260,15 @@ Mais les events devenant très nombreux à l'avancée de l'analyse (pouvant dép
 C'est la classe `FAEvent` qui s'en charge, dans sa méthode `saveModifieds`. Ces enregistrements sont faits chaque fois qu'on enregistre la liste de tous les events et ils sont placés dans le dossier `.backups/events` de l'analyse.
 
 ## Travail avec les events {#working_with_events}
+
+### Affichage de la liste des events {#display_falisting_events}
+
+Pour le détail de l'utilisation des listes d'*events* en tant qu'analyste, voir le manuel de l'analyste.
+
+Pour ce qui est de l'implémentation, il faut savoir qu'il existe deux moyens différents utilisés pour afficher les *events* :
+
+* les [`FAListing`(s)](#falisting_elements) qui permet d'afficher facilement et rapidement un type particulier,
+* les [`eventers`](#filtering_events) qui permettent d'appliquer un filtre et de choisir plusieurs types d'*events* en même temps.
 
 ### Filtrage des events {#filtering_events}
 

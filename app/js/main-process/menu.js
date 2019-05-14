@@ -517,6 +517,22 @@ const DATA_MENUS = [
               , {label: 'Event', accelerator: 'CmdOrCtrl+Alt+E', click: ()=>{createEvent('event')}}
             ]
         }
+      , {
+            label: 'Liste des… (CMD+clic btn)'
+          , submenu: [
+                {label: 'Scènes', click: ()=>{listEvent('scene')}}
+              , {label: 'Nœuds STT', click: ()=>{listEvent('stt')}}
+              , {label: 'O.O.C.', click: ()=>{listEvent('dyna')}}
+              , {label: 'Procédés', click: ()=>{listEvent('proc')}}
+              , {label: 'Notes', click: ()=>{listEvent('note')}}
+              , {label: 'Idées', click: ()=>{listEvent('idee')}}
+              , {label: 'Infos', click: ()=>{listEvent('info')}}
+              , {label: 'QRDs', click: ()=>{listEvent('qrd')}}
+              , {label: 'Actions', click: ()=>{listEvent('action')}}
+              , {label: 'Dialogues', click: ()=>{listEvent('dialog')}}
+              , {label: 'Events', click: ()=>{listEvent('event')}}
+            ]
+        }
     ]
   }
 
@@ -680,8 +696,11 @@ function setVideoSize(size){
 function setVideoSpeed(speed){
   mainW.webContents.send('set-video-speed', {speed: speed})
 }
-function createEvent(type){
-  mainW.webContents.send('create-event', {type: type})
+function createEvent(etype){
+  mainW.webContents.send('create-event', {type: etype})
+}
+function listEvent(etype){
+  mainW.webContents.send('list-event', {type: etype})
 }
 
 // Avant de construire le Menu, on mémorise les positions des menus

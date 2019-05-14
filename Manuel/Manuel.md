@@ -12,6 +12,7 @@
   * [Les events « Scènes »](#les_events_scenes)
     * [Décors dans les events « Scènes »](#decors_in_scenes)
   * [Les events « Notes »](#les_events_notes)
+  * [Affichages des events](#affichage_des events)
 * [Gestion des temps](#gestion_des_temps)
   * [Déplacements à l'aide de la Timeline](#move_with_timeline)
   * [Déplacements par parties/zones](#move_by_parts_and_zones)
@@ -120,6 +121,23 @@ On utilise cependant ces notes de la même manière que pour les autres types d'
 * on glisse la note — par exemple depuis le reader — sur le champ de texte.
 
 Une marque `{{event:XXX}}` est alors insérée à l'endroit du curseur, qui sera remplacé lors de la compilation par l'indice de la note en exposant, et la note — ou *les* notes seront inscrites sont le texte concerné.
+
+---------------------------------------------------------------------
+
+## [Affichages des events {#affichage_des events}
+
+Il y a deux moyens d'afficher la liste des events par type et un moyen de les afficher tous.
+
+Si un filtre doit être appliqué, pour choisir des *events* précis, alors il sera préférable d'utiliser un *Eventeur*. Tandis que l'affichage par listing permet d'afficher plus vite les events d'un type particulier — les notes, les infos, etc. — mais ne permet pas, pour le moment de les filtre. En revanche, il permet de les éditer.
+
+### Affichage par listing
+
+Utiliser un des menus `Events > Liste des… > *type d'event*` ou, plus facile encore, cliquer sur le bouton pour créer un nouvel event — dans les boutons en bas à gauche — tout en tenant la touche `CMD` appuyée.
+
+### Affichage par *Eventer*
+
+Ouvrir un *eventer* avec le menu `Events > Nouvel Eventer…` — ou activer le raccourci `CMD-MAJ-E`, puis choisissez le bouton `filtre` en haut à droite pour définir le filtre à appliquer. Recliquez le bouton `liste` qui affichera la liste de tous les *events* — et autres éléments — correspondant à votre filtre.
+
 
 ---------------------------------------------------------------------
 
