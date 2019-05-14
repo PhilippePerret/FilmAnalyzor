@@ -19,4 +19,5 @@ const EDITABLE  = 512 // L'élément est lié à son édition
 // utilisée comme flag quand on doit placer le texte, par
 // exemple, dans l'attribut `title` d'une balise.
 const ESCAPED   = 1024
-const DISSOCIABLE = 2048  // pour ajouter un lien pour dissocier l'élément
+const ASSOCIATES  = 2048
+const DISSOCIABLE = 4096  // pour ajouter un lien pour dissocier l'élément

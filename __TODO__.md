@@ -5,13 +5,10 @@
 ### Traiter :
 
 * Dans le reader
-- indiquer mieux la partie "Associés"
 - actualiser dès qu'il y a modification (vérifier qu'une association entraine la marque de modification, mais je crois que oui)
 * Supprimer l'arrière plan du mini-writer (peut-être le faire 'sortir' du bord bas ?)
 
-* Il peut arriver souvent qu'un associé n'existe plus. Il faut donc bien checker dans toutes les méthodes qui les passent en revue.
-  Peut-être pourrait-on utiliser une classe spéciale `FAUnknown` qui répondrait aux méthodes classiques en donnant l'information sur l'élément manquant (type et id)
-  On pourrait déjà s'en servir dans `FAnalyse::instanceOfElement`
+* Pour les associés qui n'existent plus, utiliser la classe `FAUnknownElement`
 
 * Essayer de généraliser l'utilisation de `iofile`, `save`, `getData` pour tous les éléments, afin de réduire considérablement les méthodes. Voir dans FAElement.js et FAImage.js
 

@@ -14,14 +14,25 @@ toString(){
   }
   return this._tostring
 }
+
+
 /**
-  Renvoie toutes les présentations possible de la scène
+  Renvoie toutes les présentations possible de l'event, quel que soit son
+  type.
+
+  Note
+  ----
+    Pour les affichages particuliers, on ne doit pas implémenter cette
+    méthode pour le type d'event concerné, mais plutôt définir une
+    méthode as<Format> qui retournera l'élément voulu.
 
   @param {String} format  Le format de retour
   @param {Number} flag    Le drapeau permettant de déterminer les détails
                           du retour, comme la présence des boutons d'édition,
                           l'ajout de la durée, etc.
                           DUREE|TIME|LINKED|LABELLED
+                          Voir dans le fichier suivant la définition du flag
+                          ./app/js/common/FAEvent/constants.js
   @param {Object} options Options à utiliser
                           :no_warn    Si true, pas d'avertissement pour dire que
                                       c'est un modèle non personnalisé par
@@ -62,6 +73,7 @@ toString(){
       break
     case 'full':
       this.add2asDomList('asFull', opts)
+      flag = flag | ASSOCIATES
       break
     case 'associate':
       this.add2asDomList('asAssociate', opts, flag)
@@ -70,6 +82,7 @@ toString(){
       throw(`Je ne connais pas le format "${format}"`)
   }
 
+  (flag & ASSOCIATES) && this.hasAssociates() && this.add2asDomList('divsAssociates', Object.assign({},opts,{as:'dom',inDiv:true,}))
   if(flag & DUREE)      this.add2asDomList('spanDuree', opts)
   if (flag & LINKED)    this.add2asDomList('showLink', opts)
   if (flag & EDITABLE)  this.add2asDomList('editLink', opts)
@@ -170,16 +183,13 @@ toString(){
 
   Pour le Reader, sauf si opts.forBook, c'est alors pour le livre d'analyse
 
+  Noter que les associés seront ajoutés après, dans la méthode principale 'as'
 **/
 asFull(opts){
   var divs = []
   if(undefined === opts) opts = {}
   opts.no_warm = true // pour la version short
   divs.push(...this.asShort(opts))
-  let divAssos = this.divsAssociates(Object.assign({}, opts,{as:'dom'}))
-  // console.log("divAssos:", divAssos)
-  divAssos && divs.push(DCreate(DIV,{class:`associates ${this.domId}-associates`, append:divAssos}))
-  // console.log("divs:", divs)
   return divs
 }
 ,

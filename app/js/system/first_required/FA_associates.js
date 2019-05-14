@@ -76,6 +76,8 @@ let ASSOCIATES_COMMON_METHODS = {
               title:  true/false/string. Si true ou string, le titre donné ou
                       « Éléments associés » sera ajouté, dans un H3 au début des
                       divs.
+              inDiv     Si true, on retourne les associés dans un div.associates
+
   @return {DOMElement|String} en fonction des options, contenant tous les
                               éléments associés.
 **/
@@ -105,10 +107,16 @@ let ASSOCIATES_COMMON_METHODS = {
       divs.push(DCreate(DIV,{class:'italic small indent2', inner:'(Aucun élément associé)'}))
     }
 
+    if (options.as == 'string' || options.inDiv){
+      divs = DCreate(DIV,{class:`associates ${this.domId}-associates`, append:divs})
+    }
+
     // On retourne le résultat
     switch (options.as) {
-      case 'string': return DCreate(DIV, {append:divs}).innerHTML
-      default: return divs // liste des divs
+      case 'string':
+        return divs.innerHTML
+      default:
+        return divs // liste des divs ou le div
     }
   }
 

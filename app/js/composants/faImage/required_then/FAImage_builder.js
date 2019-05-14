@@ -68,8 +68,7 @@ Object.assign(FAImage.prototype,{
 Object.defineProperties(FAImage.prototype,{
   // Le Div pour le reader
   div:{get(){
-
-    return DCreate(DIV,{id: this.domId, class:'div-image image', attrs:{'data-type':'image', 'data-id':this.fname}
+    return DCreate(DIV,{id: this.domReaderId, class:'div-image image', attrs:{'data-type':'image', 'data-id':this.fname}
       , append:[
           DCreate(IMG,{src:this.path, class:'image-overview',attrs:{onclick:`FAImage.edit('${this.id}')`}})
         , DCreate(SPAN,{inner:this.f_legend, class:`small ${this.domC('legend')}`})
@@ -77,5 +76,5 @@ Object.defineProperties(FAImage.prototype,{
   }}
 , domId:{get(){return this._domId||defP(this,'_domId', `image-${this.affixe}`)}}
 , jqObj:{get(){return this.jqReaderObj}}
-, domReaderObj:{get(){return this.jqReaderObj[0]}}
+// , domReaderObj:{get(){return this.jqReaderObj[0]}}
 })
