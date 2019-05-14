@@ -29,14 +29,18 @@ static reset(){
 static get videoController(){ return this.a.videoController }
 
 //
-static onClickNewEvent(ev, eventType){
-  if('string' !== typeof(eventType) ){ eventType = eventType.attr('data-type')}
-  ev && ev.stopPropagation()
+static onClickNewEvent(e, eventType){
+  if(isString(eventType)){ eventType = eventType.attr('data-type')}
+  e && stopEvent(e)
   this.videoWasPlaying = !!this.a.locator.playing
   if(this.a.locator.playing) this.a.locator.togglePlay()
-  if (eventType == 'scene' && this.notConfirmNewScene() ) return false
-  this.currentForm = new EventForm(eventType)
-  this.currentForm.toggleForm()
+  if(e.metaKey){
+    FAEvent.FAlistingEvents(eventType)
+  } else {
+    if (eventType == 'scene' && this.notConfirmNewScene() ) return false
+    this.currentForm = new EventForm(eventType)
+    this.currentForm.toggleForm()
+  }
 }
 
 /**

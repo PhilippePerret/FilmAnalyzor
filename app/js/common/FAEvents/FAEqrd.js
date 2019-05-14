@@ -8,35 +8,6 @@ static get OWN_PROPS(){return [['question', 'shorttext1'], ['reponse', 'shorttex
 static get OWN_TEXT_PROPS(){ return ['question', 'reponse', 'exploitation']}
 static get TEXT_PROPERTIES(){return this._tprops||defP(this,'_tprops',FAEvent.tProps(this.OWN_TEXT_PROPS))}
 
-static get dataType(){
-  if(undefined === this._dataType){
-    this._dataType = {
-      type: 'qrd'
-    , genre: 'F'
-    , article:{
-        indefini: {sing: 'une', plur: 'des'}
-      , defini: {sing: 'la', plur: 'les'}
-      }
-    , name: {
-        plain: {
-          cap: {sing: 'Question/réponse dramatique', plur: 'Questions/réponses dramatiques'}
-        , min: {sing: 'question/réponse dramatique', plur: 'questions/réponses dramatiques'}
-        , maj: {sing: 'QUESTION/RÉPONSE DRAMATIQUE', plur: 'QUESTIONS/RÉPONSES DRAMATIQUES'}
-        }
-      , short:{
-          cap: {sing: 'Q/R Dramatique', plur: 'Q/R Dramatiques'}
-        , min: {sing: 'q/r dramatique', plur: 'q/r dramatiques'}
-        , maj: {sing: 'Q/R DRAMATIQUE', plur: 'Q/R DRAMATIQUES'}
-        }
-      , tiny: {
-          cap: {sing: 'QRD', plur: 'QRDs'}
-        , min: {sing: 'qrd', plur: 'qrds'}
-        }
-      }
-    }
-  }
-  return this._dataType
-}
 
 /**
   Initialise les QRDs

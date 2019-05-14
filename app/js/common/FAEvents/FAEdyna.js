@@ -18,36 +18,6 @@ static get TYPESPARENT_PER_TYPE(){
   }
 }
 
-
-static get dataType(){
-  if(undefined === this._dataType){
-    this._dataType = {
-      type: 'dyna'
-    , genre: 'M'
-    , article:{
-        indefini: {sing: 'un', plur: 'des'}
-      , defini: {sing: 'l’', plur: 'les'}
-      }
-    , name: {
-        plain: {
-          cap: {sing: 'Élément dynamique', plur: 'Éléments dynamiques'}
-        , min: {sing: 'élément dynamique', plur: 'éléments dynamiques'}
-        }
-      , short:{
-          cap: {sing: 'El. dynamique', plur: 'Els. dynamiques'}
-        , min: {sing: 'el. dynamique', plur: 'els. dynamiques'}
-        , maj: {sing: 'EL. DYNAMIQUE', plur: 'ELS. DYNAMIQUES'}
-        }
-      , tiny: {
-          cap: {sing: 'El.Dyn', plur: 'Els.Dyn'}
-        , min: {sing: 'el.dyn', plur: 'els.dyn'}
-        }
-      }
-    }
-  }
-  return this._dataType
-}
-
 /**
   Initialise les éléments dynamiques
 **/

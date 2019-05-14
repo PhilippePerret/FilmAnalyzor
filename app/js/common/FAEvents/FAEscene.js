@@ -276,37 +276,6 @@ static get lastScene(){
   return this.sortedByTime[this.count-1]
 }
 
-static get dataType(){
-  if(undefined === this._dataType){
-    this._dataType = {
-      type: 'scene'
-    , genre: 'F'
-    , article:{
-        indefini: {sing: 'une', plur: 'des'}
-      , defini:   {sing: 'la', plur: 'les'}
-      }
-    , name: {
-        plain: {
-          cap: {sing: 'Scène', plur: 'Scènes'}
-        , min: {sing: 'scène', plur: 'scènes'}
-        , maj: {sing: 'SCÈNE', plur: 'SCÈNES'}
-        }
-      , short:{
-          cap: {sing: 'Scène', plur: 'Scènes'}
-        , min: {sing: 'scène', plur: 'scènes'}
-        , maj: {sing: 'SCÈNE', plur: 'SCÈNES'}
-        }
-      , tiny: {
-          cap: {sing: 'Sc.', plur: 'Sc.'}
-        , min: {sing: 'sc.', plur: 'sc.'}
-        , maj: {sing: 'SC.', plur: 'SC.'}
-        }
-      }
-    }
-  }
-  return this._dataType
-}
-
 // ---------------------------------------------------------------------
 //  INSTANCE
 

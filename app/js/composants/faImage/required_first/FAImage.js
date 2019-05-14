@@ -139,9 +139,7 @@ static getAllPictures(){
   let my = this
   this._images  = {}
   delete this._byTimes
-  if(fs.existsSync(this.path)){
-    this.decomposeData(this.iofile.loadSync())
-  }
+  fs.existsSync(this.path) && this.decomposeData(this.iofile.loadSync())
   this.pickupImagesInFolder()
   log.info('<- FAImage::getAllPictures')
 }

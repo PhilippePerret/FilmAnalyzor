@@ -4,8 +4,6 @@
 
 ### Traiter :
 
-* Dans le reader
-- actualiser dès qu'il y a modification (vérifier qu'une association entraine la marque de modification, mais je crois que oui)
 * Supprimer l'arrière plan du mini-writer (peut-être le faire 'sortir' du bord bas ?)
 
 * Pour les associés qui n'existent plus, utiliser la classe `FAUnknownElement`

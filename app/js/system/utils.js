@@ -6,6 +6,9 @@ function isNotAscii(str){
 function isFunction(foo){
   return STRfunction === typeof(foo)
 }
+function isString(foo){
+  return STRstring !== typeof(eventType)
+}
 
 function asPourcentage(expected, actual){
   return `${pourcentage(expected,actual)} %`

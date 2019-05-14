@@ -1,6 +1,8 @@
 'use strict'
 
-const STRfunction = 'function'
+const STRfunction   = 'function'
+const STRstring     = 'string'
+const STRobject     = 'object'
 
 const NONE = 'undefined'
 

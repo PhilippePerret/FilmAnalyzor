@@ -114,7 +114,8 @@ static get folderModifieds(){
 static get a(){return this._a || current_analyse}
 static set a(v){this._a = v}
 
-static get type(){return this._type||defP(this,'_type', this.dataType.type)}
+static get dataType(){return this._dataType || defP(this,'_dataType', EVENTS_TYPES_DATA[this.type])}
+static get type(){return this._type || defP(this,'_type',this.name.substring(3,this.name.length))}
 static get shortName(){return this._shortName||defP(this,'_shortName', this.dataType.name.short.cap.sing)}
 
 // ---------------------------------------------------------------------
@@ -129,6 +130,7 @@ constructor(analyse, data){
   this.analyse  = this.a = analyse
   this.dispatch(data)
   this.metaType = 'event' // alors que le type sera 'scene', 'dialog', etc.
+  this.type     = this.constructor.type
   this.id = parseInt(this.id,10)
 
 }

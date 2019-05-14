@@ -15,6 +15,8 @@
     invert:       Pour inverser tous les choix (exclusion)
   }
 
+  efilter.items => liste des instances d'events filtrés
+
   =é
 
   Par exemple, pour filtrer seulement les scènes :
@@ -87,6 +89,9 @@ get filtereds(){
   }
   return this._filtereds
 }
+
+// Alias
+get items(){return this.filtereds}
 
 /**
   @return {function}  Une fonction qui permet de filtrer les events par
