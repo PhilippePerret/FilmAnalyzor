@@ -2,23 +2,8 @@
 
 
 Object.assign(FAImage.prototype,{
-  as(format,flat,opts){
-    var divs = []
-    switch (format) {
-      case 'associate':
-        divs.push(DCreate('DIV',{inner:this.toString()}))
-        break
-      default:
-    }
 
-    // On finalise
-    divs = DCreate('DIV',{class:'image', append:divs, attrs:{'data-type':'image', 'data-id':this.id}})
-
-    if(opts.as == 'dom') return divs
-    else return divs.outerHTML
-  }
-
-, showDiffere(){
+  showDiffere(){
     var my = this
     this.div //pour le construire
     var diff = ((my.otime - this.a.locator.currentTime) * 1000) - 300

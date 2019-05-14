@@ -50,11 +50,6 @@ asShort(opts){
     opts.noTime = true
     let divs = []
     divs.push(...this.asBook(opts))
-    if(this.hasAssociates()){
-      let divAssos = this.divsAssociates(Object.assign({},opts,{as:'dom'}))
-      // console.log("[FAScene#asFull] divAssos:", divAssos)
-      divs.push(...divAssos)
-    }
     return divs
   }
 

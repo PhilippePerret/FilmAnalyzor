@@ -1,7 +1,41 @@
 'use strict'
 
 Object.assign(FAImage.prototype,{
-  asDiv(opts){
+  as(format,flat,opts){
+    var divs = []
+    switch (format) {
+      case 'associate':
+        divs.push(this.asAssociate(opts))
+        break
+      default:
+    }
+
+    // On finalise
+    divs = DCreate('DIV',{class:'image', append:divs, attrs:{'data-type':'image', 'data-id':this.id}})
+
+    if(opts.as == 'dom') return divs
+    else return divs.outerHTML
+  }
+
+, imgEditable(opts){
+    if(undefined === this._imgeditable){
+      var attrs = {}
+      attrs.onclick = `FAImage.edit('${this.id}')`
+      this._imgeditable = DCreate(IMG,{src:this.path, class:'__CLASS__', attrs:attrs, style:'__STYLE__'})
+    }
+    opts = opts || {}
+    opts.style = opts.style || ''
+    this._imgeditable.setAttribute('class', opts.class || 'image-overview')
+    this._imgeditable.setAttribute('style', opts.style)
+    return this._imgeditable
+  }
+, asAssociate(opts){
+    return DCreate(DIV,{class:'div-image associate', append:[
+        this.imgEditable()
+      , DCreate(LABEL,{inner:this.f_legend})
+      ]})
+  }
+, asDiv(opts){
     var divs = []
       , styles = []
       , attrs = {}
@@ -13,8 +47,7 @@ Object.assign(FAImage.prototype,{
     styles = styles.length > 0 ? styles.join('') : null
     attrs.onclick = `FAImage.edit('${this.id}')`
     css = `curimage ${opts.imgClass||''}`.trim()
-
-    divs.push(DCreate(IMG,{src:this.path, class:css, style:styles, attrs:attrs}))
+    divs.push(this.imgEditable({class:css, style:styles}))
     if(opts && !opts.no_legend && this.legend){
       divs.push(DCreate(DIV,{class:'img-legend', inner:this.f_legend}))
     }
