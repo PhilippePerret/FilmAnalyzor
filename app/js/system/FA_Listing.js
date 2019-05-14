@@ -48,7 +48,7 @@ build(){
   if(this.data.creatable) {
     divsHeader.push(DCreate(BUTTON, {type:'button', class:'btn-add', inner: '+'}))
   }
-  divsHeader.push(DCreate('H3', {inner: this.mainTitle}))
+  divsHeader.push(DCreate(H3, {inner: this.mainTitle}))
   var header = DCreate(DIV,{class:'header', append:divsHeader})
 
   var divsBody = []

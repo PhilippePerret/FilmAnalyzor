@@ -32,7 +32,7 @@ constructor(owner, args){
   this.owner  = owner
   this.args   = args
   this.filter = (args && args.filter) || {}
-
+  // console.log("this.filter:",this.filter)
   this.prepareFilter()
 }
 
@@ -87,6 +87,7 @@ get filtereds(){
   if(this._filtereds.length === 0 && FAEvent.count > 0){
     F.notify(T('no-event-with-filter'))
   }
+  // console.log("this._filtereds:", this._filtereds)
   return this._filtereds
 }
 
@@ -202,6 +203,7 @@ prepareFilter(){
   if(my.eventTypes == null) return
   my.hTypes = {}
   my.eventTypes.forEach(function(el){my.hTypes[el] = true})
+  // console.log("[Préparation du filtre] my.hTypes:", my.hTypes)
   my = null
 }
 

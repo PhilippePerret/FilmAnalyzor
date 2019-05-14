@@ -115,8 +115,12 @@ static get a(){return this._a || current_analyse}
 static set a(v){this._a = v}
 
 static get dataType(){return this._dataType || defP(this,'_dataType', EVENTS_TYPES_DATA[this.type])}
-static get type(){return this._type || defP(this,'_type',this.name.substring(3,this.name.length))}
+static get type(){return this._type || defP(this,'_type',this.defineType())}
 static get shortName(){return this._shortName||defP(this,'_shortName', this.dataType.name.short.cap.sing)}
+static defineType(){
+  let idx = this.name.startsWith('FAE') ? 3 : 2
+  return this.name.substring(idx,this.name.length)
+}
 
 // ---------------------------------------------------------------------
 //  INSTANCE
