@@ -12,7 +12,7 @@ Object.assign(FAImage.prototype,{
     }
 
     // On finalise
-    divs = DCreate('DIV',{class:'image', append:divs, attrs:{'data-type':'image', 'data-id':this.fname}})
+    divs = DCreate('DIV',{class:'image', append:divs, attrs:{'data-type':'image', 'data-id':this.id}})
 
     if(opts.as == 'dom') return divs
     else return divs.outerHTML
@@ -61,19 +61,18 @@ Object.assign(FAImage.prototype,{
   }
 , observe(){
     let my = this
-    /**
-      // TODO Implemente le drag de l image
-    **/
     my.jqReaderObj.draggable(Object.assign({},DATA_ASSOCIATES_DRAGGABLE,{helper:'clone'}))
   }
 }) // /assign
 
 Object.defineProperties(FAImage.prototype,{
+  // Le Div pour le reader
   div:{get(){
+
     return DCreate(DIV,{id: this.domId, class:'div-image image', attrs:{'data-type':'image', 'data-id':this.fname}
       , append:[
-          DCreate(IMG,{src:this.path, class:'image-overview'})
-        , DCreate(SPAN,{inner:this.fname, class:'small indent2'})
+          DCreate(IMG,{src:this.path, class:'image-overview',attrs:{onclick:`FAImage.edit('${this.id}')`}})
+        , DCreate(SPAN,{inner:this.f_legend, class:`small ${this.domC('legend')}`})
         ]})
   }}
 , domId:{get(){return this._domId||defP(this,'_domId', `image-${this.affixe}`)}}

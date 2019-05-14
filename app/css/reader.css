@@ -40,3 +40,7 @@ section#section-reader *
 #reader .associates {
   margin-left:1em;
 }
+
+#reader > div.div-image > img {
+  width:80px;
+}

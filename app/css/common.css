@@ -2,9 +2,10 @@
 .small {
   font-size: 0.75em;
 }
-img.small {
-  width:18px;
-}
+
+img.small {width:18px;}
+img[onclick]{cursor:pointer;}
+
 .align-middle,
 .align-middle > *
 {
