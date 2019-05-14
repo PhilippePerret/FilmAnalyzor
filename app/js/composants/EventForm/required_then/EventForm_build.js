@@ -174,7 +174,7 @@ Object.assign(EventForm.prototype,{
     })(type)
     dom.push(DCreate(DIV,{class:'div-form', append:[
         DCreate(LABEL, {inner:label})
-      , DCreate('TEXTAREA', {id: my.fId('longtext1'), attrs:{rows: '4'}})
+      , DCreate(TEXTAREA, {id: my.fId('longtext1'), attrs:{rows: '4'}})
       ]}))
 
     label = (typ => {
@@ -188,7 +188,7 @@ Object.assign(EventForm.prototype,{
     if(undefined !== label){
       dom.push(DCreate(DIV, {class:'div-form', append:[
           DCreate(LABEL, {inner:label})
-        , DCreate('TEXTAREA', {id: my.fId('longtext2'), attrs:{rows:'4'}})
+        , DCreate(TEXTAREA, {id: my.fId('longtext2'), attrs:{rows:'4'}})
         ]}))
     }
 
@@ -203,7 +203,7 @@ Object.assign(EventForm.prototype,{
     if(undefined !== label){
       dom.push(DCreate(DIV, {class:'div-form', append:[
           DCreate(LABEL, {inner:label})
-        , DCreate('TEXTAREA', {id: my.fId('longtext3'), attrs:{rows:'4'}})
+        , DCreate(TEXTAREA, {id: my.fId('longtext3'), attrs:{rows:'4'}})
         ]}))
     }
 
@@ -217,7 +217,7 @@ Object.assign(EventForm.prototype,{
     if(undefined !== label){
       dom.push(DCreate(DIV, {class:'div-form', append:[
           DCreate(LABEL, {inner:label})
-        , DCreate('TEXTAREA', {id: my.fId('longtext4'), attrs:{rows:'4'}})
+        , DCreate(TEXTAREA, {id: my.fId('longtext4'), attrs:{rows:'4'}})
         ]}))
     }
 

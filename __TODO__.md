@@ -1,6 +1,7 @@
 # SUR LE GRILL
 
-* RAPPORT DE VISIONNAGE
+* Poursuivre le développement du drop pour empêcher de dropper sur plusieurs events
+  - enregistrer l'élément (target) qui est couramment visé par le drop (dans `over`)
 
 ### Traiter :
 

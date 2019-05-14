@@ -47,6 +47,7 @@ let ASSOCIATES_COMMON_METHODS = {
 , acceptableTypes(){
     return this.types_associates.map(t => `.${t}`).join(', ')
   }
+
 // ---------------------------------------------------------------------
 //  MÉTHODES D'HELPER
 
@@ -261,7 +262,8 @@ let ASSOCIATES_COMMON_PROPERTIES = {
 **/
 const DATA_ASSOCIATES_DROPPABLE = {
   what: 'Donnée drop pour un élément qui peut recevoir des associables'
-, accept: ASSOCIATES_COMMON_METHODS.acceptableTypes()
+// , accept: ASSOCIATES_COMMON_METHODS.acceptableTypes()
+, accept:(e)=>{return FADrop.acceptClass.bind(FADrop)(e)}
 , tolerance: 'intersect'
 , drop:(e, ui) => {
     let target = $(e.target)
@@ -271,8 +273,18 @@ const DATA_ASSOCIATES_DROPPABLE = {
     current_analyse.associer(owner, owned)
     return stopEvent(e)
   }
+, out:(e)=>{FADrop.busy = false}
+, over:(e,ui)=>{
+    if(FADrop.isBusy()){
+      console.log("Le drop est déjà occupé")
+      return stopEvent(e)
+    } else {
+      FADrop.busy = true
+    }
+    console.log("ici je poursuis l'event")
+  }
 , classes: {'ui-droppable-hover': 'survoled'}
-, greedy: true
+, greedy: false
 }
 
 const DATA_ASSOCIATES_DRAGGABLE = {
@@ -378,11 +390,22 @@ const TEXTFIELD_ASSOCIATES_PROPS = {
   **/
 , dataDroppableTF:{get(){
     return {
-      accept: ASSOCIATES_COMMON_METHODS.acceptableTypes()
+      // accept: ASSOCIATES_COMMON_METHODS.acceptableTypes()
+      accept:(e)=>{return FADrop.acceptClass.bind(FADrop)(e)}
     , drop: this.onDropAssociableElement.bind(this)
     , tolerance: 'intersect'
     , classes: {'ui-droppable-hover': 'survoled'}
-    , greedy: true
+    , greedy: false
+    , out:(e)=>{FADrop.busy = false}
+    , over:(e,ui)=> {
+        if(FADrop.isBusy()){
+          console.log("Le drop est déjà occupé")
+          return stopEvent(e)
+        } else {
+          FADrop.busy = true
+        }
+        console.log("ici je poursuis l'event")
+      }
     }
   }}
 }
@@ -399,3 +422,8 @@ module.exports = {
 , TEXTFIELD_ASSOCIATES_METHS: TEXTFIELD_ASSOCIATES_METHS
 , TEXTFIELD_ASSOCIATES_PROPS: TEXTFIELD_ASSOCIATES_PROPS
 }
+
+/**
+
+  Does javascript create a new instance each time we create a string litteral?
+**/
