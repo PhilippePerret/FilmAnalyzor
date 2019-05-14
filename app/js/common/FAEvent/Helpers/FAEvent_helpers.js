@@ -38,54 +38,49 @@ toString(){
 
   // La liste dans laquelle on va mettre tous les DOMElements fabriqués
   var domEls = []
+  this.asDomList = []
 
   // L'event est-il lié à l'image courante de son temps ?
   // Si oui, on la met devant l'event
-  this.needCurImage() && domEls.push(this.curImageDiv(opts))
+  console.log("this.needCurImage():", this.needCurImage())
+  this.needCurImage() && this.add2asDomList('curImageDiv', opts)
 
-  if(flag & LABELLED) domEls.push(this.spanRef(opts))
+  flag & LABELLED && this.add2asDomList('spanRef', opts)
 
   switch (format) {
     case 'ref':
-      domEls.push(this.asRef(opts))
+      this.add2asDomList('asRef', opts)
       break
     case 'short':
-      domEls.push(...this.asShort(opts))
+      this.add2asDomList('asShort', opts)
       break
     case 'book':
       // Sortie pour le livre
-      domEls.push(...this.asBook(opts))
+      this.add2asDomList('asBook', opts)
       break
     case 'pitch':
-      // Pour le méthode qui répondent à la méthode `asPitch`
-      // à commencer par la scène
-      domEls.push(this.asPitch(opts))
+      this.add2asDomList('asPitch', opts)
       break
     case 'full':
-      // Affiche complet, avec toutes les informations
-      // TODO Pour le moment, c'est ce format qui est utilisé pour le reader,
-      // mais ce n'est peut-être pas la meilleure option.
-      domEls.push(...this.asFull(opts))
+      this.add2asDomList('asFull', opts)
       break
     case 'associate':
-      domEls.push(this.asAssociate(opts, flag))
+      this.add2asDomList('asAssociate', opts, flag)
       break
     default:
-      domEls.push(DCreate(SPAN,{class:'titre',inner: this.title}))
+      throw(`Je ne connais pas le format "${format}"`)
   }
 
-
-  // if(flag & DUREE) str += ` (${this.hduree})`
-  if(flag & DUREE) domEls.push(DCreate(SPAN,{class:'duree', inner:` (${this.hduree})`}))
-
-  if (flag & LINKED)   domEls.push(this.showLink(opts))
-  if (flag & EDITABLE) domEls.push(this.editLink(opts))
+  if(flag & DUREE)      this.add2asDomList('spanDuree', opts)
+  if (flag & LINKED)    this.add2asDomList('showLink', opts)
+  if (flag & EDITABLE)  this.add2asDomList('editLink', opts)
 
   // --- LE DIV FINAL ---
 
   // Avec tous ses éléments ajoutés en fonction des choix
-  // console.log("domEls:",domEls)
-  let divAs = DCreate(DIV, {class:`event ${this.type} EVT${this.id}`, append: domEls, attrs:{'data-type':'event', 'data-id':this.id}})
+  // console.log("this.asDomList:",this.asDomList)
+
+  let divAs = DCreate(DIV, {class:`event ${this.type} EVT${this.id}`, append:this.asDomList, attrs:{'data-type':'event', 'data-id':this.id}})
 
   if(opts.as === 'dom') return divAs
 
@@ -102,6 +97,22 @@ toString(){
   }
 
   return str
+}
+
+/**
+  Plutôt que de rentrer directement les éléments DOM dans la liste +domEls+
+  de l'event, on l'ajoute par cette méthode qui permet de vérifier que les
+  méthodes retournent bien les éléments voulus (à commencer par des DOMElements)
+**/
+, add2asDomList(buildProp, options, flag){
+    var res = this[buildProp](options, flag)
+    if(undefined === res){
+      log.error(`La propriété de construction ${buildProp} de ${this} n'a rien retourné.`)
+    } else if(Array.isArray(res)){
+      this.asDomList.push(...res)
+    } else {
+      this.asDomList.push(res)
+    }
 }
 
 // Comme une simple référence (ne pas confondre avec le label qui indique
@@ -133,6 +144,10 @@ toString(){
   else return span
 }
 
+, spanDuree(opts){
+    return DCreate(SPAN,{class:'duree', inner:` (${this.hduree})`})
+  }
+
 /**
   Retourne le DOMElement du lien permettant d'éditer l'élément
   C'est le lien utilisé quand le drapeau contient EDITABLE
@@ -163,7 +178,7 @@ asFull(opts){
   if(undefined === opts) opts = {}
   opts.no_warm = true // pour la version short
   divs.push(...this.asShort(opts))
-  let divAssos = this.divsAssociates(Object.assign({},opts,{as:'dom'}))
+  let divAssos = this.divsAssociates(Object.assign({}, opts,{as:'dom'}))
   // console.log("divAssos:", divAssos)
   divAssos && divs.push(...divAssos)
   // console.log("divs:", divs)

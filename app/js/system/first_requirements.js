@@ -1,17 +1,17 @@
 'use strict'
 
-const System = require('./js/system/first_required/System.js')
+function FReqGet(name){
+  return require(`./js/system/first_required/${name}.js`)
+}
 
-const {DOMHorloge, DOMDuration} = require('./js/system/first_required/DOMHorloge.js')
-
-// let h = new DOMHorloge('1:10:10')
-// console.log("horloge:",h)
-
-const Hash = require('./js/system/first_required/Hash.js')
-const Flash = require('./js/system/first_required/Flash.js')
+const System = FReqGet('System')
+const {DOMHorloge, DOMDuration} = FReqGet('DOMHorloge')
+const Hash = FReqGet('Hash')
+const Flash = FReqGet('Flash')
 const F = Flash
-const Selector = require('./js/system/first_required/Selector.js')
-const IOFile = require('./js/system/first_required/IOFile.js')
-const OTime = require('./js/system/first_required/OTime.js')
+const Selector = FReqGet('Selector')
+const IOFile = FReqGet('IOFile')
+const OTime = FReqGet('OTime')
 const FATime = OTime // pour les associates
-const App = require('./js/system/first_required/App.js')
+const App = FReqGet('App')
+const FAUnknownElement = FReqGet('FAUnknownElement')

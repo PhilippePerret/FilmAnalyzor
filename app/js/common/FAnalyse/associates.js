@@ -15,13 +15,12 @@ Object.assign(FAnalyse.prototype,{
                         ref doit définir :type (personnage, brin, event, etc.)
                         et :id (identifiant de l'élément)
 
+  @return {<any element classe>|FAUnknownElement} Soit l'instance de l'élément
+      voulu, soit, s'il n'existe pas, une instance FAUnknownElement qui répond
+      aux méthodes classiques mais en renvoyant un message d'erreur.
 **/
   instanceOfElement(ref){
-    // let inst = eval(`FA${ref.type.titleize()}`).get(ref.type == 'event' ? parseInt(ref.id,10) : ref.id)
-    // console.log("instanceOfElement", ref, inst)
-    // return inst
-    // QUAND ÇA MARCHERA :
-    return eval(`FA${ref.type.titleize()}`).get(ref.type == 'event' ? parseInt(ref.id,10) : ref.id)
+    return eval(`FA${ref.type.titleize()}`).get(ref.type == 'event' ? parseInt(ref.id,10) : ref.id) || (new FAUnknownElement(ref))
   }
 
   /**

@@ -1,8 +1,5 @@
 # SUR LE GRILL
 
-
-* En cliquant sur l'image (dans le reader par exemple), on doit pouvoir l'éditer
-
 * RAPPORT DE VISIONNAGE
 
 ### Traiter :
@@ -13,6 +10,8 @@
 * Supprimer l'arrière plan du mini-writer (peut-être le faire 'sortir' du bord bas ?)
 
 * Il peut arriver souvent qu'un associé n'existe plus. Il faut donc bien checker dans toutes les méthodes qui les passent en revue.
+  Peut-être pourrait-on utiliser une classe spéciale `FAUnknown` qui répondrait aux méthodes classiques en donnant l'information sur l'élément manquant (type et id)
+  On pourrait déjà s'en servir dans `FAnalyse::instanceOfElement`
 
 * Essayer de généraliser l'utilisation de `iofile`, `save`, `getData` pour tous les éléments, afin de réduire considérablement les méthodes. Voir dans FAElement.js et FAImage.js
 
