@@ -3,8 +3,9 @@
 /**
   Permet de prendre une image de l'image courante.
 **/
-module.exports = function(time){
+module.exports = function(time, opts){
   let my = this
+  if(undefined === opts) opts = {}
   // ffmpeg -ss <horloge départ> -t <duree> -i <video path> -r <ratio> <image name.ext>
   // var imgName = `scene-${FAEscene.current || 1}-%01d.jpeg`
   if(undefined === time) time = my.a.locator.currentTime
@@ -15,8 +16,11 @@ module.exports = function(time){
   var callback = function(err, stdout, stderr){
     // if(stderr) console.error(stderr)
     if (fs.existsSync(imgPath)){
-      if (my.listing && my.listing.opened) setTimeout(my.add.bind(my,imgName),500)
-      else F.notify(T('confirm-current-image'))
+      // Ajouter la nouvelle image aux données
+      setTimeout(my.add.bind(my, imgName),1000)
+      if (!(my.listing && my.listing.opened) && !(opts.message === false)){
+        F.notify(T('confirm-current-image'))
+      }
     } else {
       F.error(T('unfound-current-image'))
     }

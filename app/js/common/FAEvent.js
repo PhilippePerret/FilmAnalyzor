@@ -610,8 +610,8 @@ get faimage(){
 
 // Retourne le code pour afficher l'image
 curImageDiv(options){
+  this.existsCurImage() || FAImage.shotFrame(this.otime, {message:false})
   if(!this.faimage) return
-  this.existsCurImage() || FAImage.shotFrame(this.otime)
   if(undefined === options) options = {}
   options.imgClass = this.domC('curimage')
   let div = this.faimage.asDiv(options)
