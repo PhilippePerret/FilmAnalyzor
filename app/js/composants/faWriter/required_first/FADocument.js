@@ -241,7 +241,7 @@ retreiveLastContents(){
 
 // Pour charger le texte du document
 load(fn_callback){
-  if('function' === typeof fn_callback) this.methodOnLoading = fn_callback
+  if(isFunction(fn_callback)) this.methodOnLoading = fn_callback
   this.iofile.loadIfExists({after: this.endLoading.bind(this), format: 'raw'})
 }
 endLoading(code){

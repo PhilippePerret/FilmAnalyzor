@@ -38,7 +38,24 @@ section#section-reader *
 }
 
 #reader .associates {
+  position:relative;
   margin-left:1em;
+  margin-top:1em;
+  border:1px solid #EEEEEE;
+  border-radius:0.5em;
+  padding:2em 1em 1em 1em;
+  font-size:0.9em;
+}
+#reader .associates:before{
+  content:'Associés';
+  display:block;
+  position:absolute;
+  top:0;
+  left:4px;
+  font-style:italic;
+  opacity:0.3;
+  font-size:10.1pt;
+  color:blue;
 }
 
 #reader > div.div-image > img {

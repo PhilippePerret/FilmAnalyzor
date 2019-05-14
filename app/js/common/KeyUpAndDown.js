@@ -26,7 +26,7 @@ const KeyUpAndDown = {
       delete this.keyPressed
       // S'il y a une fonction à appeler quand on relève la
       // touche, on l'appelle.
-      if('function' === typeof(this.methodOnKeyPressedUp)){
+      if(isFunction(this.methodOnKeyPressedUp)){
         this.methodOnKeyPressedUp()
       }
     }

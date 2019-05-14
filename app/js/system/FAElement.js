@@ -117,7 +117,7 @@ dataEpured(){
   var h = {}, m
   this.constructor.PROPS.map(prop => {
     m = `${prop}Epured`
-    h[prop] = ('function' === typeof(this[m])) ? this[m]() : this[prop]
+    h[prop] = (isFunction(this[m])) ? this[m]() : this[prop]
   })
   return Hash.compact(h)
 }

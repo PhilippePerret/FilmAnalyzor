@@ -50,7 +50,7 @@ Object.defineProperties(DataField.prototype,{
 , isUniq:{get(){return this._isuniq||defP(this,'_isuniq',!!(this.validities&UNIQ))}}
 , isOnlyAscii:{get(){return this._isascii||defP(this,'_isascii',!!(this.validities&ASCII))}}
 
-, isSelectUpdatable:{get(){return this.type === 'select' && 'function' === typeof(this.values)}}
+, isSelectUpdatable:{get(){return this.type === 'select' && isFunction(this.values)}}
 })
 
 Object.assign(DataField.prototype,{

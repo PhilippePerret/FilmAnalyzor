@@ -269,7 +269,7 @@ const DATA_ASSOCIATES_DRAGGABLE = {
     what:'Données drag pour un élément associable'
     // revert: true
   , helper: (e) => {
-      if('function' === typeof(this.dragHelper)){
+      if(isFunction(this.dragHelper)){
         return this.dragHelper()
       } else {
         var t = $(e.currentTarget)

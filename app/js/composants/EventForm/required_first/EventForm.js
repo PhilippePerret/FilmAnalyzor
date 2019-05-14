@@ -196,11 +196,11 @@ submit(){
     if(this.isNew){
       // CRÉATION
       this.a.addEvent(this.event)
-      if('function' === typeof this.event.onCreate) this.event.onCreate()
+      isFunction(this.event.onCreate) && this.event.onCreate()
     } else {
       // ÉDITION
       this.a.updateEvent(this.event, {initTime: initTime})
-      if('function' === typeof this.event.onModify) this.event.onModify()
+      isFunction(this.event.onModify) && this.event.onModify()
     }
   }
 

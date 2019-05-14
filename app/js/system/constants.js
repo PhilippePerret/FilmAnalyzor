@@ -1,5 +1,7 @@
 'use strict'
 
+const STRfunction = 'function'
+
 const NONE = 'undefined'
 
 const HTML = 'html'

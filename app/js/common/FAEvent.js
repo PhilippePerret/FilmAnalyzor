@@ -334,6 +334,15 @@ get end(){
   if(undefined === this._end) this._end = this.time + this.duree
   return this._end
 }
+
+remove(){
+  delete this._div
+  if(this.jqReaderObj.length) this.jqReaderObj.remove()
+  delete this._domreaderobj
+  delete this._jqreaderobj
+  this.shown = false
+  this.observed = false
+}
 /**
  * Après édition de l'event, on peut avoir à updater son affichage dans
  * le reader. On va faire simplement un remplacement de div (le div du
@@ -341,34 +350,14 @@ get end(){
  */
 updateInReader(new_idx){
   log.info(`-> <<FAEvent #${this.id}>>#updateInReader`)
-  // Pour forcer la reconstruction
-  delete this._div
-  // Si l'event n'est pas affiché dans le reader (ou autre), on n'a rien
-  // à faire. Par prudence, on réinitialise quand même le _div qui avait peut-
-  // être été défini lors d'un affichage précédent
-  if(undefined === this.jqReaderObj) return
+  // On détruit complètement l'objet reader (ce qui forcera sa reconstruction
+  // et son observation)
+  this.remove()
+  this.a.reader.append(this)
+  this.div.style.opacity = 1
 
-  // On remplace l'objet reader par un nouvel updaté et on l'observe
-  this.jqReaderObj.replaceWith($(this.div))
-  delete this._jq_reader_obj
-  this.observe()
-
-  if (undefined !== new_idx /* peut être 0 */) {
-    // Si le temps de l'event a changé de façon conséquente, il faut
-    // le replacer au bon endroit dans le reader. C'est la valeur de `new_idx`
-    // qui le définit, undefined si l'event reste en place ou le nouvel index
-    //
-    // Rappel : l'new_idx est "calculé" après retrait de l'event de la liste,
-    // il faut en tenir compte ici.
-    // On met d'abord le noeud en dehors du reader
-    $('#section-reader').append(this.jqReaderObj)
-    var reader = DGet('reader')
-    reader.insertBefore(this.domReaderObj, reader.childNodes[new_idx])
-
-  }
   log.info(`<- <<FAEvent #${this.id}>>#updateInReader`)
 
-  this.div.style.opacity = 1
 }
 
 /**
@@ -452,7 +441,7 @@ get contenu(){return this._contenu||defP(this,'_contenu',this.defineContenu())}
 // Définition du contenu, soit formaté d'une façon particulière par
 // l'event propre, soit le content normal, dediminutivisé
 defineContenu(){
-  if('function' === typeof this.formateContenu){
+  if(isFunction(this.formateContenu)){
     return this.formateContenu()
   } else {
     return this.fatexte.deDim(this.content)
@@ -468,7 +457,7 @@ get data(){
   var d = {}, prop
   for(prop of this.constructor.ALL_PROPS){
     if('string' !== typeof(prop)) prop = prop[0] // quand définition par paire
-    if('function' === typeof(this[`${prop}Epured`])){
+    if(isFunction(this[`${prop}Epured`])){
       d[prop] = this[`${prop}Epured`]()
     } else {
       d[prop] = this[prop]
@@ -561,6 +550,10 @@ observe(container){
   var my = this
     , o = this.jqReaderObj
 
+  if(this.observed){
+    return
+  }
+
   if(undefined === this.jqReaderObj){
     log.warn(`BIZARREMENT, le jqReaderObj de l'event #${this.id} est introuvable dans le reader. recherché avec domReaderId:${domReaderId}`)
   } else {
@@ -577,6 +570,8 @@ observe(container){
     o
       .droppable(DATA_ASSOCIATES_DROPPABLE)
       .draggable(DATA_ASSOCIATES_DRAGGABLE)
+
+    this.observed = true
   }
 }
 
@@ -591,7 +586,6 @@ get btnPlay(){return this._btnPlay||defP(this,'_btnPlay',new BtnPlay(this))}
 // ces méthodes
 domC(prop){return `${this.domClass}-${prop}`}
 get domClass(){return this._domid || defP(this,'_domid',`event-${this.id}`)}
-
 get domReaderId(){return this._domreaderid||defP(this,'_domreaderid',`reader-${this.domId}`)}
 get domReaderObj(){return this._domreaderobj||defP(this,'_domreaderobj',this.jqReaderObj?this.jqReaderObj[0]:undefined)}
 get jqReaderObj(){

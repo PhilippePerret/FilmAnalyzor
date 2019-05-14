@@ -102,7 +102,7 @@ Object.assign(EventForm.prototype,{
 
     dom.push(DCreate(DIV, {class:'div-form', append:[
         DCreate(LABEL, {for: my.fId('titre'), inner: type === 'scene' ? 'Pitch' : 'Titre générique (optionnel)'})
-      , DCreate(INPUT, {type:'TEXT', id:my.fId('titre'), class:'bold'})
+      , DCreate(INPUT, {type:'TEXT', id:my.fId('titre'), class:'main-field'})
       ]}))
 
     // La case à cocher pour dire que l'event est lié à l'image de son

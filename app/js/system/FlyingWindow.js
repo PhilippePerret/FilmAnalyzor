@@ -153,7 +153,7 @@ static set current(w) {this._current = w}
 constructor(owner, data){
   try {
     owner || raise('fwindow-required-owner')
-    ('function' === typeof owner.build) || raise('fwindow-owner-has-build-function')
+    isFunction(owner.build) || raise('fwindow-owner-has-build-function')
     data || raise('fwindow-required-data')
     if(undefined === data.container) data.container = $('body')
     data.container || raise('fwindow-required-container')
@@ -177,22 +177,22 @@ toggle(){
 show(){
   log.info(`-> ${this.ref}.show() [built:${this.built}, visible:${this.visible}]`)
   if(!this.built) this.build().observe()
-  if ('function' === typeof this.owner.beforeShow) this.owner.beforeShow()
+  isFunction(this.owner.beforeShow) && this.owner.beforeShow()
   this.jqObj.show()
   this.visible = true
   FWindow.setCurrent(this)
   FWindow.checkOverlaps(this)
-  if ('function' === typeof this.owner.onShow) this.owner.onShow()
+  isFunction(this.owner.onShow) && this.owner.onShow()
   log.info(`<- ${this.ref}.show() [built:${this.built}, visible:${this.visible}]`)
 }
 hide(){
-  if('function' === typeof this.owner.beforeHide){
+  if(isFunction(this.owner.beforeHide)){
     if(this.owner.beforeHide() === false) return // abandon
   }
   this.constructor.unsetCurrent(this)
   this.jqObj.hide()
   this.visible = false
-  if ('function' === typeof this.owner.onHide) this.owner.onHide()
+  isFunction(this.owner.onHide) && this.owner.onHide()
 }
 
 /**
@@ -250,10 +250,10 @@ build(){
   $(this.container).append(div)
   // Si le propriétaire possède une méthode d'après construction,
   // on l'appelle.
-  if('function' === typeof this.owner.afterBuilding) this.owner.afterBuilding()
+  isFunction(this.owner.afterBuilding) && this.owner.afterBuilding()
   // Si le propriétaire possède une méthode qui place des observers
   // d'évènements, on la place
-  if('function' === typeof this.owner.observe) this.owner.observe()
+  isFunction(this.owner.observe) && this.owner.observe()
 
   this.built = true
   log.info(`<- ${this.ref}.build()`)
@@ -262,7 +262,7 @@ build(){
 
 // Méthode appelée quand on clique sur le bouton 'btn-close'
 onBtnClose(){
-  if('function' === typeof this.owner.cancel){
+  if(isFunction(this.owner.cancel)){
     this.owner.cancel.bind(this.owner)()
   } else {
     this.hide()

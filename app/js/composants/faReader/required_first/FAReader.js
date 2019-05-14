@@ -77,13 +77,14 @@ resetBeyond(from_time, to_time){
   @param {FAEvent(typé)} ev Event qu'il faut insérer
 **/
 append(ev){
-  let div = ev.div
+  let my = this
+    , div = ev.div
+
   if(!div.id.startsWith('reader-')){
     log.warn(`L'identifiant de l'élément suivant devrait commencer par 'reader-' (${div.id}):`, div)
     div.id = `reader-${div.id}`
   }
-  var my = this
-    , hasBeenInserted = false
+  var hasBeenInserted = false
   this.forEachEventNode(function(ne){
     if(parseFloat(ne.getAttribute('data-time')) > ev.time){
       hasBeenInserted = true
@@ -92,6 +93,8 @@ append(ev){
     }
   })
   hasBeenInserted || this.container.append(div)
+  // Pour observer l'event dans le reader
+  ev.observe()
 }
 
 /**

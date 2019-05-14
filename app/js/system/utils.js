@@ -3,6 +3,9 @@
 function isNotAscii(str){
   return str.replace(/[a-zA-Z0-9_]/g,'') != ''
 }
+function isFunction(foo){
+  return STRfunction === typeof(foo)
+}
 
 function asPourcentage(expected, actual){
   return `${pourcentage(expected,actual)} %`

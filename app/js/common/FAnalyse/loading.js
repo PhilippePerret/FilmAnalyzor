@@ -197,7 +197,7 @@ load(){
     // l'invoque.
     // Pour le moment, la méthode est surtout utilisée pour les
     // tests (même seulement pour les tests)
-    if('function' === typeof this.methodAfterLoadingAnalyse){
+    if(isFunction(this.methodAfterLoadingAnalyse)){
       this.methodAfterLoadingAnalyse()
     }
     // On appelle la méthode `window.WhenAllIsReallyReady` qui permet de
@@ -215,7 +215,7 @@ load(){
 
 , endLoadingFile(fpath, prop, data){
   var my = this
-  if('function' === typeof my[prop]){
+  if(isFunction(my[prop])){
     my[prop](data)
   } else {
     my[prop] = data

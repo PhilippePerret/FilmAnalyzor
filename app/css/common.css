@@ -1,4 +1,9 @@
 
+/* Un div dans un span doit toujours être inline */
+span div {
+  display:inline;
+}
+
 .small {
   font-size: 0.75em;
 }
@@ -15,6 +20,11 @@ img[onclick]{cursor:pointer;}
   font-size: 0.65em;
 }
 .bold {font-weight:bold;}
+input.main-field{
+  font-weight:bold;
+  font-size:0.9em;
+  font-family:sans-serif;
+}
 .italic{font-style:italic;}
 
 .fleft {float:left;}

@@ -42,7 +42,6 @@ toString(){
 
   // L'event est-il lié à l'image courante de son temps ?
   // Si oui, on la met devant l'event
-  console.log("this.needCurImage():", this.needCurImage())
   this.needCurImage() && this.add2asDomList('curImageDiv', opts)
 
   flag & LABELLED && this.add2asDomList('spanRef', opts)
@@ -79,7 +78,6 @@ toString(){
 
   // Avec tous ses éléments ajoutés en fonction des choix
   // console.log("this.asDomList:",this.asDomList)
-
   let divAs = DCreate(DIV, {class:`event ${this.type} EVT${this.id}`, append:this.asDomList, attrs:{'data-type':'event', 'data-id':this.id}})
 
   if(opts.as === 'dom') return divAs
@@ -180,7 +178,7 @@ asFull(opts){
   divs.push(...this.asShort(opts))
   let divAssos = this.divsAssociates(Object.assign({}, opts,{as:'dom'}))
   // console.log("divAssos:", divAssos)
-  divAssos && divs.push(...divAssos)
+  divAssos && divs.push(DCreate(DIV,{class:`associates ${this.domId}-associates`, append:divAssos}))
   // console.log("divs:", divs)
   return divs
 }
@@ -221,7 +219,7 @@ Object.defineProperties(FAEvent.prototype,{
     Retourne le div qui s'affichera dans le reader
 
     Son contenu propre provient de la méthode `as('full')` donc
-    de la méthode `asFull` qui devrait être propre à l'event.
+    de la méthode `asFull` qui peut être propre à l'event.
 
     @return {DOMElement} Le div à placer dans le reader
   **/
@@ -230,7 +228,7 @@ Object.defineProperties(FAEvent.prototype,{
       if (undefined === this._div){
         // flag pour la méthode 'as'
         var asFlag = FORMATED
-        if(this.type !== 'scene') asFlag = asFlag | LABELLED
+        if(!this.isScene) asFlag = asFlag | LABELLED
         // L'horloge des outils
         var h = DCreate(SPAN,{
           class:'horloge horloge-event'
@@ -240,15 +238,15 @@ Object.defineProperties(FAEvent.prototype,{
         var be = DCreate(BUTTON, {class: 'btn-edit', inner: '<img src="./img/btn/edit.png" class="btn" />'})
         var br = DCreate(BUTTON, {class: 'btnplay left', attrs: {'size': 22}})
 
-        var etools = DCreate(DIV,{class: 'e-tools', append:[br, be, h]})
-        var cont = DCreate(DIV, {class:'content', inner: this.as('full', asFlag)})
-
         this._div = DCreate(DIV,{
           id: this.domReaderId
         , class: `reader-event event ${this.type} EVT${this.id}`
         , style: 'opacity:0;'
         , attrs: {'data-time':this.time, 'data-id':this.id, 'data-type': 'event'}
-        , append: [etools, cont]
+        , append: [
+            DCreate(DIV,{class: 'e-tools', append:[br, be, h]})
+          , DCreate(DIV, {class:'content', inner: this.as('full', asFlag)})
+          ]
         })
       }
       return this._div

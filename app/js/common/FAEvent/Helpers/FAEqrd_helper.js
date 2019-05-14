@@ -11,37 +11,37 @@ Object.assign(FAEqrd.prototype,{
 **/
 asShort(options){
   var divs = []
-  divs.push(DCreate('SPAN', {class:'question', append:[
-        DCreate('LABEL', {inner: 'Question'})
-      , DCreate('SPAN', {class: 'value question', inner: DFormater(this.question)})
+  divs.push(DCreate(SPAN, {class:'question', append:[
+        DCreate(LABEL, {inner: 'Question'})
+      , DCreate(SPAN, {class: 'value question', inner: DFormater(this.question)})
     ]}))
-  divs.push(DCreate('SPAN', {class:'reponse', append:[
-      DCreate('LABEL', {inner: 'Réponse'})
-    , DCreate('SPAN', {class: 'value reponse', inner: this.f_reponse})
+  divs.push(DCreate(SPAN, {class:'reponse', append:[
+      DCreate(LABEL, {inner: 'Réponse'})
+    , DCreate(SPAN, {class: 'value reponse', inner: this.f_reponse})
     ]}))
 
   return divs
 }
 
-,
 /**
   Version complète de la QRD
 **/
-asFull(options){
-  return [
-    DCreate('DIV', {append: [
-        DCreate('LABEL', {inner: 'QUESTION : '})
-      , DCreate('SPAN', {inner: this.f_question})
-      ]})
-  , DCreate('DIV', {append:[
-        DCreate('LABEL', {inner: 'RÉPONSE : '})
-      , DCreate('SPAN', {inner: this.f_reponse})
-      ]})
-  , DCreate('DIV', {append:[
-        DCreate('DIV', {class:'small', inner: DFormater(this.description)})
-      ]})
-  ]
-}
+, asFull(options){
+    return [
+      DCreate(DIV, {class:'div-question', append: [
+          DCreate(LABEL, {inner: 'Question'})
+        , DCreate(SPAN, {class:this.domC('question'), inner: this.f_question})
+        ]})
+    , DCreate(DIV, {class:'div-reponse', append:[
+          DCreate(LABEL, {inner: 'Réponse'})
+        , DCreate(SPAN, {class:this.domC('reponse'),inner: this.f_reponse})
+        ]})
+    , DCreate(DIV, {class:'div-description', append:[
+          DCreate(LABEL, {inner:'Description'})
+        , DCreate(SPAN, {class:`${this.domC('description')}`, inner: DFormater(this.description)})
+        ]})
+    ]
+  }
 
 })
 

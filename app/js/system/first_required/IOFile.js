@@ -167,7 +167,7 @@ endSave(err){
         // FIN !
         this.endSavingInAnyCase()
         this.saved = true
-        if('function' === typeof this.methodAfterSaving){
+        if(isFunction(this.methodAfterSaving)){
           this.methodAfterSaving()
         }
       }
@@ -244,7 +244,7 @@ loadIfExists(options, fn_pour_suivre){
 endLoad(success){
   this.loaded = success
   delete this._decodedCode
-  if('function' === typeof this.methodAfterLoading){
+  if(isFunction(this.methodAfterLoading)){
     this.methodAfterLoading(success ? this.decodedCode : null /* ou raw code */)
   } else {
     // Quand loadSync est utilisé
