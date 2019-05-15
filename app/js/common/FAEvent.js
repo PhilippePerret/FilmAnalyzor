@@ -8,7 +8,7 @@ static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duree', 'parent',
 static get TEXT_PROPERTIES(){return ['titre', 'content']}
 
 static get ALL_PROPS(){
-  if(undefined === this._all_props){
+  if(isUndefined(this._all_props)){
     var arr = []
     arr.push(...FAEvent.OWN_PROPS)
     arr.push(...this.OWN_PROPS)
@@ -45,7 +45,7 @@ static count(){
   de création
 **/
 static exists(eid){
-  return (this.a.ids[eid] !== undefined) || ($(`form#form-edit-event-${eid}`).length > 0)
+  return (isDefined(this.a.ids[eid])) || ($(`form#form-edit-event-${eid}`).length > 0)
 }
 
 /**
@@ -69,7 +69,7 @@ static tProps(own_text_properties){
   contiendra donc une sorte d'historique des modifications.
 **/
 static addModified(evt){
-  if(undefined === this.modifieds) this.modifieds = []
+  if(isUndefined(this.modifieds)) this.modifieds = []
   this.modifieds.push(evt.id)
   this.a.modified = true
 }
@@ -79,11 +79,11 @@ static addModified(evt){
 **/
 static saveModifieds(){
   var my = this
-  if(undefined === this.modifieds || 0 === this.modifieds.length) return
+  if(isUndefined(this.modifieds) || isEmpty(this.modifieds.length)) return
 
   var dataModifieds = {}
   for(var mod_id of this.modifieds){
-    if(undefined === this.a.ids[mod_id]){
+    if(isUndefined(this.a.ids[mod_id])){
       // <= L'event mod_id n'est pas défini
       // => C'est une destruction qui a été effectuée
       dataModifieds[mod_id] = 'DESTROYED'
@@ -104,7 +104,7 @@ static saveModifieds(){
 **/
 static pathModifieds(){return path.join(this.folderModifieds,`${new Date().getTime()}.json`)}
 static get folderModifieds(){
-  if(undefined === this._folderModifieds){
+  if(isUndefined(this._folderModifieds)){
     this._folderModifieds = path.join(this.a.folderBackup, 'events')
     if(!fs.existsSync(this._folderModifieds)) fs.mkdirSync(this._folderModifieds)
   }
@@ -133,7 +133,7 @@ static defineType(){
 constructor(analyse, data){
   this.analyse  = this.a = analyse
   this.dispatch(data)
-  this.metaType = 'event' // alors que le type sera 'scene', 'dialog', etc.
+  this.metaType = STRevent // alors que le type sera 'scene', 'dialog', etc.
   this.type     = this.constructor.type
   this.id = parseInt(this.id,10)
 
@@ -194,7 +194,7 @@ get horloge(){return this._horl||defP(this,'_horl',this.otime.horloge)}
  * Définition de la durée
  */
 set duree(v){
-  if('string' === typeof(v)){
+  if(isString(v)){
     // <= la valeur est un string
     // => on vient du formulaire, il faut traiter
     v = v.trim();
@@ -328,7 +328,7 @@ stopWatchingTime(){
   delete this.timerWatchingTime
 }
 watchTime(){
-  if(undefined === this.a || undefined === this.a.locator) return
+  if(isUndefined(this.a) || isUndefined(this.a.locator)) return
   var rtime = this.a.locator.currentTime
   let iscur = rtime >= this.time - 2 && rtime <= this.end + 2
   if(this.isCurrent != iscur){
@@ -337,7 +337,7 @@ watchTime(){
   }
 }
 get end(){
-  if(undefined === this._end) this._end = this.time + this.duree
+  if(isUndefined(this._end)) this._end = this.time + this.duree
   return this._end
 }
 
@@ -407,7 +407,7 @@ makeDesappear(){
 **/
 hasPersonnages(filtre){
   var pid, stxt
-  if (undefined === filtre.regulars){
+  if (isUndefined(filtre.regulars)){
     for(pid of filtre.list){
       stxt = new RegExp(`@${FAPersonnage.get(pid).dim}[^a-zA-Z0-9_]`)
       if(!!this.content.match(stxt) && false === filtre.all){
@@ -462,7 +462,7 @@ get fatexte(){return this._fatext||defP(this,'_fatext', new FATexte(this.content
 get data(){
   var d = {}, prop
   for(prop of this.constructor.ALL_PROPS){
-    if('string' !== typeof(prop)) prop = prop[0] // quand définition par paire
+    if(isNotString(prop)) prop = prop[0] // quand définition par paire
     if(isFunction(this[`${prop}Epured`])){
       d[prop] = this[`${prop}Epured`]()
     } else {
@@ -480,7 +480,7 @@ get data(){
 set data(d){
   var fieldName ;
   for(var prop of FAEvent.OWN_PROPS){
-    if(undefined === d[prop] || null === d[prop]) continue
+    if(isUndefined(d[prop]) || isNull(d[prop]) ) continue
     this[prop] = d[prop]
   }
 }
@@ -495,7 +495,7 @@ set data(d){
 dispatch(d){
   var fieldName, prop ;
   for(prop of this.constructor.ALL_PROPS){
-    if('string' === typeof(prop)){
+    if(isString(prop)){
       // <= Seulement le nom de la propriété donnée
       // => Le champ s'appelle comme la propriété
       fieldName = prop
@@ -507,7 +507,7 @@ dispatch(d){
       fieldName = prop[1]
       prop      = prop[0]
     }
-    if(undefined === (d[fieldName] || d[prop])) continue
+    if(isUndefined(d[fieldName] || d[prop])) continue
     this[prop] = d[fieldName] /* depuis le formulaire */ || d[prop] /* depuis le fichier */
   }
   // rectification de certaines données
@@ -556,11 +556,9 @@ observe(container){
   var my = this
     , o = this.jqReaderObj
 
-  if(this.observed){
-    return
-  }
+  if(this.jqReaderObj.attr(STRobserved) == STROBSERVED) return
 
-  if(undefined === this.jqReaderObj){
+  if(isUndefined(this.jqReaderObj)){
     log.warn(`BIZARREMENT, le jqReaderObj de l'event #${this.id} est introuvable dans le reader. recherché avec domReaderId:${domReaderId}`)
   } else {
     // On rend actif les boutons d'édition
@@ -577,7 +575,7 @@ observe(container){
       .droppable(DATA_ASSOCIATES_DROPPABLE)
       .draggable(DATA_ASSOCIATES_DRAGGABLE)
 
-    this.observed = true
+    this.jqReaderObj.attr(STRobserved, STROBSERVED)
   }
 }
 
@@ -595,9 +593,9 @@ get domClass(){return this._domid || defP(this,'_domid',`event-${this.id}`)}
 get domReaderId(){return this._domreaderid||defP(this,'_domreaderid',`reader-${this.domId}`)}
 get domReaderObj(){return this._domreaderobj||defP(this,'_domreaderobj',this.jqReaderObj?this.jqReaderObj[0]:undefined)}
 get jqReaderObj(){
-  if(undefined === this._jqreaderobj){
+  if(isUndefined(this._jqreaderobj)){
     this._jqreaderobj = $(`#${this.domReaderId}`)
-    if(this._jqreaderobj.length == 0) delete this._jqreaderobj
+    if(isEmpty(this._jqreaderobj)) delete this._jqreaderobj
   }
   return this._jqreaderobj
 }
@@ -610,7 +608,7 @@ get jqReaderObj(){
 **/
 get faimage(){
   if(!this.needCurImage()) return
-  if(undefined === this._faimage) this._faimage = FAImage.get(this.curImageId)
+  if(isUndefined(this._faimage)) this._faimage = FAImage.get(this.curImageId)
   return this._faimage
 }
 
@@ -618,11 +616,11 @@ get faimage(){
 curImageDiv(options){
   this.existsCurImage() || FAImage.shotFrame(this.otime, {message:false})
   if(!this.faimage) return
-  if(undefined === options) options = {}
+  if(isUndefined(options)) options = {}
   options.imgClass = this.domC('curimage')
   let div = this.faimage.asDiv(options)
 
-  if(options && options.as === 'string') return div.outerHTML
+  if(options && options.as === STRstring) return div.outerHTML
   return div
 }
 // retourne true si l'event est liée à son image courante

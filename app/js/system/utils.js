@@ -1,14 +1,29 @@
 'use strict'
 
+function isUndefined(foo){
+  return STRundefined === typeof(foo)
+}
+function isNull(foo){
+  return null === foo
+}
+function isDefined(foo){
+  return false === isUndefined(foo)
+}
+function isEmpty(foo){
+  if(isFunction(foo['length'])){
+    return 0 == foo.length
+  } else if (isObject(foo)){
+    return 0 == Object.keys(foo).length
+  }
+}
 function isNotAscii(str){
   return str.replace(/[a-zA-Z0-9_]/g,'') != ''
 }
-function isFunction(foo){
-  return STRfunction === typeof(foo)
-}
-function isString(foo){
-  return STRstring !== typeof(eventType)
-}
+function isFunction(foo){ return STRfunction === typeof(foo) }
+function isString(foo)  { return STRstring === typeof(foo) }
+function isNotString(foo){return false === this.isString(foo)}
+function isObject(foo)  { return STRobject == typeof(foo) && !isArray(foo) }
+function isArray(foo)   { return Array.isArray(foo) }
 
 function asPourcentage(expected, actual){
   return `${pourcentage(expected,actual)} %`

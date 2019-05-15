@@ -84,6 +84,8 @@ append(ev){
     log.warn(`L'identifiant de l'élément suivant devrait commencer par 'reader-' (${div.id}):`, div)
     div.id = `reader-${div.id}`
   }
+
+  // On cherche à placer l'event au meilleur endroit temporel
   var hasBeenInserted = false
   this.forEachEventNode(function(ne){
     if(parseFloat(ne.getAttribute('data-time')) > ev.time){
@@ -93,6 +95,7 @@ append(ev){
     }
   })
   hasBeenInserted || this.container.append(div)
+
   // Pour observer l'event dans le reader
   ev.observe()
 }

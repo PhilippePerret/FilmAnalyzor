@@ -3,6 +3,7 @@
 ### Traiter :
 
 * Supprimer l'arrière plan du mini-writer (peut-être le faire 'sortir' du bord bas ?)
+* Utiliser des constantes pour les strings récurrente
 
 * Pour les associés qui n'existent plus, utiliser la classe `FAUnknownElement`
 

@@ -4,6 +4,12 @@ const STRfunction   = 'function'
 const STRstring     = 'string'
 const STRobject     = 'object'
 
+const STRevent = 'event'
+
+const STRobserved = 'observed'
+const STROBSERVED = 'OBSERVED'
+const STRundefined = 'undefined'
+
 const NONE = 'undefined'
 
 const HTML = 'html'
