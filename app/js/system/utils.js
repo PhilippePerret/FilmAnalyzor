@@ -21,7 +21,7 @@ function isNotAscii(str){
 }
 function isFunction(foo){ return STRfunction === typeof(foo) }
 function isString(foo)  { return STRstring === typeof(foo) }
-function isNotString(foo){return false === this.isString(foo)}
+function isNotString(foo){return false === isString(foo)}
 function isObject(foo)  { return STRobject == typeof(foo) && !isArray(foo) }
 function isArray(foo)   { return Array.isArray(foo) }
 
