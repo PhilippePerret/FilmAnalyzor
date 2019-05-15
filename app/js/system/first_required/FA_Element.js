@@ -1,13 +1,13 @@
 'use strict'
 
-const {
-  ASSOCIATES_COMMON_METHODS
-, ASSOCIATES_COMMON_PROPERTIES
-, DATA_ASSOCIATES_DRAGGABLE
-, DATA_ASSOCIATES_DROPPABLE
-, TEXTFIELD_ASSOCIATES_METHS
-, TEXTFIELD_ASSOCIATES_PROPS
-} = require('./js/system/first_required/FA_associates.js')
+// const {
+//   ASSOCIATES_COMMON_METHODS
+// , ASSOCIATES_COMMON_PROPERTIES
+// , DATA_ASSOCIATES_DRAGGABLE
+// , DATA_ASSOCIATES_DROPPABLE
+// , TEXTFIELD_ASSOCIATES_METHS
+// , TEXTFIELD_ASSOCIATES_PROPS
+// } = require('./js/system/first_required/FA_associates.js')
 
 /**
   Classe dont doit hériter tout élément de l'application, comme les
@@ -150,7 +150,5 @@ get jqReaderObj(){
 
 }// /class
 
-Object.assign(FAElement.prototype, ASSOCIATES_COMMON_METHODS)
-Object.defineProperties(FAElement.prototype, ASSOCIATES_COMMON_PROPERTIES)
-Object.assign(FAElement.prototype, TEXTFIELD_ASSOCIATES_METHS)
-Object.defineProperties(FAElement.prototype, TEXTFIELD_ASSOCIATES_PROPS)
+
+module.exports = FAElement

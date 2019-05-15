@@ -28,6 +28,4 @@ Object.defineProperty(FABrin,'DataFAListing',{get(){return {
 , collapsable:  true
 }}})
 
-
-if (NONE === typeof(FAListing)) window.FAListing = require('../../system/FA_Listing')
 FAListing.extend(FABrin)

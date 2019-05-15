@@ -149,3 +149,6 @@ get start3SecondsBefore(){return !!this.get('option_start_3secs_before_event')}
 get path(){return this._path || defP(this, '_path', path.join(this.a.folder,'options.json'))}
 
 }
+
+
+module.exports = Options

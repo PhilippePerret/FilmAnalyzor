@@ -35,6 +35,4 @@ Object.defineProperty(FAPersonnage,'DataFAListing',{get(){return {
 , removable:    true
 }}})
 
-
-if (NONE === typeof(FAListing)) window.FAListing = require('../../system/FA_Listing')
 FAListing.extend(FAPersonnage)

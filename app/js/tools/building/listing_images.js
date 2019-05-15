@@ -34,6 +34,4 @@ Object.defineProperty(FAImage,'DataFAListing',{get(){return {
 , collapsed:    true
 }}})
 
-
-if (NONE === typeof(FAListing)) window.FAListing = require('../../system/FA_Listing')
 FAListing.extend(FAImage)

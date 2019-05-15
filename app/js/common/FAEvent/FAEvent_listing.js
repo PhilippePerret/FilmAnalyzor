@@ -51,6 +51,4 @@ get(){
 
 })// /defineProperty
 
-
-if (NONE === typeof(FAListing)) window.FAListing = require('./js/system/FA_Listing')
 FAListing.extend(FAEvent)

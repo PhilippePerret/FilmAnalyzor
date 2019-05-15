@@ -130,3 +130,7 @@ const T = function(lid, lrep){
   }
   return str
 }
+
+module.exports = {
+  T:T, ERRORS:ERRORS, MESSAGES:MESSAGES
+}
