@@ -45,7 +45,10 @@ let ASSOCIATES_COMMON_METHODS = {
   }
 
 , acceptableTypes(){
-    return this.types_associates.map(t => `.${t}`).join(', ')
+    if(undefined === this._acceptabletypes){
+      this._acceptabletypes = this.types_associates.map(t => `.${t}`).join(', ')
+    }
+    return this._acceptabletypes
   }
 
 // ---------------------------------------------------------------------
@@ -263,9 +266,8 @@ let ASSOCIATES_COMMON_PROPERTIES = {
 const DATA_ASSOCIATES_DROPPABLE = {
   what: 'Donnée drop pour un élément qui peut recevoir des associables'
 // , accept: ASSOCIATES_COMMON_METHODS.acceptableTypes()
-, accept:(e)=>{return FADrop.acceptClass.bind(FADrop)(e)}
-, tolerance: 'intersect'
 , drop:(e, ui) => {
+    if (FADrop.isNotCurrentDropped(e.target)) return stopEvent(e)
     let target = $(e.target)
       , helper = ui.helper
       , owner = {type: target.attr('data-type'), id: target.attr('data-id')}
@@ -273,18 +275,12 @@ const DATA_ASSOCIATES_DROPPABLE = {
     current_analyse.associer(owner, owned)
     return stopEvent(e)
   }
-, out:(e)=>{FADrop.busy = false}
-, over:(e,ui)=>{
-    if(FADrop.isBusy()){
-      console.log("Le drop est déjà occupé")
-      return stopEvent(e)
-    } else {
-      FADrop.busy = true
-    }
-    console.log("ici je poursuis l'event")
-  }
+, accept:   ASSOCIATES_COMMON_METHODS.acceptableTypes()
+, out:      FADrop.out.bind(FADrop)
+, over:     FADrop.over.bind(FADrop)
+, tolerance: 'intersect'
 , classes: {'ui-droppable-hover': 'survoled'}
-, greedy: false
+, greedy: true
 }
 
 const DATA_ASSOCIATES_DRAGGABLE = {
@@ -368,6 +364,7 @@ const TEXTFIELD_ASSOCIATES_METHS = {
   à la table `this.dataDroppableTF`
 **/
 , onDropAssociableElement(e, ui){
+    if (FADrop.isNotCurrentDropped(e.target)) return stopEvent(e)
     let helper  = $(ui.helper)
       , [eltype, elid]  = [helper.attr('data-type'), helper.attr('data-id')]
       , textAdded = '|texte/légende|style'
@@ -390,22 +387,13 @@ const TEXTFIELD_ASSOCIATES_PROPS = {
   **/
 , dataDroppableTF:{get(){
     return {
-      // accept: ASSOCIATES_COMMON_METHODS.acceptableTypes()
-      accept:(e)=>{return FADrop.acceptClass.bind(FADrop)(e)}
+      accept: ASSOCIATES_COMMON_METHODS.acceptableTypes()
     , drop: this.onDropAssociableElement.bind(this)
     , tolerance: 'intersect'
     , classes: {'ui-droppable-hover': 'survoled'}
-    , greedy: false
-    , out:(e)=>{FADrop.busy = false}
-    , over:(e,ui)=> {
-        if(FADrop.isBusy()){
-          console.log("Le drop est déjà occupé")
-          return stopEvent(e)
-        } else {
-          FADrop.busy = true
-        }
-        console.log("ici je poursuis l'event")
-      }
+    , greedy: true
+    , out:  FADrop.out.bind(FADrop)
+    , over: FADrop.over.bind(FADrop)
     }
   }}
 }

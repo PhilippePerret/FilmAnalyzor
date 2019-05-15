@@ -4,6 +4,7 @@ function FReqGet(name){
   return require(`./js/system/first_required/${name}.js`)
 }
 
+const FADrop = FReqGet('FADrop')
 const System = FReqGet('System')
 const {DOMHorloge, DOMDuration} = FReqGet('DOMHorloge')
 const Hash = FReqGet('Hash')

@@ -1,19 +1,5 @@
 'use strict'
 
-class FADrop {
-static isBusy(){return this.busy === true}
-static get busy(){return this._busy}
-static set busy(v){this._busy = v}
-static acceptClass(e){
-  if(this.isBusy()) return false
-  for(var typ of ASSOCIATES_COMMON_METHODS.types_associates){
-    if(e.hasClass(typ)) return true
-  }
-  console.log("e ne contient pas une classe acceptée:", e[0].className, ASSOCIATES_COMMON_METHODS.types_associates)
-  return false
-}
-}// FADcrop
-
 /**
  * Class EventForm
  * ---------------

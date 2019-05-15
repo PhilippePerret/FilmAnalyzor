@@ -1,6 +1,7 @@
 # SUR LE GRILL
 
 * Poursuivre le développement du drop pour empêcher de dropper sur plusieurs events
+  - Développer l'objet FADrop pour qu'il gère tout, en fait
   - enregistrer l'élément (target) qui est couramment visé par le drop (dans `over`)
 
 ### Traiter :
