@@ -7,7 +7,7 @@ module.exports = function(options){
   my.report.add('Construction du scénier du film…', 'title')
   let str = ''
   str += '<h1 id="scenier-title">Scénier</h1>'
-  str += '<section id="scenier">'
+  str += '<section id="scenier" class="scenier">'
   str += my.generalDescriptionOf('scenier')
   FAEscene.forEachSortedScene(function(scene){ str += scene.as('book', FORMATED|LINKED, options)})
   str += '</section>'

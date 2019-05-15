@@ -1,6 +1,21 @@
 'use strict'
 
-class FABrin {
+class FABrin extends FAElement {
+
+static get TEXT_PROPERTIES(){return ['title', 'description']}
+static get PROPS(){
+  if(undefined === this._props){
+    this._props = ['id','title', 'description','bType','associates']
+  }
+  return this._props
+}
+
+static edit(brin_id, e){
+  if(e) stopEvent(e) // cf. note N0001
+  if(NONE === typeof(DataEditor)) return this.a.loadDataEditor(this.edit.bind(this,brin_id))
+  DataEditor.open(this, brin_id)
+}
+
 /**
   Instancie un nouveau brin
 
@@ -8,27 +23,12 @@ class FABrin {
                           fichier `dbrins.yaml` s'il existe.
 **/
 constructor(dbrin){
+  super(dbrin)
   this.a = current_analyse
   this.data   = dbrin
   this.numero = FABrin.newNumero()
-  this.type   = 'brin' // cohérence avec event, document et times
-  this.bType  = dbrin.bType // type de brin
+  this.type   = 'brin' // pour FAElement et les associations
 
-  // --- Associés ---
-  this.events     = this.events     || []
-  this.documents  = this.documents  || []
-  this.brins      = this.brins      || []
-  this.times      = this.times      || []
-}
-
-dataEpured(){
-  var h = {}
-  for(var k in this.data){
-    var v = this.data[k]
-    if(v === null || v === undefined || (Array.isArray(v) && v.length == 0) || ('object' === typeof(v) && Object.keys(v).length == 0)) continue
-    h[k] = v
-  }
-  return h
 }
 
 reset(){

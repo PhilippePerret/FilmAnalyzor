@@ -6,13 +6,15 @@ Object.assign(FABrin,{
   Méthode pour sauver les données éditées par le DataEditor
 **/
   DESave(){
-    this.saveData()
+    this.save()
+    this.update()
     FAWriter.resetDocument('dbrins')
   }
 /**
   Méthode utilisée par DataEditor pour créer un item
 **/
 , DECreateItem(dbrin){
+    if(undefined === this._brins) this._brins = {}
     this._brins[dbrin.id] = new FABrin(dbrin)
     this.DESave()
     return this._brins[dbrin.id]
@@ -28,7 +30,7 @@ Object.assign(FABrin,{
   }
 
 /**
-  Méthode utilisée par DataEditor pour supprimer un item
+  Méthode utilisée par DataEditor (et lising) pour supprimer un item
 **/
 , DERemoveItem(dbrin){
     delete this._brins[dbrin.id]
@@ -75,6 +77,7 @@ Object.defineProperties(FABrin,{
     , title: 'BRINS'
     , items: Object.values(this.brins)
     , titleProp: 'title'
+    , associable: true
     /**
       Définition des champs d'édition d'un élément
     **/

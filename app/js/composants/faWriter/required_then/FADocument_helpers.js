@@ -12,11 +12,11 @@ as(format, flag, opts){
   if (undefined === flag) flag = 0
   if (undefined === opts) opts = {}
 
-  opts.owner = {type: 'document', id: this.id || this.type}
+  opts.owner = {type: 'document', id: this.id}
 
   var divs = []
 
-  if(flag & LABELLED) divs.push(DCreate('LABEL', {inner: `DOC #${this.id || this.type}`}))
+  if(flag & LABELLED) divs.push(DCreate('LABEL', {inner: `DOC #${this.id}`}))
 
   switch (format) {
     case 'short':
@@ -71,28 +71,25 @@ as(format, flag, opts){
 
 , asAssociate(opts){
   var divs = []
-  divs.push(DCreate('SPAN', {inner: `Doc : ${this.id}`, attrs:{title:`Document « ${DFormater(this.title)} »`}}))
+  divs.push(DCreate('A', {inner: this.toString(), attrs:{onclick:this.onclickShow}}))
   if(opts.owner){
     // Si les options définissent un owner, on ajoute un lien pour pouvoir
     // dissocier le temps de son possesseur
-    divs.push(FAEvent.linkDissocier({owner: opts.owner, owned: this}))
+    divs.push(this.dissociateLink({owner: opts.owner}))
   }
   return divs
 }
 
-, as_link(options){
+, asLink(options){
     if(undefined === options) options = {}
-    return `« <a onclick="showDocument('${this.id||this.type}')" class="doclink">${options.title || this.title}</a> »`
+    return `« <a onclick="${this.onclickShow}" class="doclink">${options.title || this.title}</a> »`
   }
 
-// asAssociate est défini ailleurs
-, linkedToEdit(str){return `<a onclick="showDocument(${this.argId})">${str}</a>`}
-, linked(str){return `<a onclick="showDocument(${this.argId})">${str}</a>`}
+, linkedToEdit(str){return `<a onclick="${this.onclickShow}">${str}</a>`}
+, linked(str){return `<a onclick="${this.onclickShow}">${str}</a>`}
 
 }) // /fin Object.assign
 
 Object.defineProperties(FADocument.prototype,{
-  argId:{
-    get(){return this._argId||defP(this,'_argId', this.id||`'${this.type}'`)}
-  }
+  onclickShow:{get(){return this._onclickshow||defP(this,'_onclickshow',`showDocument('${this.dtype}','${this.id}')`)}}
 })

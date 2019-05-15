@@ -6,11 +6,16 @@ function WhenAllIsReallyReady(){
   // FAPersonnage.dataEditor.open()
   // FABrin.dataEditor.open()
   // current_analyse.openDocInDataEditor('fondamentales')
+  // current_analyse.togglePanneauDecors()
+  // current_analyse.togglePanneauBrins()
+  // setTimeout(current_analyse.togglePanneauBrins.bind(current_analyse),1000)
+  // current_analyse.togglePanneauImages()
+  // current_analyse.togglePanneauPersonnages()
 }
 
 $(document).ready(() => {
   log.info("--- DOM ready ---")
-  console.clear()
+  // console.clear()
 
   var d = ipc.sendSync('get-screen-dimensions')
   ScreenWidth   = d.width

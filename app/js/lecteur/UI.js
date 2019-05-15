@@ -32,7 +32,7 @@ const UI = {
   }
 
 , setDroppable(container, options){
-    let dataDrop = Object.assign({}, DATA_DROPPABLE, {
+    let dataDrop = Object.assign({}, DATA_ASSOCIATES_DROPPABLE, {
       drop(e, ui){
         var balise = current_analyse.getBaliseAssociation(undefined, ui.helper, e)
         if(balise) $(e.target).insertAtCaret(balise)
@@ -56,6 +56,7 @@ const UI = {
 // ---------------------------------------------------------------------
 //  Pour les boucles d'attente
 , startWait(message){
+    if (this.waiting) return
     if(undefined !== message) message += ' Merci de patienter…'
     $('span#waiting-loop-message').html(message || '')
     this.divWaitingLoop.show()

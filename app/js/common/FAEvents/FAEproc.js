@@ -8,37 +8,6 @@ static get OWN_PROPS(){return ['procType', ['setup', 'longtext2'], ['exploit','l
 static get OWN_TEXT_PROPS(){ return ['setup', 'exploit', 'payoff']}
 static get TEXT_PROPERTIES(){return this._tprops||defP(this,'_tprops',FAEvent.tProps(this.OWN_TEXT_PROPS))}
 
-static get dataType(){
-  if(undefined === this._dataType){
-    this._dataType ={
-      type: 'proc'
-    , genre: 'M'
-    , article:{
-        indefini: {sing: 'un', plur: 'des'}
-      , defini: {sing: 'le', plur: 'les'}
-      }
-    , name: {
-        plain: {
-          cap: {sing: 'Procédé', plur: 'Procédés'}
-        , min: {sing: 'procédé', plur: 'procédés'}
-        , maj: {sing: 'PROCÉDÉ', plur: 'PROCÉDÉS'}
-        }
-      , short:{
-          cap: {sing: 'Procédé', plur: 'Procédés'}
-        , min: {sing: 'procédé', plur: 'procédés'}
-        , maj: {sing: 'PROCÉDÉ', plur: 'PROCÉDÉS'}
-        }
-      , tiny: {
-          cap: {sing: 'Proc', plur: 'Procs'}
-        , min: {sing: 'proc', plur: 'procs'}
-        }
-      }
-    }
-  }
-  return this._dataType
-}
-
-
 // ---------------------------------------------------------------------
 //  INSTANCE
 constructor(analyse, data){

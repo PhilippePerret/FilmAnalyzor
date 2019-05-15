@@ -213,7 +213,8 @@ setTitle(){
 //  MÉTHODES D'AFFICHAGE
 
 exportAs(format){
-  if('undefined'===typeof FABuilder) return this.loadBuilder(this.exportAs.bind(this,format))
+  UI.startWait('Export au format PDF.')
+  if(NONE === typeof(FABuilder)) return this.loadBuilder(this.exportAs.bind(this,format))
   FABuilder.createNew().exportAs(format)
 }
 
@@ -232,13 +233,17 @@ displayTimeline(){MainTimeline.toggle()}
  * qu'il y aura un menu particulier pour le faire
  */
 displayFullAnalyse(forcer){
-  if(undefined === forcer) forcer = false
-  var callback = this.displayFullAnalyse.bind(this, forcer)
-  if(NONE === typeof FABuilder) return this.loadBuilder(callback)
-  if(NONE === typeof FAExporter)return this.loadExporter(callback)
-  if(NONE === typeof FAReport)return this.loadReporter(callback)
+  log.info(`-> FAnalyse.displayFullAnalyse(forcer:${forcer})`)
+  if(undefined === this.callback_dispfullana){
+    this.callback_dispfullana = this.displayFullAnalyse.bind(this, forcer||false)
+  }
+  if(NONE === typeof(FABuilder))  return this.loadBuilder(this.callback_dispfullana)
+  if(NONE === typeof(FAExporter)) return this.loadExporter(this.callback_dispfullana)
+  if(NONE === typeof(FAReport))   return this.loadReporter(this.callback_dispfullana)
+  log.info('   Composants full analyse chargés. Je peux la créer')
   FABuilder.createNew().show({force_update: forcer})
-  callback = null
+  delete this.callback_dispfullana
+  log.info('<- FAnalyse.displayFullAnalyse')
 }
 
 displayLastReport(){
@@ -252,26 +257,45 @@ displayPFA(){
   this.PFA.toggle()
 }
 togglePanneauInfosFilm(){
-  let iPanelInfosFilm = require('./js/tools/building/infos_film.js')
+  window.iPanelInfosFilm = window.iPanelInfosFilm || App.loadTool('building/infos_film')
   iPanelInfosFilm.toggle()
 }
-togglePanneauDecors(){
-  const iPanelDecors = require('./js/tools/building/decors.js')
-  iPanelDecors.toggle()
-}
 togglePanneauFondamentales(){
-  const PanelFonds = require('./js/tools/building/fondamentales.js')
+  window.PanelFonds = window.PanelFonds || App.loadTool('building/fondamentales')
   PanelFonds.toggle()
 }
-togglePanneauPersonnages(){
-  const PanelPersos = require('./js/tools/building/personnages.js')
-  PanelPersos.toggle()
+togglePanneauPersonnages(opened){
+  FAPersonnage.listing || App.loadTool('building/listing_personnages')
+  FAPersonnage.listing && FAPersonnage.listing.toggle(opened) // seulement si valide
+}
+
+togglePanneauDecors(opened){
+  // window.iPanelDecors = window.iPanelDecors || App.loadTool('building/decors')
+  // iPanelDecors.toggle()
+  FADecor.listing || App.loadTool('building/listing_decors')
+  FADecor.listing && FADecor.listing.toggle(opened) // seulement si valide
+}
+
+togglePanneauImages(opened){
+  FAImage.listing || App.loadTool('building/listing_images')
+  FAImage.listing && FAImage.listing.toggle(opened) // seulement si valide
+}
+
+togglePanneauBrins(opened){
+  if(FABrin.loaded){
+    FABrin.listing || App.loadTool('building/listing_brins')
+    FABrin.listing && FABrin.listing.toggle(opened) // seulement si valide
+  } else {
+    // Si les brins ne sont pas encore chargés, on attend
+    setTimeout(this.togglePanneauBrins.bind(this, opened), 200)
+  }
 }
 togglePanneauStatistiques(){
-  const PanelStatistiques = require('./js/tools/building/statistiques.js')
+  if(undefined === window.PanelStatistiques){
+    window.PanelStatistiques = require('./js/tools/building/statistiques.js')
+  }
   PanelStatistiques.toggle()
 }
-togglePanneauBrins(){ FABrin.toggle() }
 
 toggleAnalyseState(){ FAStater.toggleFullState() }
 
@@ -285,11 +309,18 @@ newVersionRequired(){
  */
 openDocInWriter(dtype){
   if('undefined' === typeof Snippets) return FAnalyse.loadSnippets(this.openDocInWriter.bind(this, dtype))
-  if(dtype.startsWith('fondamentales') && NONE === typeof(Fondamentales)){
+  if(dtype && dtype.startsWith('fondamentales') && NONE === typeof(Fondamentales)){
     return this.loadFondamentales(this.openDocInWriter.bind(this, dtype))
   }
   if(!FAWriter.inited) FAWriter.init()
   FAWriter.openDoc(dtype)
+}
+
+/**
+  Pour ouvrir (depuis le menu) l'analyse dans le finder
+**/
+openAnalyseInFinder(){
+  exec(`open "${this.folder}"`)
 }
 /**
   Méthode qui ouvre le DataEditor
@@ -300,12 +331,17 @@ openDocInDataEditor(dtype){
   }
   DataEditor.openPerType(dtype)
 }
+
 /**
  * Pour obtenir un nouvel "eventer", c'est-à-dire une liste filtrable
  * des events.
  */
 createNewEventer(){
   return FAEventer.createNew() // on le retourne pour les tests
+}
+
+createShotWithCurrentPicture(){
+  FAImage.shotFrame()
 }
 
 // ---------------------------------------------------------------------
@@ -347,8 +383,8 @@ addEvent(nev) {
 // Pour éditer le document d'identifiant +doc_id+
 // Note : on pourrait y aller directement, mais c'est pour compatibiliser
 // les choses
-editDocument(doc_id){
-  return FAWriter.openDoc(doc_id)
+editDocument(dtype, doc_id){
+  return FAWriter.openDoc(dtype, doc_id)
 }
 
 /**
@@ -436,7 +472,7 @@ indexOfEvent(event_id){
   for(;i<len;++i) { if(this.events[i].id == event_id) { return i } }
 }
 
-  // --- FONCTIONS I/O ----------------------------------------------
+// --- FONCTIONS I/O ----------------------------------------------
 
 /**
   Méthode appelée par le menu « Analyse > Verrouiller » qui
@@ -594,8 +630,8 @@ stopTimerSave(){
     - les numéros de scènes
 **/
 checkDataValidity(){
-  if('undefined' === typeof(AnalyseChecker)){
-    require('./js/tools/analyse_checker').bind(this)()
+  if(NONE === typeof(AnalyseChecker)){
+    App.loadTool('analyse_checker').bind(this)()
   } else {
     // Quand on le charge toujours dans la page pour l'implémenter
     AnalyseChecker.checkAll(this)
@@ -658,6 +694,7 @@ get eventsIO(){
   @param {Object} v
 **/
 set eventsIO(eventsData){
+  log.info("-> FAnalyse#[set]eventsIO")
   var my = this
     , last_id = -1
     , eventData
@@ -672,9 +709,11 @@ set eventsIO(eventsData){
     if(ev.id > last_id){last_id = parseInt(ev.id,10)}
   }
   // On peut définir le dernier ID dans EventForm (pour le formulaire)
+  log.info('   Définition du lastId de EventForm', last_id)
   EventForm.lastId = last_id
   eventsData = null
   my = null
+  log.info("<- FAnalyse#[set]eventsIO")
 }
 
   /**
@@ -789,6 +828,16 @@ get folderVignettesScenes(){
     this._folderVignettesScenes = path.join(this.folderImages,'vignettes_scenes')
   }
   return this._folderVignettesScenes
+}
+
+// Dossier des images prises d'après la vidéo
+get folderPictures(){
+  if(undefined === this._folderPictures){
+    if(!fs.existsSync(this.folderImages)) fs.mkdirSync(this.folderImages)
+    this._folderPictures = path.join(this.folderImages,'pictures')
+    if(!fs.existsSync(this._folderPictures)) fs.mkdirSync(this._folderPictures)
+  }
+  return this._folderPictures
 }
 
 get folderBackup(){

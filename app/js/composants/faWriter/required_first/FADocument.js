@@ -18,12 +18,14 @@ static reset(){
 }
 
 /**
+  Création d'un nouveau document (demande)
+  ------------------------------
 * Cette méthode est appelée lorsque l'on clique sur le bouton "+" pour
 * créer un nouveau document.
 **/
 static new(){
-  var newDoc = new FADocument(this.newId())
-  FAWriter.makeCurrent(newDoc.id)
+  var newDoc = new FADocument('custom', `custom-${this.newId()}`)
+  FAWriter.makeCurrent('custom', newDoc.id)
   newDoc.setContents('# Titre du nouveau document'+RC+RC)
   FAWriter.message(T('new-custom-document-created'))
 }
@@ -42,7 +44,10 @@ static newId(){
 static get(doc_id){
   if(undefined === this.documents) this.documents = {}
   if(undefined === this.documents[doc_id]){
-    this.documents[doc_id] = new FADocument(doc_id)
+    let [dtype, realid] = doc_id.split('-')
+    if(dtype === 'custom') customid = parseInt(customid,10)
+    else [dtype, realid] = ['regular', doc_id]
+    this.documents[doc_id] = new FADocument(dtype, realid)
   }
   return this.documents[doc_id]
 }
@@ -112,16 +117,9 @@ static forEachDocument(fn){
 **/
 static get allDocuments(){
   var all = glob.sync(`${current_analyse.folderFiles}/*.*`)
-    , affixe, doc_id
     , alldocs = []
   for(var pdoc of all){
-    affixe = path.basename(pdoc,path.extname(pdoc))
-    if(affixe.substring(0,4)=='doc-'){
-      doc_id = parseInt(affixe.split('-')[1],10)
-    } else {
-      doc_id = affixe
-    }
-    this.get(doc_id)
+    this.get(path.basename(pdoc,path.extname(pdoc)))
   }
   all = null
   return this.documents
@@ -143,31 +141,44 @@ static get count(){
           soit un nombre pour un document propre à l'analyse courante.
   +id+    Id du document propre à l'analyse, si +dtype+ vaut 'customdoc'.
 
-  @param {String} dtype   L'affixe du document, ou 'customdoc' pour un document
-                          d'analyse quelconque, ou 'anydoc' pour un document
-                          quelconque lorsque +docPath+ est fourni
-  @param {Number} id      Pour un 'customdoc', l'identifiant unique du document
-                          OU le path absolu si c'est un document de type 'anydoc'
+  @param {String} dtype   Doc-type du document, entre :
+                            'regular': un des fichiers normaux de l'analyse
+                            'custom' : un fichier personnalisé pour l'analyse
+                            'any' : un fichier quelconque
+
+  @param {Number} id      Identifiant du fichier, qui correspond à son affixe.
+                          Soit 'dpersonnages', soit 'custom-12'
+
   @param {String} docPath Le path absolu du document, lorsque c'est un document
                           de dtype 'anydoc'. Un fichier quelconque
 **/
-constructor(dtype, id){
-  if(undefined === dtype) throw("Impossible d'instancier un document sans type ou ID.")
-  if ('number' === typeof(dtype) || dtype.match(/^([0-9]+)$/)){
-    [dtype, id] = ['customdoc', parseInt(dtype,10)]
-  }
-  this.type = dtype
-  this.id   = id // pour les customdoc et les anydoc
-  if(dtype === 'anydoc'){
-    id || raise("Il faut absolument fournir le path")
-    fs.existsSync(id) || raise(`Le path "${id}" est introuvable. Je ne peux pas éditer ce document.`)
-    this._path  = id
-    this.id     = id.replace(/[^a-z]/g,'')
+constructor(dtype, id, docPath){
+  // console.log("dtype, id, docPath", dtype, id, docPath)
+  undefined !== dtype || raise("Impossible d'instancier un document sans type ou ID.")
+  ['regular','custom','any'].indexOf(dtype) > -1 || raise(`Le doc-type (dtype) "${dtype}" est inconnu.`)
+  this.dtype = dtype
+  if(dtype === 'any'){
+    if(undefined === docPath) docPath = id
+    docPath || raise("Il faut absolument fournir le path en troisième argument.")
+    fs.existsSync(docPath) || raise(`Le path "${docPath}" est introuvable. Je ne peux pas éditer ce document.`)
+    this._path  = docPath
+    this.id     = docPath.replace(/[^a-z]/g,'')
+  } else {
+    this.id     = id
   }
 }
 
 // ---------------------------------------------------------------------
 //  Méthodes publiques
+
+get toString(){return this._tostring||defP(this,'_tostring',this.defineToString())}
+
+defineToString(){
+  t = ['Document']
+  if(this.title) t.push(`« ${DFormater(this.title)} »`)
+  else t.push(`#${this.id}`)
+  return t.join(' ')
+}
 
 // Affiche le document
 display(){
@@ -204,10 +215,9 @@ get a() { return current_analyse }
 // Méthode pratique pour reconnaitre rapidement l'element
 get isAEvent(){return false}
 get isADocument(){return true}
-get isData(){return this.dataType.type === 'data'}
-get isAbsoluteData(){return this.dataType.abs === true}
+get isData(){return this.dataType && this.dataType.type === 'data'}
+get isAbsoluteData(){return this.dataType && this.dataType.abs === true}
 
-get modified(){return this._modified || false}
 set modified(v){
   FAWriter.setModified(v)
   this._modified = v
@@ -231,7 +241,7 @@ retreiveLastContents(){
 
 // Pour charger le texte du document
 load(fn_callback){
-  if('function' === typeof fn_callback) this.methodOnLoading = fn_callback
+  if(isFunction(fn_callback)) this.methodOnLoading = fn_callback
   this.iofile.loadIfExists({after: this.endLoading.bind(this), format: 'raw'})
 }
 endLoading(code){
@@ -250,7 +260,7 @@ save(){
   if(this.a.locked && !this.isAbsoluteData) return F.notify(T('analyse-locked-no-save'))
   if(this.saving) return
   this.saving = true
-  this.isNewCustom = this.type === 'customdoc' && !this.exists()
+  this.isNewCustom = this.dtype === 'custom' && !this.exists()
   if (false === this.iofile.save({after: this.endSaving.bind(this)})){
     // On passe par ici lorsque la sauvegarde a rencontré une erreur
     UI.stopWait()
@@ -272,11 +282,11 @@ endSaving(){
 * la nouvelle valeur.
 **/
 afterSavingPerType(){
-  switch (this.type) {
+  switch (this.dtype) {
     case 'snippets':      return Snippets.updateData(YAML.safeLoad(this.contents))
     case 'dpersonnages':  return FAPersonnage.reset().init()
     case 'dbrins':        return FABrin.reset().init()
-    case 'customdoc':     return this.addToMenuIfNew()
+    case 'custom':        return this.addToMenuIfNew()
   }
 }
 
@@ -285,7 +295,7 @@ afterSavingPerType(){
 addToMenuIfNew(){
   if (this.isNewCustom){
     delete this.title // Pour forcer sa relecture
-    FAWriter.menuTypeDoc.append(DCreate('OPTION', {value: this.id, inner: this.title}))
+    FAWriter.menuTypeDoc.append(DCreate(OPTION, {value: this.id, inner: this.title}))
     FAWriter.menuTypeDoc.val(this.id)
   }
 }
@@ -325,9 +335,9 @@ getContents(){
  */
 preparePerType(){
   var my = this
-  if(this.isAbsoluteData) return
+  if(this.isAbsoluteData || !this.dataType) return
   // Templates à proposer
-  var tempFolderPath = path.join('.','app','analyse_files', this.type)
+  var tempFolderPath = path.join('.','app','analyse_files', this.id)
   var tempFilePath = `${tempFolderPath}.${this.extension}`
   if(fs.existsSync(tempFilePath)){
     // <= Un seul fichier
@@ -361,7 +371,7 @@ afficheModeles(modeles){
   opts.push('<option value="">Choisir…</option>')
   for(var p of modeles){
     var n = path.basename(p, path.extname(p))
-    opts.push(`<option value="${p}">${n}</option>`)
+    opts.push(`<option value="${p}">${n.replace(/_/g,' ').titleize()}</option>`)
   }
   mModeles.html(opts)
 }
@@ -375,37 +385,15 @@ afficheModeles(modeles){
 exists(){ return fs.existsSync(this.path) }
 
 // ---------------------------------------------------------------------
-//  Méthodes d'association
-
-addDocument(id_or_type){
-  var meme_id = this.id && this.id == id_or_type
-  var meme_ty = this.type && this.type == id_or_type
-  if( meme_id || meme_ty ){
-    return F.error(T('same-document-no-association'))
-  } else {
-    // Pour le moment, on ne peut pas marquer l'association entre deux
-    // document. Le seul moyen de le faire est de l'associer dans le texte.
-    F.notify(T('no-association-between-docs'), {error: true})
-    this.modified = true
-  }
-  return true
-}
-/**
-* On passe ici quand on glisse un event dans le texte du document (dans le
-* writer)
-**/
-addEvent(event_id){
-  // TODO Comment marquer l'association à un event ? (ligne de commentaire de fin ?)
-  this.modified = true
-  return true
-}
+// Méthodes d'association
+// cf. les méthodes de FAElement
 
 // ---------------------------------------------------------------------
 //  Propriétés
 
 get theme(){return this._theme||defP(this,'_theme',this.themePerType)}
 get themePerType(){
-  if(undefined === this.dataType) throw(`Impossible de trouver les données du type "${this.type}"`)
+  if(undefined === this.dataType) throw(`Impossible de trouver les données du type "${this.dtype}"`)
   switch (this.dataType.type) {
     case 'data': return 'data-theme'
     case 'real': return 'real-theme'
@@ -442,7 +430,7 @@ get title(){
       this._firstContent = ''
     }
   }
-  return this._title || (this.type === 'customdoc' ? `Doc #${this.id}` : this.dataType.hname)
+  return this._title || (this.dtype === 'custom' ? `Doc #${this.id}` : this.dataType.hname)
 }
 
 /**
@@ -465,7 +453,16 @@ get iofile(){return this._iofile||defP(this,'_iofile', new IOFile(this))}
   min.js
 **/
 get dataType(){
-  return this._data||defP(this,'_data', DATA_DOCUMENTS[this.type])
+  return this._datatype||defP(this,'_datatype',this.getDataType())
+}
+getDataType(){
+  switch (this.dtype) {
+    case 'regular': return DATA_DOCUMENTS[this.id]
+    case 'custom':
+    case 'any':     return DATA_DOCUMENTS[this.dtype]
+    default:
+      throw(`Le dtype "${this.dtype}" est inconnu…`)
+  }
 }
 
 // L'extension (par défaut, 'md', sinon, définie dans DATA_DOCUMENTS)
@@ -474,15 +471,13 @@ get extension(){
 }
 
 // Le path du document
-get path(){ return this._path||defP(this,'_path',this.definePathPerType())}
+get path(){ return this._path||defP(this,'_path', this.definePathPerType())}
 
 definePathPerType(){
   if(this.isAbsoluteData){
-    return path.join(APPFOLDER,'app','js','data',`${this.type}.yaml`)
-  } else if(this.type === 'customdoc'){
-    return path.join(this.a.folderFiles,`doc-${this.id}.${this.extension}`)
+    return path.join(APPFOLDER,'app','js','data',`${this.dtype}.yaml`)
   } else {
-    return path.join(this.a.folderFiles,`${this.type}.${this.extension}`)
+    return path.join(this.a.folderFiles,`${this.id}.${this.extension}`)
   }
 }
 }

@@ -162,16 +162,9 @@ observe(){
   this.oButtons.find('button.btn-ok').on('click', this.finir.bind(this))
   this.textField.on('keydown',  this.onKeyDown.bind(this))
   this.textField.on('keyup',    this.onKeyUp.bind(this))
+
   // On peut déposer des éléments quelconques sur le champ de texte
-  let dataDrop = Object.assign({}, DATA_DROPPABLE, {
-    drop: function(e, ui){
-        stopEvent(e)
-        var balise = my.a.getBaliseAssociation(my, ui.helper)
-        balise && my.textField.insertAtCaret(balise)
-        return false
-    }
-  })
-  this.textField.droppable(dataDrop)
+  this.jqObj.droppable(DATA_ASSOCIATES_DROPPABLE)
 }
 
 onKeyDown(e){
@@ -256,8 +249,12 @@ get oVisualizor(){return this._ovisualizor||defP(this,'_ovisualizor', $(`#${this
 get oVisualizorContent(){return this._ovisualizorContent||defP(this,'_ovisualizorContent', $(`#${this.domId} .mini-writer-visualizor-content`))}
 get domId(){return this._domId||defP(this,'_domId',`mini-writer-${this.id}`)}
 get fatexte(){return this._fatexte||defP(this,'_fatexte', new FATexte(''))}
+get jqObj(){return this.fwindow.jqObj}
 get fwindow(){return this._fwindow||defP(this,'_fwindow', new FWindow(this, {class:'mini-writer', id:this.domId, y:-20, x:-20}))}
 get selector(){return this._selector||defP(this,'_selector', new Selector(this.textField))}
 
 get jqOwner(){return this._jqOwner||defP(this,'_jqOwner', $(this.owner))}
 }
+
+Object.assign(MiniWriter, ASSOCIATES_COMMON_METHODS)
+Object.defineProperties(MiniWriter, ASSOCIATES_COMMON_PROPERTIES)

@@ -1,11 +1,30 @@
 
+/* Un div dans un span doit toujours être inline */
+span div {
+  display:inline;
+}
+
 .small {
   font-size: 0.75em;
+}
+
+img.small {width:18px;}
+img[onclick]{cursor:pointer;}
+
+.align-middle,
+.align-middle > *
+{
+  vertical-align:middle;
 }
 .tiny {
   font-size: 0.65em;
 }
 .bold {font-weight:bold;}
+input.main-field{
+  font-weight:bold;
+  font-size:0.9em;
+  font-family:sans-serif;
+}
 .italic{font-style:italic;}
 
 .fleft {float:left;}
@@ -21,9 +40,38 @@
   width:90;
 }
 
+a.btn {
+  border:1px solid #CCCCCC;
+  padding:0 4px;
+}
+* + a.btn {margin-left:4px;}
+a.btn:hover{
+  background-color:darkgreen!important;
+  color:white!important;
+}
+
+select, select option {
+  all:unset;
+  font-size:inherit;
+  font-family:inherit;
+  font-style:normal;
+  border:1px solid;
+}
+
+select {
+  padding:2px 8px;
+  /* width:400px; */
+}
+select.main {
+  font-weight:bold;
+  font-size:1.1em;
+}
+
 .warning{color:red;}
 
 .cadre{border:1px solid;padding:0.1em 0.5em;}
+
+.explication {font-style:italic;font-size:11.1pt;}
 
 label {
   color:#999999;

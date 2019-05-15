@@ -7,36 +7,6 @@ class FAEaction extends FAEvent {
 // Propriétés propres
 static get OWN_PROPS(){ return ['actionType'] }
 
-static get dataType(){
-  if(undefined === this._dataType){
-    this._dataType = {
-      type: 'action'
-    , genre: 'F'
-    , article:{
-        indefini: {sing: 'une', plur: 'des'}
-      , defini: {sing: 'l’', plur: 'les'}
-      }
-    , name: {
-        plain: {
-          cap: {sing: 'Action', plur: 'Actions'}
-        , min: {sing: 'action', plur: 'actions'}
-        , maj: {sing: 'ACTION', plur: 'ACTIONS'}
-        }
-      , short:{
-          cap: {sing: 'Action', plur: 'Actions'}
-        , min: {sing: 'action', plur: 'actions'}
-        , maj: {sing: 'ACTION', plur: 'ACTIONS'}
-        }
-      , tiny: {
-          cap: {sing: 'Act.', plur: 'Acts.'}
-        , min: {sing: 'act.', plur: 'acts.'}
-        }
-      }
-    }
-  }
-  return this._dataType
-}
-
 // ---------------------------------------------------------------------
 //  INSTANCE
 constructor(analyse, data){

@@ -14,23 +14,28 @@ const FAWriter = {
 
 , currentDoc: undefined //l'instance FADocument courante (elle doit toujours exister)
 
+// Ouvre un fichier quelconque (par son path)
 , openAnyDoc(path){
     if(false === this.checkCurrentDocModified()) return
     if(undefined === this.writerDocs) this.writerDocs = {}
-    let ndoc = new FADocument('anydoc', path)
-    this.writerDocs[ndoc.id] = ndoc
-    this.makeCurrent(ndoc.id)
+    let ndoc = new FADocument('any', null, path)
+    this.writerDocs[`any^^^${ndoc.id}`] = ndoc
+    this.makeCurrent('any', ndoc.id)
   }
 
-  /**
-   * Ouverture du document de type +typeDoc+ (p.e. 'introduction')
+/**
+ * Ouverture du document d'id +docid+ (p.e. 'introduction' ou 'custom-12')
 
-   ATTENTION : pour un document quelconque, utiliser la méthode
-   `openAnyDoc`
-   */
-, openDoc(dtype){
-    this.message(`Document de type "${dtype}" en préparation…`)
-    if(undefined === dtype || '' == dtype){
+ ATTENTION : pour un document quelconque, utiliser la méthode
+ `openAnyDoc`
+ */
+, openDoc(dtype, docid){
+    let idx
+    if(dtype && undefined === docid){
+      // Quand seul l'identifiant est transmis
+      [docid, dtype] = [dtype, undefined]
+    }
+    if(undefined === docid || '' == docid){
       // <= Aucun type de document n'a été choisi (note : cela se produit
       //    par exemple lorsque l'on choisit d'ouvrir le writer par le menu)
       // => On prend le document par défaut, c'est-à-dire l'introduction
@@ -39,10 +44,15 @@ const FAWriter = {
         else return false
       } else {
         this.menuTypeDoc.value = 'introduction'
-        dtype = 'introduction'
+        dtype = 'regular'
+        docid = 'introduction'
       }
+    } else if(!dtype) {
+      [dtype, idx] = (docid||'').split('-')
+      if(dtype !== 'custom') dtype = 'regular'
     }
-    this.makeCurrent(dtype)
+    this.message(`Document ${dtype} "${docid}" est en préparation…`)
+    this.makeCurrent(dtype, docid)
     this.message('Document prêt à être travaillé.')
   }
 
@@ -52,16 +62,27 @@ const FAWriter = {
    * +kdoc+   Pour les types non customisés, ça correspond à 'type'
    *          Pour les autres, de type 'customdoc', c'est l'identifiant
    */
-, makeCurrent(kdoc){
+, makeCurrent(dtype, docid) {
+    let kdoc ;
+    if(undefined === docid){
+      // C'est que c'est le kdoc qui a été envoyé
+      [dtype, docid, kdoc] = [...dtype.split('^^^'), dtype]
+    } else {
+      kdoc = `${dtype}^^^${docid}`
+    }
     if(false === this.checkCurrentDocModified()) return
     if(undefined === this.writerDocs) this.writerDocs = {}
-    if(undefined === this.writerDocs[kdoc]) this.writerDocs[kdoc] = new FADocument(kdoc)
+    if(undefined === this.writerDocs[kdoc]){
+      this.writerDocs[kdoc] = new FADocument(dtype, docid)
+    }
     this.currentDoc = this.writerDocs[kdoc]
     if(!this.isOpened) this.open()
     this.currentDoc.display()
     if(this.visualizeDoc) this.updateVisuDoc()
     // On "referme" toujours le menu des types (après l'ouverture)
     this.menuTypeDoc.val(kdoc)
+    // On renseigne le bouton droppable
+    this.btnDrop.attr({'data-type':'document','data-id': this.currentDoc.id})
   }
 
 // Permet de forcer le rechargement du document d'identifiant +kdoc+. La
@@ -171,9 +192,9 @@ const FAWriter = {
     this.currentDoc.contents = this.docField.val()
   }
 
-  // Cf. require_then/FAWriter_keyUp_keyDown.js
-, onKeyDown(e){}
-, onKeyUp(e){}
+// Cf. require_then/FAWriter_keyUp_keyDown.js
+// , onKeyDown(e){}
+// , onKeyUp(e){}
 
 , onFocusContents(){
     this.message('')
@@ -208,7 +229,7 @@ const FAWriter = {
 **/
 , setUI(){
     let my = this
-      , any = this.currentDoc.type == 'anydoc'
+      , any = this.currentDoc.dtype == 'any'
       , rpath = any ? this.currentDoc.path.replace(new RegExp(`^${APPFOLDER}`),'.'):'DOCUMENT '
     my.menuTypeDoc[any?'hide':'show']()
     my.section.find('.header #writer-doc-title select')[any?'hide':'show']()
@@ -301,147 +322,6 @@ const FAWriter = {
     this.section.find('#writer-message').html(msg)
   }
 
-
-// Appelé par la FWindow
-, build(){
-    var spa, lab, sel
-
-    var btnClose = DCreate('BUTTON', {
-      id: 'btn-close-writer'
-    , class: 'btn-close'
-    , type: 'button'
-    })
-    spa = DCreate('SPAN', {
-      class: 'writer-btn-drop doc'
-    , attrs: {'data-type': 'document', 'title': "Pour glisser et déposer le document sur un event ou un texte."}
-    , inner: ' ⎆'
-    })
-    var doctitle = DCreate('DIV',{
-      id: 'writer-doc-title'
-    , append: [
-        DCreate('LABEL', {class: 'small', inner: 'DOCUMENT '})
-      , DCreate('SELECT', {id: 'document-type'})
-      , spa
-    ]
-    })
-
-    var divmodeles = DCreate('DIV', {
-      class: 'div-modeles'
-    , append: [
-        DCreate('LABEL', {class: 'small', inner: 'MODÈLES '})
-      , DCreate('SELECT', {id: 'modeles-doc'})]
-    })
-
-    var btnNew = DCreate('BUTTON', {
-      id: 'writer-btn-new-doc'
-    , inner: '+'
-    , type: 'button'
-    })
-
-    var header = DCreate('DIV',{
-      class: 'header'
-    , append: [btnClose, doctitle, divmodeles, btnNew]
-    })
-
-    var body = DCreate('DIV', {
-      class: 'body'
-    , append: [DCreate('TEXTAREA', {id: 'document-contents', attrs:{autofocus: true}})]
-    })
-
-    var opts = []
-    var themes = {'': 'Thème…', 'real-theme': 'Normal', 'data-theme':'Données', 'musical-theme':'Musical'}
-    for(var theme in themes){ opts.push(DCreate('OPTION', {value: theme, inner: themes[theme]}))}
-    var selThemes = DCreate('SELECT', {
-      id: 'writer-theme'
-    , class: 'fleft'
-    , append: opts
-    })
-
-    var footer = DCreate('DIV', {
-      class: 'footer',
-      append: [
-        DCreate('LABEL', {id: 'writer-message', inner: '...'})
-      , selThemes
-      , DCreate('LABEL', {class:'fleft', inner: 'Taille du texte : '})
-      , DCreate('SPAN', {id: 'text-size', class:'fleft', inner: '...'})
-      , DCreate('LABEL', {inner: 'Visualiser', attrs:{for: 'cb-auto-visualize'}})
-      , DCreate('INPUT', {id: 'cb-auto-visualize', attrs: {type: 'checkbox'}})
-      , DCreate('LABEL', {inner: 'Auto-save', attrs:{for: 'cb-save-auto-doc'}})
-      , DCreate('INPUT', {id: 'cb-save-auto-doc', attrs: {type: 'checkbox'}})
-      , DCreate('BUTTON', {id: 'btn-save-doc', inner: 'Enregistrer', type: 'button'})
-      ]
-    })
-
-    return [header, body, footer]
-}
-// Appelé par la FWindow
-, afterBuilding(){
-  // Peupler la liste des types de document
-  var m = this.menuTypeDoc, dOpt
-  for(var dType in DATA_DOCUMENTS){
-    var ddoc = DATA_DOCUMENTS[dType]
-    if(ddoc.menu === false) continue
-    if(ddoc === 'separator') dOpt = {class: 'separator', disabled: true}
-    else dOpt = {value: dType, inner: ddoc.hname}
-    m.append(DCreate('OPTION', dOpt))
-  }
-  // Pour séparer les documents propres à cette analyse
-  m.append(DCreate('OPTION', {class: 'separator', disabled: true}))
-  // La liste des documents propres à cette analyse
-  this.forEachUserDocument(function(wdoc){
-    m.append(DCreate('OPTION', {value: wdoc.id, inner: wdoc.title}))
-  })
-}
-// Appelé par la FWindow
-, observe(){
-    var my = this
-    // On observe le menu de choix d'un document
-    my.menuTypeDoc.on('change', my.onChooseTypeDoc.bind(my))
-    // On observe le menu de choix d'un modèle de document
-    my.menuModeles.on('change', my.onChooseModeleDoc.bind(my))
-    // On observe le menu qui choisit le thème
-    my.menuThemes.on('change', my.onChooseTheme.bind(my))
-
-    // On observe le champ de texte
-    my.docField.on('change',    my.onContentsChange.bind(my))
-    my.docField.on('focus',     my.onFocusContents.bind(my))
-    my.docField.on('blur',      my.onBlurContents.bind(my))
-    my.docField.on('keydown',   my.onKeyDown.bind(my))
-    my.docField.on('keyup',     my.onKeyUp.bind(my))
-
-    // On rend le champ de texte droppable pour pouvoir y déposer
-    // n'importe quel event ou n'importe quel autre document
-    let dataDrop = Object.assign({}, DATA_DROPPABLE, {
-      drop: function(e, ui){
-          var balise = my.a.getBaliseAssociation(my.currentDoc, ui.helper, e)
-          if (balise) my.docField.insertAtCaret(balise)
-        }
-    })
-    my.docField.droppable(dataDrop)
-
-    // Le bouton pour sauver le document courant
-    my.btnSave.on('click',my.saveCurrentDoc.bind(my))
-    // On observe la case à cocher qui permet de sauvegarder automatiquement
-    // le document
-    $('input#cb-save-auto-doc').on('click', my.setAutoSave.bind(my))
-    // // On observe la case à cocher pour visualiser régulièrement le document
-    $('input#cb-auto-visualize').on('change', my.setAutoVisualize.bind(my))
-
-    // On observe le bouton pour créer un nouveau document
-    $('button#writer-btn-new-doc').on('click', FADocument.new.bind(FADocument))
-
-    // On rend le petit bouton pour drag-dropper le document courant
-    // draggable
-    my.section.find('.header .writer-btn-drop').draggable({
-      revert: true
-    , zIndex: 5000
-    })
-
-    // Mettre la taille : non, ça doit se régler à chaque ouverture
-
-    my.ready = true
-  }
-
 /**
 * Méthode permettant de boucler sur tous les documents User (donc les
 * document propres à l'analyse courante)
@@ -476,10 +356,10 @@ Object.defineProperties(FAWriter,{
       if(undefined === this._customDocuments){
         this._customDocuments = []
         var last_id = 0
-        var files = glob.sync(path.join(this.a.folderFiles, '**', 'doc-*.md'))
+        var files = glob.sync(path.join(this.a.folderFiles, '**', 'custom-*.md'))
         for(var file of files){
           var doc_id = parseInt(path.basename(file,path.extname(file)).split('-')[1],10)
-          this._customDocuments.push(new FADocument(doc_id))
+          this._customDocuments.push(new FADocument('custom', doc_id))
           if(doc_id > last_id) last_id = 0 + doc_id
         }
         // On renseigne le dernier identifiant utilisé
@@ -488,9 +368,8 @@ Object.defineProperties(FAWriter,{
       return this._customDocuments
     }
   }
-, section:{
-    get(){return $('#section-writer')}
-  }
+, jqObj: {get(){return this.fwindow.jqObj}}
+, section: {get(){return $('#section-writer')}}
 , menuTypeDoc:{
     get(){return $('#section-writer .header select#document-type')}
   }
@@ -500,12 +379,9 @@ Object.defineProperties(FAWriter,{
 , docField:{
     get(){return $('#section-writer .body textarea#document-contents')}
   }
-, btnSave:{
-    get(){return $('#section-writer button#btn-save-doc')}
-  }
-, menuThemes:{
-    get(){return $('#section-writer #writer-theme')}
-  }
+, btnSave: {get(){return this.section.find('.footer button#btn-save-doc')}}
+, btnDrop: {get(){return this.section.find('.header .writer-btn-drop')}}
+, menuThemes: {get(){return this.section.find('#writer-theme')}}
 , menuModeles:{
     get(){return $('#section-writer select#modeles-doc')}
   }

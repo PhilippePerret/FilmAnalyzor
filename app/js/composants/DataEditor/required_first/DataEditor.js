@@ -11,7 +11,8 @@ constructor(mainClass, data){
 }
 
 open(){this.fwindow.toggle()}
+close(){this.fwindow.toggle()}
 
 get fwindow(){
-  return this._fwindow||defP(this,'_fwindow', new FWindow(this, {id:this.id, class:'fwindow-listing-type dataeditor', x:200, y:100}))}
+  return this._fwindow||defP(this,'_fwindow', new FWindow(this, {id:this.id, name:`${this.mainClass.name}-DataEditor`, class:'fwindow-listing-type dataeditor', x:200, y:100}))}
 }

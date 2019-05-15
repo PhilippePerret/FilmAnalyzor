@@ -4,7 +4,7 @@ class FAEvent {
 // ---------------------------------------------------------------------
 //  CLASSE
 
-static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duree', 'parent', ['content', 'longtext1'], 'events', 'documents', 'times', 'brins']}
+static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duree', 'parent', 'curimage', ['content', 'longtext1'], 'associates']}
 static get TEXT_PROPERTIES(){return ['titre', 'content']}
 
 static get ALL_PROPS(){
@@ -111,131 +111,17 @@ static get folderModifieds(){
   return this._folderModifieds
 }
 
-/**
-  Méthode qui permet de dissocier des éléments (pour le moment, des events)
-  @param {Object} datadis   Données pour effectuer la dissociation. Doit
-                            contenir : :owner_type, le type du propriétaire,
-                            par exemple 'event' ou 'doc', :owner_id, l'id du
-                            propriétaire, :type, le type de l'élément à disso-
-                            cier, par exemple 'time'
-                            :time ou :id suivant qu'il s'agit d'un temps ou
-                            d'un autre élément
-**/
-static prepareDissociation(datadis){
-  datadis.owner.type || raise('Il faut fournir le type du propriétaire.')
-  datadis.owner.id !== undefined || raise("Il faut fournir l'id du propriétaire")
-  let owner = ((typ, id) => {
-    switch (typ) {
-      case 'event':     return FAEvent.get(id)
-      case 'document':  return FADocument.get(id)
-      case 'brin':      return FABrin.get(id)
-      default:
-        throw(`Le type de possesseur "${typ}" n'est pas encore traité pour la dissociation`)
-    }
-  })(datadis.owner.type, datadis.owner.id)
-
-  let owned = ((typ, id) => {
-    switch (typ) {
-      case 'time':      return new OTime(id)
-      case 'event':     return FAEvent.get(id)
-      case 'document':  return FADocument.get(id)
-      case 'brin':      return FABrin.get(id)
-      default:
-      throw(`Le type de possédé "${typ}" n'est pas encore traité pour la dissociation`)
-    }
-  })(datadis.owned.type, datadis.owned.id)
-
-  owner !== undefined || raise("Le possesseur est introuvable…")
-  owned !== undefined || raise("L'élément possédé est introuvable…")
-
-  // Demande de confirmation
-  let msg = `Dois-je vraiment dissocier : ${owned} de : ${owner} ?`
-  if(!confirm(msg)) return false
-
-  // Dissociation confirmée, on peut procéder
-  if('function' === typeof(owner.dissocier)){
-    owner.dissocier(owned)
-  } else {
-    throw(`Il faut implémenter la méthode "dissocier" pour ${owner}`)
-  }
-
-}
-
 static get a(){return this._a || current_analyse}
 static set a(v){this._a = v}
 
-static get type(){return this._type||defP(this,'_type', this.dataType.type)}
+static get dataType(){return this._dataType || defP(this,'_dataType', EVENTS_TYPES_DATA[this.type])}
+static get type(){return this._type || defP(this,'_type',this.defineType())}
 static get shortName(){return this._shortName||defP(this,'_shortName', this.dataType.name.short.cap.sing)}
-
-// ---------------------------------------------------------------------
-//  MÉTHODES POUR LES ASSOCIATIONS
-
-/**
-  Construit un lien pour casser une association et le retourne.
-  @param {Object} datass  Données pour l'association. Doit contenir :
-                          :owner    Définition du propriétaire (:type/:id)
-                          :owned    Définition du possédé (:type/:id) ou objet
-**/
-static linkDissocier(datass){
-  if(datass.owner.type == datass.owned.type && datass.owned.id == datass.owner.id){
-    throw("Impossible de dissocier un élément de lui-même, voyons…")
-  }
-  let owner_id = datass.owner.id
-  if('number' !== typeof(owner_id)) owner_id = `'${owner_id}'`
-  let owned_id = datass.owned.id
-  if('number' !== typeof(owned_id)) owned_id = `'${owned_id}'`
-
-  return DCreate('A',{class:'lkdiss', inner: '[dissocier]', attrs:{onclick:`FAEvent.prepareDissociation.bind(FAEvent)({owned:{type:'${datass.owned.metaType||datass.owned.type}', id:${owned_id}}, owner:{type:'${datass.owner.metaType||datass.owner.type}', id:${owner_id}}})`}})
-}
-static associer(obj, asso){
-  log.info(`-> FAEvent::associer`)
-  let list_id = `${asso.type}s`
-  let res = this.addToList(list_id, obj, asso.id)
-  if (res == true){
-    obj.modified = true
-    if('function'===typeof(obj.updateInReader)){
-      obj.updateInReader()
-    }
-  }
-  log.info(`<- FAEvent::associer (return ${res})`)
-  return res
-}
-// ATTENTION : LA MÊME MÉTHODE EXISTE PLUS HAUT
-static dissocier(obj, asso){
-  let list_id = `${asso.metaType||asso.type}s`
-  let res = this.supFromList(list_id, obj, asso.id)
-  if (res == true){
-    obj.modified = true
-    if('function'===typeof(obj.updateInReader)){
-      obj.updateInReader()
-    }
-  }
-  return res
+static defineType(){
+  let idx = this.name.startsWith('FAE') ? 3 : 2
+  return this.name.substring(idx,this.name.length)
 }
 
-static addToList(list_id, obj, asso_id){
-  log.info(`-> FAEvent::addToList(list_id="${list_id}", obj={type:${obj.type},id:${obj.id}}, asso_id=${asso_id})`)
-  // console.log("addToList:", list_id, foo_id)
-  if(list_id == 'times' && (asso_id instanceof(OTime))) asso_id = asso_id.seconds
-  if(obj[list_id].indexOf(asso_id) < 0){
-    log.info(`   Ajout id #${asso_id} à liste ${list_id} de ${obj.toString()}`)
-    obj[list_id].push(asso_id)
-    return true
-  } else {
-    F.notify(`Les deux éléments sont déjà liés.`)
-    return false
-  }
-}
-static supFromList(list_id, obj, asso_id){
-  if(list_id == 'times' && (asso_id instanceof(OTime))) asso_id = asso_id.seconds
-  var off = obj[list_id].indexOf(asso_id)
-  if(off > -1){
-    obj[list_id].splice(off, 1)
-    return true
-  } else {
-    return false
-  }
-}
 // ---------------------------------------------------------------------
 //  INSTANCE
 
@@ -246,18 +132,10 @@ static supFromList(list_id, obj, asso_id){
 **/
 constructor(analyse, data){
   this.analyse  = this.a = analyse
-  this.metaType = 'event' // alors que le type sera 'scene', 'dialog', etc.
-
   this.dispatch(data)
-
+  this.metaType = 'event' // alors que le type sera 'scene', 'dialog', etc.
+  this.type     = this.constructor.type
   this.id = parseInt(this.id,10)
-
-  // Valeurs par défaut indispensables
-  // Les associations possibles
-  this.events     = this.events     || []
-  this.documents  = this.documents  || []
-  this.times      = this.times      || []
-  this.brins      = this.brins      || []
 
 }
 
@@ -295,10 +173,6 @@ reset(){
 get isAEvent(){return true}
 get isADocument(){return false}
 get isScene(){return false} // surclassé par FAEscene
-
-// ---------------------------------------------------------------------
-//  Méthodes d'helper
-
 
 // ---------------------------------------------------------------------
 //  Propriétés temporelles
@@ -355,33 +229,6 @@ unsetParent(){
 }
 
 /**
-Méthode pour associer et dissocier l'élément +asso+ de l'event courant
-**/
-associer(asso) {return FAEvent.associer(this, asso)}
-dissocier(asso){return FAEvent.dissocier(this, asso)}
-
-/**
-
-  Répète la méthode +fn+ sur tous les events associés de
-  type +type+ (le nom du type au pluriel, comme la propriété)
-
-  @param {String} type  Soit 'events', 'documents', 'times'
-  @return {Void}
-
-**/
-forEachAssociate(type, fn){
-  if(type==='times' || type === 'time'){
-    for(var assoEvent of this[type]){
-      if(false === fn(new OTime(assoEvent))) break;
-    }
-  } else {
-    for(var assoEvent of this[type]){
-      if(false === fn(this.a.ids[assoEvent])) break;
-    }
-  }
-}
-
-/**
   Méthode qui permet de boucler sur toutes les
   propriétés textuelles de l'event, pour rechercher
   des choses dans les textes, par exemple.
@@ -427,6 +274,12 @@ showDiffere(){
   } else {
     this.timerShow = setTimeout(my.show.bind(my), diff)
   }
+}
+
+// Comme la méthode show(), mais en plus, place le curseur à l'endroit
+// du film. C'est la méthode utilisée par le bouton 'voir'
+reveal(){
+  this.a.locator.setTime(this.otime)
 }
 /**
  * Pour afficher l'évènement dans le reader de l'analyse
@@ -487,6 +340,15 @@ get end(){
   if(undefined === this._end) this._end = this.time + this.duree
   return this._end
 }
+
+remove(){
+  delete this._div
+  if(this.jqReaderObj.length) this.jqReaderObj.remove()
+  delete this._domreaderobj
+  delete this._jqreaderobj
+  this.shown = false
+  this.observed = false
+}
 /**
  * Après édition de l'event, on peut avoir à updater son affichage dans
  * le reader. On va faire simplement un remplacement de div (le div du
@@ -494,34 +356,14 @@ get end(){
  */
 updateInReader(new_idx){
   log.info(`-> <<FAEvent #${this.id}>>#updateInReader`)
-  // Pour forcer la reconstruction
-  delete this._div
-  // Si l'event n'est pas affiché dans le reader (ou autre), on n'a rien
-  // à faire. Par prudence, on réinitialise quand même le _div qui avait peut-
-  // être été défini lors d'un affichage précédent
-  if(undefined === this.jqReaderObj) return
+  // On détruit complètement l'objet reader (ce qui forcera sa reconstruction
+  // et son observation)
+  this.remove()
+  this.a.reader.append(this)
+  this.div.style.opacity = 1
 
-  // On remplace l'objet reader par un nouvel updaté et on l'observe
-  this.jqReaderObj.replaceWith($(this.div))
-  delete this._jq_reader_obj
-  this.observe()
-
-  if (undefined !== new_idx /* peut être 0 */) {
-    // Si le temps de l'event a changé de façon conséquente, il faut
-    // le replacer au bon endroit dans le reader. C'est la valeur de `new_idx`
-    // qui le définit, undefined si l'event reste en place ou le nouvel index
-    //
-    // Rappel : l'new_idx est "calculé" après retrait de l'event de la liste,
-    // il faut en tenir compte ici.
-    // On met d'abord le noeud en dehors du reader
-    $('#section-reader').append(this.jqReaderObj)
-    var reader = DGet('reader')
-    reader.insertBefore(this.domReaderObj, reader.childNodes[new_idx])
-
-  }
   log.info(`<- <<FAEvent #${this.id}>>#updateInReader`)
 
-  this.div.style.opacity = 1
 }
 
 /**
@@ -597,16 +439,7 @@ hasPersonnages(filtre){
 
 // ---------------------------------------------------------------------
 
-get jqReaderObj(){
-  if(undefined === this._jq_reader_obj ){
-    this._jq_reader_obj = $(`#${this.domId}`)
-  }
-  if(this._jq_reader_obj.length == 0) this._jq_reader_obj = undefined
-  return this._jq_reader_obj
-}
-get domReaderObj(){return this._domReaderObj||defP(this,'_domReaderObj',this.defineDomReaderObj())}
-
-get domId(){ return `revent-${this.id}`}
+get domId(){ return `event-${this.id}`}
 
 
 get contenu(){return this._contenu||defP(this,'_contenu',this.defineContenu())}
@@ -614,7 +447,7 @@ get contenu(){return this._contenu||defP(this,'_contenu',this.defineContenu())}
 // Définition du contenu, soit formaté d'une façon particulière par
 // l'event propre, soit le content normal, dediminutivisé
 defineContenu(){
-  if('function' === typeof this.formateContenu){
+  if(isFunction(this.formateContenu)){
     return this.formateContenu()
   } else {
     return this.fatexte.deDim(this.content)
@@ -624,20 +457,19 @@ defineContenu(){
 get fatexte(){return this._fatext||defP(this,'_fatext', new FATexte(this.content))}
 
 /**
- * Les données qui seront enregistrées
+ * Les données qui seront enregistrées (épurées)
  */
 get data(){
   var d = {}, prop
   for(prop of this.constructor.ALL_PROPS){
-    // cf. ci-dessous dans `dispatch`
-    if('string' !== typeof(prop)) prop = prop[0]
-    // On n'enregistre pas les données non définies ou null
-    if(null === this[prop] || undefined === this[prop]) continue
-    // On n'enregistre pas les listes vides
-    if(Array.isArray(this[prop]) && this[prop].length == 0) continue
-    d[prop] = this[prop]
+    if('string' !== typeof(prop)) prop = prop[0] // quand définition par paire
+    if(isFunction(this[`${prop}Epured`])){
+      d[prop] = this[`${prop}Epured`]()
+    } else {
+      d[prop] = this[prop]
+    }
   }
-  return d
+  return Hash.compact(d)
 }
 
 /**
@@ -724,50 +556,29 @@ observe(container){
   var my = this
     , o = this.jqReaderObj
 
-  // On rend actif les boutons d'édition
-  o.find('.e-tools button.btn-edit').on('click', EventForm.editEvent.bind(EventForm, this))
+  if(this.observed){
+    return
+  }
 
-  // On rend actif les boutons play
-  BtnPlay.setAndWatch(this.jqReaderObj, this)
+  if(undefined === this.jqReaderObj){
+    log.warn(`BIZARREMENT, le jqReaderObj de l'event #${this.id} est introuvable dans le reader. recherché avec domReaderId:${domReaderId}`)
+  } else {
+    // On rend actif les boutons d'édition
+    o.find('.e-tools button.btn-edit').on('click', EventForm.editEvent.bind(EventForm, this))
 
-  /**
-  * On rend l'event droppable pour qu'il puisse recevoir d'autres events
-  * ainsi que des documents
-  **/
-  o.droppable(
-    Object.assign({}, DATA_DROPPABLE, {drop: function(e,ui){
-        my.a.associateDropped(my, ui.helper)
-      }})
-  )
-  /**
-   * On rend l'event draggable pour pouvoir le déplacer sur un élément
-   * dans lequel il doit être ajouté.
-   * Mais pour que ça fonctionne, il faut le overflow du container soit
-   * momentanément retiré, sinon l'event passe "en dessous" quand on le
-   * déplace.
-   */
-  o.draggable({
-      revert: true
-    // , helper: 'clone'
-    , helper: () => {return `<div style="z-index:2000;" data-type="event" data-etype="${this.type}" data-id="${this.id}">${this.toString()}</div>`}
-    , cursorAt: {left:40, top:20}
-    // , stack: 'section#section-eventers div.eventer div.pan-events'
-    // , start: function(event, ui) { $(this).css("z-index", a++); }
-    , classes:{
-        'ui-draggable-dragging': 'myHighlight'
-      }
-    , start: ev => {
-        if(container){
-          container.old_overflow = container.css('overflow')
-          container.css('overflow','visible')
-        }
-      }
-    , stop: ev => {
-        if(container){
-          container.css('overflow', container.old_overflow)
-        }
-      }
-  })
+    // On rend actif les boutons play
+    BtnPlay.setAndWatch(this.jqReaderObj, this)
+
+    /**
+    * On rend l'event droppable pour qu'il puisse recevoir d'autres events
+    * ainsi que des documents
+    **/
+    o
+      .droppable(DATA_ASSOCIATES_DROPPABLE)
+      .draggable(DATA_ASSOCIATES_DRAGGABLE)
+
+    this.observed = true
+  }
 }
 
 get locator(){return this.analyse.locator}
@@ -777,11 +588,56 @@ get locator(){return this.analyse.locator}
 // Cf. Le manuel de développement
 get btnPlay(){return this._btnPlay||defP(this,'_btnPlay',new BtnPlay(this))}
 
-// Pour définir le dom obj de l'event dans le Reader
-defineDomReaderObj(){
-  var obj
-  if (this.jqReaderObj) obj = this.jqReaderObj[0]
-  return obj
+// Les events n'étant pas tout à fait des FAElement(s), il faut définir
+// ces méthodes
+domC(prop){return `${this.domClass}-${prop}`}
+get domClass(){return this._domid || defP(this,'_domid',`event-${this.id}`)}
+get domReaderId(){return this._domreaderid||defP(this,'_domreaderid',`reader-${this.domId}`)}
+get domReaderObj(){return this._domreaderobj||defP(this,'_domreaderobj',this.jqReaderObj?this.jqReaderObj[0]:undefined)}
+get jqReaderObj(){
+  if(undefined === this._jqreaderobj){
+    this._jqreaderobj = $(`#${this.domReaderId}`)
+    if(this._jqreaderobj.length == 0) delete this._jqreaderobj
+  }
+  return this._jqreaderobj
 }
 
+// ---------------------------------------------------------------------
+//  MÉTHODES CONCERNANT L'IMAGE COURANTE
+
+/**
+  @return {FAImage} Instance de l'image de curimage, si l'event est lié
+**/
+get faimage(){
+  if(!this.needCurImage()) return
+  if(undefined === this._faimage) this._faimage = FAImage.get(this.curImageId)
+  return this._faimage
 }
+
+// Retourne le code pour afficher l'image
+curImageDiv(options){
+  this.existsCurImage() || FAImage.shotFrame(this.otime, {message:false})
+  if(!this.faimage) return
+  if(undefined === options) options = {}
+  options.imgClass = this.domC('curimage')
+  let div = this.faimage.asDiv(options)
+
+  if(options && options.as === 'string') return div.outerHTML
+  return div
+}
+// retourne true si l'event est liée à son image courante
+needCurImage(){return !!this.curimage}
+// retourne true si l'image courante de l'event existe
+existsCurImage(){
+  return fs.existsSync(this.curImagePath)
+}
+// retourne le path de l'image courante
+get curImageId(){ return this._curimageid    || defP(this,'_curimageid',   FAImage.fname2id(this.curImageName))}
+get curImageName(){return this._curimagename || defP(this,'_curimagename', FAImage.time2fname(this.otime))}
+get curImagePath(){return this._curimagepath || defP(this,'_curimagepath', FAImage.pathOf(this.curImageName))}
+
+
+} // /class FAEvent
+
+Object.assign(FAEvent.prototype,ASSOCIATES_COMMON_METHODS)
+Object.defineProperties(FAEvent.prototype,ASSOCIATES_COMMON_PROPERTIES)

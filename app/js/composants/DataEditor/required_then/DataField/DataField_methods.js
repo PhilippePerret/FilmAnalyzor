@@ -9,7 +9,8 @@ Object.assign(DataField.prototype,{
   }
 
 // Ouvre le document contenant les valeurs absolues pour ce champ
-, openValues(){
+, openValues(e){
+    if(e) stopEvent(e) // cf. Note N0001
     this.dataEditor.mainClass.DEOpenDoc(this.prop)
   }
 

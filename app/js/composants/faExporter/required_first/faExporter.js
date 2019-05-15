@@ -1,9 +1,14 @@
 'use strict'
 /**
-* Class FAExporter
-* ----------------
-* Classe qui permet d'exporter le code, c'est-à-dire, surtout, de
-* l'écrire dans les fichiers.
+  Class FAExporter
+  ----------------
+
+  Classe qui permet d'exporter le code, c'est-à-dire, surtout, de
+  l'écrire dans les fichiers.
+
+  Ne pas confondre avec faBuilder qui permet de construire la compilation de
+  l'analyse.
+
 **/
 
 class FAExporter {

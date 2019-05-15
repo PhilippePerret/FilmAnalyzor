@@ -40,66 +40,30 @@ reset(){
   delete this._path
   delete this._iofile
   delete this._pathData
-  delete this._iofileData
   delete this.lastNumero
   return this // chainage
 }
 
 , init(){
-    this.loadData()
-  }
-
-, loadData(){
-    log.info("-> FABrin::loadData")
-    this.iofileData.loadIfExists({after: this.afterLoadData.bind(this)})
-    log.info("<- FABrin::loadData")
-  }
-
-, afterLoadData(data){
-    log.info("-> FABrin::afterLoadData")
-    this.data = data
+    log.info('-> FABrin.init')
     this.load()
-    log.info("<- FABrin::afterLoadData")
+    log.info('<- FABrin.init')
   }
 
-/**
-  Chargement des informations sur les events
-  Contrairement à la méthode `loadData` qui charge les données sur les brins
-**/
 , load(){
     log.info("-> FABrin::load")
-    this.iofile.loadIfExists({after:this.afterLoad.bind(this)})
+    this.loading = true
+    this.iofile.loadIfExists({after: this.afterLoad.bind(this)})
     log.info("<- FABrin::load")
   }
 
 , afterLoad(data){
     log.info("-> FABrin::afterLoad")
-    var ibrin
-    if(data){
-      for(var brin_id in data){
-        ibrin = this.brins[brin_id]
-        if (ibrin){
-          Object.assign(ibrin.data, data[brin_id])
-        } else {
-          F.error(`Error: impossible de trouver le brin #${brin_id}`)
-        }
-      }
-    }
-    // console.log("[After load] brins:", this.brins)
+    this.reset()
+    this.data     = data // une Array d'objet contenant les données
+    this.loading  = false
+    this.loaded   = true
     log.info("<- FABrin::afterLoad")
-  }
-
-, saveData(){
-    log.info('-> FABrin::saveData')
-    if(this.a.locked) return F.notify(T('analyse-locked-no-save'))
-    this.saving = true
-    this.composeThisDataBrins()
-    // console.log("this.data avant save:", this.data)
-    this.iofileData.save({after:this.afterSavingData.bind(this)})
-    log.info('<- FABrin::saveData')
-  }
-, afterSavingData(){
-    this.saving = false
   }
 
 , save(){
@@ -107,68 +71,49 @@ reset(){
     if(this.a.locked) return F.notify(T('analyse-locked-no-save'))
     this.saving = true
     this.composeThisData()
-    console.log("this.data avant save:", this.data)
+    // console.log("this.data avant save:", this.data)
     this.iofile.save({after:this.afterSaving.bind(this)})
-    log.info('<- FABrin::save (asynchrone)')
+    log.info('<- FABrin::save')
   }
-
 , afterSaving(){
-    log.info('-> FABrin::afterSaving')
-    this.saving = false
-    clearTimeout(this.timerSave)
-    delete this.timerSave
     if(this.analyseWasNotModified) this.a.modified = false
-    log.info('<- FABrin::afterSaving')
+    this.modified = false
+    this.saving   = false
   }
 
 /**
-  Pour éditer le brin d'identifiant +bid+
-
-  Pour le moment, on ouvre simplement le document qui contient la définition
-  des brins, mais pour l'avenir, on pourra imaginer que ce soit un formulaire
-  qui permette de le faire en toute souplesse.
+  Pour détruire le brin
 **/
-, edit(bid){ this.openDocData()}
-
+, destroy(brin_id){
+    let brin = this.get(brin_id)
+    if(confirm(T('confirm-destroy-brin',{ref: brin.ref||brin.toString()}))){
+      this.DERemoveItem(brin)
+    }
+  }
 /**
   Demande l'ouverture du document des données
-  (appelée par le bouton dédié)
 **/
-, openDocData(){
-    FAWriter.openDoc('dbrins')
-  }
+, openDocData(){ FAWriter.openDoc('dbrins') }
 
 /**
   Méthode qui reconstitue les data pour le fichier (utilisé par
   le data éditor)
 **/
-, composeThisDataBrins(){
+, composeThisData(){
     this.contents = Object.values(this.brins).map(brin => brin.dataEpured())
   }
 
-/**
-  Méthode qui définit les données à enregistrer (et les envoie directement
-  à iofile). La raison est simple : ce ne sont que les données de liaisons
-  qui sont enregistrées dans le fichier brins.json (les données des brins,
-  elles, sont enregistrées dans `analyse_files/dbrins.yaml`)
-**/
-, composeThisData(){
-    var d = {}, sd
-    this.forEachBrin(function(brin){
-      // On n'enregistre que ce qui est nécessaire
-      sd = {}
-      if(brin.events.length) sd.events = brin.events
-      if(brin.documents.length) sd.documents = brin.documents
-      if(brin.times.length) sd.times = brin.times
-      d[brin.id] = sd
-    })
-    this.contents = this.data = d // pour être utilisé par iofile
-}
+})//assign
 
-})
 Object.defineProperties(FABrin,{
   // L'analyse courante
   a:{get(){return current_analyse}}
+
+/**
+  Nom de la table des éléments, qui permet à FAElement de proposer des méthodes
+  génériques comme `count` ou autre.
+**/
+, tableItemsKey:{get(){return this._tblitemskey||defP(this,'_tblitemskey','brins')}}
 
 , brins:{
     get(){
@@ -197,29 +142,12 @@ Object.defineProperties(FABrin,{
   , set(v){
       if(v && this.a.locked) return F.notify(T('analyse-locked-no-save'))
       this._modified = v
-      if (true === v && !this.timerSave){
-        this.analyseWasNotModified = !this.a._modified
-        this.a.modified = true
-        this.timerSave  = setTimeout(this.save.bind(this), 3000)
-        this.updateListing()
-      }
+      this.listing.btnOK.html(v ? 'Enregistrer' : 'OK')
     }
   }
 
-/**
-  @return {Number} Le nombre de brins définis
-**/
-, count:{
-    get(){return Object.keys(this.brins).length}
-  }
-
-, iofile:{get(){return this._iofile||defP(this,'_iofile',new IOFile(this))}}
-
-, path:{get(){return this._path||defP(this,'_path',path.join(this.a.folder,'brins.json'))}}
-
-, iofileData:{get(){return this._iofileData||defP(this,'_iofileData', new IOFile(this, this.pathData))}}
-
-, pathData:{get(){return this._pathData||defP(this,'_pathData',path.join(this.a.folderFiles,'dbrins.yaml'))}}
+// , iofile:{get(){return this._iofile||defP(this,'_iofile', new IOFile(this, this.path))}}
+, path:{get(){return this._path||defP(this,'_path',path.join(this.a.folderFiles,'dbrins.yaml'))}}
 
 
 })

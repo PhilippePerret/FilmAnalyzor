@@ -7,36 +7,6 @@ class FAEdialog extends FAEvent {
 // Propriétés propres au dialogue
 static get OWN_PROPS(){return ['dialogType', ['quote', 'longtext2']]}
 
-static get dataType(){
-  if(undefined === this._dataType){
-    this._dataType = {
-      type: 'dialog'
-    , genre: 'M'
-    , article:{
-        indefini: {sing: 'un', plur: 'des'}
-      , defini: {sing: 'le', plur: 'les'}
-      }
-    , name: {
-        plain: {
-          cap: {sing: 'Dialogue', plur: 'Dialogues'}
-        , min: {sing: 'dialogue', plur: 'dialogues'}
-        , maj: {sing: 'DIALOGUE', plur: 'DIALOGUES'}
-        }
-      , short:{
-          cap: {sing: 'Dial.', plur: 'Dials'}
-        , min: {sing: 'dial.', plur: 'dials'}
-        , maj: {sing: 'DIAL.', plur: 'DIALS'}
-        }
-      , tiny: {
-          cap: {sing: 'Dial.', plur: 'Dials.'}
-        , min: {sing: 'dial.', plur: 'dials.'}
-        }
-      }
-    }
-  }
-  return this._dataType
-}
-
 // ---------------------------------------------------------------------
 //  INSTANCE
 constructor(analyse, data){

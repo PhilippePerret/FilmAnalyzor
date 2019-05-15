@@ -22,7 +22,7 @@ const BrinsBuilder = {
 output(options){
   if(undefined === options) options = {}
   if(FABrin.count === 0) {
-    log.warning('Construction du chapitre des BRINS demandée, mais aucun brin défini.')
+    log.warn('Construction du chapitre des BRINS demandée, mais aucun brin défini.')
     return '<span class="warning">[LES BRINS SONT À DÉFINIR]</span>'
   }
   var inner = []

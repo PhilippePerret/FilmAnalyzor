@@ -35,7 +35,7 @@ if(fs.existsSync(path.resolve(my.a.folder,'exports','img','cover.jpg'))){
 // --------------------------
 var folderCss = path.join(my.a.folderExport,'css')
 fs.existsSync(folderCss) || fs.mkdirSync(folderCss)
-var srcPath = './app/js/composants/faBuilder/css/publishing.css'
+var srcPath = './app/js/composants/faBuilder/assets/css/publishing.css'
 var dstPath = path.join(folderCss, 'html.css')
 // TODO Plus tard, on vérifira que le fichier css est à jour
 fs.existsSync(dstPath) && fs.unlinkSync(dstPath)

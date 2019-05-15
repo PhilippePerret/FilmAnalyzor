@@ -43,16 +43,18 @@ static forEachDim(method){
 
 static get TYPES2HTYPES(){
   return {
-    'time':       {fr: 'temps',     genre: 'M'}
-  , 'times':      {fr: 'temps',     genre: 'M'}
-  , 'event':      {fr: 'event',     genre: 'M'}
-  , 'events':     {fr: 'events',    genre: 'M'}
-  , 'brin':       {fr: 'brin',      genre: 'M'}
+    'brin':       {fr: 'brin',      genre: 'M'}
   , 'brins':      {fr: 'brins',     genre: 'M'}
-  , 'scene':      {fr: 'scène',     genre: 'F'}
-  , 'scenes':     {fr: 'scènes',    genre: 'F'}
   , 'document':   {fr: 'document',  genre: 'M'}
   , 'documents':  {fr: 'documents', genre: 'M'}
+  , 'event':      {fr: 'event',     genre: 'M'}
+  , 'events':     {fr: 'events',    genre: 'M'}
+  , 'image':      {fr: 'image',     genre: 'F'}
+  , 'images':     {fr: 'images',    genre: 'F'}
+  , 'scene':      {fr: 'scène',     genre: 'F'}
+  , 'scenes':     {fr: 'scènes',    genre: 'F'}
+  , 'time':       {fr: 'temps',     genre: 'M'}
+  , 'times':      {fr: 'temps',     genre: 'M'}
   }
 }
 static htypeFor(type, options){
@@ -111,7 +113,7 @@ static deVar(str){
 /**
   Traitement des balises documents dans les strings
 **/
-static get DOC_REGEXP(){return new RegExp('\{\{document: ?(?<key>[a-zA-Z0-9_\-]+)\}\}','g')}
+static get DOC_REGEXP(){return new RegExp('\{\{document: ?(?<key>[a-zA-Z0-9_\-]+)(\\|(?<text>[^}]+))?\}\}','g')}
 
 static deDoc(str){
   var groups, doc_key
@@ -126,7 +128,7 @@ static deDoc(str){
 /**
   Traitement des balises brins dans les strings
 **/
-static get BRIN_REGEXP(){return new RegExp('\{\{brin: ?(?<key>[a-zA-Z0-9_\-]+)\}\}','g')}
+static get BRIN_REGEXP(){return new RegExp('\{\{brin: ?(?<key>[a-zA-Z0-9_\-]+)(\\|(?<text>[^}]+))?\}\}','g')}
 
 static deBrin(str){
   var groups, brin_id
@@ -180,7 +182,7 @@ static defineTableDims(){
   var tbl = {}, reg
   for(var dim in this.dimsData){
     reg = new RegExp(`(^|[^a-zA-Z0-9_])@${dim}([^a-zA-Z0-9_]|$)`, 'g')
-    tbl[dim] = {dim: dim, value: `$1${this.dimsData[dim]}$2`, regexp: reg}
+    tbl[dim] = {dim: dim, value: `$1<a class="lkshow" onclick="showPersonnage('${this.dimsData[dim].id}')">${this.dimsData[dim].pseudo}</a>$2`, regexp: reg}
   }
   return tbl
 }
@@ -286,7 +288,7 @@ setFormat(str, format){
     return this._regexp_time_tag || defP(this,'_regexp_time_tag', new RegExp('\{\{time: ?(?<time>[0-9\.]+)(\\|(?<text>[^}]+))?\}\}', 'gi'))
   }
   static defineRegExpTag(tag_type){
-    return `\\{\\{${tag_type}: ?(?<event_id>[0-9]+) ?(\\|(?<alt_text>[^\\}]+))?\\}\\}`
+    return `\\{\\{${tag_type}: ?(?<event_id>[0-9]+)(\\|(?<alt_text>[^\\}]+))?\\}\\}`
   }
 
 /**
@@ -353,7 +355,7 @@ deTimeTags(str){
   str = str.replace(FATexte.REGEXP_TIME_TAG, function(){
     groups = arguments[arguments.length - 1]
     txt = groups.text || new OTime(parseFloat(groups.time)).horloge_simple
-    return `<span onclick="goToTime(${groups.time})">${txt}</span>`
+    return `<a class="lkshow" onclick="showTime(${groups.time})">${txt}</a>`
   })
   // console.log(str)
   return str

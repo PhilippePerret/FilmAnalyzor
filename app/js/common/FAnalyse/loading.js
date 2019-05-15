@@ -2,7 +2,7 @@
 
 // ---------------------------------------------------------------------
 //  CLASS
-
+Object.assign(FAnalyse,{
 /**
   Méthode de classe qui charge l'analyse dont le dossier est +aFolder+
   et en fait l'analyse courante.
@@ -12,53 +12,117 @@
                     complet de l'analyse. Utilisé par les tests seulement pour
                     le moment.
  */
-FAnalyse.load = function(aFolder, fn_afterLoading){
-  try {
-    log.info(`-> FAnalyse::load [Load analyse: ${aFolder}]`)
-    this.isDossierAnalyseValid(aFolder) || raise(T('invalid-folder', {fpath: aFolder}))
-    UI.startWait(T('loading-analyse'))
-    this.resetAll()
-    window.current_analyse = new FAnalyse(aFolder)
-    if(undefined !== fn_afterLoading){
-      window.current_analyse.methodAfterLoadingAnalyse = fn_afterLoading
+  load(aFolder, fn_afterLoading){
+    // On mémorise le dossier à charger et la méthode pour poursuivre
+    if(undefined === this.loadingData){
+      this.loadingData = {folder: aFolder, after: fn_afterLoading}
     }
-    current_analyse.load()
-    return true
-  } catch (e) {
-    log.error(e)
-    UI.stopWait()
-    return F.error(e)
+    // On commence par vérifier que tous les composants soient bien chargés
+    if (!this.allComponantsLoaded){
+      try {
+        return this.loadAllComponants()
+      } catch (e) {
+        console.error()
+        return
+      }
+    }
+
+    // On reprend les données initiales
+    aFolder         = this.loadingData.folder
+    fn_afterLoading = this.loadingData.after
+    delete this.loadingData
+
+    try {
+      log.info(`-> FAnalyse::load [Load analyse: ${aFolder}]`)
+      this.isDossierAnalyseValid(aFolder) || raise(T('invalid-folder', {fpath: aFolder}))
+      UI.startWait(T('loading-analyse'))
+      this.resetAll()
+      window.current_analyse = new FAnalyse(aFolder)
+      if(undefined !== fn_afterLoading){
+        window.current_analyse.methodAfterLoadingAnalyse = fn_afterLoading
+      }
+      current_analyse.load()
+      return true
+    } catch (e) {
+      log.error(e)
+      UI.stopWait()
+      return F.error(e)
+    }
   }
-}
 
-FAnalyse.resetAll = function(){
-  log.info("-> [FAnalyse::resetAll] Réinitialisation complète")
-  // On détruit la section vidéo de l'analyse courante
-  if(window.current_analyse){
-    // <= Il y a une analyse courante
-    // => On doit tout initialiser
-    FAReader.reset()
-    EventForm.reset() // notamment destruction des formulaires
-    current_analyse.videoController.remove()
-    FAEscene.reset()
-    FABrin.reset()
-    FAPersonnage.reset()
-    FADocument.reset()
-    FAEventer.reset()
-    FATexte.reset()
+  /**
+    Méthode qui s'assure, avant de charger l'analyse choisie, que tous les
+    composants sont bien chargés. Et les charge au besoin.
+  **/
+, loadAllComponants(){
+    log.info("-> FAnalyse::FAnalyse::loadAllComponants")
+    this.allComponantsLoaded = false
+    if(NONE === typeof DataEditor)    return this.loadComponant('DataEditor')
+    if(NONE === typeof EventForm)     return this.loadComponant('EventForm')
+    if(NONE === typeof FAWriter)      return this.loadComponant('faWriter')
+    if(NONE === typeof FAProtocole)   return this.loadComponant('faProtocole')
+    if(NONE === typeof FAStater)      return this.loadComponant('faStater')
+    if(NONE === typeof FAEventer)     return this.loadComponant('faEventer')
+    if(NONE === typeof FABrin)        return this.loadComponant('faBrin')
+    if(NONE === typeof FAPersonnage)  return this.loadComponant('faPersonnage')
+    if(NONE === typeof FAProcede)     return this.loadComponant('faProcede')
+    if(NONE === typeof FAReader)      return this.loadComponant('faReader')
+    if(NONE === typeof FAStats)       return this.loadComponant('faStats')
+    if(NONE === typeof FAImage)       return this.loadComponant('faImage')
 
-    delete current_analyse.videoController
-    delete current_analyse.locator
-    delete current_analyse.reader
-    delete current_analyse.stater
+    // Si tout est OK, on peut rappeler la méthode Fanalyse.load
+    log.info("   Tous les composants sont chargés.")
+    this.allComponantsLoaded = true
+    this.load()
+    log.info("<- FAnalyse::FAnalyse::loadAllComponants")
   }
-  // $('#section-videos').html()
-  log.info("<- [FAnalyse::resetAll] Réinitialisation complète")
-}
 
-FAnalyse.loadSnippets = function(fn_callback){
+/**
+  Réinitialisation complète (par exemple avant le chargement d'une autre
+  analyse ou sa création)
+**/
+, resetAll(){
+    log.info("-> [FAnalyse::resetAll] Réinitialisation complète")
+    // On détruit la section vidéo de l'analyse courante
+    if(window.current_analyse){
+      // <= Il y a une analyse courante
+      // => On doit tout initialiser
+      FAReader.reset()
+      EventForm.reset() // notamment destruction des formulaires
+      current_analyse.videoController.remove()
+      FAEscene.reset()
+      FABrin.reset()
+      FAPersonnage.reset()
+      FADocument.reset()
+      FAEventer.reset()
+      FATexte.reset()
+
+      delete current_analyse.videoController
+      delete current_analyse.locator
+      delete current_analyse.reader
+      delete current_analyse.stater
+    }
+    // $('#section-videos').html()
+    log.info("<- [FAnalyse::resetAll] Réinitialisation complète")
+  }
+
+/**
+  Méthodes de chargement des composants (au load principal)
+**/
+, loadComponant(componant, fn_callback){
+    if(undefined === fn_callback) fn_callback = this.loadAllComponants.bind(this)
+    log.info(`  Chargement du composant <${componant}>`)
+    return System.loadComponant(componant, fn_callback)
+  }
+
+/**
+  Chargement des snippets
+**/
+, loadSnippets(fn_callback){
   return System.loadComponant('Snippets', fn_callback)
 }
+
+})
 
 // ---------------------------------------------------------------------
 //  INSTANCE
@@ -108,20 +172,10 @@ load(){
   charge.
 
   À la fin de cette méthode, tout a été préparé, tout est OK
+  Note : ça n'est pas tout à fait vrai, en fait…
  */
 , onReady(){
     log.info('-> <<FAanalyse>>#onReady')
-    if(NONE === typeof DataEditor)    return this.loadDataEditor(this.onReady.bind(this))
-    if(NONE === typeof FAProtocole)   return this.loadProtocole(this.onReady.bind(this))
-    if(NONE === typeof FAWriter)      return this.loadWriter(this.onReady.bind(this))
-    if(NONE === typeof FAStater)      return this.loadStater(this.onReady.bind(this))
-    if(NONE === typeof FAEventer)     return this.loadEventer(this.onReady.bind(this))
-    if(NONE === typeof FAProcede)     return this.loadProcede(this.onReady.bind(this))
-    if(NONE === typeof FADecor)       return this.loadDecor(this.onReady.bind(this))
-    if(NONE === typeof FABrin)        return this.loadBrin(this.onReady.bind(this))
-    if(NONE === typeof FAReader)      return this.loadReader(this.onReady.bind(this))
-    if(NONE === typeof FAPersonnage)  return this.loadPersonnage(this.onReady.bind(this))
-    if(NONE === typeof FAStats)       return this.loadStats(this.onReady.bind(this))
     this.videoController = new VideoController(this)
     this.locator = new Locator(this)
     this.reader  = new FAReader(this)
@@ -133,6 +187,7 @@ load(){
     FABrin.reset().init()
     EventForm.init()
     FAEscene.init()
+    FAImage.init()
     FAEqrd.reset().init()
     FAPersonnage.reset().init()
     this.options.setInMenus()
@@ -142,7 +197,7 @@ load(){
     // l'invoque.
     // Pour le moment, la méthode est surtout utilisée pour les
     // tests (même seulement pour les tests)
-    if('function' === typeof this.methodAfterLoadingAnalyse){
+    if(isFunction(this.methodAfterLoadingAnalyse)){
       this.methodAfterLoadingAnalyse()
     }
     // On appelle la méthode `window.WhenAllIsReallyReady` qui permet de
@@ -150,7 +205,6 @@ load(){
     WhenAllIsReallyReady()
     log.info('<- <<FAanalyse>>#onReady')
   }
-
 
 
 // Charger le fichier +path+ pour la propriété +prop+ de façon
@@ -161,7 +215,7 @@ load(){
 
 , endLoadingFile(fpath, prop, data){
   var my = this
-  if('function' === typeof my[prop]){
+  if(isFunction(my[prop])){
     my[prop](data)
   } else {
     my[prop] = data
@@ -173,8 +227,7 @@ load(){
 /** ---------------------------------------------------------------------
 * Chargement des composants
 **/
-,
-loadBuilder(fn_callback){
+, loadBuilder(fn_callback){
   return System.loadComponant('faBuilder', fn_callback)
 }
 ,
@@ -185,50 +238,11 @@ loadExporter(fn_callback){
 loadReporter(fn_callback){
   return System.loadComponant('faReport', fn_callback)
 }
-,
-loadTimeline(fn_callback){
-  return System.loadComponant('faTimeline', fn_callback)
-}
-,
-loadStater(fn_callback){
-  return System.loadComponant('faStater', fn_callback)
-}
-,
-loadStats(fn_callback){
-  return System.loadComponant('faStats', fn_callback)
-}
-,
-loadWriter(fn_callback){
-  return System.loadComponant('faWriter', fn_callback)
-}
-,
-loadProtocole(fn_callback){
-  return System.loadComponant('faProtocole', fn_callback)
-}
-,
-loadReader(fn_callback){
-  return System.loadComponant('faReader', fn_callback)
-}
-, loadPersonnage(fn_callback){
-    return System.loadComponant('faPersonnage', fn_callback)
+, loadTimeline(fn_callback){
+    return System.loadComponant('faTimeline', fn_callback)
   }
-, loadProcede(fn_callback){
-    return System.loadComponant('faProcede', fn_callback)
-  }
-, loadBrin(fn_callback){
-    return System.loadComponant('faBrin', fn_callback)
-}
-, loadDecor(fn_callback){
-    return System.loadComponant('faDecor', fn_callback)
-}
-, loadEventer(fn_callback){
-    return System.loadComponant('faEventer', fn_callback)
-}
-, loadDataEditor(fn_callback){
-    return System.loadComponant('DataEditor', fn_callback)
-}
 , loadFondamentales(fn_callback){
     return System.loadComponant('Fondamentales', fn_callback)
 }
 
-})
+}) // assign FAnalyse.prototype

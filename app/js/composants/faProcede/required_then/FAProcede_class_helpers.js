@@ -56,9 +56,9 @@ descriptionProcede(cate_id, scate_id, proc_id){
 menuCategories(){
   if(undefined === this._menuCategories){
     // On construit le menu
-    var options = [DCreate('OPTION',{value:'', inner:"Choisir la catégorie…"})]
+    var options = [DCreate(OPTION,{value:'', inner:"Choisir la catégorie…"})]
     for(var cate_id in this.data){
-      options.push(DCreate('OPTION', {value: cate_id, inner: this.data[cate_id].hname}))
+      options.push(DCreate(OPTION, {value: cate_id, inner: this.data[cate_id].hname}))
     }
     this._menuCategories = DCreate('SELECT', {class: 'menu-categories-procedes', append:options})
   }
@@ -76,11 +76,11 @@ menuSousCategories(cate_id){
   if(undefined === this._menusSousCategories) this._menusSousCategories = {}
   if(undefined === this._menusSousCategories[cate_id]){
     // Il faut construire ce sous-menu là
-    var options = [DCreate('OPTION',{value:'', inner:"Choisir la sous-catégorie…"})]
-    options.push(DCreate('OPTION',{value:'..', inner:"[Catégories]"}))
+    var options = [DCreate(OPTION,{value:'', inner:"Choisir la sous-catégorie…"})]
+    options.push(DCreate(OPTION,{value:'..', inner:"[Catégories]"}))
     let cate_items = this.data[cate_id].items
     for(var scat_id in cate_items){
-      options.push(DCreate('OPTION',{value: scat_id, inner: cate_items[scat_id].hname}))
+      options.push(DCreate(OPTION,{value: scat_id, inner: cate_items[scat_id].hname}))
     }
     this._menusSousCategories[cate_id] = DCreate('SELECT', {append: options, class: 'menu-sous-categories-procedes', attrs: {'data-cate-id': cate_id}})
   }
@@ -96,11 +96,11 @@ menuSousCategories(cate_id){
 menuProcedes(cate_id, scate_id, event_id){
   if(undefined === this._menusProcedesSCat) this._menusProcedesSCat = {}
   if(undefined === this._menusProcedesSCat[scate_id]){
-    var options = [DCreate('OPTION',{value:"", inner:"Choisir le procédé…"})]
-    options.push(DCreate('OPTION',{value:"..", inner:'[Sous-catégories]'}))
+    var options = [DCreate(OPTION,{value:"", inner:"Choisir le procédé…"})]
+    options.push(DCreate(OPTION,{value:"..", inner:'[Sous-catégories]'}))
     let scat_items = this.data[cate_id].items[scate_id].items
     for (var proc_id in scat_items){
-      options.push(DCreate('OPTION',{value:proc_id, inner:scat_items[proc_id].hname}))
+      options.push(DCreate(OPTION,{value:proc_id, inner:scat_items[proc_id].hname}))
     }
     this._menusProcedesSCat[scate_id] = DCreate('SELECT',{id:`event-${event_id}-procType`, append:options, class:'menu-procedes fproc', attrs:{'data-cate-id':cate_id, 'data-scate-id': scate_id, 'data-event-id': event_id}})
   }

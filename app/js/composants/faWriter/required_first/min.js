@@ -51,8 +51,8 @@ const DATA_DOCUMENTS = {
 , conclusion:       {hname: 'Conclusion', type: 'real'}
 , annexes:          {hname: 'Annexes', type: 'real'}
 
-, customdoc:        {hname: 'Personnalisé', type:'real', menu: false}
-, anydoc:           {hname: 'Quelconque', type: 'data', menu: false, abs:true}
+, custom:           {hname: 'Personnalisé', type:'real', menu: false}
+, any:              {hname: 'Quelconque', type: 'data', menu: false, abs:true}
 
 // --- Pour les documents des données absolues ---
 // La clé doit être le nom du fichier dans ./js/data/

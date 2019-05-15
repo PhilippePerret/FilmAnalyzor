@@ -2,23 +2,33 @@
 
 ### Traiter :
 
-* Personnages
-  - Poursuivre l'affichage du listing
-  - checker qu'on puisse bien n'afficher qu'un seul personnage
-  - implémenter le helper propre à chaque draggable de personnage (avec attribut 'data-dim')
+* Supprimer l'arrière plan du mini-writer (peut-être le faire 'sortir' du bord bas ?)
+
+* Pour les associés qui n'existent plus, utiliser la classe `FAUnknownElement`
+
+* Essayer de généraliser l'utilisation de `iofile`, `save`, `getData` pour tous les éléments, afin de réduire considérablement les méthodes. Voir dans FAElement.js et FAImage.js
+
+
+* Voir comment est traité la propriété `associable: true` dans le DataEditor. Il faut :
+  1. Qu'on puisse dragguer un élément associable sur la fenêtre d'édition
+  2. Qu'on puisse dragguer depuis la fenêtre d'édition un petit picto (comme pour les documents) pour associer l'élément à un autre
+  3. Ça doit ajouter un div contenant les associables, comme dans le listing, avec des boutons 'dissocier'
+  - dans le listing, ne pas mettre de numéro #1 au brin, on a l'impression que c'est son identifiant.
+  Implémenter pour les brins la nouvelle façon d'associer les éléments
+  - À quoi sert le numéro du brin ?
+
+
+- Réimplémenter le check des résolutions des QRD pour qu'il se fasse seulement quand toutes les classes sont chargées — + quand on vient d'en créer une. Il faut appeler `FAEqrd#checkResolution()`. Voir aussi sur les procédés à résolution ?
 
 * DATAEDITOR
   - Faire un fichier pfa alt (les mettre dans min.js)
   - Faire la même chose pour les variables ?
   - Faire la même chose pour les infos du film ?
-  - Pour les brins, et peut-être aussi les personnages, il faudrait exploiter
-    les propriétés 'events', 'documents', 'times', 'brins' (qui s'enregistrent maintenant dans le fichier YAML).
-    => Propriété général 'associable' qui construit un div, comme pour le
-       div parent dans l'eventform, sur lequel on peut glisser des éléments
-    - les afficher quand ils sont définis
 
 * CHECK ANALYSE
   - Poursuivre le check de la validité des données (app/js/tools/analyse_checker.js)
+
+* Poursuivre l'utilisation de first_requirements.js pour retirer du code dans analyser.html
 
 * Quand l'analyse de Her sera suffisamment conséquente, on s'en servira pour avoir une analyse de test qui contienne à peu près tout. Notamment pour tester les sorties, les affichages.
 
@@ -141,4 +151,5 @@
 
 # PEUT-ÊTRE UN JOUR
 
+* Pouvoir entrer l'année de l'histoire et définir les âges des personnages en donnant leur date de naissance.
 * API qui permettrait de récupérer les data des films online (au format json).

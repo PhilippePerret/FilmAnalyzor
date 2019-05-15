@@ -9,11 +9,12 @@
     <link rel="stylesheet" href="./css/fwindow.css" />
     <link rel="stylesheet" href="./css/video.css" />
     <link rel="stylesheet" href="./css/analyzer.css" />
-    <link rel="stylesheet" href="./css/decors.css" />
     <link rel="stylesheet" href="./css/brins.css" />
     <link rel="stylesheet" href="./css/reader.css" />
     <link rel="stylesheet" href="./css/writer.css" />
     <link rel="stylesheet" href="./css/eventer.css" />
+    <link rel="stylesheet" href="./css/elements_fa.css" />
+    <link rel="stylesheet" href="./css/faListing.css" />
     <link rel="stylesheet" href="./css/event.css" />
     <link rel="stylesheet" href="./css/form.css" />
     <link rel="stylesheet" href="./css/DOMHorloge.css" />
@@ -24,6 +25,9 @@
   </head>
   <body>
 
+    <!-- READER -->
+    <section id="section-reader"></section>
+
     <!-- Maintenant, une section de vidéo parmi plusieurs possibles -->
     <section id="section-videos"></section>
     <!-- /fin section des vidéos -->
@@ -31,8 +35,6 @@
     <!-- EVENTER -->
     <section id="section-eventers"></section>
 
-    <!-- READER -->
-    <section id="section-reader"></section>
 
     <!-- WRITER -->
     <section id="section-writer">
@@ -48,23 +50,24 @@
       <section id="section-qrd-pp"></section>
 
       <div id="message"></div>
-      <!-- Section des boutons pour ajouter un nouvel évènement -->
-      <div id="analyse-state-bar">
-        <span id="modified-indicator" class="off">•</span>
-        <label for="statebar-jauger" class="statebar-label">Avancement</label>
-        <span id="statebar-jauger"><span id="statebar-jauge"></span></span>
-        <span id="statebar-pourcentage" class="statebar-value">...</span>
-        <label class="statebar-label">% max/protocole</label>
-        <span id="statebar-max-pct-suivant-protocole" class="statebar-value">...</span>
-        <label class="statebar-label">Documents :</label>
-        <span id="statebar-docs-count" class="statebar-value">...</span>
-        <label class="statebar-label">Events :</label>
-        <span id="statebar-events-count" class="statebar-value">...</span>
-        <label for="statebar-last-step-protocole" class="statebar-label">Dernière étape :</label>
-        <span id="statebar-last-step-protocole" class="statebar-value">...</span>
-      </div>
     </section>
     <!-- /section#section-footer -->
+
+    <!-- Section des boutons pour ajouter un nouvel évènement -->
+    <div id="analyse-state-bar">
+      <span id="modified-indicator" class="off">•</span>
+      <label for="statebar-jauger" class="statebar-label">Avancement</label>
+      <span id="statebar-jauger"><span id="statebar-jauge"></span></span>
+      <span id="statebar-pourcentage" class="statebar-value">...</span>
+      <label class="statebar-label">% max/protocole</label>
+      <span id="statebar-max-pct-suivant-protocole" class="statebar-value">...</span>
+      <label class="statebar-label">Documents :</label>
+      <span id="statebar-docs-count" class="statebar-value">...</span>
+      <label class="statebar-label">Events :</label>
+      <span id="statebar-events-count" class="statebar-value">...</span>
+      <label for="statebar-last-step-protocole" class="statebar-label">Dernière étape :</label>
+      <span id="statebar-last-step-protocole" class="statebar-value">...</span>
+    </div>
 
     <!-- BOUCLE D'ATTENTE -->
     <div id="waiting-loop" class="no-user-selection" style="display:none;">
@@ -74,28 +77,17 @@
 
     <script>window.$ = window.jQuery = require('jquery');</script>
     <script src="./js/system/jquery-ui-min.js"></script>
+    <script type="text/javascript" src="./js/system/first_requirements.js"></script>
     <script type="text/javascript" src="./js/common/requirements.js"></script>
-    <script type="text/javascript" src="./js/system/System.js"></script>
-    <script type="text/javascript" src="./js/system/FlyingWindow.js"></script>
     <script type="text/javascript" src="./js/system/events.js"></script>
     <script type="text/javascript" src="./js/system/constants.js"></script>
-    <script type="text/javascript" src="./js/system/Selector.js"></script>
-    <script type="text/javascript" src="./js/system/Flash.js"></script>
     <script type="text/javascript" src="./js/system/Prefs-renderer.js"></script>
-    <script type="text/javascript" src="./js/system/OTime.js"></script>
-    <script type="text/javascript" src="./js/system/IOFile.js"></script>
     <script type="text/javascript" src="./js/system/utils.js"></script>
     <script type="text/javascript" src="./js/system/ipc.js"></script>
-    <script type="text/javascript" src="./js/system/Tests.js"></script>
     <script type="text/javascript" src="./js/system/Number.js"></script>
     <script type="text/javascript" src="./js/system/String.js"></script>
-    <script type="text/javascript" src="./js/system/messages_et_errors.js"></script>
-    <script type="text/javascript" src="./js/system/Options.js"></script>
-    <script type="text/javascript" src="./js/system/sandbox.js"></script>
-    <script type="text/javascript" src="./js/system/DOMHorloge.js"></script>
     <script type="text/javascript" src="./js/lecteur/VideoController.js"></script>
     <script type="text/javascript" src="./js/lecteur/MainTimeline.js"></script>
-    <script type="text/javascript" src="./js/composants/EventForm.js"></script>
     <script type="text/javascript" src="./js/composants/FATimeline.js"></script>
     <script type="text/javascript" src="./js/lecteur/UI.js"></script>
     <script type="text/javascript" src="./js/common/FAnalyse.js"></script>
@@ -107,10 +99,11 @@
     <script type="text/javascript" src="./js/common/FADecor.js"></script>
     <script type="text/javascript" src="./js/common/Locator.js"></script>
     <script type="text/javascript" src="./js/common/BtnPlay.js"></script>
-    <script type="text/javascript" src="./js/common/BtnToggleNext.js"></script>
+    <script type="text/javascript" src="./js/common/BtnToggleContainer.js"></script>
     <script type="text/javascript" src="./js/common/MiniWriter.js"></script>
     <script type="text/javascript" src="./js/common/MiniTimeline.js"></script>
     <script type="text/javascript" src="./js/common/KeyUpAndDown.js"></script>
+    <script type="text/javascript" src="./js/common/Handies.js"></script>
     <script type="text/javascript" src="./js/lecteur/on_ready.js"></script>
 
     <!-- Juste pour l'implémentation TODO: SUPPRIMER [1] -->
@@ -118,6 +111,5 @@
     <!-- <script type="text/javascript" src="./js/tools/analyse_checker.js"></script> -->
     <!-- <script type="text/javascript" src="./js/tools/building/personnages.js"></script> -->
 
-    <script type="text/javascript" src="./js/system/App.js"></script>
   </body>
 </html>

@@ -27,6 +27,9 @@ Object.assign(DataEditor,{
     owner || raise(`Le possesseur de type ${dtype} est inconnu…`)
     this.init(owner, undefined, argCurrent||current).open()
   }
+, open(classe, current){
+    this.init(classe, undefined, current).open()
+  }
 /**
   Méthode principale appelée pour ouvrir l'éditeur de données
   @param {Class}  owner   La classe (ou object) principale. Pe FAPersonnage, FABrin
@@ -45,7 +48,10 @@ Object.assign(DataEditor,{
     }
   }
 
-
+/**
+  Méthode qui s'assure que les données transmises soient valides
+  (pour l'implémentation seulement)
+**/
 , isValidData(data){
     try {
       data.title          || raise(T('deditor-title-required'))
@@ -59,7 +65,7 @@ Object.assign(DataEditor,{
       // Méthodes que doit connaitre la classe principale
       var arr_fns = ['DESave', 'DECreateItem', 'DEUpdateItem', 'DERemoveItem']
       arr_fns.map( fn => {
-        'function' === typeof(data.mainClass[fn]) || raise(T('deditor-function-required', {classe:className, function: fn}))
+        isFunction(data.mainClass[fn]) || (fn =='DECreateItem' && data.no_new_item) || raise(T('deditor-function-required', {classe:className, function: fn}))
       })
 
     } catch (e) {

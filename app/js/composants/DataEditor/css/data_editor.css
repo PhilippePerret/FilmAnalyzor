@@ -11,6 +11,11 @@
   margin-left:8px;
 }
 
+.dataeditor span.after-field {
+  margin-left:12px;
+  color:#777777;
+}
+
 /* ---------------------------------------------------------------------
     BODY
  */
@@ -53,45 +58,10 @@
   display:block;
 }
 
-.dataeditor button.btn-add,
-.dataeditor button.btn-del
-{
-  all:unset;
-  float:right;
-  background-color:inherit;
-  color:white;
-  font-size:20pt;
-  border-left:2px solid #CCCCCC;
-  padding:2px 14.5px;
-}
-
 .dataeditor .body.plain select.menu-items {
   margin:12px 0 0 12px;
 }
-.dataeditor select.menu-items,
-.dataeditor select.menu-items option {
-  all:unset;
-  font-size:inherit;
-  font-family:inherit;
-  font-style:normal;
-  border:1px solid;
-}
 
-.dataeditor select.menu-items {
-  font-weight:bold;
-  padding:2px 8px;
-  width:400px;
-}
-
-.dataeditor form select,
-.dataeditor form select option
-{
-  font-family:inherit;
-  font-size:inherit;
-  color:inherit;
-  font-style:inherit;
-  /* all:inherit; */
-}
 
 .dataeditor form.dataeditor-form_item {
   padding:0.9em;

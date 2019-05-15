@@ -1,0 +1,111 @@
+/**
+  Aspect des autres éléments que les events, partout (personnages,
+  liens, etc.)
+**/
+
+.lkedit,
+.lkshow,
+.lkdisso,
+.lkdel,
+.lktool
+{
+  cursor:pointer;
+}
+
+.lktool
+{
+  font-size:9pt;
+  vertical-align:top;
+  border:1px solid #CCCCCC;
+  padding:0px 3px;
+  opacity:0.5;
+}
+.lktool:hover
+{
+  opacity:1;
+}
+
+.lkdisso:hover,
+.lkdel:hover
+{background-color:#CC0000!important;color:white!important;}
+
+span + .lktool {
+  margin-left:8px;
+}
+
+
+label {
+
+}
+label:after {content:' : '}
+
+/* Un label qui suit un span laisse toujour de l'air */
+span + label {}
+span + label:before{content:' • '}
+img + label{margin-left:0.5em;}
+img + label:after{all:unset;}
+
+h3:nth-child(1) {
+  /* margin-top:0; */
+  margin-block-start:0;
+  margin-block-end:0.3em;
+}
+h4:nth-child(1), h3 + h4 {
+  margin-top:0;
+}
+h4 {
+  margin-bottom:4px;
+}
+
+.indent1 {text-indent:1em;}
+.indent2 {text-indent:2em;}
+
+div.draghelper {
+  display:inline-block;
+  width:auto;
+  background-color:darkblue;
+  color:white;
+  white-space:nowrap;
+  padding:1px 8px;
+  font-size:13pt;
+}
+/* ---------------------------------------------------------------------
+
+    LES IMAGES
+
+*/
+/*
+  Une image qui permet d'ouvrir un contenu
+**/
+img.toggle-container, img.toggle-next {
+  float:left;
+  margin-right:8px;
+  cursor:pointer;
+}
+
+/* Image pour les "pictures" (FAImage) */
+div.div-image {
+  padding:8px 1.6em;
+  background-color:#555555;
+  color:white;
+  vertical-align:middle;
+}
+.associates div.div-image {
+  background-color:unset;
+}
+div.div-image span {
+  margin-left:1em;
+  vertical-align:middle;
+}
+img.image-overview {
+  width:180px;
+  vertical-align:middle;
+}
+.associates img.image-overview {
+  width:100px;
+}
+
+/* --------------------------------------------------------------------- */
+
+input[type="checkbox"]+label:after{all:unset;}
+input[type="checkbox"]+label{all:inherit;vertical-align:middle;}

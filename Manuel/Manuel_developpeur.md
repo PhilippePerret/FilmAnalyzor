@@ -1,12 +1,16 @@
 # Film-Analyzer
 # Manuel de développement
 
+<!-- Dernier numéro de note N0001 -->
+
 * [Point d'entrée](#point_dentree)
 * [Principes généraux](#principes_generaux)
   * [Fonctionnalité « One Key Pressed »](#one_key_pressed_feature)
+  * [Messages d'attente](#waiting_messages)
 * [Essais/travail du code](#travail_code_sandbox_run)
 * [Chargement de dossier de modules](#loading_modules_folders)
   * [Chargement de dossiers JS au lancement de l'application](#load_folders_at_launching)
+  * [Chargement d'outils particuliers (tools)](#load_tools)
 * [Création/modification des events](#creation_event)
   * [Mise en forme des events](#event_mise_en_forme)
   * [Bouton Play/Stop des events](#bouton_playstop_event)
@@ -14,10 +18,15 @@
   * [Actualisation automatique du numéro de scène courante](#autoupdate_scene_courante)
   * [Enregistrement des events](#saving_events)
 * [Travail avec les events](#working_with_events)
+  * [Affichage de la liste des events](#display_falisting_events)
   * [Filtrage des events](#filtering_events)
+  * [Association des events](#associations_elements)
 * [Autres données de l'analyse](#analyse_autres_donnees)
+  * [Éléments propres de l'analyse (Personnages, Brins, etc.)](#elements_analyse)
+  * [FAListing, listing des éléments](#falisting_elements)
   * [DataEditor, l'éditeur de données](#data_editor)
   * [Actualisation automatique des éléments affichés lors des modifications](#autoupdate_after_edit)
+  * [Association des éléments](#associations_elements)
 * [Ajout de préférences globales](#add_global_prefs)
   * [Utilisation des préférences globales](#use_global_prefs})
 * [Ajout de préférence analyse](#add_analyse_pref)
@@ -46,6 +55,7 @@
     * [Commandes interprétables](#interpretable_commands)
     * [Définir les checks dynamiques](#define_dynamique_checks)
     * [Toutes les commandes de test](#all_commands_of_the_tests)
+* [Notes/explication](#notes_et_explications)
 
 <!-- Définition des liens courants -->
 [script d'assemblage]: #script_assemblage_analyse
@@ -72,6 +82,25 @@ Permet de régler des choses en tenant une touche appuyée. Par exemple, quand o
 Cette fonctionnalité est principalement définies dans le fichier `app/js/common/KeyUpAndDown.js`, dans l'objet `KeyUpAndDown`. La touche pressée est captée dans `onKeyDown` et mise dans la propriété `keyPressed` de l'objet. Si on la relève tout de suite, `keyPressed` est effacée dans `onKeyUp`. Si, en revanche, d'autres touches sont pressées avant que la touche ne soit relevée, on peut offrir des traitements.
 
 On peut définir dans la propriété `methodOnKeyPressedUp` de l'objet `KeyUpAndDown` la méthode qui doit être appelée quand on relève la touche. Cela permet de ne pas multiplier un traitement coûteux à répétition. Par exemple, sans cette méthode, avec la touche « v » appuyée, on changerait la taille de la vidéo **et on l'enregistrerait dans le fichier `options.json`** chaque fois que la touche flèche haut ou bas serait appuyée. Puisque c'est une touche « à répétition » (i.e. qu'on peut maintenir pour répéter la touche), l'enregistrement serait appelé de façon intensive. Au lieu de ça, la taille de la vidéo n'est enregistrée que lorsqu'on relève la touche (cf. dans la fichier `KeyUpAndDown.js` le détail de cette implémentation).
+
+
+### Messages d'attente {#waiting_messages}
+
+Pour afficher un message d'attente, utiliser :
+
+```javascript
+
+UI.startWait('<message>')
+
+```
+
+Pour interrompre le message d'attene, utiliser :
+
+```javascript
+
+UI.stopWait()
+
+```
 
 ---------------------------------------------------------------------
 
@@ -102,6 +131,18 @@ C'est cette formule qu'on utilise par exemple pour charger le *FAWriter* qui per
 Grâce au module `system/App.js`, on peut charger des dossiers javascript sans les coder en dur dans le fichier HTML de l'application.
 
 Il suffit de les inscrire dans la constante `AppLoader::REQUIRED_MODULES` et ils sont chargés de façon asynchrone.
+
+## Chargement d'outils particuliers (tools) {#load_tools}
+
+Pour charger un module se trouvant dans le dossier des outils `app/js/tools`, utiliser la méthode `App.loadTool(<affixe>)` avec l'affixe du fichier en argument.
+
+Par exemple, pour charger le module `./app/js/tools/building/fondamentales.js`, utiliser :
+
+```javascript
+
+window.PanelFonds = App.loadTool('building/fondamentales')
+
+```
 
 ## Création/modification des events {#creation_event}
 
@@ -220,6 +261,15 @@ C'est la classe `FAEvent` qui s'en charge, dans sa méthode `saveModifieds`. Ces
 
 ## Travail avec les events {#working_with_events}
 
+### Affichage de la liste des events {#display_falisting_events}
+
+Pour le détail de l'utilisation des listes d'*events* en tant qu'analyste, voir le manuel de l'analyste.
+
+Pour ce qui est de l'implémentation, il faut savoir qu'il existe deux moyens différents utilisés pour afficher les *events* :
+
+* les [`FAListing`(s)](#falisting_elements) qui permet d'afficher facilement et rapidement un type particulier,
+* les [`eventers`](#filtering_events) qui permettent d'appliquer un filtre et de choisir plusieurs types d'*events* en même temps.
+
 ### Filtrage des events {#filtering_events}
 
 On peut travailler avec une liste filtrée des events grâce à la classe `EventsFilter` (définie pour le moment dans le `FAEventer`, donc il faut charger ce composant pour avoir le filtre).
@@ -246,6 +296,116 @@ Pour créer un filtre :
 L'analyse contient d'autres données contenues le plus souvent dans des documents au format `YAML`. On trouve pour commencer les données du film, les personnages, les brins, etc.
 
 La plupart de ces données peuvent se définir par le menu `Documents`.
+
+### Éléments de l'analyse {#elements_analyse}
+
+Les éléments propres à l'analyse, dont le nombre est variable, peuvent se définir par héritage de la classe `FAElement`. Cette classe, outre certaines méthodes utiles, apporte toutes les méthodes permettant de gérer les associations avec les autres éléments.
+
+Pour définir un tel élément, il suffit de faire, comme pour les personnages :
+
+```javascript
+
+class FAPersonnage extends FAElement {
+
+constructor(data){
+  super(data)
+  // ...
+}  
+
+}
+
+```
+
+Noter le constructeur qui doit appeler la superclasse avec les données. Toutes ces données seront dispatchées en les mettant dans les propriétés `_<prop>`. Donc la propriété `pseudo` (`data['pseudo']`) renseignera la propriété d'instance `this._pseudo`.
+
+
+Le nom d'un tel élément doit impérativement :
+
+* commencer par `FA` et être au singulier, comme `FAPersonnage`, `FABrin`.
+* définir la propriété `Classe#id` contenant l'identifiant de l'instance,
+* définir la propriété `Classe#type` retournant le type de l'instance (par exemple, une instance `FAPersonnage` a le type `personnage`),
+* définir la méthode de classe `Classe::get(identifiant)` qui reçoit un identifiant et retourne l'instance correspondante.
+
+Voir dans [Association des éléments](#associations_elements) tout ce qu'on peut faire avec l'élément, en tant qu'élément associable à un autre élément.
+
+### FAListing, listing des éléments {#falisting_elements}
+
+La classe `FAListing` permet de faire des listings des éléments des analyses.
+
+Code à insérer pour utiliser les listings :
+
+```javascript
+
+// Par exemple dans un fichier ./app/js/tools/building/listing_element.js
+
+if (NONE === typeof(FAListing)) window.FAListing = require('./js/system/FA_Listing')
+
+// Pour étendre la classe `FAClasse`
+FAListing.extend(FAClasse) // ajoute la propriété `listing` (instance de FAListing)
+
+// Pour afficher/masquer le listing
+FAClasse.listing.toggle()
+
+```
+
+Pour pouvoir fonctionner, la classe `FAClasse` doit définir :
+
+```javascript
+
+FAClasse.DataFAListing = {
+  items: [/* liste des instances d'éléments de la classe (filtrée ou non) */]
+, asListItem(item, opts){/* cf. ci-dessous */}
+
+// Propriétés optionnelles
+, mainTitle: '/* le titre principal de la fenêtre (par défaut, la classe au pluriel) */'
+, editable: true/false  // Si true, un bouton 'edit' est ajouté, permettant
+                        // d'éditer l'élément avec un méthode de classe `edit`
+                        // qui doit exister et recevoir en premier argument
+                        // l'identifiant de l'élément.
+, creatable: true/false   // Si true, un '+' est ajouté en haut de liste pour
+                          // pouvoir créer un nouvel élément avec le DataEditor
+, removable: true/false   // si true, un petit bouton permet de détruire l'élément
+                          // Il faut que la classe réponde à la méthode 'destroy'
+                          // qui doit recevoir l'identifiant en argument.
+, associable: true/false  // Si true, on peut dragguer l'élément sur un autre
+                          // et l'élément peut recevoir un autre élément.
+, associates: true        // pour afficher les associés (false par défaut)
+, statistiques: true      // Pour afficher les statistiques (false par défaut)
+, collapsable: true       // Si true, les informations supplémentaires sont
+                          // masquables/affichables.
+                          // Noter que si collapsable est true, la description
+                          // de l'élément, si elle existe, est automatiquement
+                          // ajouter.
+, collapsed: false        // Si true (défaut) les informations supplémentaires
+                          // sont masquées. Sinon, elles sont affichées.
+, item_options: {/* options à envoyer à asListItem */}
+, only:  '/* identifiant du seul item à montrer */'
+, selected: /* alias de only */
+
+}
+
+```
+
+#### Fonction `DataFAListing.asListItem(item, opts)`
+
+Cette fonction doit retourner le LI de l'item `item`, comme `DOMElement`.
+
+Le LI lui-même n'a pas besoin de définir son `id` ou ses autres attributs comme `data-type` ou `data-id` car ils seront automatiquement ajoutés si `associable` est `true` dans les données. Il suffit de définir sa classe si elle est différente du type (qui pourra servir à le mettre en forme précisément dans `faListing.css`) et son contenu :
+
+```javascript
+
+, asListItem(item, opts){
+    return DCreate(LI,{class:'maclassedifferente', append:[
+
+      ]})
+  }
+```
+
+Si `editable` est `true`, un bouton `edit` est automatiquement ajoutés.
+
+Si `associable` est `true`, les attributs `data-type` et `data-id` sont automatiquements ajoutés.
+
+Si `displayAssociates` est `true`, on ajoute le div des associés retourné par la méthode commune `divsAssociates()`.
 
 ### DataEditor, l'éditeur de données {#data_editor}
 
@@ -297,8 +457,10 @@ Voilà les données générales :
       /* Cas spécial du drop : */
       , 'drop': {<data pour droppable>}
     }
+  , editable:  /* si false, la valeur ne pourra pas être éditée */
   , exemple:  'placeholder affiché quand aucune donnée'
   , aide:     'texte ajouté en petit à côté du libellé'
+  , after:    'texte ajouté après un champ court (type:"text" et class:"short")'
   , validities: flag pour tester la validité de (UNIQ, REQUIRED, ASCII)
   , values:   <valeurs pour un select, soit [{value: inner}...], soit [[value, inner]...]
   , editLink: <function>
@@ -350,11 +512,30 @@ Si de plus amples vérifications doivent être faites sur la donnée, il faut ut
 
 Un objet *data-editorable* doit répondre aux méthodes :
 
-* `DECreateItem(data)`. Qui doit permettre de créer un nouvel élément avec les données `data`,
+* `DECreateItem(data)`. Qui doit permettre de créer un nouvel élément avec les données `data`, sauf si `no_new_item` est à `true`
 * `DEUpdateItem(data)`. Qui doit permettre de modifier un élément avec les nouvelles données `data`,
 * `DERemoveItem(data)`. Qui doit permettre de détruire l'élément d'identifiant `data.id`
 
 Note : s'inspirer des fonctions définies dans `app/js/composants/faPersonnage/required_then/FAPersonnage_DataEditor.js` pour les personnages ou `app/js/composants/faBrin/required_then/FABrin_DataEditor.js` pour les brins.
+
+### Les méthodes utiles
+
+`<Classe>.edit(item_id, e)` est la méthode de classe de l'élément qui va permettre d'éditer automatiquement les objets. Elle est héritée de `FAElement`. Il suffit d'utiliser :
+
+```html
+
+  <a class="lkedit lktool" onclick="MaClasse.edit('<id>',event)">edit</a>
+
+```
+
+ou :
+
+```javascript
+
+$('a#<idlien>').on('click', this.constructor.edit.bind(this.constructor,'<id>'))
+
+```
+
 
 ## Actualisation automatique des éléments affichés lors des modifications {#autoupdate_after_edit}
 
@@ -389,6 +570,58 @@ Avec comme prérequis que :
 
 * `PROPS` contient la liste de toutes les propriétés actualisables.
 * chaque propriété spéciale possède une méthode `f_<propriété>` qui formate cette propriété pour l'affichage. Le cas échéant, c'est la valeur de la propriété elle-même qui est utilisée.
+
+### Association des éléments {#associations_elements}
+
+Cette partie concerne maintenant les [éléments de l'analyse](#elements_analyse) en tant que classe étendue de `FAElement`. Dès qu'une classe hérite de cette superclasse, elle hérite des méthodes d'association décrites ci-dessous.
+
+Tous les types d'éléments d'une analyse peuvent être associés, à savoir les types `event`, `personnage`, `document`, `brin` et `time`.
+
+Pour rendre une classe *associable*, les requis sont les suivants.
+
+* L'élément doit être conforme aux requis définis dans [éléments de l'analyse](#elements_analyse).
+* Définir l'élément sur lequel on pourra *dropper* un autre élément. Il suffit pour cela d'utiliser la ligne de code `$(element).droppable(DATA_ASSOCIATES_DROPPABLE)` ([1]).
+* Définir l'élément qui sera déplaçable (peut-être le même) pour associer l'élément avec un autre élément droppable :
+        `$(element).draggable(DATA_ASSOCIATES_DRAGGABLE)`
+* Définir les propriétés obligatoires (requis pour tous les éléments) :
+  * `CLASSE#type`, propriété d'instance qui retourne le type de l'élément.
+  * `CLASSE#id` propriété d'instance qui retourne l'identifiant de l'élément (celui qui permettra de le récupérer en utilisant la méthode de classe `get` — cf. ci-dessous).
+* Définir les méthodes obligatoires :
+  * `CLASSE#toString()`, méthode d'instance qui retourne la référence simplifiée de l'élément (sert pour le helper qu'on déplacera pour dragguer l'élément). Cette méthode sert aussi pour tous les messages traitant de l'élément.
+  * `CLASSE#as('associate')` qui doit retourner le div de l'associé pour affichage (dans un listing par exemple). Cette méthode doit utiliser le lien `dissociateLink([options])` pour dissocier l'élément.
+  * `CLASSE::get(<element id>)`, méthode de classe qui retourne une instance de l'élément.
+* Modifier `ASSOCIATES_COMMON_METHODS` :
+  * Ajouter le type de l'élément à sa liste `types`. Rappel : il est maintenant toujours au singulier
+* Si le type d'élément définissait les anciennes valeurs d'associations, il faut détruire ses méthodes ou propriétés `documents`, `events`, `brins` et `personnages`.
+* Ajouter la propriété `associates` aux propriété de l'élément (surtout celles qui doivent être enregistrées). Dans la propriété `constructor.PROPS` qui peut être inspirée de celle de `FAPersonnage` ou `FABrin` par exemple.
+* Vérifier que l'élément utilise bien la méthode `associatesEpured()` pour définir les associés à enregistrer.
+* Si la classe de l'élément utilise le `DataEditor`, il suffit d'ajouter `associable: true` dans la table `DataEditorData` pour rendre l'élément associable dans les deux sens en édition.
+
+> [1] Auparavant, il fallait redéfinir la méthode `drop` des données droppable, mais maintenant la méthode est générique et appelle toujours la méthode `associer` de l'analyse courante avec en arguments le possesseur et le possédé.
+
+#### Apports des mixins ASSOCIATES
+
+La table `ASSOCIATES_COMMON_METHODS` et la table `ASSOCIATES_COMMON_PROPERTIES` apportent toutes les méthodes et propriétés utiles pour les associations, et notamment :
+
+* Les méthodes `<type>s` et `instances_<type>s` qui retournent respectivement la liste des identifiants et la liste des instances de chaque type associé. Par exemple, la propriété `<instance brin>.documents` des brins retourne la liste des identifiants des documents tandis que la propriété `<instance brin>.instances_documents` retourne la liste des instances `{FADocument}` des documents du brin en question.
+* La méthode `hasAssociates()` qui retourne true si l'élément possède des associés
+* la méthode d'helper `dragHelper` qui retourne l'helper à utiliser pour les éléments draggable. On l'utilise en définissant :
+      ```javascript
+      $(element).draggable({
+          revert: true
+        , helper: () => {return this.dragHelper()}
+        , cursorAt:{left:40, top:20}
+      })
+      ```
+* la méthode d'helper `dissociateLink([options])` qui retourne un lien pour dissocier l'élément (elle peut être utile, mais c'est elle qui est utilisée, de toute façon, lorsqu'on utilise la méthode `divAssociates` — cf. ci-dessous — pour lister les associés),
+* la propriété `associates` qui est une table qui contient en clé le type de l'associé (**au singulier**) et en valeur la liste des identifiants des associés de chaque type.
+* la méthode `divsAssociates([<options>])` qui retourne les divs de tous les associés (au format `options.as` qui peut être soit 'dom' (défaut) soit 'string'). Noter que si l'option `title: true` ou `title: "Le titre à donner"` est utilisée, la liste retournée contient le titre donné ou « Éléments associés » par défaut, dans un `H3`.
+* La méthode `associatesEpured()` qui retourne la liste des assiociés épurée des valeurs nulles (listes vides) pour l'enregistrement. Placer simplement la ligne suivante dans la méthode qui constitue les données à enregistrer :
+      ```javascript
+      data2save.associates = this.associatesEpured()
+      if(!data2save.associates) delete data2save.associates
+      ```
+* La propriété `associatesCounter` qui retourne le nombre courant d'associés.
 
 
 ---------------------------------------------------------------------
@@ -555,7 +788,7 @@ On implémente ces boutons simplement en inscrivant dans le code :
 
 ```
 
-… puis en appelant la méthode `BtnToggleNext.observe(cont)` où `cont` est le set jQuery qui contient le bouton en question.
+… puis en appelant la méthode `BtnToggleContainer.observe(cont)` où `cont` est le set jQuery qui contient le bouton en question.
 
 Si le bouton est le dernier élément, on peut ajouter un div-clear après lui, pour qu'il ne soit pas rogné. Par exemple :
 
@@ -1036,3 +1269,18 @@ checks:
   - aucun brin        Produit une failure s'il y a des brins
 
 ```
+
+---------------------------------------------------------------------
+
+## Notes/explication {#notes_et_explications}
+
+#### N0001
+
+Il faut bloquer l'entrée de `FWindow::setCurrent` pour empêcher le comportement suivant :
+
+* La fenêtre des images est ouverte (`FWindow::setCurrent` a mis le FAListing en fenêtre au premier plan),
+* je clique sur le bouton 'edit' de la première image,
+* => l'image se met en édition, donc le DataEditor s'afficher et la méthode `FWindow::setCurrent` est appelée pour le mettre au premier plan,
+* MAIS le clique sur le bouton 'edit' a lui aussi généré une demande pour (re)mettre le FAListing en premier plan, qui s'exécute en même temps que le point précédent.
+
+`currentizing` permet de bloquer le 'MAIS' ci-dessus.

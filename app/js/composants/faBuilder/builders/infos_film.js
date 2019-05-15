@@ -9,7 +9,7 @@ module.exports = function(options){
 
   let str = ''
   str += '<h1 id="infos-film-title">Informations techniques</h1>'
-  str += '<section id="infos-films">'
+  str += '<section id="infos-film">'
   str += DCreate('DIV', {append: (new FAInfosFilm(my.a)).buildBody()}).innerHTML
   str += '</section>'
   return str

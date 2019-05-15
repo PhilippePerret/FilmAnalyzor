@@ -10,19 +10,29 @@ Object.assign(FAEvent.prototype,{
 **/
 toString(){
   if(undefined === this._tostring){
-    // this._tostring = `<<EVENT type=${this.type} id=${this.id}>>`
-    this._tostring = `l'Event ${this.type} #${this.id}`
+    this._tostring = `Event #${this.id} (${this.isScene ? `scène ${this.numero}` : this.type})`
   }
   return this._tostring
 }
+
+
 /**
-  Renvoie toutes les présentations possible de la scène
+  Renvoie toutes les présentations possible de l'event, quel que soit son
+  type.
+
+  Note
+  ----
+    Pour les affichages particuliers, on ne doit pas implémenter cette
+    méthode pour le type d'event concerné, mais plutôt définir une
+    méthode as<Format> qui retournera l'élément voulu.
 
   @param {String} format  Le format de retour
   @param {Number} flag    Le drapeau permettant de déterminer les détails
                           du retour, comme la présence des boutons d'édition,
                           l'ajout de la durée, etc.
                           DUREE|TIME|LINKED|LABELLED
+                          Voir dans le fichier suivant la définition du flag
+                          ./app/js/common/FAEvent/constants.js
   @param {Object} options Options à utiliser
                           :no_warn    Si true, pas d'avertissement pour dire que
                                       c'est un modèle non personnalisé par
@@ -30,6 +40,7 @@ toString(){
                           :forBook    Si true, s'est une transformation pour le
                                       livre. Affecte les liens, pour le moment.
                           :altText    Texte alternatif pour le spanRef.
+                          as:   'dom' ou 'string'
 **/
 , as(format, flag, opts){
   // console.log("-> as", format, flag, opts)
@@ -38,50 +49,51 @@ toString(){
 
   // La liste dans laquelle on va mettre tous les DOMElements fabriqués
   var domEls = []
+  this.asDomList = []
 
-  if(flag & LABELLED) domEls.push(this.spanRef(opts))
+  // L'event est-il lié à l'image courante de son temps ?
+  // Si oui, on la met devant l'event
+  this.needCurImage() && this.add2asDomList('curImageDiv', opts)
+
+  flag & LABELLED && this.add2asDomList('spanRef', opts)
 
   switch (format) {
     case 'ref':
-      domEls.push(this.asRef(opts))
+      this.add2asDomList('asRef', opts)
       break
     case 'short':
-      domEls.push(...this.asShort(opts))
+      this.add2asDomList('asShort', opts)
       break
     case 'book':
       // Sortie pour le livre
-      domEls.push(...this.asBook(opts))
+      this.add2asDomList('asBook', opts)
       break
     case 'pitch':
-      // Pour le méthode qui répondent à la méthode `asPitch`
-      // à commencer par la scène
-      domEls.push(this.asPitch(opts))
+      this.add2asDomList('asPitch', opts)
       break
     case 'full':
-      // Affiche complet, avec toutes les informations
-      // TODO Pour le moment, c'est ce format qui est utilisé pour le reader,
-      // mais ce n'est peut-être pas la meilleure option.
-      domEls.push(...this.asFull(opts))
+      this.add2asDomList('asFull', opts)
+      flag = flag | ASSOCIATES
       break
     case 'associate':
-      domEls.push(this.asAssociate(opts, flag))
+      this.add2asDomList('asAssociate', opts, flag)
       break
     default:
-      domEls.push(DCreate('SPAN',{class:'titre',inner: this.title}))
+      throw(`Je ne connais pas le format "${format}"`)
   }
 
-
-  // if(flag & DUREE) str += ` (${this.hduree})`
-  if(flag & DUREE) domEls.push(DCreate('SPAN',{class:'duree', inner:` (${this.hduree})`}))
-
-  if(flag & EDITABLE) domEls.push(this.editLink(opts))
-  else if (flag & LINKED) domEls.push(this.showLink(opts))
+  (flag & ASSOCIATES) && this.hasAssociates() && this.add2asDomList('divsAssociates', Object.assign({},opts,{as:'dom',inDiv:true,}))
+  if(flag & DUREE)      this.add2asDomList('spanDuree', opts)
+  if (flag & LINKED)    this.add2asDomList('showLink', opts)
+  if (flag & EDITABLE)  this.add2asDomList('editLink', opts)
 
   // --- LE DIV FINAL ---
 
   // Avec tous ses éléments ajoutés en fonction des choix
-  // console.log("domEls:",domEls)
-  let divAs = DCreate('DIV', {class:`${this.type} EVT${this.id}`, append: domEls})
+  // console.log("this.asDomList:",this.asDomList)
+  let divAs = DCreate(DIV, {class:`event ${this.type} EVT${this.id}`, append:this.asDomList, attrs:{'data-type':'event', 'data-id':this.id}})
+
+  if(opts.as === 'dom') return divAs
 
   // --- LE STRING FINAL ---
   // La version string résultant du travail d'assemblage
@@ -98,6 +110,22 @@ toString(){
   return str
 }
 
+/**
+  Plutôt que de rentrer directement les éléments DOM dans la liste +domEls+
+  de l'event, on l'ajoute par cette méthode qui permet de vérifier que les
+  méthodes retournent bien les éléments voulus (à commencer par des DOMElements)
+**/
+, add2asDomList(buildProp, options, flag){
+    var res = this[buildProp](options, flag)
+    if(undefined === res){
+      log.error(`La propriété de construction ${buildProp} de ${this} n'a rien retourné.`)
+    } else if(Array.isArray(res)){
+      this.asDomList.push(...res)
+    } else {
+      this.asDomList.push(res)
+    }
+}
+
 // Comme une simple référence (ne pas confondre avec le label qui indique
 // le type de l'event et son ID)
 // Cette méthode devrait être propre aux events spéciaux, comme les QRDs par
@@ -105,14 +133,14 @@ toString(){
 , asRef(opts){
     var str = DFormater(this.f_titre || this.titre || this.pitch || this.content)
     if(str.length > 100) str = `${str.substring(0,99)}…` // des balises peuvent être coupées…
-    return DCreate('SPAN', {class:'ref', inner: str})
+    return DCreate(SPAN, {class:'ref', inner: str})
   }
 
 // Version courte commune
 , asShort(opts){
     let divs = []
-    if(this.titre) divs.push(DCreate('SPAN',{class:'titre',inner: DFormater(this.titre)}))
-    divs.push(DCreate('SPAN',{class:'content', inner: DFormater(this.content)}))
+    if(this.titre) divs.push(DCreate(SPAN,{class:'titre',inner: DFormater(this.titre)}))
+    divs.push(DCreate(SPAN,{class:'content', inner: DFormater(this.content)}))
     return divs
   }
 
@@ -122,41 +150,46 @@ toString(){
 **/
 , spanRef(opts){
   if(undefined === opts) opts = {}
-  let span = DCreate('SPAN', {class:'ref', inner: `${opts.altText || this.tinyName} #${this.id}`})
+  let span = DCreate(SPAN, {class:'ref', inner: `${opts.altText || this.tinyName} #${this.id}`})
   if(opts.as === 'string') return span.outerHTML
   else return span
 }
+
+, spanDuree(opts){
+    return DCreate(SPAN,{class:'duree', inner:` (${this.hduree})`})
+  }
 
 /**
   Retourne le DOMElement du lien permettant d'éditer l'élément
   C'est le lien utilisé quand le drapeau contient EDITABLE
 **/
 , editLink(){
-  return DCreate('A', {class:'lkevent', inner:'[edit]', attrs:{onclick:`EventForm.editEvent.bind(EventForm)(${this.id})`}})
+  return DCreate('A', {class:'lktool lkedit', inner:'edit', attrs:{onclick:`EventForm.editEvent.bind(EventForm)(${this.id})`}})
 }
 
 , showLink(){
-  return DCreate('A', {class:'lkevent', inner:'[voir]', attrs:{onclick:`showEvent(${this.id})`}})
+  return DCreate('A', {class:'lktool btn', inner:'voir', attrs:{onclick:`showEvent(${this.id})`}})
 }
 
 // Version livre commune
 , asBook(opts){
-    var divs = []
-    return divs
+    if(undefined === opts) opts = {}
+    opts.forBook = true
+    return this.inItsDiv(this.asFull(opts))
   }
 ,
-// Version complète (reader) commune
-// C'est la version qui est ajoutée au `div` contenant les
-// boutons d'édition, etc.
+/**
+  Version complète de l'event
+
+  Pour le Reader, sauf si opts.forBook, c'est alors pour le livre d'analyse
+
+  Noter que les associés seront ajoutés après, dans la méthode principale 'as'
+**/
 asFull(opts){
   var divs = []
   if(undefined === opts) opts = {}
   opts.no_warm = true // pour la version short
   divs.push(...this.asShort(opts))
-  let divAssos = this.divAssociates(opts)
-  // console.log("divAssos:", divAssos)
-  divAssos && divs.push(...divAssos)
-  // console.log("divs:", divs)
   return divs
 }
 ,
@@ -164,65 +197,30 @@ asFull(opts){
 // qu'associé dans un autre event
 asAssociate(opts){
   var divs = []
-  divs.push(this.spanRef(opts /* si texte alternatif */))
+  // divs.push(this.spanRef(opts /* si texte alternatif */))
   if(this.titre){
-    divs.push(DCreate('SPAN', {class:'titre', inner: this.f_titre || DFormater(this.titre)}))
+    divs.push(DCreate(SPAN, {class:'titre', inner: this.f_titre || DFormater(this.titre)}))
   }
-  divs.push(DCreate('SPAN', {class:'content', inner: DFormater(this.content)}))
+  divs.push(DCreate(SPAN, {class:'content', inner: DFormater(this.content)}))
   if(opts.owner){
     // Si les options définissent un owner, on ajoute un lien pour pouvoir
     // dissocier le temps de son possesseur
-    divs.push(FAEvent.linkDissocier({owner: opts.owner, owned: this}))
+    // divs.push(FAEvent.linkDissocier({owner: opts.owner, owned: this}))
+    divs.push(this.dissociateLink({owner: opts.owner}))
   }
-  return DCreate('DIV', {class:`associate ${this.type} EVT${this.id}`, append:divs})
+  return DCreate(DIV, {class:`associate ${this.type} EVT${this.id}`, append:divs})
 }
 
 /**
-
-  Retourne le div contenant les associés de type +type+ ou un
-  string vide.
-
-  @param  {String} type Le type ('event', 'document' ou 'time')
-          {Object} Les options.
-  @return {String} Le code HTML
+  Retourne l'event quelconque "dans son div" principal, avec les classes et
+  l'identifiant requis
 **/
-, divAssociates(type){
-    let my = this
-    var options
-    switch (typeof type) {
-      case 'string':
-        options = {types: [type]}
-        break
-      case 'object':
-        options = type
-        if(undefined === options.types){
-          options.types = ['events','documents','times']
-        }
-        break
-      default:
-        log.warn("Mauvais argument pour divAssociates: ", type)
-        return // indefined
-    }
-    var divs = []
-      , divsAss = []
-    for(type of options.types){
-      // console.log("Traitement du type", type)
-      if(this[type].length === 0) continue
-      divs.push(DCreate('H3', {inner:`${FATexte.htypeFor(type, {title: true, after: 'associé_e_s'})}`}))
-      this.forEachAssociate(type, function(ev){
-        if(undefined === ev){
-          log.error(`[FAEvent#divAssociates] Event non défini dans la boucle "forEachAssociate" de l'event #${my.id}:${my.type}`)
-        } else {
-          options.owner = {type:'event', id: my.id}
-          divsAss.push(ev.asAssociate(options))
-        }
-      })
-      // console.log("[FAEvent#divAssociates] divsAss:", divsAss)
-      divs.push(DCreate('DIV', {append:divsAss, class:`associates ${type}`}))
-    }
-    // console.log("divs associateds:", divs)
-    if(divs.length) return divs
+, inItsDiv(divs, opts){
+    var css = [this.type]
+    if(undefined !== this.metaType) css.push(this.metaType)
+    return DCreate(DIV,{id:this.domId, class:css.join(' '), append:divs})
   }
+
 
 })
 
@@ -231,7 +229,7 @@ Object.defineProperties(FAEvent.prototype,{
     Retourne le div qui s'affichera dans le reader
 
     Son contenu propre provient de la méthode `as('full')` donc
-    de la méthode `asFull` qui devrait être propre à l'event.
+    de la méthode `asFull` qui peut être propre à l'event.
 
     @return {DOMElement} Le div à placer dans le reader
   **/
@@ -240,25 +238,25 @@ Object.defineProperties(FAEvent.prototype,{
       if (undefined === this._div){
         // flag pour la méthode 'as'
         var asFlag = FORMATED
-        if(this.type !== 'scene') asFlag = asFlag | LABELLED
+        if(!this.isScene) asFlag = asFlag | LABELLED
         // L'horloge des outils
-        var h = DCreate('SPAN',{
+        var h = DCreate(SPAN,{
           class:'horloge horloge-event'
         , attrs:{'data-id': this.id}
         , inner: this.otime.horloge
         })
-        var be = DCreate('BUTTON', {class: 'btn-edit', inner: '<img src="./img/btn/edit.png" class="btn" />'})
-        var br = DCreate('BUTTON', {class: 'btnplay left', attrs: {'size': 22}})
+        var be = DCreate(BUTTON, {class: 'btn-edit', inner: '<img src="./img/btn/edit.png" class="btn" />'})
+        var br = DCreate(BUTTON, {class: 'btnplay left', attrs: {'size': 22}})
 
-        var etools = DCreate('DIV',{class: 'e-tools', append:[br, be, h]})
-        var cont = DCreate('DIV', {class:'content', inner: this.as('full', asFlag)})
-
-        this._div = DCreate('DIV',{
-          id: this.domId
+        this._div = DCreate(DIV,{
+          id: this.domReaderId
         , class: `reader-event event ${this.type} EVT${this.id}`
         , style: 'opacity:0;'
         , attrs: {'data-time':this.time, 'data-id':this.id, 'data-type': 'event'}
-        , append: [etools, cont]
+        , append: [
+            DCreate(DIV,{class: 'e-tools', append:[br, be, h]})
+          , DCreate(DIV, {class:'content', inner: this.as('full', asFlag)})
+          ]
         })
       }
       return this._div

@@ -7,13 +7,18 @@ Object.assign(FAPersonnage,{
 **/
   DESave(){
     this.contents = YAML.dump(this.data)
-    this.iofile.save()
+    // console.log("Dans DESave, this.contents = ", this.contents)
+    this.iofile.save({after: this.DEAfterSave.bind(this)})
     FAWriter.resetDocument('dpersonnages')
+  }
+, DEAfterSave(){
+    this.modified = false
   }
 /**
   Méthode utilisée par DataEditor pour créer un item
 **/
 , DECreateItem(dperso){
+    if(undefined === this._data) this._data = {}
     this._data[dperso.id] = dperso
     this.reset()
     this.DESave()
@@ -45,10 +50,6 @@ Object.defineProperties(FAPersonnage,{
   dataEditor:{
     get(){return this._dataeditor||defP(this,'_dataeditor',DataEditor.init(this, this.DataEditorData))}
   }
-  // Le IOFile qui sert pour le DataEditor (pas quand le document est visualisé
-  // dans le Writer)
-, iofile:{get(){return this._iofile||defP(this,'_iofile',new IOFile(this))}}
-
 /**
   Les données utiles pour l'instanciation d'un dataeditor pour l'élément
   Sa validité sera contrôlée avant l'instanciation de this.dataEditor
@@ -88,6 +89,7 @@ Object.defineProperties(FAPersonnage,{
             }
         }
       , {label:'Description', type:'textarea', prop:'description', validities:REQUIRED}
+      , {label:'Fonctions', type:'textarea', prop:'fonctions', aide:'une fonction par ligne', exemple:'Protagoniste\nAdjuvant\nPermet de relancer le suspense'}
       , {label:'Dimensions', type:'textarea', prop:'dimensions', aide:'1 par ligne (&lt;type&gt;: &lt;description&gt;)'
           , exemple:'religieuse: @T croit en Dieu.\nprofessionnelle: @T travaille pour lui.'
           , setValueMethod: (v)=>{

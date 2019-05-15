@@ -1,6 +1,5 @@
 # Diminutifs utilisés à l'aide de @.
-# Par exemple, si on définit ci-dessous :
-# T: Théodore
-# … alors @T sera remplacé par Théodore partout dans les textes.
+# Noter que pour les personnages, les diminutifs sont définis
+# dans leur fiche
 A: Analyse # Utiliser @A dans le texte au lieu de "Analyse"
 a: analyse # Utiliser @a dans le texte au lieu de "analyse"

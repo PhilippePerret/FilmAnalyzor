@@ -15,10 +15,12 @@ Object.defineProperties(DataField.prototype,{
 // Propriétés exceptionnelles
 , observe:    {get(){return this.data.observe}}
 , defValue:   {get(){return this.data.defValue}}
+, editable:   {get(){return this.data.editable}}
 , exemple:    {get(){return this.data.exemple}}
 , showLink:   {get(){return this.data.showLink}}
 , editLink:   {get(){return this.data.editLink}}
 , aide:       {get(){return this.data.aide}}
+, after:      {get(){return this.data.after}}
 , setValueMethod:{get(){return this.data.setValueMethod}}
 , getValueMethod:{get(){return this.data.getValueMethod}}
 , checkValueMethod:{get(){return this.data.checkValueMethod}}
@@ -48,7 +50,7 @@ Object.defineProperties(DataField.prototype,{
 , isUniq:{get(){return this._isuniq||defP(this,'_isuniq',!!(this.validities&UNIQ))}}
 , isOnlyAscii:{get(){return this._isascii||defP(this,'_isascii',!!(this.validities&ASCII))}}
 
-, isSelectUpdatable:{get(){return this.type === 'select' && 'function' === typeof(this.values)}}
+, isSelectUpdatable:{get(){return this.type === 'select' && isFunction(this.values)}}
 })
 
 Object.assign(DataField.prototype,{
@@ -72,7 +74,13 @@ Object.assign(DataField.prototype,{
   Place la valeur dans le champ
 **/
 , set(value){
-    this.field.val(value)
+    switch (this.type) {
+      case 'image':
+        this.field[0].src = value
+        break
+      default:
+        this.field.val(value)
+    }
   }
 /**
   Réinitialise le champ
@@ -80,6 +88,8 @@ Object.assign(DataField.prototype,{
 **/
 , reset(){
     switch (this.type) {
+      case 'image':
+        break
       case 'checkbox':
         this.field[0].checked = false
         break
@@ -94,9 +104,10 @@ Object.assign(DataField.prototype,{
 , getFieldValueOrNull(){
     var v
     switch (this.type) {
+      case 'image':
+        return null
       case 'checkbox':
-        v = this.field[0].checked
-        break
+        return this.field[0].checked
       default:
         v = this.field.val()
         if(v === '') v = null
@@ -108,11 +119,12 @@ Object.assign(DataField.prototype,{
 **/
 , defineTagNameAndType(){
     switch (this.type) {
-      case 'text':      return ['INPUT', {type: 'text'}]
+      case 'image':     return [IMG, {style:'width:90%;'}]
+      case 'text':      return [INPUT, {type: 'text'}]
       case 'textarea':  return ['TEXTAREA', {}]
-      case 'checkbox':  return ['INPUT', {type:'checkbox'}]
-      case 'hidden':    return ['INPUT', {type:'hidden'}]
-      case 'select':    return ['SELECT', {append: this.optionsSelect()}]
+      case 'checkbox':  return [INPUT, {type:'checkbox'}]
+      case 'hidden':    return [INPUT, {type:'hidden'}]
+      case 'select':    return [SELECT, {append: this.optionsSelect()}]
     }
   }
 /**
@@ -125,6 +137,7 @@ Object.assign(DataField.prototype,{
     if(this.class) tagAtt.class = this.class
     tagAtt.attrs  = {}
     if(this.exemple) tagAtt.attrs.placeholder = this.exemple
+    if(this.editable === false) tagAtt.attrs.readonly = 'readonly'
     return tagAtt
   }
 
@@ -157,7 +170,7 @@ Object.assign(DataField.prototype,{
       hoptions = optionsValues
     }
     for(var val in hoptions){
-      opts.push(DCreate('OPTION',{value: val, inner: hoptions[val]}))
+      opts.push(DCreate(OPTION,{value: val, inner: hoptions[val]}))
     }
     return opts
   }

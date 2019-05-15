@@ -5,21 +5,28 @@
   Gestion des personnages
 **/
 
-class FAPersonnage {
+class FAPersonnage extends FAElement {
 // ---------------------------------------------------------------------
 //  CLASS
 
-static show(perso_id){
-  this.a.togglePanneauPersonnages()
-  PanelPersos.select(perso_id)
+static get modified(){return this._modified}
+static set modified(v){
+  this._modified = v
 }
 
-/**
-  Pour éditer le personnage +perso_id+ (avec le DataEditor)
-**/
-static edit(perso_id){
-  if(NONE === typeof(DataEditor)) return this.a.loadDataEditor(this.edit.bind(this,perso_id))
-  DataEditor.openPerType('dpersonnages', perso_id)
+static show(perso_id){
+  this.a.togglePanneauPersonnages(true/*ouvert*/)
+  this.listing.select(perso_id)
+}
+
+static destroy(perso_id){
+  delete this.data[perso_id]
+  this.reset()
+  if(this.listing){
+    this.listing._items = this.personnages
+    this.listing.update()
+  }
+  this.modified = true
 }
 
 /**
@@ -72,7 +79,8 @@ static get diminutifs(){
     this._diminutifs = {}
     for(var pseudo in this.data){
       if(this.data[pseudo].dim){
-        this._diminutifs[this.data[pseudo].dim] = this.data[pseudo].pseudo
+        // this._diminutifs[this.data[pseudo].dim] = this.data[pseudo].pseudo
+        this._diminutifs[this.data[pseudo].dim] = this.data[pseudo]
       }
     }
   }
@@ -100,9 +108,39 @@ static get personnages(){
   }
   return this._personnages
 }
+
 static get hpersonnages(){
   if(undefined === this._hpersonnages) this.personnages
   return this._hpersonnages
+}
+
+static saveIfModify(){
+  if(!this.modified) return
+  // On doit reconstituer this._data
+  var hdata = {}
+  this.forEachPersonnage(perso => hdata[perso.id] = perso.getData())
+  this._data = hdata
+  hdata = null
+  this.DESave()
+}
+
+/**
+  Méthode utilitaire (utilisée pour les statistiques pour le moment) qui
+  retourne sous forme d'instance la liste des personnages qu'on peut trouver
+  dans le texte +str+.
+
+  @return {Array of FAPersonnage|Undefined} La liste des personnages trouvés par
+  leur diminutif (@X) ou undefined si aucun
+
+**/
+static get REG_DIM_PERSO(){return this._regdimperso||defP(this,'_regdimperso', new RegExp('@([a-zA-Z0-9_]+)', 'g'))}
+static getPersonnagesIn(str){
+  if(!str.match(/\@/)) return
+  // Note : puis REG_DIM_PERSO est défini avec 'g', tous les résultats
+  // trouvés se trouvent dans `dims` qui est une simple liste des diminutifs
+  var dims = str.match(this.REG_DIM_PERSO)
+  if(dims.length == 0) return
+  return dims.map(dim => this.get(this.diminutifs[dim.substring(1,dim.length)].id))
 }
 
 // Retourne le nombre de personnages
@@ -116,41 +154,51 @@ static get a(){return current_analyse}
 // ---------------------------------------------------------------------
 //  INSTANCE
 constructor(analyse, data){
+  super(data)
   this.analyse = this.a = analyse
-  for(var prop in data){this[`_${prop}`] = data[prop]}
+  this.type = 'personnage' // utile pour les associations
 }
 
 toString(){return `${this.pseudo} (#${this.id})`}
 
 /**
-  Méthode qui actualise automatiquement toutes les informations affichées
-  du personnage après sa modification.
+  Retourne les données du personnage pour enregistrement
 **/
-onUpdate(){
-  this.constructor.PROPS.map(prop => {
-    $(this.domCP(prop)).html(this[`f_${prop}`]||this[prop])
+getData(){
+  var hdata = {}, v
+  this.constructor.PROPS.map(p => {
+    v = this[p]
+    if(undefined === v || null === v ) return
+    if (Array.isArray(v) && v.length==0) return
+    if ('object' === typeof(v) && Object.keys(v).length == 0) return
+    hdata[p] = v
   })
+  hdata.associates = this.associatesEpured()
+  if(!hdata.associates) delete hdata.associates
+  return hdata
 }
 
-static get PROPS(){return ['id', 'pseudo','dim','prenom', 'nom','dimensions','ages','description','fonction']}
-
-// La class commune à toute
-domC(prop){
-  if(undefined === this._prefClass){this._prefClass = `perso-${this.id}-`}
-  return `${this._prefClass}${prop}`
+static get PROPS(){
+  if(undefined === this._props){
+    this._props = ['id','pseudo','dim','prenom','nom','dimensions','ages','description','fonctions','associates']
+  }
+  return this._props
 }
-domCP(prop){return `.${this.domC(prop)}`}
+
+set modified(v){
+  this._modified = v
+  this.constructor.modified = v
+  if(v) this.onUpdate()
+  if(PanelPersos.opened) PanelPersos.btnOK.html(v ? 'Enregistrer' : 'OK')
+}
+
 get pseudo(){return this._pseudo}
 get id(){return this._id}
 get prenom(){return this._prenom}
 get nom(){return this._nom}
 get dim(){return this._dim}
 get ages(){return this._ages}
-get f_ages(){
-  let a = Array.isArray(this.ages) ? this.ages : [this.ages]
-  return a.map(n => `${n} ans`).join(', ')
-}
+get fonctions(){return this._fonctions}
 get dimensions(){return this._dimensions}
 get description(){return this._description}
-get f_description(){return DFormater(this.description)}
 }

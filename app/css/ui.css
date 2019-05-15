@@ -38,7 +38,7 @@ button.btn-close:hover {
   Ils utilisent l'image 'img/update-2.png'
  */
 button.update {
-  all:unset;
+  /* all:unset; ÇA POSE PROBLÈME DANS LES FENÊTRES LISTING */
   vertical-align:baseline;
   padding:0 8px;
 }
@@ -136,7 +136,7 @@ section#section-footer {
   padding:1em;
   z-index:0;
 }
-section#section-footer div#analyse-state-bar {
+div#analyse-state-bar {
   position:fixed;
   bottom:0;
   height:20px;
@@ -144,16 +144,17 @@ section#section-footer div#analyse-state-bar {
   right:0;
   background-color:#DDDDDD;
   border-top:1px solid #EEEEEE;
-  border-bottom:1px solid #BBBBBB
+  border-bottom:1px solid #BBBBBB;
+  z-index:1000;
 }
 
-section#section-footer div#analyse-state-bar span#modified-indicator {
+div#analyse-state-bar span#modified-indicator {
   float:left;
   font-size:28pt;
   line-height:16pt;
   color:green;
 }
-section#section-footer div#analyse-state-bar span#modified-indicator.on {
+div#analyse-state-bar span#modified-indicator.on {
   color:red
 }
 
@@ -243,9 +244,6 @@ div#div-analyse-state > div.info > label {
   width: 300px;
   text-align:right;
   padding-right:12px;
-}
-div#div-analyse-state > div.info > label:after {
-  content:' :';
 }
 div#div-analyse-state > div.info > span.value {
   font-family: monospace;

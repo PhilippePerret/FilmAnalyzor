@@ -3,11 +3,6 @@
   Helpers pour les QRD
 **/
 
-Object.assign(FAEdialog,{
-
-})
-
-
 Object.assign(FAEdialog.prototype,{
 
 // Par exemple pour le reader
@@ -18,8 +13,4 @@ asFull(options){
   return divs
 }
 
-})
-
-
-Object.defineProperties(FAEdialog.prototype,{
 })

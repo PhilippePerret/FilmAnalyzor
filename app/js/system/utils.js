@@ -3,6 +3,12 @@
 function isNotAscii(str){
   return str.replace(/[a-zA-Z0-9_]/g,'') != ''
 }
+function isFunction(foo){
+  return STRfunction === typeof(foo)
+}
+function isString(foo){
+  return STRstring !== typeof(eventType)
+}
 
 function asPourcentage(expected, actual){
   return `${pourcentage(expected,actual)} %`
@@ -82,7 +88,8 @@ function clip(str){
 function getValOrNull(domId, options){
   if(undefined === options) options = {}
   if(domId.substr(0,1)!='#') domId = `#${domId}`
-  var field = $(`${domId}`)
+  let field = $(`${domId}`)
+    , domField = field[0]
   if(field.length === 0 || field.val() === null) return null
 
   var value ;
@@ -92,7 +99,11 @@ function getValOrNull(domId, options){
       return parseFloat(field.attr('value'))
     default:
       try {
-        value = field.val().trim()
+        if(field.is(':checkbox')){
+          return field[0].checked ? field.val() : null
+        } else {
+          value = field.val().trim()
+        }
       } catch (e) {
         console.error(`[getValOrNull] Impossible d'obtenir la valeur de ${domId} : `, e)
         return null

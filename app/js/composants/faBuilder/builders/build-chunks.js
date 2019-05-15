@@ -95,6 +95,9 @@ FABuilder.prototype.buildAndAddChunk = function(what){
     case 'scenier':
       finalCode += my.loadAndRunBuilder('scenier')
       break
+    case 'rapport visionnage':
+      finalCode += my.loadAndRunBuilder('rapport_visionnage')
+      break
     case 'test mef':
       finalCode += my.loadAndRunBuilder('test_mef')
       break
@@ -138,7 +141,7 @@ module.exports = function(options){
     // le vérificateur de complétude.
     my.traitedFiles['building_script'] = {ok: true, error: null}
   } else {
-    bScriptPath = my.a.tempFilePathOf('building_script.md')
+    bScriptPath = my.a.tempFilePathOf('building_script/analyse_film.md')
   }
 
   var bScript = fs.readFileSync(bScriptPath, 'utf8')
@@ -150,6 +153,8 @@ module.exports = function(options){
     if (dline.length < 2) return
     var command = dline.shift()
     var args    = dline.join(' ')
+    // Il faut retirer aussi les éventuels commentaires en fin de ligne
+    if(args.match(/\#/)) args = args.split('#')[0].trim()
     switch (command.toUpperCase()) {
       case 'FILE':
         return my.convertAndAddFile(args.toLowerCase())

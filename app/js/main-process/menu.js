@@ -27,7 +27,7 @@ const CURRENT_THING_MENUS = [
   'display-timeline', 'display-analyse-state', 'display-last-report',
   'display-protocole', 'option-locked', 'new-version', 'display-brins',
   'goto-last-scene', 'display-decors', 'check-data-validity',
-  'display-personnages'
+  'display-personnages', 'display-images', 'open-in-finder'
 ]
 // Note : les ID des menus de documents seront ajoutés "à la volée"
 
@@ -268,6 +268,12 @@ const DATA_MENUS = [
                   }
             ]
           }
+        , {
+              label:'Ouvrir sur le bureau'
+            , enabled:false
+            , id:'open-in-finder'
+            , click:()=>{execJsOnCurrent('openAnalyseInFinder')}
+          }
         , {type: 'separator'}
         , {role: 'quit', label: 'Quitter', accelerator: 'CmdOrCtrl+Q'}
       ] // submenu du menu "Analyse"
@@ -362,6 +368,13 @@ const DATA_MENUS = [
               , accelerator: 'CmdOrCtrl+Alt+Shift+D'
               , enabled: false
               , click: ()=>{execJsOnCurrent('togglePanneauDecors')}
+            }
+          , {
+                label: "Images"
+              , id: 'display-images'
+              , accelerator: 'CmdOrCtrl+Alt+Shift+G'
+              , enabled: false
+              , click: ()=>{execJsOnCurrent('togglePanneauImages')}
             }
           , {
                 label: "Statistiques"
@@ -465,6 +478,10 @@ const DATA_MENUS = [
             }
           , {type: 'separator'}
           , {
+                label: 'Prendre l’image courante'
+              , click:() => {execJsOnCurrent('createShotWithCurrentPicture')}
+            }
+          , {
                 label: 'Image courante comme vignette de scène courante…'
               , click:()=>{mainW.webContents.send('current-image-for-current-scene')}
             }
@@ -498,6 +515,22 @@ const DATA_MENUS = [
               , {label: 'Action', accelerator: 'CmdOrCtrl+Alt+A', click: ()=>{createEvent('action')}}
               , {label: 'Dialogue', accelerator: 'CmdOrCtrl+Alt+D', click: ()=>{createEvent('dialog')}}
               , {label: 'Event', accelerator: 'CmdOrCtrl+Alt+E', click: ()=>{createEvent('event')}}
+            ]
+        }
+      , {
+            label: 'Liste des… (CMD+clic btn)'
+          , submenu: [
+                {label: 'Scènes', click: ()=>{listEvent('scene')}}
+              , {label: 'Nœuds STT', click: ()=>{listEvent('stt')}}
+              , {label: 'O.O.C.', click: ()=>{listEvent('dyna')}}
+              , {label: 'Procédés', click: ()=>{listEvent('proc')}}
+              , {label: 'Notes', click: ()=>{listEvent('note')}}
+              , {label: 'Idées', click: ()=>{listEvent('idee')}}
+              , {label: 'Infos', click: ()=>{listEvent('info')}}
+              , {label: 'QRDs', click: ()=>{listEvent('qrd')}}
+              , {label: 'Actions', click: ()=>{listEvent('action')}}
+              , {label: 'Dialogues', click: ()=>{listEvent('dialog')}}
+              , {label: 'Events', click: ()=>{listEvent('event')}}
             ]
         }
     ]
@@ -663,8 +696,11 @@ function setVideoSize(size){
 function setVideoSpeed(speed){
   mainW.webContents.send('set-video-speed', {speed: speed})
 }
-function createEvent(type){
-  mainW.webContents.send('create-event', {type: type})
+function createEvent(etype){
+  mainW.webContents.send('create-event', {type: etype})
+}
+function listEvent(etype){
+  mainW.webContents.send('list-event', {type: etype})
 }
 
 // Avant de construire le Menu, on mémorise les positions des menus

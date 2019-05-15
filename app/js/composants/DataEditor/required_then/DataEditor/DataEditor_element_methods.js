@@ -42,6 +42,10 @@ Object.assign(DataEditor.prototype,{
       this.createNewItem(formData)
       this.editCurrent(formData.id)
     }
+
+    // Doit-on terminer tout de suite ?
+    this.cbCloseAfterSave.checked && this.close()
+
     log.info('<- DataEditor#saveElement')
   }
 
@@ -61,7 +65,7 @@ Object.assign(DataEditor.prototype,{
     this.data.items.push(nitem)
     // Ajout au menu (inutile de le sélectionner, ça le fera avec
     // la méthode d'édition)
-    this.menuItems.append(DCreate('OPTION',{value: data.id, inner: DFormater(nitem[this.titleProp])}))
+    this.menuItems.append(DCreate(OPTION,{value: data.id, inner: DFormater(nitem[this.titleProp])}))
   }
 
 // Méthode appelée par le bouton "+"
