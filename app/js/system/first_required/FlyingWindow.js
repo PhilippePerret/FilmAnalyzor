@@ -136,6 +136,22 @@ static unsetCurrent(wf){
   this.current.bringToBack()
   delete this.current
 }
+
+/**
+  Méthode appelée par la touche Escape pour fermer la fenêtre
+  courante, si elle existe.
+**/
+static closeCurrent(){
+  // console.log("this.current.name:", this.current.name)
+  if(!this.current || this.currentIsReader()) return false
+  this.current.hide()
+  return true
+}
+
+static currentIsReader(){
+  return this.current && this.current.name == 'Reader'
+}
+
 static get current()  {return this._current}
 static set current(w) {this._current = w}
 
@@ -207,11 +223,11 @@ update(){
 }
 // Pour détruire la fenêtre
 remove(){
-  log.info('-> ${this.ref}.remove()')
+  log.info(`-> ${this.ref}.remove()`)
   this.constructor.unsetCurrent(this)
   this.jqObj.remove()
   this.reset()
-  log.info('<- ${this.ref}.remove()')
+  log.info(`<- ${this.ref}.remove()`)
 }
 // Pour réinitialiser
 reset(){

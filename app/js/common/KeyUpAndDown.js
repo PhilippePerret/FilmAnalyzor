@@ -21,6 +21,7 @@ const KeyUpAndDown = {
   }
 
 , commonKeyUp(e){
+    // console.log(e)
     if(e.key === this.keyPressed){
       // console.log("J'ai retiré la touche", e.key)
       delete this.keyPressed
@@ -28,7 +29,15 @@ const KeyUpAndDown = {
       // touche, on l'appelle.
       if(isFunction(this.methodOnKeyPressedUp)){
         this.methodOnKeyPressedUp()
+      } else {
+        switch(e.key){
+          case 'Escape':
+            if (FWindow.closeCurrent()){
+              return stopEvent(e)
+            } else return true
+        }
       }
+
     }
   }
 , commonKeyDown(e){
