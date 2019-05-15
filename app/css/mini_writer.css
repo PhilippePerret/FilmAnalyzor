@@ -6,8 +6,8 @@ div.mini-writer {
   background:rgba(0,0,0,0.74);
   height:900px;
   display:grid;
-  grid-template-rows: 50px 800px 50px;
-  grid-template-columns: 20px 600px 780px 20px;
+  grid-template-rows: 30px 800px 30px;
+  grid-template-columns: 10px 1px 780px 10px;
   padding:2em;
 }
 /* --- L'ÉDITEUR --- */
@@ -33,6 +33,7 @@ div.mini-writer div.mini-writer-editor textarea {
   grid-row:2;
   grid-column:2;
   resize:none;
+  border:1px solid #EEEEEE;
 }
 div.mini-writer div.mini-writer-editor textarea:focus {
   outline:none;

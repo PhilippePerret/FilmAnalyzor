@@ -4,6 +4,7 @@
 
 * Supprimer l'arrière plan du mini-writer (peut-être le faire 'sortir' du bord bas ?)
 * Utiliser des constantes pour les strings récurrente
+  + les tests récurrents (isUndefined, cf le fichier system/utils.js)
 
 * Pour les associés qui n'existent plus, utiliser la classe `FAUnknownElement`
 

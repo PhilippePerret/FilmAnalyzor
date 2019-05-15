@@ -89,6 +89,9 @@ const MESSAGES = {
 , "tit-update-type-list": "Pour actualiser la liste des types"
 , "tit-modify-type-list": "Pour modifier la liste des types (ouvrir le fichier des données)"
 
+, "--- TEXTES ---":""
+, "confirm-abandon-modif-text":"Le texte original a été modifié. Voulez-vous vraiment abandonner les changements ?"
+
 , "--- messages ANALYSE ---":""
 , "conf-created-analyse": "Nouvelle analyse créée avec succès."
 , "loading-analyse": "Chargement de l'analyse… "

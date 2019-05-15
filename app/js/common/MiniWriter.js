@@ -24,16 +24,16 @@ class MiniWriter {
 * l'aide de `MiniWriter.new(<field>)`
 **/
 static new(field /* DOMElement non jQuery */){
-  if('undefined' === typeof Snippets) return FAnalyse.loadSnippets(this.new.bind(this, field))
+  if(NONE === typeof(Snippets)) return FAnalyse.loadSnippets(this.new.bind(this, field))
   // if($(`#${field.id}`).length === 0) throw("Il faut transmettre un champ valide.")
-  if($(field).length === 0) throw("Il faut transmettre un champ valide.")
+  if(isEmpty($(field))) throw("Il faut transmettre un champ valide (existant).")
   // console.log("field:",field)
   var mw = new MiniWriter(current_analyse, field, this.newId())
   mw.show()
   return mw
 }
 static newId(){
-  if(undefined === this.lastId) this.lastId = 0
+  if(isUndefined(this.lastId)) this.lastId = 0
   return ++this.lastId
 }
 
@@ -83,7 +83,7 @@ finir(){
 **/
 cancel(){
   if (this.jqOwner.val() != this.textField.val()){
-    if(!confirm("Le texte original a été modifié. Voulez-vous vraiment abandonner les changements ?")) return false
+    if(!confirm(T('confirm-abandon-modif-text'))) return false
   }
   this.hide()
   return true
@@ -134,23 +134,23 @@ toggleMaskFond(){
  */
 build(){
   return [
-      DCreate('DIV', {class:'mini-writer-editor', append: [
-          DCreate('DIV', {class: 'mini-writer-tools', inner: '[Mettre ici les outils]'})
-        , DCreate('DIV', {class:'mini-writer-div-textarea', append : [
-            DCreate('TEXTAREA', {id: `mini-writer-${this.id}-content`, class:'mini-writer-content'})
+      DCreate(DIV, {class:'mini-writer-editor', append: [
+          DCreate(DIV, {class: 'mini-writer-tools', inner: '[Mettre ici les outils]'})
+        , DCreate(DIV, {class:'mini-writer-div-textarea', append : [
+            DCreate(TEXTAREA, {id: `mini-writer-${this.id}-content`, class:'mini-writer-content'})
           ]})
-        , DCreate('DIV', {class: 'mini-writer-buttons', append: [
-            DCreate('DIV', {class:'fleft cbs', append:[
-                DCreate('INPUT', {type:'checkbox', id: this.idFor('cb-visualizor')})
-              , DCreate('LABEL', {inner: 'Visualiser', attrs: {for: this.idFor('cb-visualizor')}})
-              , DCreate('INPUT', {type:'checkbox', id: this.idFor('cb-mask-fond'), attrs:{checked:'CHECKED'}})
-              , DCreate('LABEL', {inner: 'Fond masqué', attrs: {for: this.idFor('cb-mask-fond')}})
+        , DCreate(DIV, {class: 'mini-writer-buttons', append: [
+            DCreate(DIV, {class:'fleft cbs', append:[
+                DCreate(INPUT, {type:'checkbox', id: this.idFor('cb-visualizor')})
+              , DCreate(LABEL, {inner: 'Visualiser', attrs: {for: this.idFor('cb-visualizor')}})
+              , DCreate(INPUT, {type:'checkbox', id: this.idFor('cb-mask-fond'), attrs:{checked:'CHECKED'}})
+              , DCreate(LABEL, {inner: 'Fond masqué', attrs: {for: this.idFor('cb-mask-fond')}})
               ]})
-          , DCreate('BUTTON', {class:'main btn-ok', type:'button', inner:'Finir'})
+          , DCreate(BUTTON, {class:'main btn-ok', type:BUTTON, inner:'Finir'})
           ]})
       ]})
-    , DCreate('DIV', {class:'mini-writer-visualizor', style: 'display:none;', append: [
-        DCreate('DIV', {class:'mini-writer-visualizor-content'})
+    , DCreate(DIV, {class:'mini-writer-visualizor', style: 'display:none;', append: [
+        DCreate(DIV, {class:'mini-writer-visualizor-content'})
     ]})
     ]
 }
@@ -213,7 +213,7 @@ onKeyUp(e){
     } else {
       // TOUCHE MÉTA SEULE
       if (e.which === KRETURN){
-        F.notify("Touche retour et meta")
+        // F.notify("Touche retour et meta")
         return stopEvent(e)
       }
     }
