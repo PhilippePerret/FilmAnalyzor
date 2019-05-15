@@ -351,10 +351,10 @@ const TEXTFIELD_ASSOCIATES_METHS = {
     let jqSet = $(container).find('TEXTAREA, INPUT[type="text"]')
     // console.log("this.dataDroppableTF:", this.dataDroppableTF)
     jqSet.droppable(this.dataDroppableTF)
-    if(undefined !== owner){
+    if( isDefined(owner) ){
       jqSet
-        .attr('data-type', owner.type)
-        .attr('data-id', owner.id)
+        .attr(STRdata_type, owner.type)
+        .attr(STRdata_id, owner.id)
     }
   }
 

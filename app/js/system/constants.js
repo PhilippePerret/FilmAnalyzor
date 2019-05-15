@@ -3,8 +3,11 @@
 const STRfunction   = 'function'
 const STRstring     = 'string'
 const STRobject     = 'object'
+const STRnumber     = 'number'
 
-const STRevent = 'event'
+const STRdata_type  = 'data-type'
+const STRdata_id    = 'data-id'
+const STRevent      = 'event'
 
 const STRobserved = 'observed'
 const STROBSERVED = 'OBSERVED'

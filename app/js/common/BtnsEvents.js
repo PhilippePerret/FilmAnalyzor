@@ -53,7 +53,7 @@ constructor(data){
 
 get as_button(){
   if(undefined === this._as_button){
-    this._as_button = DCreate('BUTTON',{
+    this._as_button = DCreate(BUTTON,{
       id:     `btn-new-${this.type}`
     , type:   'button'
     , class:  'small'

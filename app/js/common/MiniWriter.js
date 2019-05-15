@@ -164,7 +164,7 @@ observe(){
   this.textField.on('keyup',    this.onKeyUp.bind(this))
 
   // On peut déposer des éléments quelconques sur le champ de texte
-  this.jqObj.droppable(DATA_ASSOCIATES_DROPPABLE)
+  this.setTextFieldsAssociableIn(this.jqObj, this)
 }
 
 onKeyDown(e){
@@ -256,5 +256,5 @@ get selector(){return this._selector||defP(this,'_selector', new Selector(this.t
 get jqOwner(){return this._jqOwner||defP(this,'_jqOwner', $(this.owner))}
 }
 
-Object.assign(MiniWriter, ASSOCIATES_COMMON_METHODS)
-Object.defineProperties(MiniWriter, ASSOCIATES_COMMON_PROPERTIES)
+Object.assign(MiniWriter.prototype, TEXTFIELD_ASSOCIATES_METHS)
+Object.defineProperties(MiniWriter.prototype, TEXTFIELD_ASSOCIATES_PROPS)

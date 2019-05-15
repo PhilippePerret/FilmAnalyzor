@@ -20,10 +20,37 @@ function isNotAscii(str){
   return str.replace(/[a-zA-Z0-9_]/g,'') != ''
 }
 function isFunction(foo){ return STRfunction === typeof(foo) }
+function isNotFunction(foo){ return false === isFunction(foo) }
 function isString(foo)  { return STRstring === typeof(foo) }
 function isNotString(foo){return false === isString(foo)}
 function isObject(foo)  { return STRobject == typeof(foo) && !isArray(foo) }
 function isArray(foo)   { return Array.isArray(foo) }
+
+// Fonction utiles un peu plus particulière
+
+/**
+  Retourne false si l'élément +domE+ ne possède pas l'attribut +attr+ ou,
+  si +valOpt+ est fourni, si la valeur n'est pas égale à cette valeur.
+
+  @param {jqSet}  jqObj   Obligatoirement un set jQuery
+  @param {String} attr    L'attribut recherché.
+  @param {String} valOpt  La valeur optionnellement recherchée
+
+  @return {Boolean|String} true/false ou la valeur de attr si +valOpt+ n'est pas
+                            fourni.
+**/
+function isDOMElementWithAttribute(jqObj, attr, valOpt){
+  if(isUndefined(jqObj)) return false
+  if(isNotFunction(jqObj.attr)) return false
+  if(isUndefined(jqObj.attr(attr))) return false
+  if (isDefined(valOpt)){
+    return jqObj.attr(attr) == valOpt
+  } else {
+    return jqObj.attr(attr)
+  }
+}
+
+
 
 function asPourcentage(expected, actual){
   return `${pourcentage(expected,actual)} %`

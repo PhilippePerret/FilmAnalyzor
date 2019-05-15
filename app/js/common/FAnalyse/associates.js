@@ -20,7 +20,16 @@ Object.assign(FAnalyse.prototype,{
       aux méthodes classiques mais en renvoyant un message d'erreur.
 **/
   instanceOfElement(ref){
-    return eval(`FA${ref.type.titleize()}`).get(ref.type == 'event' ? parseInt(ref.id,10) : ref.id) || (new FAUnknownElement(ref))
+    // let classe   = window[`FA${ref.type.titleize()}`]
+    let classe   = eval(`FA${ref.type.titleize()}`)
+    if(isDefined(classe)){
+      return classe.get(ref.type == 'event' ? parseInt(ref.id,10) : ref.id) || (new FAUnknownElement(ref))
+    } else {
+      let msgerr = `La classe "FA${ref.type.titleize()}" n'existe pas. Impossible de retourner l'event défini par ${JSON.stringify(ref)}`
+      log.error(msgerr)
+      F.error(msgerr)
+      return new FAUnknownElement(ref)
+    }
   }
 
   /**

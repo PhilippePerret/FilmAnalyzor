@@ -31,14 +31,16 @@ static get videoController(){ return this.a.videoController }
 
 //
 static onClickNewEvent(e, eventType){
-  if(isString(eventType)){ eventType = eventType.attr('data-type')}
+  // Quand c'et le noeud qui est envoyé
+  if(isDOMElementWithAttribute(eventType, 'data-type')){ eventType = eventType.attr('data-type')}
   e && stopEvent(e)
   this.videoWasPlaying = !!this.a.locator.playing
   if(this.a.locator.playing) this.a.locator.togglePlay()
-  if(e.metaKey){
+  if(e.metaKey === true){
     FAEvent.FAlistingEvents(eventType)
   } else {
     if (eventType == 'scene' && this.notConfirmNewScene() ) return false
+    console.log(`Enfin, eventType vaut "${eventType}"`)
     this.currentForm = new EventForm(eventType)
     this.currentForm.toggleForm()
   }
@@ -140,10 +142,11 @@ static optionsTypes(typ){
  *    - avec l'instance de l'évènement
  */
 constructor(foo){
+  console.log("Instanciation de ", foo)
   this.isNew    = false
   this.analyse = this.a = current_analyse // pourra être redéfini plus tard
   switch (typeof foo) {
-    case 'string':
+    case STRstring:
       // <= Un type
       // => C'est une création
       this._id    = EventForm.newId()
@@ -151,16 +154,16 @@ constructor(foo){
       this.isNew  = true
       this._time  = this.a.locator.currentTime.seconds || 0
       break
-    case 'number':
+    case STRnumber:
       // <= L'ID de l'évènement
       // => Il faut prendre ses données pour édition
       this._event = this.a.getEventById(foo)
       break
-    case 'object':
+    case STRobject:
       // <= Les données ou l'évènement lui-même
       // => Prendre les données si c'est l'évènement
-      if('function'===typeof(foo.showDiffere)){ this._event = foo }
-      else { this._event = this.a.getEventById(ev.id) }
+      if(isFunction(foo.showDiffere)){ this._event = foo }
+      else { this._event = this.a.getEventById(foo.id) }
       break
     case 'undefined':
       throw('L’objet à éditer est indéfini.')
