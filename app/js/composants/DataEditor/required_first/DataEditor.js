@@ -10,7 +10,10 @@ constructor(mainClass, data){
   this.titleProp = data.titleProp
 }
 
-open(){this.fwindow.toggle()}
+open(){
+  this.fwindow.toggle()
+  this.data.current && this.editCurrent()
+}
 close(){this.fwindow.toggle()}
 
 get fwindow(){

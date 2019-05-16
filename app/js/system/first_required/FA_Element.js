@@ -1,14 +1,5 @@
 'use strict'
 
-// const {
-//   ASSOCIATES_COMMON_METHODS
-// , ASSOCIATES_COMMON_PROPERTIES
-// , DATA_ASSOCIATES_DRAGGABLE
-// , DATA_ASSOCIATES_DROPPABLE
-// , TEXTFIELD_ASSOCIATES_METHS
-// , TEXTFIELD_ASSOCIATES_PROPS
-// } = require('./js/system/first_required/FA_associates.js')
-
 /**
   Classe dont doit hériter tout élément de l'application, comme les
   personnages, les brins, les events, etc.

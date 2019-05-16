@@ -37,8 +37,8 @@ Object.assign(DataEditor,{
   @param {String|Number} current  L'élément à mettre en argument courant.
 **/
 , init(owner, data, current){
-    if (undefined === data) data = owner.DataEditorData
-    data != undefined   || raise(T('deditor-data-required'))
+    if (isUndefined(data)) data = owner.DataEditorData
+    isDefined(data) || raise(T('deditor-data-required'))
     data.mainClass  = owner
     data.current    = current
     if(this.isValidData(data)){
