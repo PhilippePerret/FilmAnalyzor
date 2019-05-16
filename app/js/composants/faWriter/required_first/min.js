@@ -24,7 +24,7 @@ const DATA_DOCUMENTS = {
 
 , separatorInfos: 'separator'
 
-, infos:            {hname: 'Informations/variables', format: 'yaml', type:'data'}
+, infos:            {hname: 'Informations/variables', format: 'yaml', type:'data', dataeditor: true}
 
 , separator2: 'separator'
 

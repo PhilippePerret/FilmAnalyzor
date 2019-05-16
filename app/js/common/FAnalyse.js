@@ -328,6 +328,8 @@ openAnalyseInFinder(){
 openDocInDataEditor(dtype){
   if(dtype.startsWith('fondamentales') && NONE === typeof(Fondamentales)){
     return this.loadFondamentales(this.openDocInDataEditor.bind(this, dtype))
+  } else if(dtype == 'infos' && NONE === typeof(InfosFilm)){
+    return this.loadInfosFilm(this.openDocInDataEditor.bind(this, dtype))
   }
   DataEditor.openPerType(dtype)
 }

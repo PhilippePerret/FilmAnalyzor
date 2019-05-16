@@ -22,7 +22,9 @@ Object.assign(DataEditor,{
         case 'dbrins':            return [FABrin]
         case 'fondamentales':     return [Fondamentales, typ]
         case 'fondamentales_alt': return [Fondamentales, typ]
+        case 'infos':             return [InfosFilm, 'infos']
       }
+      return [null]
     })(dtype)
     owner || raise(`Le possesseur de type ${dtype} est inconnu…`)
     this.init(owner, undefined, argCurrent||current).open()

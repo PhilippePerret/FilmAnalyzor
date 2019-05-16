@@ -47,7 +47,7 @@ Object.assign(DataEditor.prototype,{
     var divsFooter = []
     let visuBtns = this.data.no_new_item ? STRhidden : STRvisible
     if(this.data.checkOnDemand){
-      divsFooter.push(DCreate(BUTTON, {id:my.idFor('btn-check'), type:STRbutton, class:'btn-check small', inner:"Check now!", style:`visibility:${visuBtns};`}))
+      divsFooter.push(DCreate(BUTTON, {id:my.idFor('btn-check'), type:STRbutton, class:'btn-check small', inner:"Check now!"}))
     }
     divsFooter.push(...[
         DCreate(SPAN,{class:STRsmall,append:[
@@ -75,6 +75,10 @@ Object.assign(DataEditor.prototype,{
       this.dataPanels[0].activate()
     }
 
+    if(this.data.items.length === 1 && this.data.no_new_item){
+      this.menuItems[0].disabled = true
+    }
+
   }
 
 , idFor(suf){ return `${this.id}-${suf}`}
@@ -82,7 +86,7 @@ Object.assign(DataEditor.prototype,{
 , observe(){
     this.jqObj.find(`#${this.id}-btn-add`).on('click', this.addElement.bind(this))
     this.jqObj.find(`#${this.id}-btn-del`).on('click', this.removeCurrentItem.bind(this))
-    this.jqObj.find(`#${this.id}-menu_items`).on('change', this.editElement.bind(this))
+    this.menuItems.on('change', this.editElement.bind(this))
 
     if(this.data.checkOnDemand){
       this.checkBtn.on('click', this.onCheckOnDemand.bind(this))
