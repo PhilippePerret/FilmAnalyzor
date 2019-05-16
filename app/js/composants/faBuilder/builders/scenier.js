@@ -9,7 +9,7 @@ module.exports = function(options){
   str += '<h1 id="scenier-title">Scénier</h1>'
   str += '<section id="scenier" class="scenier">'
   str += my.generalDescriptionOf('scenier')
-  FAEscene.forEachSortedScene(function(scene){ str += scene.as('book', FORMATED|LINKED, options)})
+  FAEscene.forEachSortedScene(function(scene){ str += scene.as(STRbook, FORMATED|LINKED, options)})
   str += '</section>'
   return str
 }

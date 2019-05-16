@@ -1,5 +1,15 @@
 'use strict'
 
+Object.assign(DataEditor.prototype,{
+  isCurrentWindow(){
+    // console.log("this.fwindow.isCurrent()", this.fwindow.isCurrent())
+    return this.fwindow.isCurrent()
+  }
+, isNotCurrentWindow(){
+    return isFalse(this.isCurrentWindow())
+  }
+})
+
 Object.defineProperties(DataEditor.prototype,{
 
   // --- DOM ---

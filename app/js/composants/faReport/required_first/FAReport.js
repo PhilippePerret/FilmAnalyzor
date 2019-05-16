@@ -95,7 +95,7 @@ endSave(){
 // Appelée par la fwindow
 build(){
   var css = DCreate('LINK', {attrs: {rel: 'stylesheet', href: './css/report.css'}})
-  var btnclose  = DCreate('BUTTON', {type: 'button', class: 'btn-close'})
+  var btnclose  = DCreate(BUTTON, {type: STRbutton, class: 'btn-close'})
   return [css, btnclose, this.messagesDomObjects]
 }
 

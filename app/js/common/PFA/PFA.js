@@ -109,12 +109,12 @@ Object.assign(PFA, {
     // éléments et 2) les éditer en les cliquant.
     jqo.find('.event')
       .draggable({
-        containment:'document'
+        containment:STRdocument
       , helper: 'clone'
       , revert: true
       })
       .on('click', function(e){
-        var event_id = parseInt($(this).attr('data-id'),10)
+        var event_id = parseInt($(this).attr(STRdata_id),10)
         FAEvent.edit.bind(ca, event_id)()
         stopEvent(e)//sinon le pfa est remis au premier plan
       })
@@ -127,7 +127,7 @@ Object.assign(PFA, {
       , data = {}
     this.a.forEachEvent( ev => {
       // console.log("Traitement de l'ev", ev.id)
-      if(ev.type === 'stt'){
+      if(ev.type === STRstt){
         // <= Un event de type structure a été trouvé
         // => Il faut le prendre en compte
         corrected = true

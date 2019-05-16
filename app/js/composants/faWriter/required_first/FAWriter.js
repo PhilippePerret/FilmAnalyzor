@@ -82,7 +82,10 @@ const FAWriter = {
     // On "referme" toujours le menu des types (après l'ouverture)
     this.menuTypeDoc.val(kdoc)
     // On renseigne le bouton droppable
-    this.btnDrop.attr({'data-type':'document','data-id': this.currentDoc.id})
+    var attrs = {}
+    attrs[STRdata_type] = STRdocument
+    attrs[STRdata_id]   = this.currentDoc.id
+    this.btnDrop.attr(attrs)
   }
 
 // Permet de forcer le rechargement du document d'identifiant +kdoc+. La

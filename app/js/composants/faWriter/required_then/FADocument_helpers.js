@@ -12,22 +12,22 @@ as(format, flag, opts){
   if (undefined === flag) flag = 0
   if (undefined === opts) opts = {}
 
-  opts.owner = {type: 'document', id: this.id}
+  opts.owner = {type: STRdocument, id: this.id}
 
   var divs = []
 
   if(flag & LABELLED) divs.push(DCreate('LABEL', {inner: `DOC #${this.id}`}))
 
   switch (format) {
-    case 'short':
+    case STRshort:
       divs.push(this.asShort(opts)); break
-    case 'book':
+    case STRbook:
       // Sortie pour le livre
       divs.push(this.asBook(opts)); break
-    case 'full':
+    case STRfull:
       // Affiche complet, avec toutes les informations
       divs.push(this.asFull(opts)); break
-    case 'associate':
+    case STRassociate:
       divs.push(...this.asAssociate(opts)); break
     default:
       divs.push(this.asShort(opts))
@@ -71,7 +71,7 @@ as(format, flag, opts){
 
 , asAssociate(opts){
   var divs = []
-  divs.push(DCreate('A', {inner: this.toString(), attrs:{onclick:this.onclickShow}}))
+  divs.push(DCreate(A, {inner: this.toString(), attrs:{onclick:this.onclickShow}}))
   if(opts.owner){
     // Si les options définissent un owner, on ajoute un lien pour pouvoir
     // dissocier le temps de son possesseur

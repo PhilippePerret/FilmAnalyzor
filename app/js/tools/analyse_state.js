@@ -17,7 +17,7 @@ Object.assign(PFA,{
       var dones = []
       this.initRequiredNodes()
       current_analyse.forEachEvent(function(ev){
-        if(ev.type == 'stt'){
+        if(ev.type == STRstt){
           var idx = this.RequiredNodes.indexOf(ev.sttID)
           if (idx < 0) return
           dones.push(this.RequiredNodes.splice(idx,1))
@@ -114,7 +114,7 @@ const AnalyseState = {
       for(prop in this.DATA){
         data = this.DATA[prop]
         d = document.createElement('DIV')
-        d.className = 'info'
+        d.className = STRinfo
         l = document.createElement('LABEL')
         l.innerHTML = data.label
         d.appendChild(l)
@@ -125,7 +125,7 @@ const AnalyseState = {
         div.appendChild(d)
       }
       // Le bouton de fermeture
-      n = document.createElement('BUTTON')
+      n = document.createElement(BUTTON)
       n.className = 'close'
       v = document.createElement('IMG')
       v.src = './img/btn-window/b_close.png'

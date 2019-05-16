@@ -417,7 +417,7 @@ updateEvent(ev, options){
     }
   }
   // [1]
-  if (ev.type === 'scene'){
+  if (ev.type === STRscene){
     FAEscene.updateAll()
     FADecor.resetAll()
   }
@@ -733,7 +733,7 @@ set eventsIO(eventsData){
    * définition ou non de ce temps
    */
   setButtonGoToStart(){
-    this.videoController.section.find('.btn-go-to-film-start').css('visibility',this.filmStartTime?'visible':'hidden')
+    this.videoController.section.find('.btn-go-to-film-start').css('visibility',this.filmStartTime?STRvisible:STRhidden)
   }
 
   // ---------------------------------------------------------------------

@@ -64,7 +64,7 @@ resetBeyond(from_time, to_time){
   var ti, id, my = this
   this.forEachEventNode(function(o){
     ti  = parseFloat(o.getAttribute('data-time'))
-    id  = parseInt(o.getAttribute('data-id'),10)
+    id  = parseInt(o.getAttribute(STRdata_id),10)
     if ( ti < from_time || ti > to_time){my.analyse.ids[id].hide()}
   })
 }
@@ -84,6 +84,8 @@ append(ev){
     log.warn(`L'identifiant de l'élément suivant devrait commencer par 'reader-' (${div.id}):`, div)
     div.id = `reader-${div.id}`
   }
+
+  // On cherche à placer l'event au meilleur endroit temporel
   var hasBeenInserted = false
   this.forEachEventNode(function(ne){
     if(parseFloat(ne.getAttribute('data-time')) > ev.time){
@@ -93,6 +95,7 @@ append(ev){
     }
   })
   hasBeenInserted || this.container.append(div)
+
   // Pour observer l'event dans le reader
   ev.observe()
 }
@@ -125,9 +128,9 @@ forEachEvent(fn){
     , no, ev
   for(;i<nb_nodes;++i){
     no = eNodes[i]
-    ev = this.a.ids[parseInt(no.getAttribute('data-id'),10)]
+    ev = this.a.ids[parseInt(no.getAttribute(STRdata_id),10)]
     if(undefined === ev){
-      console.error("[Dans FAReader#forEachEvent], l'event d'id suivant est inconnu :", no.getAttribute('data-id'))
+      console.error("[Dans FAReader#forEachEvent], l'event d'id suivant est inconnu :", no.getAttribute(STRdata_id))
     } else {
       if(false === fn(ev)) break
     }
@@ -151,7 +154,7 @@ displayAll(){
 // ---------------------------------------------------------------------
 //  DOM ELEMENTS
 get fwindow(){
-  return this._fwindow || defP(this,'_fwindow', new FWindow(this, {id: 'reader', container: this.section, x: ScreenWidth - 650, y: 4}))
+  return this._fwindow || defP(this,'_fwindow', new FWindow(this, {id: 'reader', name:ReaderFWindowName, container: this.section, x: ScreenWidth - 650, y: 4}))
 }
 get container(){
   return this._container || defP(this,'_container', DGet('reader'))

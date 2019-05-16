@@ -37,7 +37,7 @@ get panel(){
     return DCreate(DIV,{id: this.domId, class:'panel', append: this.fields.map(field => field.formDiv)})
   }
 onglet(width){
-    return DCreate('A',{id: `${this.domId}-onglet`, class:'onglet', inner: this.title, style:`width:${width};`})
+    return DCreate(A,{id: `${this.domId}-onglet`, class:'onglet', inner: this.title, style:`width:${width};`})
   }
 
 get id(){return this.data.id}

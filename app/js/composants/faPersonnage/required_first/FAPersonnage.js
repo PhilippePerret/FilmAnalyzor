@@ -156,7 +156,7 @@ static get a(){return current_analyse}
 constructor(analyse, data){
   super(data)
   this.analyse = this.a = analyse
-  this.type = 'personnage' // utile pour les associations
+  this.type = STRpersonnage // utile pour les associations
 }
 
 toString(){return `${this.pseudo} (#${this.id})`}

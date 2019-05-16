@@ -20,7 +20,7 @@
   =é
 
   Par exemple, pour filtrer seulement les scènes :
-  var sceneFilter = new EventsFilter(this, {filter:{eventType:['scene']}})
+  var sceneFilter = new EventsFilter(this, {filter:{eventType:[STRscene]}})
 
 **/
 class EventsFilter {

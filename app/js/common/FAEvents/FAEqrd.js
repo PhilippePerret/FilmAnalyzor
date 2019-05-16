@@ -53,7 +53,7 @@ static defineLists(){
     , sorteds = []
 
   current_analyse.forEachEvent(function(ev){
-    if(ev.type === 'qrd') qrds.push(ev)
+    if(ev.type === STRqrd) qrds.push(ev)
   })
   sorteds = Object.assign([], qrds)
   sorteds.sort((a, b) => {return a.time - b.time})
@@ -92,7 +92,7 @@ get isValid(){
 **/
 checkResolution(){
   if(undefined != this.reponse && this.reponse.length) return
-  UI.warningSection.append(DCreate('DIV', {inner: this.as('short', EDITABLE|LABELLED)}))
+  UI.warningSection.append(DCreate('DIV', {inner: this.as(STRshort, EDITABLE|LABELLED)}))
 }
 
 /**

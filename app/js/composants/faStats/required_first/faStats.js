@@ -67,7 +67,7 @@ calcDuree(){
     }
     return duree
   } else {
-    let msg_err = `Impossible de trouver la durée d'un élément de type "${this.owner.type || this.owner.constructor.name}". Il devrait posséder au moins une propriété 'scene' (renvoyant l'instance FAEscene) ou 'scenes' (renvoyant la liste Array des instances FAEscene).`
+    let msg_err = `Impossible de trouver la durée d'un élément de type "${this.owner.type || this.owner.constructor.name}". Il devrait posséder au moins une propriété STRscene (renvoyant l'instance FAEscene) ou 'scenes' (renvoyant la liste Array des instances FAEscene).`
     log.error(msg_err/*, backtrace wanted */)
     F.error(msg_err)
     return 0

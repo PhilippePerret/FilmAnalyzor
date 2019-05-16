@@ -17,7 +17,7 @@ FAProtocole.States = {
 , '40':['ebauche-lecon', 'ebauche-themes','documents-ebauches']
 , '50':['comments-stats','fondamentales','pfa', 'full-collecte', 'rewards']
 , '60':['redaction-conclusion']
-, '70':['qrd','diagramme-dynamique','building-script', 'documents-required']
+, '70':[STRqrd,'diagramme-dynamique','building-script', 'documents-required']
 , '80':['final-themes','final-personnages']
 , '90':['final-introduction','final-conclusion','final-lecon-tiree']
 , '100':['full-relecture', 'full-correction','final-cover', 'final-ebook']
@@ -44,7 +44,7 @@ FAProtocole.DATA = {
   , {id:'documents-required', libelle:'Documents obligés', steps:[
       {id:'fondamentales', libelle: 'Les Fondamentales'}
     , {id:'pfa', libelle: 'Le Paradigme de Field Augmenté'}
-    , {id:'qrd', libelle: 'Le Diagramme Dramatique'}
+    , {id:STRqrd, libelle: 'Le Diagramme Dramatique'}
     , {id:'diagramme-dynamique', libelle: 'Le Diagramme Dynamique'}
     ]}
 

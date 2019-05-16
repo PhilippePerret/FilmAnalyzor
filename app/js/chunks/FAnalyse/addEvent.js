@@ -25,13 +25,13 @@ let addEvent = function(nev){
   this.locator.addEvent(nev)
   // Si le nouvel event est une scène, il faut peut-être numéroter
   // les suivantes
-  if(nev.type === 'scene'){
+  if(nev.type === STRscene){
     FAEscene.updateAll()
     FADecor.resetAll()
   }
   // Si le nouvel event est un noeud structurel, il faut l'enregistrer
   // dans les données du paradigme de Field
-  if(nev.type === 'stt'){
+  if(nev.type === STRstt){
     // note : le PFA est toujours chargé
     // => On peut placer le nouveau noeud directement
     //    dans les données et les enregistrer

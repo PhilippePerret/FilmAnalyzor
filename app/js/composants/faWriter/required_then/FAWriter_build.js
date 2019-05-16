@@ -14,11 +14,13 @@ Object.assign(FAWriter, {
     var btnClose = DCreate(BUTTON, {
       id: 'btn-close-writer'
     , class: 'btn-close'
-    , type: 'button'
+    , type: STRbutton
     })
+    var attrs = {'title': "Pour glisser et déposer le document sur un event ou un texte."}
+    attrs[STRdata_type] = STRdocument
     spa = DCreate(SPAN, {
       class: 'writer-btn-drop document'
-    , attrs: {'data-type': 'document', 'title': "Pour glisser et déposer le document sur un event ou un texte."}
+    , attrs: attrs
     , inner: ' ⎆'
     })
     var doctitle = DCreate('DIV',{
@@ -39,7 +41,7 @@ Object.assign(FAWriter, {
     var btnNew = DCreate(BUTTON, {
       id: 'writer-btn-new-doc'
     , inner: '+'
-    , type: 'button'
+    , type: STRbutton
     })
 
     var header = DCreate('DIV',{
@@ -69,10 +71,10 @@ Object.assign(FAWriter, {
       , DCreate(LABEL, {class:'fleft', inner: 'Taille du texte : '})
       , DCreate(SPAN, {id: 'text-size', class:'fleft', inner: '...'})
       , DCreate(LABEL, {inner: 'Visualiser', attrs:{for: 'cb-auto-visualize'}})
-      , DCreate(INPUT, {id: 'cb-auto-visualize', attrs: {type: 'checkbox'}})
+      , DCreate(INPUT, {id: 'cb-auto-visualize', attrs: {type: STRcheckbox}})
       , DCreate(LABEL, {inner: 'Auto-save', attrs:{for: 'cb-save-auto-doc'}})
-      , DCreate(INPUT, {id: 'cb-save-auto-doc', attrs: {type: 'checkbox'}})
-      , DCreate(BUTTON, {id: 'btn-save-doc', inner: 'Enregistrer', type: 'button'})
+      , DCreate(INPUT, {id: 'cb-save-auto-doc', attrs: {type: STRcheckbox}})
+      , DCreate(BUTTON, {id: 'btn-save-doc', inner: 'Enregistrer', type: STRbutton})
       ]
     })
 

@@ -4,6 +4,5 @@
 
   Mettre la marque $0 à l'endroit où l'on doit écrire
 **/
-Snippets.UData = {
-  'note': `\`\`\`note${RC}$0${RC}\`\`\``
-}
+Snippets.UData = {}
+Snippets.UData[STRnote] = `\`\`\`note${RC}$0${RC}\`\`\``

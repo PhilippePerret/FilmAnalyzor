@@ -121,7 +121,7 @@ static get decorsCount(){return FADecor.count}
     FAEscene.byTime    Hash avec en clé le temps de la scène
 **/
 static doLists(){
-  let fe = new EventsFilter(this, {filter: {eventTypes:['scene']}})
+  let fe = new EventsFilter(this, {filter: {eventTypes:[STRscene]}})
     , _by_id          = {}
     , _by_numero      = {}
     , _by_time        = {}

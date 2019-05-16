@@ -41,13 +41,13 @@ build(options){
 
   var divs = []
   if(this.scenes){
-    divs.push(...this.buildElementListDivs(this.scenes, 'scene', coefT2P))
+    divs.push(...this.buildElementListDivs(this.scenes, STRscene, coefT2P))
   }
   if(this.events){
-    divs.push(...this.buildElementListDivs(this.events, 'event', coefT2P))
+    divs.push(...this.buildElementListDivs(this.events, STRevent, coefT2P))
   }
   if(this.times){
-    divs.push(...this.buildElementListDivs(this.times, 'time', coefT2P))
+    divs.push(...this.buildElementListDivs(this.times, STRtime, coefT2P))
   }
   log.info("<- MiniTimeline#build()")
   return DCreate('DIV',{class:'minitimeline', id:`minitimeline-${options.suff_id}`, append: divs})
@@ -63,7 +63,7 @@ buildElementDiv(elm, type, coefT2P){
   var w, l
   let u = this.unit
   switch(type){
-    case 'time':
+    case STRtime:
       w = u == 'px' ? 4 : 1
       l = (elm * coefT2P).round(1)
       break

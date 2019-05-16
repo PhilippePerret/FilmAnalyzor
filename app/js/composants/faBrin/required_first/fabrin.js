@@ -27,7 +27,7 @@ constructor(dbrin){
   this.a = current_analyse
   this.data   = dbrin
   this.numero = FABrin.newNumero()
-  this.type   = 'brin' // pour FAElement et les associations
+  this.type   = STRbrin // pour FAElement et les associations
 
 }
 

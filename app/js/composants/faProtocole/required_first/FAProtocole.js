@@ -94,7 +94,7 @@ build(){
     , sousSteps   = []
     , cbSteps     = []
 
-  cbSteps.push(DCreate('button', {class:'btn-close', type:'button'}))
+  cbSteps.push(DCreate(BUTTON, {class:'btn-close', type:STRbutton}))
   cbSteps.push(DCreate('H2', {inner:'protocole d’analyse'}))
 
   for(var dstep of FAProtocole.DATA.steps){
@@ -117,7 +117,7 @@ build(){
 
   domElements.push(
     DCreate('DIV', {class:'footer', append:[
-      DCreate('BUTTON', {id:'protocole-btn-ok', type:'button', inner:'Enregistrer', class:'main-button small'})
+      DCreate(BUTTON, {id:'protocole-btn-ok', type:STRbutton, inner:'Enregistrer', class:'main-button small'})
     ]})
   )
   return domElements
@@ -144,7 +144,7 @@ get path(){return this._path||defP(this,'_path', path.join(this.a.folder,'protoc
 buildStep(dstep, sousSteps){
   var step_id = `protocole-step-${dstep.id}`
   var els = [
-    DCreate('INPUT', {type:'checkbox', id: step_id, value: dstep.id, attrs:{checked: this.isChecked(dstep.id)?'CHECKED':null}})
+    DCreate('INPUT', {type:STRcheckbox, id: step_id, value: dstep.id, attrs:{checked: this.isChecked(dstep.id)?'CHECKED':null}})
   , DCreate('LABEL', {inner: dstep.libelle, attrs:{for: step_id}})
   ]
   if (sousSteps) {

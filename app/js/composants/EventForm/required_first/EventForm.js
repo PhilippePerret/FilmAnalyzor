@@ -31,14 +31,15 @@ static get videoController(){ return this.a.videoController }
 
 //
 static onClickNewEvent(e, eventType){
-  if(isString(eventType)){ eventType = eventType.attr('data-type')}
+  // Quand c'et le noeud qui est envoyé
+  if(isDOMElementWithAttribute(eventType, STRdata_type)){ eventType = eventType.attr(STRdata_type)}
   e && stopEvent(e)
   this.videoWasPlaying = !!this.a.locator.playing
   if(this.a.locator.playing) this.a.locator.togglePlay()
-  if(e.metaKey){
+  if(e.metaKey === true){
     FAEvent.FAlistingEvents(eventType)
   } else {
-    if (eventType == 'scene' && this.notConfirmNewScene() ) return false
+    if (eventType == STRscene && this.notConfirmNewScene() ) return false
     this.currentForm = new EventForm(eventType)
     this.currentForm.toggleForm()
   }
@@ -143,7 +144,7 @@ constructor(foo){
   this.isNew    = false
   this.analyse = this.a = current_analyse // pourra être redéfini plus tard
   switch (typeof foo) {
-    case 'string':
+    case STRstring:
       // <= Un type
       // => C'est une création
       this._id    = EventForm.newId()
@@ -151,18 +152,18 @@ constructor(foo){
       this.isNew  = true
       this._time  = this.a.locator.currentTime.seconds || 0
       break
-    case 'number':
+    case STRnumber:
       // <= L'ID de l'évènement
       // => Il faut prendre ses données pour édition
       this._event = this.a.getEventById(foo)
       break
-    case 'object':
+    case STRobject:
       // <= Les données ou l'évènement lui-même
       // => Prendre les données si c'est l'évènement
-      if('function'===typeof(foo.showDiffere)){ this._event = foo }
-      else { this._event = this.a.getEventById(ev.id) }
+      if(isFunction(foo.showDiffere)){ this._event = foo }
+      else { this._event = this.a.getEventById(foo.id) }
       break
-    case 'undefined':
+    case STRundefined:
       throw('L’objet à éditer est indéfini.')
     default:
       throw("Il faut penser à traiter les autres cas")
@@ -258,7 +259,7 @@ init(){
   if(this.initied){throw("Je ne dois pas pouvoir initier deux fois le formulaire…")}
   if(!this.built) this.fwindow.build().observe()
   if (this.isNew){
-    if(this.type === 'scene') this.setNumeroScene()
+    if(this.type === STRscene) this.setNumeroScene()
   } else {
     this.setFormValues()
   }
@@ -278,7 +279,7 @@ toggleForm(){
 }
 
 onShow(){
-  this.jqField('destroy').css('visibility',this.isNew?'hidden':'visible')
+  this.jqField('destroy').css('visibility',this.isNew?STRhidden:STRvisible)
   // Les décors peuvent avoir changé à chaque fois
   this.peupleDecors()
 }
@@ -287,7 +288,7 @@ onShow(){
  * Méthode qui construit le formulaire pour l'évènement
  */
 build(){
-  return DCreate('FORM', {
+  return DCreate(FORM, {
     id: `form-edit-event-${this.id}`
   , class: 'form-edit-event'
   , inner: this.formsByType(this.type)
@@ -305,8 +306,8 @@ afterBuilding(){
   this.jqf('id').val(eid)
   this.jqf('type').val(typ)
   this.jqf('is_new').val(this.isNew?'1':'0')
-  this.jqf('destroy').css('visibility',this.isNew?'hidden':'visible')
-  this.jqf('time').html(this.a.locator.currentTime.seconds)
+  this.jqf('destroy').css('visibility',this.isNew?STRhidden:STRvisible)
+  this.jqf(STRtime).html(this.a.locator.currentTime.seconds)
   this.jqf('duree').html(this.duree)
   jqo.find('.footer .event-id').html(`event #${eid}`)
   jqo.find('.footer .event-time').html(new OTime(this.time).horloge)
@@ -335,7 +336,7 @@ afterBuilding(){
   }).showTime()
 
   // Si c'est pour un nœud structurel, il faut peupler le menu des types
-  if (typ === 'stt'){
+  if (typ === STRstt){
     var dataStt = (this.a._PFA || require('./js/common/PFA/PFA-mini')).DATA_STT_NODES
     var mstt = jqo.find('.stt-types')
     mstt.append(DCreate(OPTION, {value: '', inner: 'Choisir l’ID du nœud'}))
@@ -343,11 +344,11 @@ afterBuilding(){
       var dstt = dataStt[nid]
       mstt.append(DCreate(OPTION, {value: nid, inner: dstt.hname}))
     }
-  } else if (typ === 'scene'){
+  } else if (typ === STRscene){
     // Si c'est une scène il faut peupler avec les décors existants
     // this.peupleDecors()
     this.peupleTypesScenes()
-  } else if (typ === 'proc'){
+  } else if (typ === STRproc){
     // Pour les procédés, tout dépend de là où on en est : si le procédé
     // est défini, il faut l'afficher directement (en le recherchant dans
     // sa catégorie [1]). Sinon, on affiche simplement le menu principal
@@ -364,7 +365,7 @@ afterBuilding(){
       this.implementeMenuCategorieProcedes()
     }
 
-  } else if (this.type === 'qrd'){
+  } else if (this.type === STRqrd){
     // Pour le moment, juste pour empêcher de peupler les types, qui
     // n'existent pas pour les qrd.
     // TODO Mais plus tard, il faudra rationnaliser un peu tout ça.
@@ -528,8 +529,8 @@ menuTypes(typ){
 // ---------------------------------------------------------------------
 //  MÉTHODES POUR LES SCÈNES
 
-peupleTypesScenes(){this.peupleTypes('scene')}
-updateTypesScenes(){this.updateTypes(null, 'scene')}
+peupleTypesScenes(){this.peupleTypes(STRscene)}
+updateTypesScenes(){this.updateTypes(null, STRscene)}
 
 // /Fin méthodes scènes
 // ---------------------------------------------------------------------
@@ -601,7 +602,7 @@ endEdition(){
   est correcte (méthode `isValid`).
 **/
 setParent(helper){
-  let parent_id = parseInt(helper.attr('data-id'),10)
+  let parent_id = parseInt(helper.attr(STRdata_id),10)
     , pev = this.a.ids[parent_id]
   if(this.id == parent_id) return F.notify(T('event-not-itself-parent'), {error: true})
   // On le mémorise dans le champ hidden qui sera soumis
@@ -633,13 +634,13 @@ setFormValues(){
 
     switch(prop){
       case 'tps_reponse':
-        // Note : contrairement à 'duree' et 'time', qui sont des 'horlogeables'
+        // Note : contrairement à 'duree' et STRtime, qui sont des 'horlogeables'
         // tps_reponse est un simple input-text pour entrer une horloge.
         otime = new OTime(this.event[prop])
         this.jqf(fieldSufid).val(otime.horloge_simple)
         break
       case 'duree':
-      case 'time':
+      case STRtime:
         try {
           otime = new OTime(this.event[prop])
           this.jqf(fieldSufid).html(prop == 'duree' ? this.event.hduree : otime.horloge)
@@ -662,9 +663,9 @@ setFormValues(){
     }
   }
 
-  if(this.type === 'stt') this.domField('sttType').disabled = true
+  if(this.type === STRstt) this.domField('sttType').disabled = true
 
-  if(this.type === 'proc'){
+  if(this.type === STRproc){
     // Opérations à faire sur les valeurs du formulaire lorsqu'on édite
     // un procédé
 
@@ -706,7 +707,7 @@ getFormValues(){
           case 'parent':
             return parseInt(val,10)
           // // Tout ce qui doit être transformé en flottant
-          // case 'time':
+          // case STRtime:
           // case 'duree':
           //   return parseFloat(val).round(2)
           case 'is_new':
@@ -723,7 +724,7 @@ getFormValues(){
       // console.log({id:id, prop:prop, val: val})
     })
     // Les temps
-    for(prop of ['time', 'duree']){
+    for(prop of [STRtime, 'duree']){
       var o = $(`form#form-edit-event-${this.id} #event-${this.id}-${prop}`)
       // Si ce champ existe, on prend la valeur, qui se trouve dans l'attribut
       // HTML `value`

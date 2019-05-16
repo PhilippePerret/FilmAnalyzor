@@ -73,7 +73,7 @@ Object.defineProperties(FABrin,{
 **/
 , DataEditorData:{get(){
     return {
-      type: 'brin'
+      type: STRbrin
     , title: 'BRINS'
     , items: Object.values(this.brins)
     , titleProp: 'title'
@@ -82,11 +82,11 @@ Object.defineProperties(FABrin,{
       Définition des champs d'édition d'un élément
     **/
     , dataFields: [
-        {label:'Id', type:'text', prop:'id', exemple:'a-z0-9_', validities:UNIQ|REQUIRED|ASCII,
+        {label:'Id', type:STRtext, prop:'id', exemple:'a-z0-9_', validities:UNIQ|REQUIRED|ASCII,
           getValueMethod:(v)=>{if(v){return v.toLowerCase()}}}
-      , {label:'Titre', type:'text', prop:'title', validities: UNIQ|REQUIRED}
-      , {label:'bType', type:'select', prop:'bType', values: this.getBTypeValues.bind(this)}
-      , {label:'Description', type:'textarea', prop:'description', validities:REQUIRED}
+      , {label:'Titre', type:STRtext, prop:'title', validities: UNIQ|REQUIRED}
+      , {label:'bType', type:STRselect, prop:'bType', values: this.getBTypeValues.bind(this)}
+      , {label:'Description', type:STRtextarea, prop:'description', validities:REQUIRED}
       ]
     }
   }}

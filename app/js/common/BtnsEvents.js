@@ -27,7 +27,7 @@ static build(){
 static observe(){
   // Tous les boutons doivent réagir au click pour créer un
   // nouvel event
-  this.fwindow.jqObj.find('button').on('click', function(e){ EventForm.onClickNewEvent.bind(EventForm)(e, $(this)) })
+  this.fwindow.jqObj.find(STRbutton).on('click', function(e){ EventForm.onClickNewEvent.bind(EventForm)(e, $(this)) })
 
 }
 
@@ -35,15 +35,15 @@ static observe(){
 * Retourne le bouton d'identifiant (type) +btn_id+
 **/
 static button(btn_id){
-  if(undefined === this.buttons) this.buttons = {}
-  if(undefined === this.buttons[btn_id]) {
+  if(isUndefined(this.buttons)) this.buttons = {}
+  if(isUndefined(this.buttons[btn_id])) {
     this.buttons[btn_id] = new BtnEvent(EVENTS_DATA[btn_id])
   }
   return this.buttons[btn_id]
 }
 
 // La fenêtre volante affichant tous les boutons
-static get fwindow(){return this._fwindow||defP(this,'_fwindow', new FWindow(this,{id: 'buttons-new-event', container: $('#section-footer'), y: -50, x: 40, class: 'no-user-selection'}))}
+static get fwindow(){return this._fwindow||defP(this,'_fwindow', new FWindow(this,{id: 'buttons-new-event', name:BtnsEventFWindowName, container: $('#section-footer'), y: -50, x: 40, class: 'no-user-selection'}))}
 
 // ---------------------------------------------------------------------
 //  INSTANCES
@@ -52,13 +52,15 @@ constructor(data){
 }
 
 get as_button(){
+  let attrs =  {title: `Pour créer un event de type « ${this.data.hname} »` }
+  attrs[STRdata_type] = this.type
   if(undefined === this._as_button){
-    this._as_button = DCreate('BUTTON',{
+    this._as_button = DCreate(BUTTON,{
       id:     `btn-new-${this.type}`
-    , type:   'button'
+    , type:   STRbutton
     , class:  'small'
     , inner:  this.data.btn_name
-    , attrs: {'data-type': this.type, title: `Pour créer un event de type « ${this.data.hname} »` }
+    , attrs: attrs
     })
   }
   return this._as_button

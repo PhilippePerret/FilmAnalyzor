@@ -30,7 +30,7 @@ init(){
   // L'horloge de la vidéo n'est visible que lorsque son temps est différent
   // du temps réel, donc lorsque le début du film est défini
   if (!this.hasStartTime){
-    this.realHorloge.style.visibility = 'hidden'
+    this.realHorloge.style.visibility = STRhidden
   }
 
   my = null

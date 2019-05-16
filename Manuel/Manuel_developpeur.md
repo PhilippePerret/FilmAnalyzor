@@ -1284,3 +1284,11 @@ Il faut bloquer l'entrée de `FWindow::setCurrent` pour empêcher le comportemen
 * MAIS le clique sur le bouton 'edit' a lui aussi généré une demande pour (re)mettre le FAListing en premier plan, qui s'exécute en même temps que le point précédent.
 
 `currentizing` permet de bloquer le 'MAIS' ci-dessus.
+
+#### N0002
+
+Ne surtout pas tester les overlaps dans la méthode `FWindow::setCurrent` (avec `this.checkOverlaps(wf)`) car cette méthode est appelée aussi quand on ferme une fenêtre
+
+=> Le check du chevauchement doit être invoqué au show de la fenêtre volante.
+
+Ne surtout pas utiliser `e && stopEvent(e)` car, alors, lorsque l'on cliquerait sur un checkbox, rien ne se produirait.

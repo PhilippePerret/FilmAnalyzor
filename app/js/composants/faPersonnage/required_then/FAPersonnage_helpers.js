@@ -68,7 +68,7 @@ Object.assign(FAPersonnage.prototype,{
 
     var divs = []
     switch (format) {
-      case 'associate':
+      case STRassociate:
         divs.push(DCreate('SPAN',{inner:this.toString()}))
         break;
       default:

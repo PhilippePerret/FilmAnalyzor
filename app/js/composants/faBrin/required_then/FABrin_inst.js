@@ -27,7 +27,7 @@ Object.defineProperties(FABrin.prototype,{
 
 // Retourne la liste des events, sans les scènes
 , eventsByScenes:{
-    get(){return this.events.filter(ev => ev.type == 'scene' && ev.isRealScene())}
+    get(){return this.events.filter(ev => ev.type == STRscene && ev.isRealScene())}
   }
 
 /**

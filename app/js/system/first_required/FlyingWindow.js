@@ -55,43 +55,64 @@ static newId(){
   return ++this.lastId
 }
 
+static newUUID(){
+  if(isUndefined(this.lastUUID)) this.lastUUID = 0
+  return `FWND${`${++this.lastUUID}`.padStart(6,'0')}`
+}
+
 /**
 * Gestion de la fenêtre courante, c'est-à-dire
 * la fenêtre au premier plan
 **/
 // Méthode mettant la fenêtre +wf+ en fenêtre au premier plan
 static setCurrent(wf, e){
-  log.info(`-> FWindow.setCurrent(fwindow ${wf.ref})`)
-  // cf. Manuel Developpeur N0001
-  // if (this.currentizing) return
-  // else this.currentizing = true
-  if(this.current && this.current.id == wf.id){
-    log.info(`    ${wf.ref} est déjà la fenêtre courante`)
+  log.info(`-> FWindow.setCurrent(fwindow ${wf.UUID})`)
+  if(wf.isCurrent()){
+    log.info(`    ${wf.UUID} est déjà la fenêtre courante`)
   } else {
-    log.info(`    ${wf.ref} doit être mis en fenêtre courante.`)
-    if(this.current){
+    log.info(`    ${wf.UUID} doit être mis en fenêtre courante.`)
+    if(isDefined(this.current)){
       this.current.bringToBack()
-      log.info(`    ${this.current.ref} en arrière plan.`)
+      log.info(`    ${this.current.UUID} en arrière plan.`)
     }
     this.current = wf
     this.current.bringToFront()
-    // this.currentizing = false
+    this.stack(wf)
   }
-  /**
-    Ne surtout pas :
-      this.checkOverlaps(wf)
-    Car la méthode est appelée aussi quand on ferme une fenêtre
-    => Le check du chevauchement doit être invoqué au show de
-    la fenêtre volante.
-  **/
-  // On vérifie que la fenêtre ne soit pas juste sur une autre
-  /**
-    Surtout pas :
-      e && stopEvent(e)
-    car sinon, lorsqu'on clique sur un checkbox
-    par exemple, c'est bloqué.
-  **/
-  log.info(`<- FWindow.setCurrent(fwindow #${wf.ref})`)
+  // console.log("Fenêtre courante = ", wf.UUID)
+  // Lire la note N0002 du manuel du développeru
+  log.info(`<- FWindow.setCurrent(fwindow #${wf.UUID})`)
+}
+
+/**
+  stack et unstack, les deux méthodes pour tenir à jour la liste des
+  fenêtre ouverte, et pouvoir remettre une fenêtre courante quand on
+  supprime une fenêtre.
+**/
+// Enregistrer une nouvelle fenêtre (à son ouverture, et à son activation,
+// donc il faut vérifier si elle est déjà dans le stack)
+static stack(fwindow){
+  if(this.isReaderOrEventBtns(fwindow)) return
+  if(isUndefined(this._stack)) this._stack = []
+  this.destack(fwindow)
+  this._stack.unshift(fwindow)
+  // console.log("_stack dans FWindow::stack", this._stack.map(fw => fw.UUID))
+}
+// Retirer une fenêtre, à sa fermeture
+static unstack(fwindow){
+  if(this.isReaderOrEventBtns(fwindow)) return
+  this.destack(fwindow)
+  isNotEmpty(this._stack) && this.setCurrent(this._stack[0])
+  // console.log("_stack dans FWindow::unstack", this._stack.map(fw => fw.UUID))
+}
+
+// Retire simplement la fwindow du stack des fenêtres
+static destack(fwindow){
+  this._stack = this._stack.filter(fw => fw.UUID != fwindow.UUID)
+}
+
+static isReaderOrEventBtns(fwindow){
+  return fwindow && (fwindow.name === ReaderFWindowName || fwindow.name === BtnsEventFWindowName)
 }
 /**
 * Méthode qui vérifie que la flying-window +wf+ ne soit pas placée
@@ -136,6 +157,17 @@ static unsetCurrent(wf){
   this.current.bringToBack()
   delete this.current
 }
+
+/**
+  Méthode appelée par la touche Escape pour fermer la fenêtre
+  courante, si elle existe.
+**/
+static closeCurrent(){
+  if(this.isReaderOrEventBtns(this.current)) return false
+  isDefined(this.current) && this.current.hide()
+  return true
+}
+
 static get current()  {return this._current}
 static set current(w) {this._current = w}
 
@@ -155,7 +187,7 @@ constructor(owner, data){
     owner || raise('fwindow-required-owner')
     isFunction(owner.build) || raise('fwindow-owner-has-build-function')
     data || raise('fwindow-required-data')
-    if(undefined === data.container) data.container = $('body')
+    if(isUndefined(data.container)) data.container = $('body')
     data.container || raise('fwindow-required-container')
     data.container = $(data.container)
     data.container.length || raise('fwindow-invalid-container')
@@ -164,7 +196,8 @@ constructor(owner, data){
 
   this.owner = owner
   for(var k in data){this[`_${k}`] = data[k]}
-  this.id    = data.id || this.constructor.newId()
+  this.id = data.id || this.constructor.newId()
+  this.UUID = this.constructor.newUUID()
   if(data.id) this._domId = data.id
   if(data.name) this.name = data.name
   this.built = false
@@ -190,6 +223,9 @@ hide(){
     if(this.owner.beforeHide() === false) return // abandon
   }
   this.constructor.unsetCurrent(this)
+  // Dans tous les cas, il faut retirer cette fenêtre de la liste des
+  // fenêtres
+  this.constructor.unstack(this)
   this.jqObj.hide()
   this.visible = false
   isFunction(this.owner.onHide) && this.owner.onHide()
@@ -207,11 +243,12 @@ update(){
 }
 // Pour détruire la fenêtre
 remove(){
-  log.info('-> ${this.ref}.remove()')
+  log.info(`-> ${this.ref}.remove()`)
   this.constructor.unsetCurrent(this)
   this.jqObj.remove()
   this.reset()
-  log.info('<- ${this.ref}.remove()')
+  this.constructor.unstack(this)
+  log.info(`<- ${this.ref}.remove()`)
 }
 // Pour réinitialiser
 reset(){
@@ -225,14 +262,18 @@ reset(){
 bringToFront(){
   log.info(`-> ${this.ref}.bringToFront`)
   this.jqObj.css('z-index', 100)
+  this.current = true
   log.info(`<- ${this.ref}.bringToFront`)
 }
 // Pour remettre la Flying window en arrière plan
 bringToBack(){
   log.info(`-> ${this.ref}.bringToBack`)
   this.jqObj.css('z-index', 50)
+  this.current = false
   log.info(`<- ${this.ref}.bringToBack`)
 }
+
+isCurrent(){return true === this.current}
 
 build(){
   log.info(`-> ${this.ref}.build()`)
@@ -241,7 +282,7 @@ build(){
   if(undefined === this.position) this.position = {}
   // console.log("position:", this.position)
   // console.log("Construction de la FWindow ", this.domId)
-  var div = DCreate('DIV', {
+  var div = DCreate(DIV, {
     id: this.domId
   , class: `fwindow ${this.class || ''}`.trim()
   , append: this.owner.build()
@@ -273,7 +314,7 @@ observe(){
   // Une flying window est déplaçable par essence
   // console.log("this.jqObj:", this.jqObj)
   this.jqObj.draggable({
-    containment: 'document'
+    containment: STRdocument
   })
   // Une flying window est cliquable par essence
   // this.jqObj.find('header, body').on('click', FWindow.setCurrent.bind(FWindow, this))

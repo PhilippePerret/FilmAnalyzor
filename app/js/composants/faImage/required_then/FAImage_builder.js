@@ -53,7 +53,10 @@ Object.assign(FAImage.prototype,{
 Object.defineProperties(FAImage.prototype,{
   // Le Div pour le reader
   div:{get(){
-    return DCreate(DIV,{id: this.domReaderId, class:'div-image image', attrs:{'data-type':'image', 'data-id':this.fname}
+    var attrs = {}
+    attrs[STRdata_type] = STRimage
+    attrs[STRdata_id]   = this.id
+    return DCreate(DIV,{id: this.domReaderId, class:'div-image image', attrs:attrs
       , append:[
           DCreate(IMG,{src:this.path, class:'image-overview',attrs:{onclick:`FAImage.edit('${this.id}')`}})
         , DCreate(SPAN,{inner:this.f_legend, class:`small ${this.domC('legend')}`})

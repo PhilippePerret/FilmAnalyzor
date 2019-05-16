@@ -29,7 +29,7 @@ ipc.on('set-video-speed', (e, data) => {
 ipc.on('uncaugth-exception', data => {
   let msg
   switch (typeof data.error) {
-    case 'object':
+    case STRobject:
       msg = data.error.message + JSON.stringify(data.error)
       break;
     default:

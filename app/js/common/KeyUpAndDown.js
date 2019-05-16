@@ -21,6 +21,7 @@ const KeyUpAndDown = {
   }
 
 , commonKeyUp(e){
+    // console.log(e)
     if(e.key === this.keyPressed){
       // console.log("J'ai retiré la touche", e.key)
       delete this.keyPressed
@@ -28,25 +29,33 @@ const KeyUpAndDown = {
       // touche, on l'appelle.
       if(isFunction(this.methodOnKeyPressedUp)){
         this.methodOnKeyPressedUp()
+      } else {
+        switch(e.key){
+          case 'Escape':
+            if (FWindow.closeCurrent()){
+              return stopEvent(e)
+            } else return true
+        }
       }
+
     }
   }
 , commonKeyDown(e){
     // console.log("-> KeyUpAndDown#commonKeyDown")
     if(e.metaKey){
-      if(['j','k','l'].indexOf(e.key) > -1){
+      if([STRj,STRk,STRl].indexOf(e.key) > -1){
         let a   = current_analyse
           , loc = a.locator
           , vid = a.videoController
-        if (e.key === 'j') { // meta + j => rewind or accelerate
+        if (e.key === STRj) { // meta + j => rewind or accelerate
           loc.playing && loc.togglePlay()
           loc.rewind(1.0)
           return stopEvent(e)
-        } else if(e.key === 'k'){ // meta + k => stop
+        } else if(e.key === STRk){ // meta + k => stop
           loc.playing && loc.stop()
           vid.setSpeed(1.0)
           return stopEvent(e)
-        } else if(e.key === 'l'){ // meta + l => start or accelerate
+        } else if(e.key === STRl){ // meta + l => start or accelerate
           // Si la vidéo est déjà en train de jouer, on l'accélère
           // Si la vidéo n'est pas en train de jouer, on la démarre
           loc.playing ? vid.setSpeed(vid.getSpeed() + 0.5) : loc.togglePlay()

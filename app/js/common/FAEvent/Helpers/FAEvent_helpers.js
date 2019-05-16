@@ -61,21 +61,21 @@ toString(){
     case 'ref':
       this.add2asDomList('asRef', opts)
       break
-    case 'short':
+    case STRshort:
       this.add2asDomList('asShort', opts)
       break
-    case 'book':
+    case STRbook:
       // Sortie pour le livre
       this.add2asDomList('asBook', opts)
       break
     case 'pitch':
       this.add2asDomList('asPitch', opts)
       break
-    case 'full':
+    case STRfull:
       this.add2asDomList('asFull', opts)
       flag = flag | ASSOCIATES
       break
-    case 'associate':
+    case STRassociate:
       this.add2asDomList('asAssociate', opts, flag)
       break
     default:
@@ -91,7 +91,10 @@ toString(){
 
   // Avec tous ses éléments ajoutés en fonction des choix
   // console.log("this.asDomList:",this.asDomList)
-  let divAs = DCreate(DIV, {class:`event ${this.type} EVT${this.id}`, append:this.asDomList, attrs:{'data-type':'event', 'data-id':this.id}})
+  let attrs = {}
+  attrs[STRdata_type] = STRevent
+  attrs[STRdata_id]   = this.id
+  let divAs = DCreate(DIV, {class:`event ${this.type} EVT${this.id}`, append:this.asDomList, attrs: attrs})
 
   if(opts.as === 'dom') return divAs
 
@@ -164,11 +167,11 @@ toString(){
   C'est le lien utilisé quand le drapeau contient EDITABLE
 **/
 , editLink(){
-  return DCreate('A', {class:'lktool lkedit', inner:'edit', attrs:{onclick:`EventForm.editEvent.bind(EventForm)(${this.id})`}})
+  return DCreate(A, {class:'lktool lkedit', inner:'edit', attrs:{onclick:`EventForm.editEvent.bind(EventForm)(${this.id})`}})
 }
 
 , showLink(){
-  return DCreate('A', {class:'lktool btn', inner:'voir', attrs:{onclick:`showEvent(${this.id})`}})
+  return DCreate(A, {class:'lktool btn', inner:'voir', attrs:{onclick:`showEvent(${this.id})`}})
 }
 
 // Version livre commune
@@ -228,7 +231,7 @@ Object.defineProperties(FAEvent.prototype,{
   /**
     Retourne le div qui s'affichera dans le reader
 
-    Son contenu propre provient de la méthode `as('full')` donc
+    Son contenu propre provient de la méthode `as(STRfull)` donc
     de la méthode `asFull` qui peut être propre à l'event.
 
     @return {DOMElement} Le div à placer dans le reader
@@ -242,20 +245,23 @@ Object.defineProperties(FAEvent.prototype,{
         // L'horloge des outils
         var h = DCreate(SPAN,{
           class:'horloge horloge-event'
-        , attrs:{'data-id': this.id}
+        , attrs:{STRdata_id: this.id}
         , inner: this.otime.horloge
         })
         var be = DCreate(BUTTON, {class: 'btn-edit', inner: '<img src="./img/btn/edit.png" class="btn" />'})
         var br = DCreate(BUTTON, {class: 'btnplay left', attrs: {'size': 22}})
 
+        var attrs = {'data-time':this.time}
+        attrs[STRdata_id]   = this.id
+        attrs[STRdata_type] = STRevent
         this._div = DCreate(DIV,{
           id: this.domReaderId
         , class: `reader-event event ${this.type} EVT${this.id}`
         , style: 'opacity:0;'
-        , attrs: {'data-time':this.time, 'data-id':this.id, 'data-type': 'event'}
+        , attrs: attrs
         , append: [
             DCreate(DIV,{class: 'e-tools', append:[br, be, h]})
-          , DCreate(DIV, {class:'content', inner: this.as('full', asFlag)})
+          , DCreate(DIV, {class:'content', inner: this.as(STRfull, asFlag)})
           ]
         })
       }

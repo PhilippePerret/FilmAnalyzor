@@ -50,7 +50,7 @@ Object.defineProperties(DataField.prototype,{
 , isUniq:{get(){return this._isuniq||defP(this,'_isuniq',!!(this.validities&UNIQ))}}
 , isOnlyAscii:{get(){return this._isascii||defP(this,'_isascii',!!(this.validities&ASCII))}}
 
-, isSelectUpdatable:{get(){return this.type === 'select' && isFunction(this.values)}}
+, isSelectUpdatable:{get(){return this.type === STRselect && isFunction(this.values)}}
 })
 
 Object.assign(DataField.prototype,{
@@ -75,7 +75,7 @@ Object.assign(DataField.prototype,{
 **/
 , set(value){
     switch (this.type) {
-      case 'image':
+      case STRimage:
         this.field[0].src = value
         break
       default:
@@ -88,9 +88,9 @@ Object.assign(DataField.prototype,{
 **/
 , reset(){
     switch (this.type) {
-      case 'image':
+      case STRimage:
         break
-      case 'checkbox':
+      case STRcheckbox:
         this.field[0].checked = false
         break
       default:
@@ -104,9 +104,9 @@ Object.assign(DataField.prototype,{
 , getFieldValueOrNull(){
     var v
     switch (this.type) {
-      case 'image':
+      case STRimage:
         return null
-      case 'checkbox':
+      case STRcheckbox:
         return this.field[0].checked
       default:
         v = this.field.val()
@@ -119,12 +119,12 @@ Object.assign(DataField.prototype,{
 **/
 , defineTagNameAndType(){
     switch (this.type) {
-      case 'image':     return [IMG, {style:'width:90%;'}]
-      case 'text':      return [INPUT, {type: 'text'}]
-      case 'textarea':  return ['TEXTAREA', {}]
-      case 'checkbox':  return [INPUT, {type:'checkbox'}]
-      case 'hidden':    return [INPUT, {type:'hidden'}]
-      case 'select':    return [SELECT, {append: this.optionsSelect()}]
+      case STRimage:     return [IMG, {style:'width:90%;'}]
+      case STRtext:      return [INPUT, {type: STRtext}]
+      case STRtextarea:  return [TEXTAREA, {}]
+      case STRcheckbox:  return [INPUT, {type:STRcheckbox}]
+      case STRhidden:    return [INPUT, {type:STRhidden}]
+      case STRselect:    return [SELECT, {append: this.optionsSelect()}]
     }
   }
 /**

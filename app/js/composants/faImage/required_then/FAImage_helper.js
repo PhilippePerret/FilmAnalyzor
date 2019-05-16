@@ -4,14 +4,17 @@ Object.assign(FAImage.prototype,{
   as(format,flat,opts){
     var divs = []
     switch (format) {
-      case 'associate':
+      case STRassociate:
         divs.push(this.asAssociate(opts))
         break
       default:
     }
 
     // On finalise
-    divs = DCreate('DIV',{class:'image', append:divs, attrs:{'data-type':'image', 'data-id':this.id}})
+    var attrs = {}
+    attrs[STRdata_type] = STRimage
+    attrs[STRdata_id]   = this.id
+    divs = DCreate('DIV',{class:STRimage, append:divs, attrs:attrs})
 
     if(opts.as == 'dom') return divs
     else return divs.outerHTML

@@ -57,7 +57,7 @@ Object.defineProperties(FAPersonnage,{
 **/
 , DataEditorData:{get(){
     return {
-      type: 'personnage'
+      type: STRpersonnage
     , title: 'PERSONNAGES'
     , items: this.personnages
     , titleProp: 'pseudo'
@@ -65,13 +65,13 @@ Object.defineProperties(FAPersonnage,{
       Définition des champs d'édition d'un élément
     **/
     , dataFields: [
-        {label:'Id', type:'text', prop:'id', exemple:'a-z0-9_', validities: UNIQ|REQUIRED|ASCII,
+        {label:'Id', type:STRtext, prop:'id', exemple:'a-z0-9_', validities: UNIQ|REQUIRED|ASCII,
           getValueMethod:(v)=>{if(v){return v.toLowerCase()}}}
-      , {label:'Diminutif', type:'text', prop:'dim', validities:UNIQ|REQUIRED}
-      , {label:'Pseudo', type:'text', prop:'pseudo', validities:UNIQ|REQUIRED}
-      , {label:'Prénom', type:'text', prop:'prenom'}
-      , {label:'Nom', type:'text', prop:'nom'}
-      , {label:'Age(s)', type:'text', prop:'ages', exemple:'12 ou 23, 68'
+      , {label:'Diminutif', type:STRtext, prop:'dim', validities:UNIQ|REQUIRED}
+      , {label:'Pseudo', type:STRtext, prop:'pseudo', validities:UNIQ|REQUIRED}
+      , {label:'Prénom', type:STRtext, prop:'prenom'}
+      , {label:'Nom', type:STRtext, prop:'nom'}
+      , {label:'Age(s)', type:STRtext, prop:'ages', exemple:'12 ou 23, 68'
           , getValueMethod:(v)=>{
               if(!v) return v
               v = v.split(',').map(a => parseInt(a.trim(),10))
@@ -88,9 +88,9 @@ Object.defineProperties(FAPersonnage,{
               // sinon rien
             }
         }
-      , {label:'Description', type:'textarea', prop:'description', validities:REQUIRED}
-      , {label:'Fonctions', type:'textarea', prop:'fonctions', aide:'une fonction par ligne', exemple:'Protagoniste\nAdjuvant\nPermet de relancer le suspense'}
-      , {label:'Dimensions', type:'textarea', prop:'dimensions', aide:'1 par ligne (&lt;type&gt;: &lt;description&gt;)'
+      , {label:'Description', type:STRtextarea, prop:'description', validities:REQUIRED}
+      , {label:'Fonctions', type:STRtextarea, prop:'fonctions', aide:'une fonction par ligne', exemple:'Protagoniste\nAdjuvant\nPermet de relancer le suspense'}
+      , {label:'Dimensions', type:STRtextarea, prop:'dimensions', aide:'1 par ligne (&lt;type&gt;: &lt;description&gt;)'
           , exemple:'religieuse: @T croit en Dieu.\nprofessionnelle: @T travaille pour lui.'
           , setValueMethod: (v)=>{
               if(!v) return ''

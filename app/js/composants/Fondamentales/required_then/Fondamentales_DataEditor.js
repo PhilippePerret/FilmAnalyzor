@@ -46,15 +46,15 @@ Object.defineProperties(Fondamentales,{
         , id: 'fd1'
         , title: 'Personnage'
         , dataFields: [
-            {label: '', type:'hidden', prop:'path'}
-          , {label:'Id perso', type:'text', class:'medium', prop:'perso_id', validities:REQUIRED
+            {label: '', type:STRhidden, prop:'path'}
+          , {label:'Id perso', type:STRtext, class:'medium', prop:'perso_id', validities:REQUIRED
               , checkValueMethod:(v)=>{return FAPersonnage.get(v) != undefined}
               , showLink: FAPersonnage.show.bind(FAPersonnage)
               , editLink: FAPersonnage.edit.bind(FAPersonnage)
             }
-          , {label:'Description', type:'textarea', prop:'description', validities:REQUIRED}
-          , {label:'Facteur U', type:'textarea', prop:'Ufactor', aide:'universalité de cette fondamentale'}
-          , {label:'Facteur O', type:'textarea', prop:'Ofactor', aide:'originalité de cette fondamentale'}
+          , {label:'Description', type:STRtextarea, prop:'description', validities:REQUIRED}
+          , {label:'Facteur U', type:STRtextarea, prop:'Ufactor', aide:'universalité de cette fondamentale'}
+          , {label:'Facteur O', type:STRtextarea, prop:'Ofactor', aide:'originalité de cette fondamentale'}
           ]
         }
 
@@ -64,22 +64,22 @@ Object.defineProperties(Fondamentales,{
         , id: 'fd2'
         , title: 'QDF'
         , dataFields: [
-            {label:'QD (id)', type:'text', class:'short', prop:'question_id', validities:REQUIRED
+            {label:'QD (id)', type:STRtext, class:STRshort, prop:'question_id', validities:REQUIRED
               , observe:{
                   'drop':{accept:'.qrd', tolerance:'intersect', classes:{'ui-droppable-hover':'survoled'}
-                          , drop:(e,ui) => $(e.target).val(ui.helper.attr('data-id'))
+                          , drop:(e,ui) => $(e.target).val(ui.helper.attr(STRdata_id))
                         }
                 }
               , checkValueMethod:(v) => {
                 let qrd = FAEvent.get(parseInt(v,10))
-                if(undefined===qrd || qrd.type != 'qrd') return "requiert impérativement un identifiant de QRD existante"
+                if(undefined===qrd || qrd.type != STRqrd) return "requiert impérativement un identifiant de QRD existante"
               }
               , editLink:(v)=>{FAEvent.edit.bind(FAEvent)(v)}
             }
-          , {label:'Objectif', type:'text', prop:'objectif'}
-          , {label:'Description', type:'textarea', prop:'description', validities:REQUIRED}
-          , {label:'Facteur U', type:'textarea', prop:'Ufactor', aide:'universalité de cette fondamentale'}
-          , {label:'Facteur O', type:'textarea', prop:'Ofactor', aide:'originalité de cette fondamentale'}
+          , {label:'Objectif', type:STRtext, prop:'objectif'}
+          , {label:'Description', type:STRtextarea, prop:'description', validities:REQUIRED}
+          , {label:'Facteur U', type:STRtextarea, prop:'Ufactor', aide:'universalité de cette fondamentale'}
+          , {label:'Facteur O', type:STRtextarea, prop:'Ofactor', aide:'originalité de cette fondamentale'}
           ]
         }
 
@@ -89,12 +89,12 @@ Object.defineProperties(Fondamentales,{
         , id: 'fd3'
         , title: 'Opposition'
         , dataFields: [
-            {label:'Antagonisme', type:'text', prop:'antagonisme', validities:REQUIRED}
-          , {label:'ID antagoniste', type:'text', prop:'antagoniste_id'
+            {label:'Antagonisme', type:STRtext, prop:'antagonisme', validities:REQUIRED}
+          , {label:'ID antagoniste', type:STRtext, prop:'antagoniste_id'
             , showLink:FAPersonnage.show.bind(FAPersonnage)
             , observe:{
                 'drop':{accept:'.qrd', tolerance:'intersect', classes:{'ui-droppable-hover':'survoled'}
-                        , drop:(e,ui) => $(e.target).val(ui.helper.attr('data-id'))
+                        , drop:(e,ui) => $(e.target).val(ui.helper.attr(STRdata_id))
                       }
               }
             , checkValueMethod:(v) => {
@@ -102,9 +102,9 @@ Object.defineProperties(Fondamentales,{
               if(undefined===perso) return "requiert impérativement un identifiant de personnage existant"
             }
           }
-        , {label:'Description', type:'textarea', prop:'description', validities:REQUIRED}
-        , {label:'Facteur U', type:'textarea', prop:'Ufactor', aide:'universalité de cette fondamentale'}
-          , {label:'Facteur O', type:'textarea', prop:'Ofactor', aide:'originalité de cette fondamentale'}
+        , {label:'Description', type:STRtextarea, prop:'description', validities:REQUIRED}
+        , {label:'Facteur U', type:STRtextarea, prop:'Ufactor', aide:'universalité de cette fondamentale'}
+          , {label:'Facteur O', type:STRtextarea, prop:'Ofactor', aide:'originalité de cette fondamentale'}
           ]
         }
 
@@ -114,25 +114,25 @@ Object.defineProperties(Fondamentales,{
         , id: 'fd4'
         , title: 'RDF'
         , dataFields: [
-            {label:'RD (id)', type:'text', class:'short', prop:'reponse-id', validities:REQUIRED
+            {label:'RD (id)', type:STRtext, class:STRshort, prop:'reponse-id', validities:REQUIRED
               , observe:{
                   'drop':{accept:'.qrd', tolerance:'intersect', classes:{'ui-droppable-hover':'survoled'}
-                          , drop:(e,ui) => $(e.target).val(ui.helper.attr('data-id'))
+                          , drop:(e,ui) => $(e.target).val(ui.helper.attr(STRdata_id))
                         }
                   }
               , checkValueMethod:(v) => {
                 let qrd = FAEvent.get(parseInt(v,10))
-                if(undefined===qrd || qrd.type != 'qrd') return "requiert impérativement un identifiant de QRD existante"
+                if(undefined===qrd || qrd.type != STRqrd) return "requiert impérativement un identifiant de QRD existante"
               }
               , editLink:(v)=>{FAEvent.edit.bind(FAEvent)(v)}
             }
-          , {label:'Réponse', type:'select', prop:'reponse', values:{oui:'Positive',non:'Négative'}, validities:REQUIRED}
-          , {label:'Paradoxale', type:'checkbox', prop:'paradoxale'}
-          , {label:'Paradoxe', type:'textarea', prop:'paradoxe', exemple:'Seulement si réponse paradoxale'}
-          , {label:'Description', type:'textarea', prop:'description', validities:REQUIRED}
-          , {label:'Signification', type:'textarea', prop:'signification', validities:REQUIRED}
-          , {label:'Facteur U', type:'textarea', prop:'Ufactor', aide:'universalité de cette fondamentale'}
-          , {label:'Facteur O', type:'textarea', prop:'Ofactor', aide:'originalité de cette fondamentale'}
+          , {label:'Réponse', type:STRselect, prop:'reponse', values:{oui:'Positive',non:'Négative'}, validities:REQUIRED}
+          , {label:'Paradoxale', type:STRcheckbox, prop:'paradoxale'}
+          , {label:'Paradoxe', type:STRtextarea, prop:'paradoxe', exemple:'Seulement si réponse paradoxale'}
+          , {label:'Description', type:STRtextarea, prop:'description', validities:REQUIRED}
+          , {label:'Signification', type:STRtextarea, prop:'signification', validities:REQUIRED}
+          , {label:'Facteur U', type:STRtextarea, prop:'Ufactor', aide:'universalité de cette fondamentale'}
+          , {label:'Facteur O', type:STRtextarea, prop:'Ofactor', aide:'originalité de cette fondamentale'}
           ]
         }
 
@@ -142,10 +142,10 @@ Object.defineProperties(Fondamentales,{
         , id: 'fd5'
         , title: 'Concept'
         , dataFields: [
-            {label:'Concept', type:'textarea', prop:'concept', validities:REQUIRED}
-            , {label:'Description', type:'textarea', prop:'description', validities:REQUIRED}
-            , {label:'Facteur U', type:'textarea', prop:'Ufactor', aide:'universalité de cette fondamentale'}
-          , {label:'Facteur O', type:'textarea', prop:'Ofactor', aide:'originalité de cette fondamentale'}
+            {label:'Concept', type:STRtextarea, prop:'concept', validities:REQUIRED}
+            , {label:'Description', type:STRtextarea, prop:'description', validities:REQUIRED}
+            , {label:'Facteur U', type:STRtextarea, prop:'Ufactor', aide:'universalité de cette fondamentale'}
+          , {label:'Facteur O', type:STRtextarea, prop:'Ofactor', aide:'originalité de cette fondamentale'}
           ]
         }
       ]

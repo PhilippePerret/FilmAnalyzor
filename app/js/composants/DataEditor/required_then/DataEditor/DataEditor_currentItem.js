@@ -4,13 +4,15 @@ Object.assign(DataEditor.prototype,{
   // Pour éditer l'item à éditer, s'il est défini dans les données envoyées
   // (par current_id)
   editCurrent(item_id){
-    if(undefined === item_id) item_id = this.data.current
+    if(this.isNotCurrentWindow()) return
+    if(isUndefined(item_id)) item_id = this.data.current
     this.menuItems.val(item_id)
     this.editElement()
   }
 
 , removeCurrentItem(){
-    if(!this.currentItem) return
+    if(isUndefined(this.currentItem)) return
+    if(this.isNotCurrentWindow()) return
     if(!confirm(`Es-tu certain de vouloir détruire à tout jamais l'élément ${this.currentItemRef}?`)) return
     if(this.mainClass.DERemoveItem(this.currentItem)){
       // Supprimer dans les items

@@ -161,7 +161,7 @@ getChosenTypes(){
   var ocontainer = this.jqObj.find('.pan-filter div.type-list')
   ocontainer.find('.cb-type > input').each(function(i, o){
     if(i==0) return // bouton "Tous"
-    if (o.checked) checkedList.push(o.getAttribute('data-type'))
+    if (o.checked) checkedList.push(o.getAttribute(STRdata_type))
   })
   return checkedList
 }
@@ -183,7 +183,7 @@ getChosenPersonnages(){
   var checkedList = []
   var ocontainer = this.jqObj.find('.pan-filter div.personnages-list')
   ocontainer.find('.cb-personnage > input').each(function(i, o){
-    if (o.checked) checkedList.push(o.getAttribute('data-id'))
+    if (o.checked) checkedList.push(o.getAttribute(STRdata_id))
   })
   if(checkedList.length === 0) return
   return {
@@ -221,7 +221,7 @@ build(){
       </div>
 
       <div>
-        <input type="checkbox" id="${this.domId}-filter-text" onclick="FAEventer.toggleFilterPart('${this.domId}','text')"/>
+        <input type="checkbox" id="${this.domId}-filter-text" onclick="FAEventer.toggleFilterPart('${this.domId}',STRtext)"/>
         <label for="${this.domId}-filter-text">Filtrage par le texte (contenu et titre)</label>
       </div>
 
@@ -231,7 +231,7 @@ build(){
       </div>
 
       <div>
-        <input type="checkbox" id="${this.domId}-filter-time" onclick="FAEventer.toggleFilterPart('${this.domId}','time')"/>
+        <input type="checkbox" id="${this.domId}-filter-time" onclick="FAEventer.toggleFilterPart('${this.domId}',STRtime)"/>
         <label for="${this.domId}-filter-time">Filtrage par les temps</label>
       </div>
 
@@ -280,7 +280,7 @@ build(){
 afterBuilding(){
   // Au tout début, on affiche seulement les scènes
   log.info(`-> <<FAEventer #${this.id}>>#afterBuilding()`)
-  this.filter = {eventTypes: ['scene']}
+  this.filter = {eventTypes: [STRscene]}
   this.peuple()
   this.peupleTypesInFilter()
   // On doit régler la fin du film
@@ -302,10 +302,12 @@ peuplePersonnagesInFilter(){
   var domId, cb
 
   FAPersonnage.forEachPersonnage(function(perso){
+    var attrs = {}
+    attrs[STRdata_id] = perso.id
     domId = `${my.domId}-cb-personnage-${perso.id}`
-    ocontainer.append(DCreate('SPAN',{class:'cb-personnage span-cb', append:[
-        DCreate('INPUT', {id:domId, type:'checkbox', attrs:{'data-id': perso.id}})
-      , DCreate('LABEL', {attrs:{for: domId}, inner: perso.pseudo})
+    ocontainer.append(DCreate(SPAN,{class:'cb-personnage span-cb', append:[
+        DCreate(INPUT, {id:domId, type:STRcheckbox, attrs:attrs})
+      , DCreate(LABEL, {attrs:{for: domId}, inner: perso.pseudo})
     ]}))
   })
   log.info('<- peuplePersonnagesInFilter')
@@ -338,13 +340,15 @@ peupleTypesInFilter(){
   @param {jqSet} ocontainer   Container dans lequel il faut mettre la cb
   @param {String} domId       ID de la case à cocher.
   @param {String} libelle     Le libellé affiché
-  @param {String} type        Type de l'élément, par exemple 'scene' ou 'personnage'
+  @param {String} type        Type de l'élément, par exemple STRscene ou STRpersonnage
 **/
 buildCbType(ocontainer, domid, libelle, type){
-  var label = DCreate('LABEL', {attrs: {'for': domid}, inner: libelle})
-  var cb = DCreate('INPUT', {id: domid, attrs:{type: 'checkbox', 'data-type': type}})
+  var label = DCreate(LABEL, {attrs: {'for': domid}, inner: libelle})
+  var attrs = {type: STRcheckbox}
+  attrs[STRdata_type] = type
+  var cb = DCreate(INPUT, {id: domid, attrs:attrs})
   cb.checked = true
-  var span  = DCreate('SPAN', {class: 'cb-type span-cb', append: [cb, label]})
+  var span  = DCreate(SPAN, {class: 'cb-type span-cb', append: [cb, label]})
   ocontainer.append(span)
   return span
 }

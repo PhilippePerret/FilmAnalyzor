@@ -42,20 +42,20 @@ static forEachDim(method){
 
 
 static get TYPES2HTYPES(){
-  return {
-    'brin':       {fr: 'brin',      genre: 'M'}
-  , 'brins':      {fr: 'brins',     genre: 'M'}
-  , 'document':   {fr: 'document',  genre: 'M'}
+  let t2h = {
+    'brins':      {fr: 'brins',     genre: 'M'}
   , 'documents':  {fr: 'documents', genre: 'M'}
-  , 'event':      {fr: 'event',     genre: 'M'}
   , 'events':     {fr: 'events',    genre: 'M'}
-  , 'image':      {fr: 'image',     genre: 'F'}
   , 'images':     {fr: 'images',    genre: 'F'}
-  , 'scene':      {fr: 'scène',     genre: 'F'}
   , 'scenes':     {fr: 'scènes',    genre: 'F'}
-  , 'time':       {fr: 'temps',     genre: 'M'}
   , 'times':      {fr: 'temps',     genre: 'M'}
   }
+  t2h[STRbrin]      = {fr: STRbrin,      genre: 'M'}
+  t2h[STRimage]     = {fr: STRimage,     genre: 'F'}
+  t2h[STRdocument]  = {fr: STRdocument,  genre: 'M'}
+  t2h[STRevent]     = {fr: STRevent,     genre: 'M'}
+  t2h[STRscene]     = {fr: 'scène',     genre: 'F'}
+  t2h[STRtime]      = {fr: 'temps',     genre: 'M'}
 }
 static htypeFor(type, options){
   if(undefined === options) options = {}
@@ -135,7 +135,7 @@ static deBrin(str){
   str = str.replace(this.BRIN_REGEXP, function(){
     groups  = arguments[arguments.length-1]
     brin_id = groups.key
-    return FABrin.get(brin_id).as('short',LINKED|FORMATED)
+    return FABrin.get(brin_id).as(STRshort,LINKED|FORMATED)
   })
   return str
 }
@@ -273,14 +273,14 @@ setFormat(str, format){
    * Les balises vers des events sont composées de : `{{event:<id event>}}`
    */
   static get REGEXP_EVENT_TAG(){
-    if(undefined==this._regexp_event_tag){
-      this._regexp_event_tag = new RegExp(this.defineRegExpTag('event'), 'gi')
+    if(isUndefined(this._regexp_event_tag)){
+      this._regexp_event_tag = new RegExp(this.defineRegExpTag(STRevent), 'gi')
     }
     return this._regexp_event_tag
   }
   static get REGEXP_SCENE_TAG(){
-    if(undefined==this._regexp_scene_tag){
-      this._regexp_scene_tag = new RegExp(this.defineRegExpTag('scene'), 'gi')
+    if(isUndefined(this._regexp_scene_tag)){
+      this._regexp_scene_tag = new RegExp(this.defineRegExpTag(STRscene), 'gi')
     }
     return this._regexp_scene_tag
   }
@@ -295,17 +295,17 @@ setFormat(str, format){
   Méthode qui remplace les balises event "{{event: id}}" par un texte, un lien
   ou autre ajout.
 
-  Traitement particulier des events de type 'note' qui sont ajoutés, pour
+  Traitement particulier des events de type STRnote qui sont ajoutés, pour
   le moment, après le +str+ complet, avec des indices ajoutés
 **/
 deEventTags(str, options){
   var groups, ev, indice_note
 
   // Les options
-  if(undefined === options) options = {}
+  if(isUndefined(options)) options = {}
 
   // Définition du string à corriger (+str+)
-  if(undefined === str) str = this.raw_string
+  if(isUndefined(str)) str = this.raw_string
   else this.raw_string = str
 
   // Pour mémoriser les notes à l'intérieur des textes
@@ -316,7 +316,7 @@ deEventTags(str, options){
   str = str.replace(FATexte.REGEXP_EVENT_TAG, function(){
     groups = arguments[arguments.length - 1]
     ev = current_analyse.ids[groups.event_id]
-    if(ev.type === 'note'){
+    if(ev.type === STRnote){
       if(options.notes === false){
         return ''
       } else {
@@ -338,7 +338,7 @@ deEventTags(str, options){
   return str
 }
 deSceneTags(str){
-  if(undefined === str) str = this.raw_string
+  if(isUndefined(str)) str = this.raw_string
   else this.raw_string = str
   str = str.replace(FATexte.REGEXP_SCENE_TAG, function(){
     var groups = arguments[arguments.length - 1]
@@ -350,7 +350,7 @@ deSceneTags(str){
 
 deTimeTags(str){
   var groups, txt
-  if(undefined === str) str = this.raw_string
+  if(isUndefined(str)) str = this.raw_string
   else this.raw_string = str
   str = str.replace(FATexte.REGEXP_TIME_TAG, function(){
     groups = arguments[arguments.length - 1]
@@ -375,7 +375,7 @@ forEachDim(method){return FATexte.forEachDim(method)}
   @return {String} Les balises brin remplacées
 **/
 execDe(str, method){
-  if (undefined === str) str = this.raw_string
+  if (isUndefined(str)) str = this.raw_string
   else this.raw_string = str
   return FATexte[method](str)
 }

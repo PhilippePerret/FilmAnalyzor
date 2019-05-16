@@ -179,7 +179,7 @@ load(vpath){
  */
 setVideoUI(visible){
   log.info("-> VideoController#setVideoUI")
-  let visu = visible ? 'visible' : 'hidden'
+  let visu = visible ? STRvisible : STRhidden
   this.section.find('.video-header')[visible?'show':'hide']()
   for(var el of ['video','div-nav-video-buttons']){
     this.section.find(el).css('visibility', visu)
@@ -288,10 +288,13 @@ observe(){
   , cursorAt: {left: 40, top: 10}
   , helper: (e) => {
       let otime = this.locator.currentTime
+      var attrs = {'data-value': otime.horloge}
+      attrs[STRdata_type] = STRtime
+      attrs[STRdata_id]   = otime.seconds.round(2)
       return DCreate('DIV', {
         inner: otime.horloge
       , class: 'dropped-time'
-      , attrs:{'data-type': 'time', 'data-value': otime.horloge, 'data-id': otime.seconds.round(2)}
+      , attrs:attrs
       , zindex:1000
       })
     }
@@ -378,13 +381,13 @@ buildControllerBox(){
   let spanHorlogeReal = DCreate('SPAN', {class: 'real-horloge horloge mini fleft', inner: '0:00:00.0'})
 
   let divGoToTime = DCreate('DIV', {class:'go-to-time', append: [
-      DCreate('BUTTON', {type: 'button', class:'small btn-go-to-time-video', inner: 'Aller au temps'})
-    , DCreate('INPUT',  {type: 'text', id:`request_time-${this.id}`, class: 'requested_time horloge small', value: '', attrs:{placeholder:'0,0,0.0'}})
+      DCreate(BUTTON, {type: STRbutton, class:'small btn-go-to-time-video', inner: 'Aller au temps'})
+    , DCreate('INPUT',  {type: STRtext, id:`request_time-${this.id}`, class: 'requested_time horloge small', value: '', attrs:{placeholder:'0,0,0.0'}})
   ]})
   // Les boutons rewind et forward, etc.
   for(suf of this.CTRL_BUTTONS.tiny_buttons){
     btns.push(
-        DCreate('BUTTON', {type: 'button', class: `controller btn-${suf}`, append:[
+        DCreate(BUTTON, {type: STRbutton, class: `controller btn-${suf}`, append:[
         DCreate('IMG', {attrs:{src: `./img/btns-controller/btn-${suf}.png`}})
       ]})
     )
@@ -396,7 +399,7 @@ buildControllerBox(){
   for(suf in this.CTRL_BUTTONS.main_buttons){
     dbtn = this.CTRL_BUTTONS.main_buttons[suf]
     btns.push(
-      DCreate('BUTTON', {type:'button', class: `main btn-${suf}`, attrs:{title:dbtn.title}, append:[
+      DCreate(BUTTON, {type:STRbutton, class: `main btn-${suf}`, attrs:{title:dbtn.title}, append:[
         DCreate('IMG', {attrs:{src: `./img/btns-controller/btn-${suf}.png`}})
       ]})
     )

@@ -1,14 +1,63 @@
 'use strict'
 
+function isUndefined(foo){
+  return STRundefined === typeof(foo)
+}
+function isNull(foo){
+  return null === foo
+}
+function isFalse(foo){
+  return false === foo
+}
+function isTrue(foo){
+  return true === foo
+}
+function isDefined(foo){
+  return false === isUndefined(foo)
+}
+function isEmpty(foo){
+  if(isDefined(foo.length)){
+    return 0 == foo.length
+  } else if (isObject(foo)){
+    return 0 == Object.keys(foo).length
+  }
+}
+function isNotEmpty(foo){return false === isEmpty(foo)}
 function isNotAscii(str){
   return str.replace(/[a-zA-Z0-9_]/g,'') != ''
 }
-function isFunction(foo){
-  return STRfunction === typeof(foo)
+function isFunction(foo){ return STRfunction === typeof(foo) }
+function isNotFunction(foo){ return false === isFunction(foo) }
+function isString(foo)  { return STRstring === typeof(foo) }
+function isNotString(foo){return false === isString(foo)}
+function isObject(foo)  { return STRobject == typeof(foo) && !isArray(foo) }
+function isArray(foo)   { return Array.isArray(foo) }
+
+// Fonction utiles un peu plus particulière
+
+/**
+  Retourne false si l'élément +domE+ ne possède pas l'attribut +attr+ ou,
+  si +valOpt+ est fourni, si la valeur n'est pas égale à cette valeur.
+
+  @param {jqSet}  jqObj   Obligatoirement un set jQuery
+  @param {String} attr    L'attribut recherché.
+  @param {String} valOpt  La valeur optionnellement recherchée
+
+  @return {Boolean|String} true/false ou la valeur de attr si +valOpt+ n'est pas
+                            fourni.
+**/
+function isDOMElementWithAttribute(jqObj, attr, valOpt){
+  if(isUndefined(jqObj)) return false
+  if(isNotFunction(jqObj.attr)) return false
+  if(isUndefined(jqObj.attr(attr))) return false
+  if (isDefined(valOpt)){
+    return jqObj.attr(attr) == valOpt
+  } else {
+    return jqObj.attr(attr)
+  }
 }
-function isString(foo){
-  return STRstring !== typeof(eventType)
-}
+
+
 
 function asPourcentage(expected, actual){
   return `${pourcentage(expected,actual)} %`
@@ -200,7 +249,7 @@ function DFormater(str, opts){
  * Pour rendre le selecteur +jqId+ visible (visibility)
  */
 function toggleVisible(jqId, v){
-  $(jqId).css('visibility', v ? 'visible' : 'hidden')
+  $(jqId).css('visibility', v ? STRvisible : STRhidden)
 }
 
 // Pour écouter un objet

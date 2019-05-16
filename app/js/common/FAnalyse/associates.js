@@ -20,7 +20,23 @@ Object.assign(FAnalyse.prototype,{
       aux méthodes classiques mais en renvoyant un message d'erreur.
 **/
   instanceOfElement(ref){
-    return eval(`FA${ref.type.titleize()}`).get(ref.type == 'event' ? parseInt(ref.id,10) : ref.id) || (new FAUnknownElement(ref))
+    let classe
+    // let classe   = window[`FA${ref.type.titleize()}`]
+    try {
+      classe = eval(`FA${ref.type.titleize()}`)
+    } catch (e) {
+      log.error(`Impossible d'obtenir la classe de l'élément à partir de la référence :`, ref)
+      log.error(e)
+      return new FAUnknownElement(ref)
+    }
+    if(isDefined(classe)){
+      return classe.get(ref.type == STRevent ? parseInt(ref.id,10) : ref.id) || (new FAUnknownElement(ref))
+    } else {
+      let msgerr = `La classe "FA${ref.type.titleize()}" n'existe pas. Impossible de retourner l'event défini par ${JSON.stringify(ref)}`
+      log.error(msgerr)
+      F.error(msgerr)
+      return new FAUnknownElement(ref)
+    }
   }
 
   /**

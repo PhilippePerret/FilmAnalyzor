@@ -9,49 +9,47 @@
 **/
 
 const EVENTS_DATA = {
-  scene:  {id: 'scene',   hname: 'Scène', btn_name: 'Scène'}
-, stt:    {id: 'stt',     hname: 'Nœud structurel', btn_name: 'N.STT'}
-, dyna:   {id: 'dyna',    hname: 'Élément dynamique', btn_name: 'O.O.C.'}
-, proc:   {id: 'proc',    hname: 'Procédé', btn_name: 'Proc.'}
-, note:   {id: 'note',    hname: 'Note', btn_name: 'Note'}
-, idee:   {id: 'idee',    hname: 'Idée', btn_name: 'Idée'}
-, info:   {id: 'info',    hname: 'Info', btn_name: 'Info'}
-, qrd:    {id: 'qrd',     hname: 'Question/Réponse Dramatique', btn_name: 'QRD'}
-, action: {id: 'action',  hname: 'Action', btn_name: 'Action'}
-, dialog: {id: 'dialog',  hname: 'Dialogue', btn_name: 'Dial.'}
-, event:  {id: 'event',   hname: 'Évènement', btn_name: 'Ev.'}
+  scene:  {id: STRscene,   hname: 'Scène', btn_name: 'Scène'}
+, stt:    {id: STRstt,     hname: 'Nœud structurel', btn_name: 'N.STT'}
+, dyna:   {id: STRdyna,    hname: 'Élément dynamique', btn_name: 'O.O.C.'}
+, proc:   {id: STRproc,    hname: 'Procédé', btn_name: 'Proc.'}
+, note:   {id: STRnote,    hname: 'Note', btn_name: 'Note'}
+, idee:   {id: STRidee,    hname: 'Idée', btn_name: 'Idée'}
+, info:   {id: STRinfo,    hname: 'Info', btn_name: 'Info'}
+, qrd:    {id: STRqrd,     hname: 'Question/Réponse Dramatique', btn_name: 'QRD'}
+, action: {id: STRaction,  hname: 'Action', btn_name: 'Action'}
+, dialog: {id: STRdialog,  hname: 'Dialogue', btn_name: 'Dial.'}
+, event:  {id: STRevent,   hname: 'Évènement', btn_name: 'Ev.'}
 }
 
-const EVENTS_TYPES_DATA = {
-  'note': {
-    type: 'note'
-  , genre: 'F'
-  , article:{
-      indefini: {sing: 'une', plur: 'des'}
-    , defini:   {sing: 'la', plur: 'les'}
+const EVENTS_TYPES_DATA = {}
+EVENTS_TYPES_DATA[STRnote] = {
+  type: STRnote
+, genre: 'F'
+, article:{
+    indefini: {sing: 'une', plur: 'des'}
+  , defini:   {sing: 'la', plur: 'les'}
+  }
+, name: {
+    plain: {
+      cap: {sing: 'Note', plur: 'Notes'}
+    , min: {sing: STRnote, plur: 'notes'}
+    , maj: {sing: 'NOTE', plur: 'NOTES'}
     }
-  , name: {
-      plain: {
-        cap: {sing: 'Note', plur: 'Notes'}
-      , min: {sing: 'note', plur: 'notes'}
-      , maj: {sing: 'NOTE', plur: 'NOTES'}
-      }
-    , short:{
-        cap: {sing: 'Note', plur: 'Notes'}
-      , min: {sing: 'note', plur: 'notes'}
-      , maj: {sing: 'NOTE', plur: 'NOTES'}
-      }
-    , tiny: {
-        cap: {sing: 'Note', plur: 'Notes'}
-      , min: {sing: 'note', plur: 'notes'}
-      , maj: {sing: 'NOTE', plur: 'NOTES'}
-      }
+  , short:{
+      cap: {sing: 'Note', plur: 'Notes'}
+    , min: {sing: STRnote, plur: 'notes'}
+    , maj: {sing: 'NOTE', plur: 'NOTES'}
+    }
+  , tiny: {
+      cap: {sing: 'Note', plur: 'Notes'}
+    , min: {sing: STRnote, plur: 'notes'}
+    , maj: {sing: 'NOTE', plur: 'NOTES'}
     }
   }
-
-
-, 'action':{
-    type: 'action'
+}
+EVENTS_TYPES_DATA[STRaction] = {
+    type: STRaction
   , genre: 'F'
   , article:{
       indefini: {sing: 'une', plur: 'des'}
@@ -60,12 +58,12 @@ const EVENTS_TYPES_DATA = {
   , name: {
       plain: {
         cap: {sing: 'Action', plur: 'Actions'}
-      , min: {sing: 'action', plur: 'actions'}
+      , min: {sing: STRaction, plur: 'actions'}
       , maj: {sing: 'ACTION', plur: 'ACTIONS'}
       }
     , short:{
         cap: {sing: 'Action', plur: 'Actions'}
-      , min: {sing: 'action', plur: 'actions'}
+      , min: {sing: STRaction, plur: 'actions'}
       , maj: {sing: 'ACTION', plur: 'ACTIONS'}
       }
     , tiny: {
@@ -75,8 +73,8 @@ const EVENTS_TYPES_DATA = {
     }
   }
 
-, 'dialog':{
-      type: 'dialog'
+EVENTS_TYPES_DATA[STRdialog] = {
+      type: STRdialog
     , genre: 'M'
     , article:{
         indefini: {sing: 'un', plur: 'des'}
@@ -100,9 +98,8 @@ const EVENTS_TYPES_DATA = {
       }
     }
 
-
-, 'dyna':{
-      type: 'dyna'
+EVENTS_TYPES_DATA[STRdyna] = {
+      type: STRdyna
     , genre: 'M'
     , article:{
         indefini: {sing: 'un', plur: 'des'}
@@ -125,8 +122,9 @@ const EVENTS_TYPES_DATA = {
       }
     }
 
-, 'event':{
-      type: 'event'
+
+EVENTS_TYPES_DATA[STRevent] = {
+      type: STRevent
     , genre: 'M'
     , article:{
         indefini: {sing: 'un', plur: 'des'}
@@ -150,8 +148,8 @@ const EVENTS_TYPES_DATA = {
       }
     }
 
-, 'idee':{
-      type: 'idee'
+EVENTS_TYPES_DATA[STRidee] = {
+      type: STRidee
     , genre: 'F'
     , article:{
         indefini: {sing: 'une', plur: 'des'}
@@ -175,8 +173,8 @@ const EVENTS_TYPES_DATA = {
       }
     }
 
-, 'info':{
-      type: 'info'
+EVENTS_TYPES_DATA[STRinfo] = {
+      type: STRinfo
     , genre: 'F'
     , article:{
         indefini: {sing: 'une', plur: 'des'}
@@ -190,18 +188,18 @@ const EVENTS_TYPES_DATA = {
         }
       , short:{
           cap: {sing: 'Info', plur: 'Infos'}
-        , min: {sing: 'info', plur: 'infos'}
+        , min: {sing: STRinfo, plur: 'infos'}
         , maj: {sing: 'IDÉE', plur: 'IDÉES'}
         }
       , tiny: {
           cap: {sing: 'Info', plur: 'Infos'}
-        , min: {sing: 'info', plur: 'infos'}
+        , min: {sing: STRinfo, plur: 'infos'}
         }
       }
     }
 
-, 'proc':{
-      type: 'proc'
+EVENTS_TYPES_DATA[STRproc] = {
+      type: STRproc
     , genre: 'M'
     , article:{
         indefini: {sing: 'un', plur: 'des'}
@@ -220,13 +218,13 @@ const EVENTS_TYPES_DATA = {
         }
       , tiny: {
           cap: {sing: 'Proc', plur: 'Procs'}
-        , min: {sing: 'proc', plur: 'procs'}
+        , min: {sing: STRproc, plur: 'procs'}
         }
       }
     }
 
-, 'qrd':{
-      type: 'qrd'
+EVENTS_TYPES_DATA[STRqrd] = {
+      type: STRqrd
     , genre: 'F'
     , article:{
         indefini: {sing: 'une', plur: 'des'}
@@ -245,13 +243,13 @@ const EVENTS_TYPES_DATA = {
         }
       , tiny: {
           cap: {sing: 'QRD', plur: 'QRDs'}
-        , min: {sing: 'qrd', plur: 'qrds'}
+        , min: {sing: STRqrd, plur: 'qrds'}
         }
       }
     }
 
-, 'scene':{
-      type: 'scene'
+EVENTS_TYPES_DATA[STRscene] = {
+      type: STRscene
     , genre: 'F'
     , article:{
         indefini: {sing: 'une', plur: 'des'}
@@ -276,8 +274,8 @@ const EVENTS_TYPES_DATA = {
       }
     }
 
-, 'stt':{
-      type: 'stt'
+EVENTS_TYPES_DATA[STRstt] = {
+      type: STRstt
     , genre: 'M'
     , article:{
         indefini: {sing: 'un', plur: 'des'}
@@ -301,6 +299,3 @@ const EVENTS_TYPES_DATA = {
         }
       }
     }
-
-
-}

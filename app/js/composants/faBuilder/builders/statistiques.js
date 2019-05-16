@@ -115,11 +115,11 @@ Object.assign(FAEscene,{
   }
 , get plusLongue(){
     this._longest_scene || this.searchLongestShortest()
-    return `${this._longest_scene.as('short', DUREE|FORMATED)}`
+    return `${this._longest_scene.as(STRshort, DUREE|FORMATED)}`
   }
 , get plusCourte(){
     this._shortest_scene || this.searchLongestShortest()
-    return `${this._shortest_scene.as('short', DUREE|FORMATED)}`
+    return `${this._shortest_scene.as(STRshort, DUREE|FORMATED)}`
   }
 , searchLongestShortest(){
     if (undefined === this._longest_scene){
@@ -147,9 +147,9 @@ FAEscene.perMaxLongueur = function(){
     if(undefined === sc) break
     // divs.push(DCreate('DIV', {class: 'libval first-small', append:[
     //     DCreate('LABEL',  {class:'bold', inner: sc.hduree})
-    //   , DCreate('SPAN',   {inner: sc.as('short', FORMATED)})
+    //   , DCreate('SPAN',   {inner: sc.as(STRshort, FORMATED)})
     // ]}))
-    lignesScenes.push(`${sc.hduree.padStart(7)}   ${sc.as('short', FORMATED)}`)
+    lignesScenes.push(`${sc.hduree.padStart(7)}   ${sc.as(STRshort, FORMATED)}`)
   }
   // return divs
   return DCreate('PRE', {inner: lignesScenes.join(RC)})
@@ -166,9 +166,9 @@ FAEscene.perMinLongueur = function(){
     if(undefined === sc) break
     // divs.push(DCreate('DIV', {class: 'libval first-small', append:[
     //   DCreate('LABEL',  {class:'bold', inner: sc.hduree})
-    // , DCreate('SPAN',   {inner: sc.as('short', FORMATED)})
+    // , DCreate('SPAN',   {inner: sc.as(STRshort, FORMATED)})
     // ]}))
-    lignesScenes.push(`${sc.hduree.padStart(7)}   ${sc.as('short', FORMATED)}`)
+    lignesScenes.push(`${sc.hduree.padStart(7)}   ${sc.as(STRshort, FORMATED)}`)
   }
   // return divs
   return DCreate('PRE', {inner: lignesScenes.join(RC)})
