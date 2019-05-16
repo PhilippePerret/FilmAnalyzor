@@ -52,7 +52,7 @@ Object.assign(FAEvent.prototype,{
 
 , checkBalisesEventsIn(str){
     let res
-    if(!(res = str.match(FATexte.defineRegExpTag('event')))) return
+    if(!(res = str.match(FATexte.defineRegExpTag(STRevent)))) return
     let event_id = parseInt(res.groups.event_id,10)
     if(!FAEvent.get(event_id)){
       return wError(`L'event #${event_id} associé à ${this.ref} est inconnu.`, 2)
@@ -60,7 +60,7 @@ Object.assign(FAEvent.prototype,{
   }
 , checkBalisesScenesIn(str){
     let res
-    if(!(res = str.match(FATexte.defineRegExpTag('scene')))) return
+    if(!(res = str.match(FATexte.defineRegExpTag(STRscene)))) return
     return wError(`${this.spanRef.outerHTML} : les balises scène ({{scene:...}} ne doivent plus exister.)`, 1)
   }
 , checkBalisesDocumentsIn(str){

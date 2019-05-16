@@ -91,7 +91,10 @@ toString(){
 
   // Avec tous ses éléments ajoutés en fonction des choix
   // console.log("this.asDomList:",this.asDomList)
-  let divAs = DCreate(DIV, {class:`event ${this.type} EVT${this.id}`, append:this.asDomList, attrs:{'data-type':'event', 'data-id':this.id}})
+  let attrs = {}
+  attrs[STRdata_type] = STRevent
+  attrs[STRdata_id]   = this.id
+  let divAs = DCreate(DIV, {class:`event ${this.type} EVT${this.id}`, append:this.asDomList, attrs: attrs})
 
   if(opts.as === 'dom') return divAs
 
@@ -242,17 +245,20 @@ Object.defineProperties(FAEvent.prototype,{
         // L'horloge des outils
         var h = DCreate(SPAN,{
           class:'horloge horloge-event'
-        , attrs:{'data-id': this.id}
+        , attrs:{STRdata_id: this.id}
         , inner: this.otime.horloge
         })
         var be = DCreate(BUTTON, {class: 'btn-edit', inner: '<img src="./img/btn/edit.png" class="btn" />'})
         var br = DCreate(BUTTON, {class: 'btnplay left', attrs: {'size': 22}})
 
+        var attrs = {'data-time':this.time}
+        attrs[STRdata_id]   = this.id
+        attrs[STRdata_type] = STRevent
         this._div = DCreate(DIV,{
           id: this.domReaderId
         , class: `reader-event event ${this.type} EVT${this.id}`
         , style: 'opacity:0;'
-        , attrs: {'data-time':this.time, 'data-id':this.id, 'data-type': 'event'}
+        , attrs: attrs
         , append: [
             DCreate(DIV,{class: 'e-tools', append:[br, be, h]})
           , DCreate(DIV, {class:'content', inner: this.as('full', asFlag)})

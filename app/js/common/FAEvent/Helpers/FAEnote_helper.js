@@ -24,7 +24,7 @@ asNote(options){
   divs.push(DCreate(SPAN,{class:'', inner: DFormater(this.content)}))
   if(options.linked){divs.push(this.editLink())}
   divs.push(DCreate(DIV,{style:'clear:both;'}))
-  divs = DCreate(SPAN,{class:'note', append:divs})
+  divs = DCreate(SPAN,{class:STRnote, append:divs})
   if (options.as === 'string'){
     return divs.outerHTML
   } else {

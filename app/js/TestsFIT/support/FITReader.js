@@ -25,7 +25,7 @@ const FITReader = {
 
 , getOrdreIds(){
     var arr = []
-    this.forEachDOMEvent(ev => arr.push(parseInt(ev.getAttribute('data-id'),10)))
+    this.forEachDOMEvent(ev => arr.push(parseInt(ev.getAttribute(STRdata_id),10)))
     return arr
   }
 

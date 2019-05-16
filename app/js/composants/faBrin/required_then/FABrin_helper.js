@@ -17,7 +17,7 @@ toString(){
     if (undefined === flag) flag = 0
     if (undefined === opts) opts = {}
 
-    opts.owner = {type: 'brin', id: this.id}
+    opts.owner = {type: STRbrin, id: this.id}
 
     var divs = [], str
 

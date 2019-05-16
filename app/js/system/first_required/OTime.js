@@ -33,19 +33,19 @@ as(format, flag, options){
  *
  */
 constructor(v){
-  this.type = 'time'
+  this.type = STRtime
   switch (typeof(v)) {
-    case 'number':
+    case STRnumber:
       this.seconds = v
       break
-    case 'string':
+    case STRstring:
       if (v.match(/^[0-9\.]+$/)){this.seconds = Math.round(v)}
       else {
         this.horloge = v
         this.seconds = this.h2s(v)
       }
       break
-    case 'object':
+    case STRobject:
       if (v instanceof(OTime)){
         try {pourgenereuneerreur} catch (e) {
           console.error("On ne doit pas envoyer un OTime pour initialiser un OTime.")

@@ -226,7 +226,7 @@ const DATA_MENUS = [
         , {
               label: 'Verrouiller'
             , id: 'option-locked'
-            , type: 'checkbox'
+            , type: STRcheckbox
             , checked: false
             , enabled: false
             , click: () => {execJsOnCurrent('toggleLock')}
@@ -504,33 +504,33 @@ const DATA_MENUS = [
       , {
             label: 'Nouveau…'
           , submenu: [
-                {label: 'Scène', accelerator: 'CmdOrCtrl+Alt+S', click: ()=>{createEvent('scene')}}
-              , {label: 'Nœud STT', accelerator: 'CmdOrCtrl+Alt+T', click: ()=>{createEvent('stt')}}
-              , {label: 'Objectif-Obstacle-Conflit', accelerator: 'CmdOrCtrl+Alt+O', click: ()=>{createEvent('dyna')}}
-              , {label: 'Procédé', accelerator: 'CmdOrCtrl+Alt+P', click: ()=>{createEvent('proc')}}
-              , {label: 'Note', accelerator: 'CmdOrCtrl+Alt+N', click: ()=>{createEvent('note')}}
-              , {label: 'Idée', accelerator: 'CmdOrCtrl+Alt+I', click: ()=>{createEvent('idee')}}
-              , {label: 'Info', accelerator: 'CmdOrCtrl+Alt+F', click: ()=>{createEvent('info')}}
-              , {label: 'QRD', accelerator: 'CmdOrCtrl+Alt+Q', click: ()=>{createEvent('qrd')}}
-              , {label: 'Action', accelerator: 'CmdOrCtrl+Alt+A', click: ()=>{createEvent('action')}}
-              , {label: 'Dialogue', accelerator: 'CmdOrCtrl+Alt+D', click: ()=>{createEvent('dialog')}}
-              , {label: 'Event', accelerator: 'CmdOrCtrl+Alt+E', click: ()=>{createEvent('event')}}
+                {label: 'Scène', accelerator: 'CmdOrCtrl+Alt+S', click: ()=>{createEvent(STRscene)}}
+              , {label: 'Nœud STT', accelerator: 'CmdOrCtrl+Alt+T', click: ()=>{createEvent(STRstt)}}
+              , {label: 'Objectif-Obstacle-Conflit', accelerator: 'CmdOrCtrl+Alt+O', click: ()=>{createEvent(STRdyna)}}
+              , {label: 'Procédé', accelerator: 'CmdOrCtrl+Alt+P', click: ()=>{createEvent(STRproc)}}
+              , {label: 'Note', accelerator: 'CmdOrCtrl+Alt+N', click: ()=>{createEvent(STRnote)}}
+              , {label: 'Idée', accelerator: 'CmdOrCtrl+Alt+I', click: ()=>{createEvent(STRidee)}}
+              , {label: 'Info', accelerator: 'CmdOrCtrl+Alt+F', click: ()=>{createEvent(STRinfo)}}
+              , {label: 'QRD', accelerator: 'CmdOrCtrl+Alt+Q', click: ()=>{createEvent(STRqrd)}}
+              , {label: 'Action', accelerator: 'CmdOrCtrl+Alt+A', click: ()=>{createEvent(STRaction)}}
+              , {label: 'Dialogue', accelerator: 'CmdOrCtrl+Alt+D', click: ()=>{createEvent(STRdialog)}}
+              , {label: 'Event', accelerator: 'CmdOrCtrl+Alt+E', click: ()=>{createEvent(STRevent)}}
             ]
         }
       , {
             label: 'Liste des… (CMD+clic btn)'
           , submenu: [
-                {label: 'Scènes', click: ()=>{listEvent('scene')}}
-              , {label: 'Nœuds STT', click: ()=>{listEvent('stt')}}
-              , {label: 'O.O.C.', click: ()=>{listEvent('dyna')}}
-              , {label: 'Procédés', click: ()=>{listEvent('proc')}}
-              , {label: 'Notes', click: ()=>{listEvent('note')}}
-              , {label: 'Idées', click: ()=>{listEvent('idee')}}
-              , {label: 'Infos', click: ()=>{listEvent('info')}}
-              , {label: 'QRDs', click: ()=>{listEvent('qrd')}}
-              , {label: 'Actions', click: ()=>{listEvent('action')}}
-              , {label: 'Dialogues', click: ()=>{listEvent('dialog')}}
-              , {label: 'Events', click: ()=>{listEvent('event')}}
+                {label: 'Scènes', click: ()=>{listEvent(STRscene)}}
+              , {label: 'Nœuds STT', click: ()=>{listEvent(STRstt)}}
+              , {label: 'O.O.C.', click: ()=>{listEvent(STRdyna)}}
+              , {label: 'Procédés', click: ()=>{listEvent(STRproc)}}
+              , {label: 'Notes', click: ()=>{listEvent(STRnote)}}
+              , {label: 'Idées', click: ()=>{listEvent(STRidee)}}
+              , {label: 'Infos', click: ()=>{listEvent(STRinfo)}}
+              , {label: 'QRDs', click: ()=>{listEvent(STRqrd)}}
+              , {label: 'Actions', click: ()=>{listEvent(STRaction)}}
+              , {label: 'Dialogues', click: ()=>{listEvent(STRdialog)}}
+              , {label: 'Events', click: ()=>{listEvent(STRevent)}}
             ]
         }
     ]
@@ -546,7 +546,7 @@ const DATA_MENUS = [
                 // Note: option générale
                 label: "Charger la dernière analyse au chargement"
               , id:     'load_last_on_launching'
-              , type:   'checkbox'
+              , type:   STRcheckbox
               , checked: false
               , click:  () => {
                   var checked = ObjMenus.getMenu('load_last_on_launching').checked
@@ -557,7 +557,7 @@ const DATA_MENUS = [
           , {
                 label: "Calcul automatique de la durée des scènes"
               , id: 'option_duree_scene_auto'
-              , type: 'checkbox'
+              , type: STRcheckbox
               , checked: true
               , click: () => {
                   var checked = ObjMenus.getMenu('option_duree_scene_auto').checked
@@ -568,7 +568,7 @@ const DATA_MENUS = [
           , {
                 label: 'Démarrer 3 secondes avant l’event'
               , id:    'option_start_3secs_before_event'
-              , type:  'checkbox'
+              , type:  STRcheckbox
               , checked:  false
               , enabled: true
               , click: ()=>{
@@ -579,7 +579,7 @@ const DATA_MENUS = [
           , {
                 label:  'Démarrer quand un temps est choisi'
               , id:     'option_start_when_time_choosed'
-              , type:   'checkbox'
+              , type:   STRcheckbox
               , checked: false
               , enabled: true
               , click: () => {
@@ -591,7 +591,7 @@ const DATA_MENUS = [
           , {
                 label:  "Verrouiller les points d'arrêt"
               , id:     'option_lock_stop_points'
-              , type:   'checkbox'
+              , type:   STRcheckbox
               , checked: true
               , click: () => {
                   var c = ObjMenus.getMenu('option_lock_stop_points').checked ? 'true' : 'false'
@@ -602,7 +602,7 @@ const DATA_MENUS = [
           , {
                 label:    "Utiliser le mini-writer pour éditer les textes"
               , id:       'option_edit_in_mini_writer'
-              , type:     'checkbox'
+              , type:     STRcheckbox
               , checked:  false
               , click:  () => {
                   var c = ObjMenus.getMenu('option_edit_in_mini_writer').checked ?'true':'false'

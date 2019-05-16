@@ -60,21 +60,21 @@ positionneShadowAt(time){
 * Pour le moment, on ne fait qu'arrêter la vidéo et se mettre en place
 **/
 onHoverSlider(e){
-  this.horloge.css('visibility', 'visible')
-  this.shadowCursor.css('visibility', 'visible')
+  this.horloge.css('visibility', STRvisible)
+  this.shadowCursor.css('visibility', STRvisible)
   return stopEvent(e)
 }
 
 onMouseOutSlider(e){
-  this.horloge.css('visibility', 'hidden')
-  this.shadowCursor.css('visibility', 'hidden')
+  this.horloge.css('visibility', STRhidden)
+  this.shadowCursor.css('visibility', STRhidden)
   return stopEvent(e)
 }
 
 onMoveOnSlider(e){
   this.otime.updateSeconds((e.offsetX - 10) * this.coefP2T)
   this.positionneShadowAt(this.otime)
-  this.horloge.css('visibility', 'visible')
+  this.horloge.css('visibility', STRvisible)
   this.horloge.html(this.otime.horloge)
   stopEvent(e)
 }

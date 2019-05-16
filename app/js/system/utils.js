@@ -242,7 +242,7 @@ function DFormater(str, opts){
  * Pour rendre le selecteur +jqId+ visible (visibility)
  */
 function toggleVisible(jqId, v){
-  $(jqId).css('visibility', v ? 'visible' : 'hidden')
+  $(jqId).css('visibility', v ? STRvisible : STRhidden)
 }
 
 // Pour écouter un objet

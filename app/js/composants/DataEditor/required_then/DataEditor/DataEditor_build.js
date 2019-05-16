@@ -45,13 +45,13 @@ Object.assign(DataEditor.prototype,{
 
     // Le bouton "enregistrer" n'est visible que si un élément est choisi
     var divsFooter = []
-    let visuBtns = this.data.no_new_item ? 'hidden' : 'visible'
+    let visuBtns = this.data.no_new_item ? STRhidden : STRvisible
     if(this.data.checkOnDemand){
       divsFooter.push(DCreate(BUTTON, {id:my.idFor('btn-check'), type:'button', class:'btn-check small', inner:"Check now!", style:`visibility:${visuBtns};`}))
     }
     divsFooter.push(...[
         DCreate(SPAN,{class:'small',append:[
-            DCreate(INPUT,{type:'checkbox', id:my.idFor('btn-close-after-save'), attrs:{checked:'CHECKED'}})
+            DCreate(INPUT,{type:STRcheckbox, id:my.idFor('btn-close-after-save'), attrs:{checked:'CHECKED'}})
           , DCreate(LABEL,{inner:'Fermer après save', attrs:{for:my.idFor('btn-close-after-save')}})
           ]})
       , DCreate(BUTTON, {id:my.idFor('btn-save'), type:'button', class:'btn-save small main-button', inner:"Enregistrer", style:`visibility:${visuBtns};`})

@@ -289,7 +289,7 @@ observe(){
   // Une flying window est déplaçable par essence
   // console.log("this.jqObj:", this.jqObj)
   this.jqObj.draggable({
-    containment: 'document'
+    containment: STRdocument
   })
   // Une flying window est cliquable par essence
   // this.jqObj.find('header, body').on('click', FWindow.setCurrent.bind(FWindow, this))

@@ -99,7 +99,7 @@ const UI = {
     // console.log("-> miniWriterizeTextFields", editInMiniwriter)
     if(!container) container = $(document)
 
-    container.find('textarea')[editInMiniwriter?'on':'off']('focus', function(e){
+    container.find(STRtextarea)[editInMiniwriter?'on':'off']('focus', function(e){
       MiniWriter.new($(this)[0])
     })
   }

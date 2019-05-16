@@ -12,7 +12,7 @@ as(format, flag, opts){
   if (undefined === flag) flag = 0
   if (undefined === opts) opts = {}
 
-  opts.owner = {type: 'document', id: this.id}
+  opts.owner = {type: STRdocument, id: this.id}
 
   var divs = []
 

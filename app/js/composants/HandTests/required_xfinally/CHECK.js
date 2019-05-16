@@ -142,7 +142,7 @@ Object.assign(HandTestStep.prototype,{
     return 1
   }
   /**
-    @param {String} suj   Le type du sujet, p.e. 'event' ou 'document'
+    @param {String} suj   Le type du sujet, p.e. STRevent ou STRdocument
     @param {String} suj_id    L'identifiant. Pourra être transformé en nombre en
                               fonction du type du sujet
 

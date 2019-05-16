@@ -8,14 +8,14 @@ Object.assign(DataEditor.prototype,{
     if(this.currentItem){
       this.setFormValues()
       if(this.data.no_new_item){
-        this.saveBtn.css('visibility', 'visible')
-        this.checkBtn.css('visibility', 'visible')
+        this.saveBtn.css('visibility', STRvisible)
+        this.checkBtn.css('visibility', STRvisible)
       }
     } else {
       // Quand on choisit le premier menu
       if(this.data.no_new_item){
-        this.saveBtn.css('visibility', 'hidden')
-        this.checkBtn.css('visibility', 'hidden')
+        this.saveBtn.css('visibility', STRhidden)
+        this.checkBtn.css('visibility', STRhidden)
       }
     }
   }

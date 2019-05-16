@@ -59,7 +59,7 @@ t.case("Création, enregistrement et modification d'un event de type note", func
       , titre:    "Le titre de la note"
       , content:  "Contenu de la note"
       , note:     "La note subsidiaire de la note"
-      , type:     'note'
+      , type:     STRnote
       , duree: null
     }
     let data_note = expected // pour plus bas

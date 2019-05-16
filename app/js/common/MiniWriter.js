@@ -141,9 +141,9 @@ build(){
           ]})
         , DCreate(DIV, {class: 'mini-writer-buttons', append: [
             DCreate(DIV, {class:'fleft cbs', append:[
-                DCreate(INPUT, {type:'checkbox', id: this.idFor('cb-visualizor')})
+                DCreate(INPUT, {type:STRcheckbox, id: this.idFor('cb-visualizor')})
               , DCreate(LABEL, {inner: 'Visualiser', attrs: {for: this.idFor('cb-visualizor')}})
-              , DCreate(INPUT, {type:'checkbox', id: this.idFor('cb-mask-fond'), attrs:{checked:'CHECKED'}})
+              , DCreate(INPUT, {type:STRcheckbox, id: this.idFor('cb-mask-fond'), attrs:{checked:'CHECKED'}})
               , DCreate(LABEL, {inner: 'Fond masqué', attrs: {for: this.idFor('cb-mask-fond')}})
               ]})
           , DCreate(BUTTON, {class:'main btn-ok', type:BUTTON, inner:'Finir'})

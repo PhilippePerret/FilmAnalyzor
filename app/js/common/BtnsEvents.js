@@ -52,13 +52,15 @@ constructor(data){
 }
 
 get as_button(){
+  let attrs =  {title: `Pour créer un event de type « ${this.data.hname} »` }
+  attrs[STRdata_type] = this.type
   if(undefined === this._as_button){
     this._as_button = DCreate(BUTTON,{
       id:     `btn-new-${this.type}`
-    , type:   'button'
+    , type:   STRbutton
     , class:  'small'
     , inner:  this.data.btn_name
-    , attrs: {'data-type': this.type, title: `Pour créer un event de type « ${this.data.hname} »` }
+    , attrs: attrs
     })
   }
   return this._as_button

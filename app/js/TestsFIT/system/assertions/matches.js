@@ -45,7 +45,7 @@ window.assert_match = function(
     if (!ok) errs = ['Les deux choses sont strictement différentes']
   } else {
     switch (typeof expected) {
-      case 'object':
+      case STRobject:
         if(expected instanceof Object){
           var hstrict = options.values_strict ? 'strictement ' : ''
           for(var k in expected){

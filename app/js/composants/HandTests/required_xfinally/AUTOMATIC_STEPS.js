@@ -218,7 +218,7 @@ Object.assign(HandTestStep.prototype,{
     switch(data_reg.what){
       case 'scène':
         break
-      case 'event':
+      case STRevent:
         break
       default:
         throw(`Je ne sais pas encore interpréter les commandes avec l'objet ${data_reg.what}, malheureusement.`)
@@ -246,7 +246,7 @@ Object.assign(HandTestStep.prototype,{
       if(undefined === args.which)throw("Impossible de trouver le which de :", which)
       // On récupère l'objet en fonction de what et du which
       switch (data_reg.what) {
-        case 'event':
+        case STRevent:
           args.objet = current_analyse.events[args.which]
           break
         default:

@@ -42,20 +42,20 @@ static forEachDim(method){
 
 
 static get TYPES2HTYPES(){
-  return {
-    'brin':       {fr: 'brin',      genre: 'M'}
-  , 'brins':      {fr: 'brins',     genre: 'M'}
-  , 'document':   {fr: 'document',  genre: 'M'}
+  let t2h = {
+    'brins':      {fr: 'brins',     genre: 'M'}
   , 'documents':  {fr: 'documents', genre: 'M'}
-  , 'event':      {fr: 'event',     genre: 'M'}
   , 'events':     {fr: 'events',    genre: 'M'}
-  , 'image':      {fr: 'image',     genre: 'F'}
   , 'images':     {fr: 'images',    genre: 'F'}
-  , 'scene':      {fr: 'scène',     genre: 'F'}
   , 'scenes':     {fr: 'scènes',    genre: 'F'}
-  , 'time':       {fr: 'temps',     genre: 'M'}
   , 'times':      {fr: 'temps',     genre: 'M'}
   }
+  t2h[STRbrin]      = {fr: STRbrin,      genre: 'M'}
+  t2h[STRimage]     = {fr: STRimage,     genre: 'F'}
+  t2h[STRdocument]  = {fr: STRdocument,  genre: 'M'}
+  t2h[STRevent]     = {fr: STRevent,     genre: 'M'}
+  t2h[STRscene]     = {fr: 'scène',     genre: 'F'}
+  t2h[STRtime]      = {fr: 'temps',     genre: 'M'}
 }
 static htypeFor(type, options){
   if(undefined === options) options = {}
@@ -274,13 +274,13 @@ setFormat(str, format){
    */
   static get REGEXP_EVENT_TAG(){
     if(undefined==this._regexp_event_tag){
-      this._regexp_event_tag = new RegExp(this.defineRegExpTag('event'), 'gi')
+      this._regexp_event_tag = new RegExp(this.defineRegExpTag(STRevent), 'gi')
     }
     return this._regexp_event_tag
   }
   static get REGEXP_SCENE_TAG(){
     if(undefined==this._regexp_scene_tag){
-      this._regexp_scene_tag = new RegExp(this.defineRegExpTag('scene'), 'gi')
+      this._regexp_scene_tag = new RegExp(this.defineRegExpTag(STRscene), 'gi')
     }
     return this._regexp_scene_tag
   }
@@ -295,7 +295,7 @@ setFormat(str, format){
   Méthode qui remplace les balises event "{{event: id}}" par un texte, un lien
   ou autre ajout.
 
-  Traitement particulier des events de type 'note' qui sont ajoutés, pour
+  Traitement particulier des events de type STRnote qui sont ajoutés, pour
   le moment, après le +str+ complet, avec des indices ajoutés
 **/
 deEventTags(str, options){
@@ -316,7 +316,7 @@ deEventTags(str, options){
   str = str.replace(FATexte.REGEXP_EVENT_TAG, function(){
     groups = arguments[arguments.length - 1]
     ev = current_analyse.ids[groups.event_id]
-    if(ev.type === 'note'){
+    if(ev.type === STRnote){
       if(options.notes === false){
         return ''
       } else {

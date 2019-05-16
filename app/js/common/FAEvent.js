@@ -4,7 +4,7 @@ class FAEvent {
 // ---------------------------------------------------------------------
 //  CLASSE
 
-static get OWN_PROPS(){return ['id', 'type', 'titre', 'time', 'duree', 'parent', 'curimage', ['content', 'longtext1'], 'associates']}
+static get OWN_PROPS(){return ['id', 'type', 'titre', STRtime, 'duree', 'parent', 'curimage', ['content', 'longtext1'], 'associates']}
 static get TEXT_PROPERTIES(){return ['titre', 'content']}
 
 static get ALL_PROPS(){
@@ -133,7 +133,7 @@ static defineType(){
 constructor(analyse, data){
   this.analyse  = this.a = analyse
   this.dispatch(data)
-  this.metaType = STRevent // alors que le type sera 'scene', 'dialog', etc.
+  this.metaType = STRevent // alors que le type sera STRscene, STRdialog, etc.
   this.type     = this.constructor.type
   this.id = parseInt(this.id,10)
 
@@ -208,7 +208,7 @@ set duree(v){
     this.reset()
   }
 }
-get duree(){return this._duree || (this.type === 'scene' ? 60 : 10)}
+get duree(){return this._duree || (this.type === STRscene ? 60 : 10)}
 
 // Alias
 get description(){return this.content}

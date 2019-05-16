@@ -74,7 +74,7 @@ build(){
   return [header, body, footer]
 }
 afterBuilding(){
-  this.btnShowAll.css('visibility','hidden')
+  this.btnShowAll.css('visibility',STRhidden)
   this.selected && this.select(this.selected)
   this.setHeight()
 }
@@ -139,12 +139,12 @@ select(item_id){
   let item = this.owner.get(item_id)
   this.jqObj.find('.body .falisting > LI').hide()
   this.jqObj.find(`.body > LI.falisting-${item.domClass}`).show()
-  this.btnShowAll.css('visibility','visible')
+  this.btnShowAll.css('visibility',STRvisible)
 }
 
 showAll(){
   this.jqObj.find('.body .falisting > LI').show()
-  this.btnShowAll.css('visibility','hidden')
+  this.btnShowAll.css('visibility',STRhidden)
 }
 
 // ---------------------------------------------------------------------
@@ -211,7 +211,8 @@ divsItems(){
     }
 
     if (this.associable){
-      Object.assign(attrs,{'data-id':it.id, 'data-type':(it.metaType||it.type)})
+      attrs[STRdata_type] = (it.metaType||it.type)
+      attrs[STRdata_id]   = it.id
     }
     $(li).attr(attrs)
     arr.push(li)

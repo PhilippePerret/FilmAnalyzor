@@ -109,12 +109,15 @@ inRelPFA(coefT2P, name){
   //   , leftRel: this.leftRel(coefT2P)
   //   , widthRel: this.widthRel(coefT2P)
   // })
-  return DCreate('SPAN', {
+  let attrs = {}
+  attrs[STRdata_id]   = this.event_id
+  attrs[STRdata_type] = STRevent
+  return DCreate(SPAN, {
     class: `${this.classNode} ${this.markGoodPos /* inzone, outzone, nearzone */}`
   , style: `left:${this.leftRel(coefT2P)};width:${this.widthRel(coefT2P)};`
   , append: [this.aSpanName(name)]
   // , attrs:{onclick: `current_analyse.editEvent(${this.event_id})`}
-  , attrs:  {'data-id': this.event_id, 'data-type': 'event'}
+  , attrs:  attrs
   })
 }
 get classNode(){

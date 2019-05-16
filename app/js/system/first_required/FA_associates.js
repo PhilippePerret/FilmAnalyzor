@@ -22,18 +22,18 @@ let ASSOCIATES_COMMON_METHODS = {
     À partir de cette liste, on construit toutes les listes des types,
     personnages:[], brins:[] etc.
   **/
-  types_associates: ['event','personnage', 'document', 'time', 'brin', 'image']
+  types_associates: [STRevent,STRpersonnage, STRdocument, STRtime, STRbrin, STRimage]
 
   /**
 
     Répète la méthode +fn+ sur tous les éléments associés de
     type +type+ (le nom du type au singulier)
 
-    @param {String} type  Soit 'event', 'document', 'time', etc.
+    @param {String} type  Soit STRevent, STRdocument, STRtime, etc.
 
   **/
 , forEachAssociate(type, fn){
-    if(type === 'time'){
+    if(type === STRtime){
       for(var assoEvent of this[`${type}s`]){
         if(false === fn(new OTime(assoEvent))) break;
       }
@@ -183,8 +183,8 @@ let ASSOCIATES_COMMON_METHODS = {
 
 , realAssoId(list_id, id){
     switch (list_id) {
-      case 'time':   return id instanceof(OTime) ? id.seconds : parseFloat(id) ;
-      case 'event':  return parseInt(id,10)
+      case STRtime:   return id instanceof(OTime) ? id.seconds : parseFloat(id) ;
+      case STRevent:  return parseInt(id,10)
       default: return id
     }
   }
@@ -214,7 +214,7 @@ let ASSOCIATES_COMMON_PROPERTIES = {
 
     Mais dans la donnée, seules les listes contenant des éléments sont
     enregistrées. Donc on peut se retrouver avec une valeur pour associates
-    qui est donnée, mais une clé inexistante (par exemple la clé 'brin')
+    qui est donnée, mais une clé inexistante (par exemple la clé STRbrin)
 
     Au premier appel de `associates`, il faut donc s'assurer que toutes les
     listes d'associés soit préparées.
@@ -270,8 +270,8 @@ const DATA_ASSOCIATES_DROPPABLE = {
     if (FADrop.isNotCurrentDropped(e.target)) return stopEvent(e)
     let target = $(e.target)
       , helper = ui.helper
-      , owner = {type: target.attr('data-type'), id: target.attr('data-id')}
-      , owned = {type: helper.attr('data-type'), id:helper.attr('data-id')}
+      , owner = {type: target.attr(STRdata_type), id: target.attr(STRdata_id)}
+      , owned = {type: helper.attr(STRdata_type), id:helper.attr(STRdata_id)}
     current_analyse.associer(owner, owned)
     return stopEvent(e)
   }
@@ -291,7 +291,7 @@ const DATA_ASSOCIATES_DRAGGABLE = {
         return this.dragHelper()
       } else {
         var t = $(e.currentTarget)
-          , i = current_analyse.instanceOfElement({type:t.attr('data-type'), id:t.attr('data-id')})
+          , i = current_analyse.instanceOfElement({type:t.attr(STRdata_type), id:t.attr(STRdata_id)})
         return i.dragHelper()
       }
     }
@@ -300,7 +300,7 @@ const DATA_ASSOCIATES_DRAGGABLE = {
       let container = $(e.target).parent()
       if(container){
         container.old_overflow = container.css('overflow')
-        container.css('overflow','visible')
+        container.css('overflow',STRvisible)
       }
     }
   , stop: e => {
@@ -366,9 +366,10 @@ const TEXTFIELD_ASSOCIATES_METHS = {
 , onDropAssociableElement(e, ui){
     if (FADrop.isNotCurrentDropped(e.target)) return stopEvent(e)
     let helper  = $(ui.helper)
-      , [eltype, elid]  = [helper.attr('data-type'), helper.attr('data-id')]
+      , [eltype, elid]  = [helper.attr(STRdata_type), helper.attr(STRdata_id)]
       , textAdded = '|texte/légende|style'
       , balise = `{{${eltype}:${elid}${textAdded}}}`
+    if (this.droppedAndReceiverAreSameElement(e.target, helper))
 
     $(e.target).insertAtCaret(balise)
     let selector = new Selector(e.target)
@@ -378,7 +379,28 @@ const TEXTFIELD_ASSOCIATES_METHS = {
     return stopEvent(e)
   }
 
-}
+/**
+  Méthode qui retourne true si les DOMElements(jQset) +receiver+ et +dropped+
+  sont les mêmes éléments (data-type et data-id identiques). La méthode doit
+  empêcher de placer une balise pour élément dans un texte de cet élément.
+
+  @param {DOMElement|jqSet} receiver  Élément DOM qui reçoit l'élément droppé
+  @param {DOMElement|jqSet} dropped   Élément DOM droppé
+
+  @return {Boolean} true si égalité
+
+**/
+, droppedAndReceiverAreSameElement(receiver, dropped){
+    let r_type  = isDOMElementWithAttribute($(receiver),  STRdata_type)
+      , r_id    = isDOMElementWithAttribute($(receiver),  STRdata_id)
+      , d_type  = isDOMElementWithAttribute($(dropped),   STRdata_type)
+      , d_id    = isDOMElementWithAttribute($(dropped),   STRdata_id)
+
+    return (r_type == d_type) && (r_id) == (d_id)
+  }
+
+} // /const TEXTFIELD_ASSOCIATES_METHS
+
 const TEXTFIELD_ASSOCIATES_PROPS = {
   what:{get(){'Propriétés propres aux associations pour les drops dans les champs de texte'}}
   /**

@@ -64,7 +64,7 @@ resetBeyond(from_time, to_time){
   var ti, id, my = this
   this.forEachEventNode(function(o){
     ti  = parseFloat(o.getAttribute('data-time'))
-    id  = parseInt(o.getAttribute('data-id'),10)
+    id  = parseInt(o.getAttribute(STRdata_id),10)
     if ( ti < from_time || ti > to_time){my.analyse.ids[id].hide()}
   })
 }
@@ -128,9 +128,9 @@ forEachEvent(fn){
     , no, ev
   for(;i<nb_nodes;++i){
     no = eNodes[i]
-    ev = this.a.ids[parseInt(no.getAttribute('data-id'),10)]
+    ev = this.a.ids[parseInt(no.getAttribute(STRdata_id),10)]
     if(undefined === ev){
-      console.error("[Dans FAReader#forEachEvent], l'event d'id suivant est inconnu :", no.getAttribute('data-id'))
+      console.error("[Dans FAReader#forEachEvent], l'event d'id suivant est inconnu :", no.getAttribute(STRdata_id))
     } else {
       if(false === fn(ev)) break
     }

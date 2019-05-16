@@ -106,7 +106,7 @@ const HandTests = {
 , writePath(rpath){ this.fwindow.jqObj.find('input#htest-path').val(rpath) }
 , writeLibelle(lib){ this.writeFoo('libelle', lib) }
 , writeDescription(desc){ this.writeFoo('description', desc) }
-, writeNote(note){ this.writeFoo('note', note) }
+, writeNote(note){ this.writeFoo(STRnote, note) }
 , writeFoo(what, str){
     this.fwindow.jqObj.find(`.htest-${what} span`).html(str)
   }
@@ -124,7 +124,7 @@ const HandTests = {
   ]
   headers.push(DCreate('DIV', {class: 'div-htest-path', append:[
       DCreate('LABEL', {inner: 'Fichier : '})
-    , DCreate('INPUT', {id:'htest-path', type:'text', value:'...', class:'small'})
+    , DCreate('INPUT', {id:'htest-path', type:STRtext, value:'...', class:'small'})
     , DCreate('BUTTON', {id:'btn-htest-path', class:'small', inner: 'jouer'})
   ]}))
   this.description && headers.push(DCreate('DIV', {class: 'htest-description explication', append:[

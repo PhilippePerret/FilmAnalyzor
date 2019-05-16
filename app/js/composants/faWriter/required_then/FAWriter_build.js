@@ -16,9 +16,11 @@ Object.assign(FAWriter, {
     , class: 'btn-close'
     , type: 'button'
     })
+    var attrs = {'title': "Pour glisser et déposer le document sur un event ou un texte."}
+    attrs[STRdata_type] = STRdocument
     spa = DCreate(SPAN, {
       class: 'writer-btn-drop document'
-    , attrs: {'data-type': 'document', 'title': "Pour glisser et déposer le document sur un event ou un texte."}
+    , attrs: attrs
     , inner: ' ⎆'
     })
     var doctitle = DCreate('DIV',{
@@ -69,9 +71,9 @@ Object.assign(FAWriter, {
       , DCreate(LABEL, {class:'fleft', inner: 'Taille du texte : '})
       , DCreate(SPAN, {id: 'text-size', class:'fleft', inner: '...'})
       , DCreate(LABEL, {inner: 'Visualiser', attrs:{for: 'cb-auto-visualize'}})
-      , DCreate(INPUT, {id: 'cb-auto-visualize', attrs: {type: 'checkbox'}})
+      , DCreate(INPUT, {id: 'cb-auto-visualize', attrs: {type: STRcheckbox}})
       , DCreate(LABEL, {inner: 'Auto-save', attrs:{for: 'cb-save-auto-doc'}})
-      , DCreate(INPUT, {id: 'cb-save-auto-doc', attrs: {type: 'checkbox'}})
+      , DCreate(INPUT, {id: 'cb-save-auto-doc', attrs: {type: STRcheckbox}})
       , DCreate(BUTTON, {id: 'btn-save-doc', inner: 'Enregistrer', type: 'button'})
       ]
     })

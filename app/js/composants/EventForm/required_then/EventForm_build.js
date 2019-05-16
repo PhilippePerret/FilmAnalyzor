@@ -34,7 +34,7 @@ Object.assign(EventForm.prototype,{
     let prefid = 'event-__EID__'
 
     for(prop of this.constructor.COMMON_HIDDEN_FIELDS){
-      dom.push(DCreate(INPUT, {type:'hidden', id:`${prefid}-${prop}`}))
+      dom.push(DCreate(INPUT, {type:STRhidden, id:`${prefid}-${prop}`}))
     }
 
     dom.push(DCreate(SECTION, {class: 'header no-user-selection', append:[
@@ -43,27 +43,27 @@ Object.assign(EventForm.prototype,{
       ]}))
 
     /*  Div supérieur avec temps, durée ou numéro */
+    let attrs = {title: 'Pour glisser et déposer l’event et l’associer'}
+    attrs[STRdata_type] = STRevent
+    attrs[STRdata_id]   = '__EID__'
     dom.push(DCreate(DIV, {class:'div-infos-temporelles no-user-selection', append:[
       // Le petit bouton droppable pour associer l'event nouveau ou modifié
-        DCreate(SPAN, {class: 'event-btn-drop event', inner: '⎆', style: 'background:transparent;', attrs:{
-          title: 'Pour glisser et déposer l’event et l’associer'
-        , 'data-type':'event', 'data-id':'__EID__'
-        }})
+        DCreate(SPAN, {class: 'event-btn-drop event', inner: '⎆', style: 'background:transparent;', attrs:attrs})
       , DCreate(BUTTON, {class:'btnplay right', attrs:{size:30}})
       , DCreate(LABEL, {inner: 'Position'})
-      , DCreate('HORLOGE', {class:'small', id:my.fId('time'), value:'', inner: '...'})
+      , DCreate('HORLOGE', {class:'small', id:my.fId(STRtime), value:'', inner: '...'})
       , DCreate(LABEL, {inner: 'Durée'})
       , DCreate('DUREE', {id: my.fId('duree'), class: 'small dureeable'})
       ]}))
 
     /*  Pour le type particulier de l'event */
-    if(type != 'qrd'){
+    if(type != STRqrd){
       var fieldsType = []
       fieldsType.push(
-          DCreate(LABEL, {inner:type === 'stt' ? 'Type du nœud' : 'Type'})
+          DCreate(LABEL, {inner:type === STRstt ? 'Type du nœud' : 'Type'})
         , DCreate(SELECT, {id: my.fId(`${type}Type`), class: `${type}-types`, style:'max-width:270px;'})
       )
-      if(type !== 'stt'){
+      if(type !== STRstt){
         fieldsType.push(
             DCreate(BUTTON, {type:BUTTON, class:'update btn-update-types', title: T('tit-update-type-list'), append:[
               DCreate(IMG, {src: 'img/update-2.png', alt: 'Actualiser la liste des types'})
@@ -72,17 +72,17 @@ Object.assign(EventForm.prototype,{
               DCreate(IMG, {src: 'img/btn-edit.png', alt: 'Modifier la liste des types'})
             ]})
           , DCreate(BUTTON, {type:BUTTON, class:'info btn-info-proc', append:[
-              DCreate(IMG, {src: 'img/picto_info_dark.png', alt: 'Information sur le procédé courant', style:`visibility:${type === 'proc'?'visible':'hidden'}`})
+              DCreate(IMG, {src: 'img/picto_info_dark.png', alt: 'Information sur le procédé courant', style:`visibility:${type === STRproc?STRvisible:STRhidden}`})
             ]})
         )
       }
       dom.push(DCreate(DIV,{class:`div-form div-${type}-types`, append:fieldsType}))
     }
 
-    if( type === 'scene' ){
+    if( type === STRscene ){
       dom.push(DCreate(DIV, {class:'div-form', append:[
           DCreate(LABEL, {inner: 'Num.'})
-        , DCreate(INPUT, {type:'text', id: my.fId('numero'), class:'temps-secondes', disabled:'DISABLED'})
+        , DCreate(INPUT, {type:STRtext, id: my.fId('numero'), class:'temps-secondes', disabled:'DISABLED'})
         , DCreate(SELECT, {id:my.fId('lieu'), append:[
             DCreate(OPTION, {value: 'int', inner: 'INT.'})
           , DCreate(OPTION, {value: 'ext', inner: 'EXT.'})
@@ -101,21 +101,21 @@ Object.assign(EventForm.prototype,{
     } // si scène
 
     dom.push(DCreate(DIV, {class:'div-form', append:[
-        DCreate(LABEL, {for: my.fId('titre'), inner: type === 'scene' ? 'Pitch' : 'Titre générique (optionnel)'})
+        DCreate(LABEL, {for: my.fId('titre'), inner: type === STRscene ? 'Pitch' : 'Titre générique (optionnel)'})
       , DCreate(INPUT, {type:'TEXT', id:my.fId('titre'), class:'main-field'})
       ]}))
 
     // La case à cocher pour dire que l'event est lié à l'image de son
     // temps (qu'il faut donc l'afficher)
     dom.push(DCreate(DIV,{class:'div-form align-middle',append:[
-        DCreate(INPUT,{type:'checkbox',id:my.fId('curimage')})
+        DCreate(INPUT,{type:STRcheckbox,id:my.fId('curimage')})
       , DCreate(LABEL,{attrs:{for:my.fId('curimage')}, inner:'Lié à l’image courante'})
       , DCreate(IMG, {src:'img/picto_info_dark.png', class:'info-curimage small', alt: '?'})
     ]}))
 
 
     var parentDesign = [DCreate(SPAN, {class:'small', inner:'PARENT (glisser ici l’event parent — '})]
-    if(type==='dyna') parentDesign.push(DCreate(SPAN, {class:'small italic', inner:'l’objectif du sous-objectif ou du moyen, l’obstacle du conflit, etc. — '}))
+    if(type===STRdyna) parentDesign.push(DCreate(SPAN, {class:'small italic', inner:'l’objectif du sous-objectif ou du moyen, l’obstacle du conflit, etc. — '}))
     parentDesign.push(DCreate(SPAN, {class:'small italic', inner:'utilisez par exemple un Eventer)'}))
     dom.push(DCreate(DIV, {class:'div-form', append:[
         DCreate(DIV, {class:'event-parent cadre', append:[
@@ -126,9 +126,9 @@ Object.assign(EventForm.prototype,{
 
     label = (typ => {
       switch(typ) {
-        case 'dyna' : return 'Libellé'
-        case 'scene': return 'Décor'
-        case 'qrd'  : return 'Question'
+        case STRdyna : return 'Libellé'
+        case STRscene: return 'Décor'
+        case STRqrd  : return 'Question'
         default: return
       }
     })(type)
@@ -136,7 +136,7 @@ Object.assign(EventForm.prototype,{
     if(undefined !== label){
       dom.push(DCreate(DIV, {class:'div-form', append:[
           DCreate(LABEL, {inner:label})
-        , DCreate(SELECT, {class:'decors', style:`display:${type==='scene'?'block':'none'};`})
+        , DCreate(SELECT, {class:'decors', style:`display:${type===STRscene?'block':'none'};`})
         , DCreate(INPUT, {type:'TEXT', id: my.fId('shorttext1')})
       ]}))
     }
@@ -144,17 +144,17 @@ Object.assign(EventForm.prototype,{
 
     label = (typ => {
       switch (typ) {
-        case 'scene': return 'Sous-décor'
-        case 'qrd':   return 'Réponse'
+        case STRscene: return 'Sous-décor'
+        case STRqrd:   return 'Réponse'
         default: return
       }
     })(type)
 
     if(undefined!==label){
       var ds = [DCreate(LABEL,{inner:label})]
-      if(type === 'scene') ds.push(DCreate(SELECT, {class:'sous_decors'}))
+      if(type === STRscene) ds.push(DCreate(SELECT, {class:'sous_decors'}))
       ds.push(DCreate(INPUT, {type:'TEXT', id:my.fId('shorttext2')}))
-      if(type === 'qrd'){
+      if(type === STRqrd){
         ds.push(DCreate(DIV, {class:'right', append:[
                   DCreate(LABEL, {inner:'Temps'})
                 , DCreate(INPUT, {type:'TEXT', class:'horloge', id:my.fId('tps_reponse')})
@@ -166,9 +166,9 @@ Object.assign(EventForm.prototype,{
 
     label = (typ => {
       switch(typ){
-        case 'brin'   :return 'Résumé'
-        case 'info'   :return 'Information'
-        case 'dialog' :return 'Commentaire'
+        case STRbrin   :return 'Résumé'
+        case STRinfo   :return 'Information'
+        case STRdialog :return 'Commentaire'
         default: return 'Description'
       }
     })(type)
@@ -179,9 +179,9 @@ Object.assign(EventForm.prototype,{
 
     label = (typ => {
       switch(typ){
-        case 'idee':
-        case 'proc':    return 'Installation'
-        case 'dialog':  return 'Dialogue <span class="small">(les guillemets sont inutiles)</span>'
+        case STRidee:
+        case STRproc:    return 'Installation'
+        case STRdialog:  return 'Dialogue <span class="small">(les guillemets sont inutiles)</span>'
         default:        return
       }
     })(type)
@@ -194,9 +194,9 @@ Object.assign(EventForm.prototype,{
 
     label = (typ => {
       switch(typ){
-        case 'qrd':
-        case 'idee':
-        case 'proc': return 'Exploitations <span class="small">(time: description — sur chaque ligne)</span>'
+        case STRqrd:
+        case STRidee:
+        case STRproc: return 'Exploitations <span class="small">(time: description — sur chaque ligne)</span>'
         default:     return
       }
     })(type)
@@ -209,8 +209,8 @@ Object.assign(EventForm.prototype,{
 
     label = (typ => {
       switch(typ){
-        case 'idee': return 'Fonctions <span class="small">(une par ligne)</span>'
-        case 'proc': return 'Résolution <span class="small">({{time:...}} description — ou raison de non résolution)</span>'
+        case STRidee: return 'Fonctions <span class="small">(une par ligne)</span>'
+        case STRproc: return 'Résolution <span class="small">({{time:...}} description — ou raison de non résolution)</span>'
         default:     return
       }
     })(type)
@@ -253,7 +253,7 @@ Object.assign(EventForm.prototype,{
 
     // Quand le type de l'event est scene et que le résumé est vide,
     // on synchronise le pitch avec le résumé
-    if(this.type === 'scene' && this.isNew){
+    if(this.type === STRscene && this.isNew){
       this.jqField('titre').on('keyup', my.synchronizePitchAndResume.bind(my))
       this.jqField('longtext1').on('keyup', my.checkIfSynchronizable.bind(my))
     }
@@ -298,10 +298,10 @@ Object.assign(EventForm.prototype,{
 
     // Si l'event est une scène, on observe le menu décor et
     // sous décor
-    if(this.type === 'scene'){
+    if(this.type === STRscene){
       this.menuDecors.on('change', this.onChooseDecor.bind(this))
       this.menuSousDecors.on('change', this.onChooseSousDecor.bind(this))
-    } else if (this.type === 'proc'){
+    } else if (this.type === STRproc){
       $('button.btn-info-proc').on('click', FAProcede.showDescriptionOf.bind(FAProcede,this.id))// prop aux procédés, celui-là
       $('div.div-proc-types button.update').on('click', FAProcede.updateData.bind(FAProcede)) // ATTENTION : button commun
     }
