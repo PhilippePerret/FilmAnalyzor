@@ -64,7 +64,7 @@ Object.defineProperties(Fondamentales,{
         , id: 'fd2'
         , title: 'QDF'
         , dataFields: [
-            {label:'QD (id)', type:STRtext, class:'short', prop:'question_id', validities:REQUIRED
+            {label:'QD (id)', type:STRtext, class:STRshort, prop:'question_id', validities:REQUIRED
               , observe:{
                   'drop':{accept:'.qrd', tolerance:'intersect', classes:{'ui-droppable-hover':'survoled'}
                           , drop:(e,ui) => $(e.target).val(ui.helper.attr(STRdata_id))
@@ -114,7 +114,7 @@ Object.defineProperties(Fondamentales,{
         , id: 'fd4'
         , title: 'RDF'
         , dataFields: [
-            {label:'RD (id)', type:STRtext, class:'short', prop:'reponse-id', validities:REQUIRED
+            {label:'RD (id)', type:STRtext, class:STRshort, prop:'reponse-id', validities:REQUIRED
               , observe:{
                   'drop':{accept:'.qrd', tolerance:'intersect', classes:{'ui-droppable-hover':'survoled'}
                           , drop:(e,ui) => $(e.target).val(ui.helper.attr(STRdata_id))

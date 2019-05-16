@@ -44,9 +44,9 @@ forEachItem(fn){
 build(){
 
   var divsHeader = []
-  divsHeader.push(DCreate(BUTTON, {type:'button', class:'btn-close'}))
+  divsHeader.push(DCreate(BUTTON, {type:STRbutton, class:'btn-close'}))
   if(this.data.creatable) {
-    divsHeader.push(DCreate(BUTTON, {type:'button', class:'btn-add', inner: '+'}))
+    divsHeader.push(DCreate(BUTTON, {type:STRbutton, class:'btn-add', inner: '+'}))
   }
   divsHeader.push(DCreate(H3, {inner: this.mainTitle}))
   var header = DCreate(DIV,{class:'header', append:divsHeader})
@@ -56,8 +56,8 @@ build(){
     divsBody.push(
       DCreate(DIV,{class:'right', append:[
         DCreate(SPAN,{class:'tiny', inner:'Tout…'})
-      , DCreate('A',{class:'tiny btn btn-uncollapse-all', inner:'ouvrir'})
-      , DCreate('A',{class:'tiny btn btn-collapse-all', inner:'fermer'})
+      , DCreate(A,{class:'tiny btn btn-uncollapse-all', inner:'ouvrir'})
+      , DCreate(A,{class:'tiny btn btn-collapse-all', inner:'fermer'})
       ]})
     )
   }
@@ -66,9 +66,9 @@ build(){
   var body = DCreate(DIV,{class:'body', append: divsBody})
 
   var footer = DCreate(DIV,{class:'footer', append:[
-      DCreate(BUTTON, {type:'button', class:'btn small update fleft', inner:'Update'})
-    , DCreate(BUTTON, {type:'button', class:'small btn-show-all fleft', inner:'Tout', style:'visibility:none;'})
-    , DCreate(BUTTON, {type:'button', class:'main-button small btn-ok', inner:'OK'})
+      DCreate(BUTTON, {type:STRbutton, class:'btn small update fleft', inner:'Update'})
+    , DCreate(BUTTON, {type:STRbutton, class:'small btn-show-all fleft', inner:'Tout', style:'visibility:none;'})
+    , DCreate(BUTTON, {type:STRbutton, class:'main-button small btn-ok', inner:'OK'})
     ]})
 
   return [header, body, footer]
@@ -228,12 +228,12 @@ setHeight(){
 // MÉTHODES DE CONSTRUCTION POUR LES ITEMS
 buildEditButton(item){
   let attrs = {onclick:`${item.constructor.name}.edit('${item.id}', event)`}
-  return DCreate('A',{id:this.editBtnUID, class:'lkedit lktool fright',inner:'edit',attrs:attrs})
+  return DCreate(A,{id:this.editBtnUID, class:'lkedit lktool fright',inner:'edit',attrs:attrs})
 }
 
 buildRemoveButton(item){
   let attrs = {onclick:`${item.constructor.name}.destroy('${item.id}')`}
-  return DCreate('A',{class:'lkdel lktool fright',inner:' x ',attrs:attrs})
+  return DCreate(A,{class:'lkdel lktool fright',inner:' x ',attrs:attrs})
 }
 buildCollapseButton(item){
   return DCreate(IMG, {class: 'toggle-container', src:'img/folder_closed.png', attrs:{'data-container-id':`${item.domId}-additionnal-infos`}})

@@ -119,13 +119,13 @@ const HandTests = {
 , build(){
   let my = this
   var headers = [
-    DCreate('BUTTON', {type: 'button', class:'btn-close'})
+    DCreate(BUTTON, {type: STRbutton, class:'btn-close'})
   , DCreate('H2', {class: 'htest-libelle', append:[DCreate('SPAN',{inner:'...'})]})
   ]
   headers.push(DCreate('DIV', {class: 'div-htest-path', append:[
       DCreate('LABEL', {inner: 'Fichier : '})
     , DCreate('INPUT', {id:'htest-path', type:STRtext, value:'...', class:'small'})
-    , DCreate('BUTTON', {id:'btn-htest-path', class:'small', inner: 'jouer'})
+    , DCreate(BUTTON, {id:'btn-htest-path', class:'small', inner: 'jouer'})
   ]}))
   this.description && headers.push(DCreate('DIV', {class: 'htest-description explication', append:[
       DCreate('LABEL', {inner: 'Description : '})
@@ -145,13 +145,13 @@ const HandTests = {
     ]})
     // Les boutons dans le footer
   , DCreate('DIV', {class: 'htest-footer', append: [
-      DCreate('BUTTON', {id: 'btn-finir',     inner: 'FINIR'})
-    , DCreate('BUTTON', {id: 'btn-next-file', inner: 'Next File'})
-    , DCreate('BUTTON', {id: 'btn-next-test', inner: 'Next Test'})
-    , DCreate('BUTTON', {id: 'btn-next-step', inner: 'Next Step'})
+      DCreate(BUTTON, {id: 'btn-finir',     inner: 'FINIR'})
+    , DCreate(BUTTON, {id: 'btn-next-file', inner: 'Next File'})
+    , DCreate(BUTTON, {id: 'btn-next-test', inner: 'Next Test'})
+    , DCreate(BUTTON, {id: 'btn-next-step', inner: 'Next Step'})
     , DCreate('SPAN', {class:'separator', style:'display:inline-block;width:50px;'})
-    , DCreate('BUTTON', {id: 'btn-step-success', inner: 'OK'})
-    , DCreate('BUTTON', {id: 'btn-step-failure', inner: 'ERROR'})
+    , DCreate(BUTTON, {id: 'btn-step-success', inner: 'OK'})
+    , DCreate(BUTTON, {id: 'btn-step-failure', inner: 'ERROR'})
     ]})
 
   ]})]

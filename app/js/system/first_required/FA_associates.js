@@ -70,7 +70,7 @@ let ASSOCIATES_COMMON_METHODS = {
 **/
 , dissociateLink(options){
     options.owner || raise("Le propriétaire (owner) doit être défini pour construire un lien de dissociation.")
-    return DCreate('A', {class:'lktool lkdisso', inner:'dissocier', attrs:{onclick:`current_analyse.dissocier({type:'${options.owner.metaType||options.owner.type}',id:'${options.owner.id}'}, {type:'${this.metaType||this.type}', id:'${this.id}'})`}})
+    return DCreate(A, {class:'lktool lkdisso', inner:'dissocier', attrs:{onclick:`current_analyse.dissocier({type:'${options.owner.metaType||options.owner.type}',id:'${options.owner.id}'}, {type:'${this.metaType||this.type}', id:'${this.id}'})`}})
   }
 
 /**
@@ -104,7 +104,7 @@ let ASSOCIATES_COMMON_METHODS = {
       if(!options.forBook) flag = flag | DISSOCIABLE
       for(var assoType in this.associates){
         this.associates[assoType].map(assid => {
-          divs.push(this.a.instanceOfElement({type:assoType,id:assid}).as('associate', flag, assOpts))
+          divs.push(this.a.instanceOfElement({type:assoType,id:assid}).as(STRassociate, flag, assOpts))
         })
       }
     } else {

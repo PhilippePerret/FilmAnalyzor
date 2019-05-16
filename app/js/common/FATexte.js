@@ -135,7 +135,7 @@ static deBrin(str){
   str = str.replace(this.BRIN_REGEXP, function(){
     groups  = arguments[arguments.length-1]
     brin_id = groups.key
-    return FABrin.get(brin_id).as('short',LINKED|FORMATED)
+    return FABrin.get(brin_id).as(STRshort,LINKED|FORMATED)
   })
   return str
 }
@@ -273,13 +273,13 @@ setFormat(str, format){
    * Les balises vers des events sont composées de : `{{event:<id event>}}`
    */
   static get REGEXP_EVENT_TAG(){
-    if(undefined==this._regexp_event_tag){
+    if(isUndefined(this._regexp_event_tag)){
       this._regexp_event_tag = new RegExp(this.defineRegExpTag(STRevent), 'gi')
     }
     return this._regexp_event_tag
   }
   static get REGEXP_SCENE_TAG(){
-    if(undefined==this._regexp_scene_tag){
+    if(isUndefined(this._regexp_scene_tag)){
       this._regexp_scene_tag = new RegExp(this.defineRegExpTag(STRscene), 'gi')
     }
     return this._regexp_scene_tag
@@ -302,10 +302,10 @@ deEventTags(str, options){
   var groups, ev, indice_note
 
   // Les options
-  if(undefined === options) options = {}
+  if(isUndefined(options)) options = {}
 
   // Définition du string à corriger (+str+)
-  if(undefined === str) str = this.raw_string
+  if(isUndefined(str)) str = this.raw_string
   else this.raw_string = str
 
   // Pour mémoriser les notes à l'intérieur des textes
@@ -338,7 +338,7 @@ deEventTags(str, options){
   return str
 }
 deSceneTags(str){
-  if(undefined === str) str = this.raw_string
+  if(isUndefined(str)) str = this.raw_string
   else this.raw_string = str
   str = str.replace(FATexte.REGEXP_SCENE_TAG, function(){
     var groups = arguments[arguments.length - 1]
@@ -350,7 +350,7 @@ deSceneTags(str){
 
 deTimeTags(str){
   var groups, txt
-  if(undefined === str) str = this.raw_string
+  if(isUndefined(str)) str = this.raw_string
   else this.raw_string = str
   str = str.replace(FATexte.REGEXP_TIME_TAG, function(){
     groups = arguments[arguments.length - 1]
@@ -375,7 +375,7 @@ forEachDim(method){return FATexte.forEachDim(method)}
   @return {String} Les balises brin remplacées
 **/
 execDe(str, method){
-  if (undefined === str) str = this.raw_string
+  if (isUndefined(str)) str = this.raw_string
   else this.raw_string = str
   return FATexte[method](str)
 }

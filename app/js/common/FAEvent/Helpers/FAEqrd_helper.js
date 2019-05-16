@@ -7,7 +7,7 @@
 Object.assign(FAEqrd.prototype,{
 /**
   Version courte de l'event
-  Appeler `this.as('short', flag)`
+  Appeler `this.as(STRshort, flag)`
 **/
 asShort(options){
   var divs = []

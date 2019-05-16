@@ -103,7 +103,7 @@ get id(){return this.seconds} // pour les associations
 asAssociate(opts){
   if(undefined === opts) opts = {}
   var dvs = []
-  dvs.push(DCreate('A', {class:'lktime', inner: this.horloge_simple, attrs:{onclick:`showTime(${this.seconds})`}}))
+  dvs.push(DCreate(A, {class:'lktime', inner: this.horloge_simple, attrs:{onclick:`showTime(${this.seconds})`}}))
   if(opts.owner){
     // Si les options définissent un owner, on ajoute un lien pour pouvoir
     // dissocier le temps de son possesseur

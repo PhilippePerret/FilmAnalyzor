@@ -6,12 +6,12 @@ const PanelFonds = {
 , build(){
     return [
       DCreate('DIV', {class: 'header', append:[
-          DCreate('BUTTON', {type:'button', class:'btn-close'})
+          DCreate(BUTTON, {type:STRbutton, class:'btn-close'})
         , DCreate('H3', {inner: `Fondamentales`})
         ]})
     , DCreate('DIV', {class:'body', append: [DCreate('DIV', {inner:"ICI LA LISTE DES FONDAMENTALES"})]})
     , DCreate('DIV', {class:'footer', append:[
-        DCreate('BUTTON', {type:'button', inner: 'OK', class: 'btn-ok'})
+        DCreate(BUTTON, {type:STRbutton, inner: 'OK', class: 'btn-ok'})
       ]})
     ]
   }

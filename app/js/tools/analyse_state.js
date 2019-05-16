@@ -125,7 +125,7 @@ const AnalyseState = {
         div.appendChild(d)
       }
       // Le bouton de fermeture
-      n = document.createElement('BUTTON')
+      n = document.createElement(BUTTON)
       n.className = 'close'
       v = document.createElement('IMG')
       v.src = './img/btn-window/b_close.png'

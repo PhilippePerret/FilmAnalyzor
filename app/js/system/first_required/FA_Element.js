@@ -135,7 +135,7 @@ set modified(v){
 }
 
 editLink(opts){
-  return DCreate('A',{class:'lktool lkedit', inner:'edit', attrs:{onclick:`${this.constructor.name}.edit('${this.id}', event)`}}).outerHTML
+  return DCreate(A,{class:'lktool lkedit', inner:'edit', attrs:{onclick:`${this.constructor.name}.edit('${this.id}', event)`}}).outerHTML
 }
 
 get domReaderId(){return this._domreaderid||defP(this,'_domreaderid',`reader-${this.domId}`)}

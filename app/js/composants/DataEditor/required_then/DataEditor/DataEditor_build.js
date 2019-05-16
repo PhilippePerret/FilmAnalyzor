@@ -31,12 +31,12 @@ Object.assign(DataEditor.prototype,{
     }
 
     var divsHeader = []
-    divsHeader.push(DCreate(BUTTON, {type:'button', class:'btn-close'}))
+    divsHeader.push(DCreate(BUTTON, {type:STRbutton, class:'btn-close'}))
     if(!this.data.no_new_item){
-      divsHeader.push(DCreate(BUTTON, {type:'button', class:'btn-add', id:my.idFor('btn-add'), inner: '+'}))
+      divsHeader.push(DCreate(BUTTON, {type:STRbutton, class:'btn-add', id:my.idFor('btn-add'), inner: '+'}))
     }
     if(!this.data.no_del_item){
-      divsHeader.push(DCreate(BUTTON, {type:'button', class:'btn-del', id:my.idFor('btn-del'), inner: '–'}))
+      divsHeader.push(DCreate(BUTTON, {type:STRbutton, class:'btn-del', id:my.idFor('btn-del'), inner: '–'}))
     }
     divsHeader.push(DCreate('H3', {id:my.idFor('main-title'), inner: this.data.title}))
     divs.push()
@@ -47,14 +47,14 @@ Object.assign(DataEditor.prototype,{
     var divsFooter = []
     let visuBtns = this.data.no_new_item ? STRhidden : STRvisible
     if(this.data.checkOnDemand){
-      divsFooter.push(DCreate(BUTTON, {id:my.idFor('btn-check'), type:'button', class:'btn-check small', inner:"Check now!", style:`visibility:${visuBtns};`}))
+      divsFooter.push(DCreate(BUTTON, {id:my.idFor('btn-check'), type:STRbutton, class:'btn-check small', inner:"Check now!", style:`visibility:${visuBtns};`}))
     }
     divsFooter.push(...[
         DCreate(SPAN,{class:'small',append:[
             DCreate(INPUT,{type:STRcheckbox, id:my.idFor('btn-close-after-save'), attrs:{checked:'CHECKED'}})
           , DCreate(LABEL,{inner:'Fermer après save', attrs:{for:my.idFor('btn-close-after-save')}})
           ]})
-      , DCreate(BUTTON, {id:my.idFor('btn-save'), type:'button', class:'btn-save small main-button', inner:"Enregistrer", style:`visibility:${visuBtns};`})
+      , DCreate(BUTTON, {id:my.idFor('btn-save'), type:STRbutton, class:'btn-save small main-button', inner:"Enregistrer", style:`visibility:${visuBtns};`})
       ])
 
     return [

@@ -289,7 +289,7 @@ onShow(){
  * Méthode qui construit le formulaire pour l'évènement
  */
 build(){
-  return DCreate('FORM', {
+  return DCreate(FORM, {
     id: `form-edit-event-${this.id}`
   , class: 'form-edit-event'
   , inner: this.formsByType(this.type)

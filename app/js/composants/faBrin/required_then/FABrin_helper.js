@@ -24,18 +24,18 @@ toString(){
     if(flag & LABELLED) divs.push(DCreate(LABEL, {inner: `${this.htype} #${this.id}`}))
 
     switch (format) {
-      case 'short':
+      case STRshort:
         divs.push(...this.asShort(opts))
         break
-      case 'book':
+      case STRbook:
         // Sortie pour le livre
         divs.push(...this.asBook(opts))
         break
-      case 'full':
+      case STRfull:
         // Affiche complet, avec toutes les informations
         divs.push(...this.asFull(opts))
         break
-      case 'associate':
+      case STRassociate:
         divs.push(...this.asAssociate(opts))
         break
       default:
@@ -93,11 +93,11 @@ toString(){
   }
 
 , editLink(opts){
-    return DCreate('A', {class:'lkedit', inner: '[edit]', attrs:{onclick:`FABrin.edit('${this.id}')`}})
+    return DCreate(A, {class:'lkedit', inner: '[edit]', attrs:{onclick:`FABrin.edit('${this.id}')`}})
   }
 
 , showLink(opts){
-    return DCreate('A', {class:'lkevent', inner:'[voir]', attrs:{onclick: `showBrin('${this.id}')`}})
+    return DCreate(A, {class:'lkevent', inner:'[voir]', attrs:{onclick: `showBrin('${this.id}')`}})
   }
 
 , divStatistiques(opts){return this.stats.divStatistiques()}

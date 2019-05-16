@@ -35,7 +35,7 @@ Object.defineProperties(FAImage,{
         {type:STRimage, class:STRimage, prop:'path'}
       , {label:'Id', type:STRtext, prop:'id', editable:false, validities:UNIQ|REQUIRED|ASCII}
       , {label:'Légende', type:STRtext, prop:'legend'}
-      , {label:'Taille', type:STRtext, class:'short', prop:'size', after:'nombre pixels ou "20%"'}
+      , {label:'Taille', type:STRtext, class:STRshort, prop:'size', after:'nombre pixels ou "20%"'}
       , {label:'Position',type:STRselect,prop:'position', values:FAImage.positionsValues}
       , {label:'Fichier', type:STRtext, prop:'fname', editable:false, validities:REQUIRED}
       ]

@@ -4,7 +4,7 @@ Object.assign(FAImage.prototype,{
   as(format,flat,opts){
     var divs = []
     switch (format) {
-      case 'associate':
+      case STRassociate:
         divs.push(this.asAssociate(opts))
         break
       default:

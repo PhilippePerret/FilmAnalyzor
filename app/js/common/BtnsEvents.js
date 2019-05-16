@@ -27,7 +27,7 @@ static build(){
 static observe(){
   // Tous les boutons doivent réagir au click pour créer un
   // nouvel event
-  this.fwindow.jqObj.find('button').on('click', function(e){ EventForm.onClickNewEvent.bind(EventForm)(e, $(this)) })
+  this.fwindow.jqObj.find(STRbutton).on('click', function(e){ EventForm.onClickNewEvent.bind(EventForm)(e, $(this)) })
 
 }
 

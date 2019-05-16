@@ -2,10 +2,6 @@
 
 ### Traiter :
 
-* Supprimer l'arrière plan du mini-writer (peut-être le faire 'sortir' du bord bas ?)
-* Utiliser des constantes pour les strings récurrente
-  + les tests récurrents (isUndefined, cf le fichier system/utils.js)
-
 * Pour les associés qui n'existent plus, utiliser la classe `FAUnknownElement`
 
 * Essayer de généraliser l'utilisation de `iofile`, `save`, `getData` pour tous les éléments, afin de réduire considérablement les méthodes. Voir dans FAElement.js et FAImage.js

@@ -381,13 +381,13 @@ buildControllerBox(){
   let spanHorlogeReal = DCreate('SPAN', {class: 'real-horloge horloge mini fleft', inner: '0:00:00.0'})
 
   let divGoToTime = DCreate('DIV', {class:'go-to-time', append: [
-      DCreate('BUTTON', {type: 'button', class:'small btn-go-to-time-video', inner: 'Aller au temps'})
+      DCreate(BUTTON, {type: STRbutton, class:'small btn-go-to-time-video', inner: 'Aller au temps'})
     , DCreate('INPUT',  {type: STRtext, id:`request_time-${this.id}`, class: 'requested_time horloge small', value: '', attrs:{placeholder:'0,0,0.0'}})
   ]})
   // Les boutons rewind et forward, etc.
   for(suf of this.CTRL_BUTTONS.tiny_buttons){
     btns.push(
-        DCreate('BUTTON', {type: 'button', class: `controller btn-${suf}`, append:[
+        DCreate(BUTTON, {type: STRbutton, class: `controller btn-${suf}`, append:[
         DCreate('IMG', {attrs:{src: `./img/btns-controller/btn-${suf}.png`}})
       ]})
     )
@@ -399,7 +399,7 @@ buildControllerBox(){
   for(suf in this.CTRL_BUTTONS.main_buttons){
     dbtn = this.CTRL_BUTTONS.main_buttons[suf]
     btns.push(
-      DCreate('BUTTON', {type:'button', class: `main btn-${suf}`, attrs:{title:dbtn.title}, append:[
+      DCreate(BUTTON, {type:STRbutton, class: `main btn-${suf}`, attrs:{title:dbtn.title}, append:[
         DCreate('IMG', {attrs:{src: `./img/btns-controller/btn-${suf}.png`}})
       ]})
     )

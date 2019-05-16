@@ -257,7 +257,7 @@ build(){
   if(undefined === this.position) this.position = {}
   // console.log("position:", this.position)
   // console.log("Construction de la FWindow ", this.domId)
-  var div = DCreate('DIV', {
+  var div = DCreate(DIV, {
     id: this.domId
   , class: `fwindow ${this.class || ''}`.trim()
   , append: this.owner.build()

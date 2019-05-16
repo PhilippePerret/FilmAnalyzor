@@ -92,7 +92,7 @@ get isValid(){
 **/
 checkResolution(){
   if(undefined != this.reponse && this.reponse.length) return
-  UI.warningSection.append(DCreate('DIV', {inner: this.as('short', EDITABLE|LABELLED)}))
+  UI.warningSection.append(DCreate('DIV', {inner: this.as(STRshort, EDITABLE|LABELLED)}))
 }
 
 /**

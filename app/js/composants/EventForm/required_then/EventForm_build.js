@@ -235,7 +235,7 @@ Object.assign(EventForm.prototype,{
       , DCreate(SPAN, {class:'event-time', inner: '...'})
       ]}))
 
-    return (DCreate('FORM', {class:'form', id:'event-__EID__-form', append: dom})).outerHTML
+    return (DCreate(FORM, {class:'form', id:'event-__EID__-form', append: dom})).outerHTML
   } // /buildFormOfType
 
   /**
