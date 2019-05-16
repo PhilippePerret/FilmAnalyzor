@@ -35,15 +35,15 @@ static observe(){
 * Retourne le bouton d'identifiant (type) +btn_id+
 **/
 static button(btn_id){
-  if(undefined === this.buttons) this.buttons = {}
-  if(undefined === this.buttons[btn_id]) {
+  if(isUndefined(this.buttons)) this.buttons = {}
+  if(isUndefined(this.buttons[btn_id])) {
     this.buttons[btn_id] = new BtnEvent(EVENTS_DATA[btn_id])
   }
   return this.buttons[btn_id]
 }
 
 // La fenêtre volante affichant tous les boutons
-static get fwindow(){return this._fwindow||defP(this,'_fwindow', new FWindow(this,{id: 'buttons-new-event', container: $('#section-footer'), y: -50, x: 40, class: 'no-user-selection'}))}
+static get fwindow(){return this._fwindow||defP(this,'_fwindow', new FWindow(this,{id: 'buttons-new-event', name:BtnsEventFWindowName, container: $('#section-footer'), y: -50, x: 40, class: 'no-user-selection'}))}
 
 // ---------------------------------------------------------------------
 //  INSTANCES

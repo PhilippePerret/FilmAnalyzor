@@ -16,12 +16,13 @@ function isDefined(foo){
   return false === isUndefined(foo)
 }
 function isEmpty(foo){
-  if(isFunction(foo['length'])){
+  if(isDefined(foo.length)){
     return 0 == foo.length
   } else if (isObject(foo)){
     return 0 == Object.keys(foo).length
   }
 }
+function isNotEmpty(foo){return false === isEmpty(foo)}
 function isNotAscii(str){
   return str.replace(/[a-zA-Z0-9_]/g,'') != ''
 }

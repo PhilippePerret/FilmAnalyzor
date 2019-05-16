@@ -154,7 +154,7 @@ displayAll(){
 // ---------------------------------------------------------------------
 //  DOM ELEMENTS
 get fwindow(){
-  return this._fwindow || defP(this,'_fwindow', new FWindow(this, {id: 'reader', name:'Reader', container: this.section, x: ScreenWidth - 650, y: 4}))
+  return this._fwindow || defP(this,'_fwindow', new FWindow(this, {id: 'reader', name:ReaderFWindowName, container: this.section, x: ScreenWidth - 650, y: 4}))
 }
 get container(){
   return this._container || defP(this,'_container', DGet('reader'))

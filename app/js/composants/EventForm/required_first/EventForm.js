@@ -40,7 +40,6 @@ static onClickNewEvent(e, eventType){
     FAEvent.FAlistingEvents(eventType)
   } else {
     if (eventType == STRscene && this.notConfirmNewScene() ) return false
-    console.log(`Enfin, eventType vaut "${eventType}"`)
     this.currentForm = new EventForm(eventType)
     this.currentForm.toggleForm()
   }

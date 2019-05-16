@@ -65,3 +65,7 @@ const SECTION = 'SECTION'
 const TEXTAREA= 'TEXTAREA'
 const OPTION  = 'OPTION'
 const LABEL   = 'LABEL'
+
+
+const ReaderFWindowName = 'Reader'
+const BtnsEventFWindowName = 'NewEventsButtons'
