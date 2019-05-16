@@ -90,9 +90,9 @@ class DOMHorloge {
   }
 
   onActivateEdition(ev){
-    $('body').unbind('mouseup') // au cas où
-    $('body').bind('mouseup', this.onEndMoving.bind(this))
-    $('body').bind('mousemove', this.onMoving.bind(this))
+    $(STRbody).unbind('mouseup') // au cas où
+    $(STRbody).bind('mouseup', this.onEndMoving.bind(this))
+    $(STRbody).bind('mousemove', this.onMoving.bind(this))
     // console.log(ev)
     this.initStartMoving(ev, this.time)
     // console.log("this.movingStartTime=",this.movingStartTime)
@@ -142,8 +142,8 @@ class DOMHorloge {
     } else {
       this.modified = true
     }
-    $('body').unbind('mouseup') // au cas om
-    $('body').unbind('mousemove') // au cas om
+    $(STRbody).unbind('mouseup') // au cas om
+    $(STRbody).unbind('mousemove') // au cas om
     ev.stopPropagation() // pour être cohérent ?
   }
 

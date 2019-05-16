@@ -243,9 +243,9 @@ Object.assign(EventForm.prototype,{
   **/
 , observe(){
     let my = this
-    this.jqObj.find('.btn-form-cancel').on('click', my.cancel.bind(my))
-    this.btnSubmit.on('click', my.submit.bind(my))
-    this.jqObj.find('.btn-form-destroy').on('click', my.destroy.bind(my))
+    this.jqObj.find('.btn-form-cancel').on(STRclick, my.cancel.bind(my))
+    this.btnSubmit.on(STRclick, my.submit.bind(my))
+    this.jqObj.find('.btn-form-destroy').on(STRclick, my.destroy.bind(my))
 
     // Toutes les modifications de texte doivent entrainer une activation du
     // bouton de sauvegarde
@@ -260,8 +260,8 @@ Object.assign(EventForm.prototype,{
 
     // Bouton pour actualiser le menu des types de tout élément et pour éditer
     // le fichier de données
-    this.jqObj.find('.btn-update-types').on('click', my.updateTypes.bind(my))
-    this.jqObj.find('.btn-modify-types').on('click', my.modifyDataTypes.bind(my))
+    this.jqObj.find('.btn-update-types').on(STRclick, my.updateTypes.bind(my))
+    this.jqObj.find('.btn-modify-types').on(STRclick, my.modifyDataTypes.bind(my))
 
     // Le petit picto pour associer tout de suite l'event édité ou créé
     // à un autre event ou document ou autre.
@@ -294,7 +294,7 @@ Object.assign(EventForm.prototype,{
     UI.miniWriterizeTextFields(this.jqObj, this.a.options.get('option_edit_in_mini_writer'))
 
     // Pour tous les events, le champ permet d'associer à une image
-    this.jqObj.find('img.info-curimage').on('click', this.showExplanationCurImage.bind(this))
+    this.jqObj.find('img.info-curimage').on(STRclick, this.showExplanationCurImage.bind(this))
 
     // Si l'event est une scène, on observe le menu décor et
     // sous décor
@@ -302,8 +302,8 @@ Object.assign(EventForm.prototype,{
       this.menuDecors.on('change', this.onChooseDecor.bind(this))
       this.menuSousDecors.on('change', this.onChooseSousDecor.bind(this))
     } else if (this.type === STRproc){
-      $('button.btn-info-proc').on('click', FAProcede.showDescriptionOf.bind(FAProcede,this.id))// prop aux procédés, celui-là
-      $('div.div-proc-types button.update').on('click', FAProcede.updateData.bind(FAProcede)) // ATTENTION : button commun
+      $('button.btn-info-proc').on(STRclick, FAProcede.showDescriptionOf.bind(FAProcede,this.id))// prop aux procédés, celui-là
+      $('div.div-proc-types button.update').on(STRclick, FAProcede.updateData.bind(FAProcede)) // ATTENTION : button commun
     }
     my = null
   }

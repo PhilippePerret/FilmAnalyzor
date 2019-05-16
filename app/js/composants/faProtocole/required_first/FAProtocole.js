@@ -112,11 +112,11 @@ build(){
   }
 
   domElements.push(
-    DCreate('DIV', {class:'body', append:cbSteps})
+    DCreate('DIV', {class:STRbody, append:cbSteps})
   )
 
   domElements.push(
-    DCreate('DIV', {class:'footer', append:[
+    DCreate('DIV', {class:STRfooter, append:[
       DCreate(BUTTON, {id:'protocole-btn-ok', type:STRbutton, inner:'Enregistrer', class:'main-button small'})
     ]})
   )
@@ -128,8 +128,8 @@ On observe tous les checkboxes pour enregistrer les modifications
 qu'on enregistrera à la fermeture de la fenêtre.
 **/
 observe(){
-  this.fwindow.jqObj.find('input[type="checkbox"]').on('click', this.onCheckStep.bind(this))
-  this.fwindow.jqObj.find('#protocole-btn-ok').on('click', this.saveAndHide.bind(this))
+  this.fwindow.jqObj.find('input[type="checkbox"]').on(STRclick, this.onCheckStep.bind(this))
+  this.fwindow.jqObj.find('#protocole-btn-ok').on(STRclick, this.saveAndHide.bind(this))
 }
 
 // ---------------------------------------------------------------------

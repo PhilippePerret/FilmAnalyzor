@@ -142,7 +142,7 @@ observe(options){
     cont = this.jqContainer
   }
 
-  cont.on('click',     this.onClickOnSlider.bind(this))
+  cont.on(STRclick,     this.onClickOnSlider.bind(this))
   cont.on('dblclick',  this.onDoubleClickOnSlider.bind(this))
   cont.on('mousemove', this.onMoveOnSlider.bind(this))
   cont.on('mouseover', this.onHoverSlider.bind(this))

@@ -55,9 +55,9 @@ class BtnPlay {
     // préparer les boutons des eventers. Donc, plutôt, on retire l'observer
     // qui se trouve peut-être sur le bouton et on le replace.
     container.find('.btnplay').each((i,o) => {
-      $(o).off('click')
+      $(o).off(STRclick)
       ev.btnPlay.set(o) // on le prépare
-      $(o).on('click', ev.btnPlay.togglePlay.bind(ev.btnPlay))
+      $(o).on(STRclick, ev.btnPlay.togglePlay.bind(ev.btnPlay))
     })
   }
 

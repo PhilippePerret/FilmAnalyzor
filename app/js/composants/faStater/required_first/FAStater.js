@@ -38,10 +38,10 @@ const FAStater = {
   if(this.a){
     // Quand on clique sur la jauge d'avancement, ça ouvre le
     // détail
-    $('#statebar-jauger label[for="statebar-jauger"]').on('click', this.a.toggleAnalyseState.bind(this.a))
+    $('#statebar-jauger label[for="statebar-jauger"]').on(STRclick, this.a.toggleAnalyseState.bind(this.a))
     // Quand on clique sur la dernière étape, ça ouvre la fenêtre
     // de protocol
-    $('#statebar-last-step-protocole, label[for="statebar-last-step-protocole"]').on('click', this.a.protocole.show.bind(this.a.protocole))
+    $('#statebar-last-step-protocole, label[for="statebar-last-step-protocole"]').on(STRclick, this.a.protocole.show.bind(this.a.protocole))
   }
 }
 

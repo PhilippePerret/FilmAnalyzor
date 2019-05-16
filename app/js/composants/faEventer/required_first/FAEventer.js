@@ -322,7 +322,7 @@ peupleTypesInFilter(){
 
   // Le choix "tous"
   my.buildCbType(ocontainer, `${this.domId}-cb-type-ALL`, 'Tous')
-  $(`#${this.domId}-cb-type-ALL`).on('click', this.onToggleFiltreAllTypes.bind(this))
+  $(`#${this.domId}-cb-type-ALL`).on(STRclick, this.onToggleFiltreAllTypes.bind(this))
 
   glob('./app/js/common/FAEvents/*.js', (err, list) => {
     for(var fpath of list){
@@ -355,8 +355,8 @@ buildCbType(ocontainer, domid, libelle, type){
 
 observe(){
   log.info(`-> <<FAEventer #${this.id}>>#observe()`)
-  this.btnFiltre.on('click', this.onToggleFiltre.bind(this))
-  this.btnClose.on('click', this.close.bind(this))
+  this.btnFiltre.on(STRclick, this.onToggleFiltre.bind(this))
+  this.btnClose.on(STRclick, this.close.bind(this))
   var horloges = UI.setHorlogeable(DGet(this.domId))
   var dataHorloge = {
       // time: 0

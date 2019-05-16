@@ -189,7 +189,7 @@ set modified(v){
   this._modified = v
   this.constructor.modified = v
   if(v) this.onUpdate()
-  if(PanelPersos.opened) PanelPersos.btnOK.html(v ? 'Enregistrer' : 'OK')
+  if(PanelPersos.opened) PanelPersos.btnOK.html(v ? 'Enregistrer' : OK)
 }
 
 get pseudo(){return this._pseudo}

@@ -14,7 +14,7 @@ static get modified(){return this._modified || false}
 static set modified(v){
   this._modified = v
   if(this.listing){
-    this.listing.btnOK.html(v ? 'Enregistrer' : 'OK')
+    this.listing.btnOK.html(v ? 'Enregistrer' : OK)
   }
 }
 

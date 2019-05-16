@@ -187,7 +187,7 @@ constructor(owner, data){
     owner || raise('fwindow-required-owner')
     isFunction(owner.build) || raise('fwindow-owner-has-build-function')
     data || raise('fwindow-required-data')
-    if(isUndefined(data.container)) data.container = $('body')
+    if(isUndefined(data.container)) data.container = $(STRbody)
     data.container || raise('fwindow-required-container')
     data.container = $(data.container)
     data.container.length || raise('fwindow-invalid-container')
@@ -317,12 +317,12 @@ observe(){
     containment: STRdocument
   })
   // Une flying window est cliquable par essence
-  // this.jqObj.find('header, body').on('click', FWindow.setCurrent.bind(FWindow, this))
-  this.jqObj.on('click', FWindow.setCurrent.bind(FWindow, this))
+  // this.jqObj.find('header, body').on(STRclick, FWindow.setCurrent.bind(FWindow, this))
+  this.jqObj.on(STRclick, FWindow.setCurrent.bind(FWindow, this))
 
   // Si la boite contient un bouton close, on le surveille pour
   // fermer la fenêtre
-  this.jqObj.find('button[type="button"].btn-close').on('click', this.onBtnClose.bind(this))
+  this.jqObj.find('button[type="button"].btn-close').on(STRclick, this.onBtnClose.bind(this))
 }
 
 // ---------------------------------------------------------------------
