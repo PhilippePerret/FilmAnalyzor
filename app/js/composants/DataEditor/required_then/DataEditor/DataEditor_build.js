@@ -38,7 +38,7 @@ Object.assign(DataEditor.prototype,{
     if(!this.data.no_del_item){
       divsHeader.push(DCreate(BUTTON, {type:STRbutton, class:'btn-del', id:my.idFor('btn-del'), inner: '–'}))
     }
-    divsHeader.push(DCreate('H3', {id:my.idFor('main-title'), inner: this.data.title}))
+    divsHeader.push(DCreate(H3, {id:my.idFor('main-title'), inner: this.data.title}))
     divs.push()
 
     // divs.push()
@@ -50,7 +50,7 @@ Object.assign(DataEditor.prototype,{
       divsFooter.push(DCreate(BUTTON, {id:my.idFor('btn-check'), type:STRbutton, class:'btn-check small', inner:"Check now!", style:`visibility:${visuBtns};`}))
     }
     divsFooter.push(...[
-        DCreate(SPAN,{class:'small',append:[
+        DCreate(SPAN,{class:STRsmall,append:[
             DCreate(INPUT,{type:STRcheckbox, id:my.idFor('btn-close-after-save'), attrs:{checked:'CHECKED'}})
           , DCreate(LABEL,{inner:'Fermer après save', attrs:{for:my.idFor('btn-close-after-save')}})
           ]})

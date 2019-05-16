@@ -241,14 +241,18 @@ reset(){
 bringToFront(){
   log.info(`-> ${this.ref}.bringToFront`)
   this.jqObj.css('z-index', 100)
+  this.current = true
   log.info(`<- ${this.ref}.bringToFront`)
 }
 // Pour remettre la Flying window en arrière plan
 bringToBack(){
   log.info(`-> ${this.ref}.bringToBack`)
   this.jqObj.css('z-index', 50)
+  this.current = false
   log.info(`<- ${this.ref}.bringToBack`)
 }
+
+isCurrent(){return true === this.current}
 
 build(){
   log.info(`-> ${this.ref}.build()`)

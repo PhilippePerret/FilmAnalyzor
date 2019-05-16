@@ -23,6 +23,7 @@ Object.assign(DataEditor.prototype,{
 // Sauver l'élément édité
 , saveElement(){
     log.info('-> DataEditor#saveElement')
+    if(this.isNotCurrentWindow()) return
     var errors
       , formData = this.getFormValues()
     // On doit valider les données
@@ -69,11 +70,20 @@ Object.assign(DataEditor.prototype,{
   }
 
 // Méthode appelée par le bouton "+"
+/**
+  Demande de création d'un nouvel item
+
+  Si la fenêtre n'est pas la fenêtre courante, on renonce (c'est un
+  click depuis "devant" pour ramener la fenêtre au premier plan)
+**/
 , addElement(){
+    log.info("-> DataEditor.addElement")
+    if(this.isNotCurrentWindow()) return
     // Vider les champs (on reconstruit le formulaire)
     this.resetFormValues()
     // Remettre le menu au premier item
     this.menuItems[0].selectedIndex = 0
+    log.info("<- DataEditor.addElement")
   }
 
 , forEachElement(fn){

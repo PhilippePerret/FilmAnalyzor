@@ -155,6 +155,7 @@ showAll(){
   listé.
 **/
 createItem(e){
+  if(this.isNotCurrentWindow()) return
   if(e) stopEvent(e) // cf. note N0001
   this.owner.edit()
 }
@@ -242,6 +243,17 @@ buildCollapseButton(item){
 // ---------------------------------------------------------------------
 // ---------------------------------------------------------------------
 // PROPRIÉTÉS
+
+// Return TRUE si la fenêtre est la fenêtre courante
+isCurrentWindow(){
+  // console.log("this.fwindow.isCurrent()", this.fwindow.isCurrent())
+  return this.fwindow.isCurrent()
+}
+
+// Return TRUE si la fenêtre n'est pas la fenêtre courante
+isNotCurrentWindow(){
+  return isFalse(this.isCurrentWindow())
+}
 
 // ---------------------------------------------------------------------
 //  PROPRIÉTÉS DÉFINISSABLE PAR LE PROPRIÉTAIRE

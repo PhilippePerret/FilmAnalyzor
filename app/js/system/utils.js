@@ -6,6 +6,12 @@ function isUndefined(foo){
 function isNull(foo){
   return null === foo
 }
+function isFalse(foo){
+  return false === foo
+}
+function isTrue(foo){
+  return true === foo
+}
 function isDefined(foo){
   return false === isUndefined(foo)
 }
