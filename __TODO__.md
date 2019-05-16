@@ -2,8 +2,6 @@
 
 ### Traiter :
 
-* Une fois que j'aurais régler le problème des fwindows courantes, je pourrai faire une nouvelle release
-
 * Pour les associés qui n'existent plus, utiliser la classe `FAUnknownElement`
 
 * Essayer de généraliser l'utilisation de `iofile`, `save`, `getData` pour tous les éléments, afin de réduire considérablement les méthodes. Voir dans FAElement.js et FAImage.js
