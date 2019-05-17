@@ -18,6 +18,22 @@ static set modified(v){
   }
 }
 
+static load(){
+  log.info("-> FAElement::load")
+  this.loading = true
+  this.iofile.loadIfExists({after: this.afterLoad.bind(this)})
+  log.info("<- FAElement::load")
+}
+
+static afterLoad(data){
+  log.info("-> FAElement::afterLoad")
+  this.reset()
+  this.data     = data // une Array d'objet contenant les données
+  this.loading  = false
+  this.loaded   = true
+  log.info("<- FAElement::afterLoad")
+}
+
 static save(){
   log.info("-> FAElement::save")
   // Ne rien faire si l'analyse est verrouillée
@@ -30,9 +46,8 @@ static save(){
 static afterSave(){
   log.info("-> FAElement::afterSave")
   this.saving = false
-  if('function' === this.methodAfterSaving){
-    this.methodAfterSaving()
-  }
+  this.modified = false
+  isFunction(this.methodAfterSaving) && this.methodAfterSaving()
   log.info("<- FAElement::afterSave")
 }
 
@@ -59,7 +74,7 @@ static get count(){return Object.keys(this[this.tableItemsKey]).length}
   Actualisation de la liste d'éléments.
 **/
 static update(){
-  if(undefined === this.tableItemsKey){
+  if(isUndefined(this.tableItemsKey)){
     log.warn("Pour utiliser la méthode générique `FAElement::update`, il faut définir MaClasse::tableItemsKey (nom de la table qui contient tous les éléments).")
   } else {
     if(this.listing){
@@ -69,7 +84,7 @@ static update(){
   }
 }
 
-
+static exists(){return fs.existsSync(this.path)}
 static get iofile(){return this._iofile || defP(this,'_iofile', new IOFile(this))}
 static get a(){return this._a || defP(this,'_a', current_analyse)}
 

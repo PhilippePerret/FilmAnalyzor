@@ -2,12 +2,7 @@
 
 ### Traiter :
 
-* Dans dataEditor, s'il n'y a qu'un élément et que `no_new_item` est true, on bloque le menu
-
 * Pour les associés qui n'existent plus, utiliser la classe `FAUnknownElement`
-
-* Essayer de généraliser l'utilisation de `iofile`, `save`, `getData` pour tous les éléments, afin de réduire considérablement les méthodes. Voir dans FAElement.js et FAImage.js
-
 
 * Voir comment est traité la propriété `associable: true` dans le DataEditor. Il faut :
   1. Qu'on puisse dragguer un élément associable sur la fenêtre d'édition

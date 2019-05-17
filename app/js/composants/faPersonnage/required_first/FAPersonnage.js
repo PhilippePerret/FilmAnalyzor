@@ -147,9 +147,7 @@ static getPersonnagesIn(str){
 static get count(){return this._count||defP(this,'_count', Object.keys(this.data).length)}
 
 static get data(){return this._data || {}}
-static exists(){return fs.existsSync(this.path)}
 static get path(){return this._path||defP(this,'_path',this.a.filePathOf('dpersonnages.yaml'))}
-static get a(){return current_analyse}
 
 // ---------------------------------------------------------------------
 //  INSTANCE

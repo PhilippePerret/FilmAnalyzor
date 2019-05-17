@@ -24,7 +24,7 @@ const DATA_DOCUMENTS = {
 
 , separatorInfos: 'separator'
 
-, infos:            {hname: 'Infos film & analyse', format: 'yaml', type:'data', dataeditor: true}
+, infos:            {hname: 'Infos film \& analyse', format: 'yaml', type:'data', dataeditor: true}
 
 , separator2: 'separator'
 
