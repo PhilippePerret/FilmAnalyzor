@@ -12,11 +12,7 @@
  */
 class EventForm {
 
-static init(){
-  var my = this
-
-  my = null
-}
+static init(){}
 
 static get a(){return current_analyse}
 
@@ -60,7 +56,7 @@ static notConfirmNewScene(){
   if (sceneFound){
     let [iScene, ecart] = sceneFound
     if (ecart < 2) {
-      alert(T('scene-to-close'))
+      alert(T('scene-too-close'))
       return true
     } else {
       if(!confirm(T('confirm-scene-close',{ecart: ecart}))){

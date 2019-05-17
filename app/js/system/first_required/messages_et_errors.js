@@ -36,7 +36,7 @@ const ERRORS = {
 , "video-required": "La vidéo du film est absolument requise pour analyser le film…<br>Astuce : utilisez une autre vidéo si vous voulez travailler « à blanc »."
 
 , "---- SCÈNES ---":""
-, "scene-to-close": "Une scène se trouve à moins de 2 secondes. Impossible d'en créer une autre si proche…"
+, "scene-too-close": "Une scène se trouve à moins de 2 secondes. Impossible d'en créer une autre si proche…"
 
 , "---- EVENTS ----":""
 , "same-event-no-association": "Désolé, mais un event ne peut être associé avec lui-même."
