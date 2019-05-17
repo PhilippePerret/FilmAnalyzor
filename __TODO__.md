@@ -50,15 +50,14 @@
 
 * [VÉRIFICATIONS]
 
-* Développer la méthode `FAEvent.as('<format>', FLAG)` (et même *LES* méthodes as puisque tout élément possède maintenant cette méthode).
-  Note : il faut la développer pour tous les types d'events (pour le moemnt, elle sert juste pour les scènes)
-
 * PUBLICATION
-  - Bien étudier la document de Calibre (ebook-convert) pour savoir comment régler la page de couverture, les données, etc.
+  - Bien étudier la documentation de Calibre (ebook-convert) pour savoir comment régler la page de couverture, les données, etc.
 
 * ASSEMBLAGE DE L'ANALYSE
   =======================
   + Indiquer : les films étrangers — américains, coréens, espagnol, danois, etc. — sont toujours visionnés et analysés dans leur langue originale dans le respect de l’effort sonore artistique initial.
+    => Mention dans le script d'assemblage
+    Comme le script d'assemblage devient un peu complexe, essayer un truc qui fonctionnerait par élément qu'on glisserait déposerait.
   + Rappels :
     - S'inspirer du scénier pour tout gérer :
     - Mettre toujours un id dans les titres de chapitres

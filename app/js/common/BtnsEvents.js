@@ -43,7 +43,7 @@ static button(btn_id){
 }
 
 // La fenêtre volante affichant tous les boutons
-static get fwindow(){return this._fwindow||defP(this,'_fwindow', new FWindow(this,{id: 'buttons-new-event', name:BtnsEventFWindowName, container: $('#section-footer'), y: -50, x: 40, class: 'no-user-selection'}))}
+static get fwindow(){return this._fwindow||defP(this,'_fwindow', new FWindow(this,{id: 'buttons-new-event', name:BtnsEventFWindowName, container: $('#section-footer'), y: -50, x: 386, class: 'no-user-selection'}))}
 
 // ---------------------------------------------------------------------
 //  INSTANCES

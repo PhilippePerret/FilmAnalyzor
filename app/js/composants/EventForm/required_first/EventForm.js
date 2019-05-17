@@ -98,7 +98,7 @@ static editEvent(ev){
 
 // Pour obtenir un nouvel identifiant pour un nouvel event
 static newId(){
-  if (undefined === this.lastId){ this.lastId = -1 }
+  isDefined(this.lastId) || ( this.lastId = -1 )
   return ++ this.lastId
 }
 
@@ -109,8 +109,8 @@ static newId(){
                     exister.
 **/
 static optionsTypes(typ){
-  if(undefined === this._optionsTypes) this._optionsTypes = {}
-  if(undefined === this._optionsTypes[typ]){
+  isDefined(this._optionsTypes) || ( this._optionsTypes = {} )
+  if(isUndefined(this._optionsTypes[typ])){
     var p = path.join(APPFOLDER,'app','js','data',`data_${typ}.yaml`)
     if(false == fs.existsSync(p)) return '' // "dépeuplera" le menu
     let dataE = YAML.safeLoad(fs.readFileSync(p,'utf8'))
@@ -792,11 +792,12 @@ get fwindow(){
   return this._fwindow || defP(this,'_fwindow', new FWindow(this,{container: document.body, x: this.left, y:80}))
 }
 // Position left de la fenêtre du formulaire, pour qu'elle soit bien placée
-// par rapport à la vidéo.
+// à côté de la boite de bouton => Il suffit de déplacer la boite de bouton
+// pour déplacer la création des boites
 get left(){
-  if(undefined === this._left){
-    let vl = this.a.videoController.video.width
-    this._left = vl + Math.round(((ScreenWidth - vl) - 460) / 2)
+  if(isUndefined(this._left)){
+    let o = $('#buttons-new-event')
+    this._left = o.offset().left + o.width() + 44
   }
   return this._left
 }
