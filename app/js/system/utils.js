@@ -3,12 +3,13 @@
 function isUndefined(foo){
   return STRundefined === typeof(foo)
 }
-function isNull(foo){
-  return null === foo
-}
-function isNullish(foo){
-  return isNull(foo) || isUndefined(foo)
-}
+function isNumber(foo){return STRnumber === typeof(foo)}
+function isNotNumber(foo){return false === isNumber(foo)}
+
+function isNull(foo){ return null === foo }
+function isNullish(foo){ return isNull(foo) || isUndefined(foo) }
+function isNotNullish(foo){ return false === isNullish(foo) }
+
 function isFalse(foo){
   return false === foo
 }

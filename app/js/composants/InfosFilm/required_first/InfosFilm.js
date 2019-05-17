@@ -2,35 +2,47 @@
 
 
 class InfosFilm {
+static get current(){
+  isDefined(this._current) || (
+    this._current = new InfosFilm()
+  )
+  return this._current
+}
+// ---------------------------------------------------------------------
+//  INSTANCE
+
 get id(){return 'infos'}
 
-get title(){return this.data.title}
-get title_fr(){return this.data.title_fr}
-get date(){return this._date||defP(this,'_date',this.dateOrNull('date'))}
-get realisation(){return this.data.realisation}
-get ecriture(){return this.data.ecriture}
-get production(){return this.data.production}
-get zero(){return this.data.zero}
-get first_image(){return this.data.first_image}
-get end_time(){return this._end_time||defP(this,'_end_time', this.timeOrNull('end_time'))}
-get generic_end_time(){return this._generic_end_time||defP(this,'_generic_end_time', this.timeOrNull('generic_end_time'))}
-get date_debut(){return this._date_debut||defP(this,'_date_debut',this.dateOrNull('date_debut'))}
-get date_fin(){return this._date_fin||defP(this,'_date_fin',this.dateOrNull('date_fin'))}
-get analystes(){return this.data.analystes}
-get correcteurs(){return this.data.correcteurs}
+get title()       {return this.data.film.title}
+get title_fr()    {return this.data.film.title_fr}
+get date()        {return this.data.film.date}
+get realisation() {return this.data.film.realisation}
+get ecriture()    {return this.data.film.ecriture}
+get production()  {return this.data.film.production}
+get musique()     {return this.data.film.musique}
+get zero()        {return this.data.video.zero}
+get frame1_time() {return this.data.video.frame1_time}
+get frame1_description() {return this.data.video.frame1_description}
+get date_debut()  {return this.data.analyse.date_debut}
+get date_fin()    {return this.data.analyse.date_fin}
+get analystes()   {return this.data.analyse.analystes}
+get correction()  {return this.data.analyse.correction}
 
-get dataExistent(){
-  return fs.existsSync(this.infosPath)
-}
+get dataExistent(){ return fs.existsSync(this.path) }
+
 get data(){
-  if(undefined === this._data){
-    this._data = YAML.safeLoad(fs.readFileSync(this.infosPath, 'utf8'))
-  }
+  // if(isUndefined(this._data)){
+  isDefined(this._data) || (
+    this._data = YAML.safeLoad(fs.readFileSync(this.path, 'utf8'))
+  )
+  // console.log("this.data",this._data)
   return this._data
 }
-get infosPath(){
-  return this.a.filePathOf('infos.yaml')
-}
-
 get mainTitle(){return 'Infos du film (et analyse)'}
+
+get path(){return this._path || defP(this,'_path', this.a.filePathOf('infos.yaml'))}
+
+get iofile(){return this._iofile||defP(this,'_iofile',new IOFile(this))}
+get fwindow(){return this._fwindow||defP(this,'_fwindow', new FWindow(this,{name:'InfosFilm', class:'fwindow-listing-type infos-film', x:10, y:10}))}
+get a(){return current_analyse}
 }

@@ -173,7 +173,7 @@ formate_prop_time_or_warning(prop){
 formateAsPeopleList(people){
   if(!people) return
   var arr = [], nom, prenom, fonction, patro
-  console.log("people:",people)
+  // console.log("people:",people)
   people.map(real => {
     [nom, prenom, fonction] = real.split(',').map(n => n.trim())
     if(nom && nom.toLowerCase() == 'nom') return
@@ -194,7 +194,7 @@ dateOrNull(dateProp){
   try {
     let val = this.data[dateProp]
     if(!val) return val
-    if('number'===typeof(val)) return `${val}` // juste l'année, par exemple
+    if(isNumber(val)) return `${val}` // juste l'année, par exemple
     return val.match(REG_DATE) ? val : null
   } catch (e) {
     console.error(`Problème avec la propriété "${dateProp}" de valeur ${val} de typeof ${typeof(val)}`)
@@ -208,11 +208,6 @@ timeOrNull(timeProp){
   if(!this.data[timeProp]) return this.data[timeProp]
   return (this.data[timeProp].toLowerCase().substring(0,7) === 'h:mm:ss') ? null : this.data[timeProp]
 }
-
-// ---------------------------------------------------------------------
-// AUTRES PROPRIÉTÉS
-
-get fwindow(){return this._fwindow||defP(this,'_fwindow', new FWindow(this,{class:'fwindow-listing-type infos-film', x:10, y:10}))}
 
 }
 

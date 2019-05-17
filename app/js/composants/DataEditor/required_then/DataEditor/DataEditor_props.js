@@ -1,7 +1,29 @@
 'use strict'
 
 Object.assign(DataEditor.prototype,{
-  isCurrentWindow(){
+  /**
+    Si le data-editor fonctionne par panneau à onglets, il faut recomposer
+    une vraie donnée.
+    Par exemple, quand l'identifiant du champ sera `...fd1-perso_id`, où
+    `fd1` est l'identifiant du panneau, la table formData devra posséder
+    une clé `fd1` qui sera un object définissant 'perso_id'
+  **/
+  redimFormData(formData){
+    if(!this.dataPanels) return formData
+
+    var h = {}, val
+    this.dataPanels.map(dpanel => {
+      h[dpanel.id] = {}
+      dpanel.dataFields.map(dfield => {
+        val = formData[`${dpanel.id}-${dfield.prop}`]
+        // On ne tient pas compte des valeurs vides
+        isNullish(val) || ( h[dpanel.id][dfield.prop] = val )
+      })
+    })
+    return h
+  }
+
+, isCurrentWindow(){
     // console.log("this.fwindow.isCurrent()", this.fwindow.isCurrent())
     return this.fwindow.isCurrent()
   }

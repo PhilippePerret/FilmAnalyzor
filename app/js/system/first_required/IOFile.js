@@ -106,9 +106,10 @@ save(options){
   }
   if(options.after) this.methodAfterSaving = options.after
   this.checkBackupFolder()
+  var scode
   try {
     this.saved = false
-    var scode = this.encodeCode()
+    scode = this.encodeCode()
     scode !== undefined || raise(T('code-to-save-is-undefined'))
     scode !== null      || raise(T('code-to-save-is-null'))
     let err_code = IOFile.codeIsOK(scode, IOFile.getFormatFromExt(this.path))
@@ -122,8 +123,10 @@ save(options){
   } catch (e) {
     this.endSavingInAnyCase()
     if(e){
-      console.error(e)
-      F.error(e)
+      F.error(`Erreur au cours de l'enregistrement du fichier : ${e}`)
+      log.error(e)
+      log.error("CODE FAUTIF :\n")
+      log.warn(RC + scode)
     }
     log.info('<- IOFile#save (retour false après erreur)')
     return false
@@ -137,14 +140,10 @@ afterTempSaved(err){
     if(err) throw(err)
     this.tempExists() || raise(T('temps-file-unfound',{fpath: this.tempPath}))
     this.tempSize > 0 || raise(T('temp-file-empty-stop-save',{fpath: this.tempPath}))
-    if (this.isBackupable){
-      this.backup()
-    } else {
-      this.endSave()
-    }
+    this.isBackupable ? this.backup() : this.endSave()
   } catch (e) {
     this.endSavingInAnyCase()
-    console.error(e)
+    log.error(e)
     F.error(e)
     return false
   }

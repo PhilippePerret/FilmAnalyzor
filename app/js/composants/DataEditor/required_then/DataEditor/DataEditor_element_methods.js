@@ -32,7 +32,12 @@ Object.assign(DataEditor.prototype,{
       return this.traiteErrors(errors)
     }
 
-    // console.log("On peut enregistrer les données :", formData)
+    // Le tableau formData, ici, ne contient qu'un arbre à un niveau, même
+    // si les données sont en panneau. Il faut le retransformer en arbre à
+    // trois dimension.
+    formData = this.redimFormData(formData)
+
+    // console.log("Les données à enregistrer :", formData)
     // console.log("this.currentItem:", this.currentItem)
 
     if(this.currentItem){
