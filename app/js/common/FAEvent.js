@@ -28,9 +28,15 @@ static get(event_id){
 
 /**
   Pour mettre l'event +event_id+ en édition
+
+  Se souvenir aussi que cette méthode est appelée par le "+" dans les
+  boite de listing de FAListing. Dans ce cas-là, +event_id+ est indéfini
+
 **/
 static edit(event_id){
-  return EventForm.editEvent.bind(EventForm, this.get(event_id))()
+  var typeOrInstance = isDefined(event_id) ? this.get(event_id) : this.type
+  console.log("typeOrInstance:",typeOrInstance)
+  return EventForm.editEvent.bind(EventForm, typeOrInstance)()
 }
 
 /**

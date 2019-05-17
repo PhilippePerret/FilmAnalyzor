@@ -2,9 +2,6 @@
 
 ### Traiter :
 
-* Le bug #74
-  Voir ce que ça donne en sortie du livre (celui des rides invisibles va très bien)
-
 * Pour les associés qui n'existent plus, utiliser la classe `FAUnknownElement`
   - Faut-il faire un check régulier, partout ?
 

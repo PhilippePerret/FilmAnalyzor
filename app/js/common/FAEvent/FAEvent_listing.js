@@ -1,6 +1,13 @@
 'use strict'
 
 Object.assign(FAEvent,{
+
+/**
+  Méthode qui affiche dans les fenêtres FAListing les events du type
+  particulier +etype+
+
+  @param {String} etype Le type de l'event (p.e. 'note' ou 'stt')
+**/
   FAlistingEvents(etype){
     // console.log("Je dois afficher les events de type", etype)
     let FAClasse = eval(`FAE${etype}`)

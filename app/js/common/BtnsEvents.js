@@ -58,7 +58,7 @@ get as_button(){
     this._as_button = DCreate(BUTTON,{
       id:     `btn-new-${this.type}`
     , type:   STRbutton
-    , class:  'small'
+    , class:  STRsmall
     , inner:  this.data.btn_name
     , attrs: attrs
     })

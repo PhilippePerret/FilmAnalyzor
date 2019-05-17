@@ -93,11 +93,11 @@ static filmHasSceneNearCurrentPos(){
   Note : on ne conserve plus le formulaire une fois fermé.
 **/
 static editEvent(ev){
-  if('number' === typeof ev) ev = this.a.ids[ev]
-  var eForm
+  isNumber(ev) && ( ev = this.a.ids[ev] )
   this.playing && this.a.locator.togglePlay()
   this.currentForm = new EventForm(ev)
   this.currentForm.toggleForm()
+  // (this.currentForm = new EventForm(ev)).toggleForm()
 }
 
 // Pour obtenir un nouvel identifiant pour un nouvel event
