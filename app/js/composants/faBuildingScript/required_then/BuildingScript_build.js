@@ -15,14 +15,25 @@ Object.assign(FABuildingScript,{
     // Tous les steps d'assemblage que l'on peut déplacer
     let stepsIn = [], stepsOut = []
     var step, dstep, dAstep
+    var elemsDyn = {}
 
     // On commence par mettre dans l'ordre de choix la liste des étapes
     // dans la liste IN
     this.data.map(dstep => {
+
       dAstep = BUILDING_SCRIPT_DATA[dstep.id]
-      // console.log("dAstep:", dAstep)
-      dAstep.in = true // pour ne pas l'ajouter à droite
-      dAstep.id = dstep.id
+      // Noter que dAstep sera indéfini pour les éléments dynamiques, comme
+      // les documents customisés. On alimentera alors ElemDyn qui servira
+      // plus bas à choisir la bonne liste.
+
+      if(isDefined(dAstep)){
+        // console.log("dAstep:", dAstep)
+        dAstep.in = true // pour ne pas l'ajouter à droite
+        dAstep.id = dstep.id
+      } else {
+        elemsDyn[dstep.id] = dstep
+        dAstep = dstep // dstep ne connait pas :hname
+      }
       stepsIn.push(this.divStepFor(dAstep, {checked: dstep.checked}))
     })
 
@@ -35,7 +46,10 @@ Object.assign(FABuildingScript,{
       } else {
         // C'est une liste dynamique d'étape, comme par exemple pour les
         // documents propres à l'analyse
-        (dAstep.items_method)().map(ds => stepsOut.push(this.divStepFor(ds)))
+        (dAstep.items_method)().map(ds => {
+          if (isDefined(elemsDyn[ds.id])) return
+          stepsOut.push(this.divStepFor(ds))
+        })
       }
     }
 
@@ -63,6 +77,7 @@ Object.assign(FABuildingScript,{
   Retourne le DIV de l'étape qui comporte les données +dstep+
 **/
 , divStepFor(dstep, opts){
+    console.log("-> divStepFor(dstep)", dstep)
     var cbattrs = {}
     opts && opts.checked && ( cbattrs.checked = 'CHECKED' )
     var divs = [
@@ -74,7 +89,7 @@ Object.assign(FABuildingScript,{
         attrs:{'id-explication':dstep.id}
       }))
     )
-    return DCreate(DIV,{class:'step', append:divs, attrs:{'data-id':dstep.id}})
+    return DCreate(DIV,{class:'step', append:divs, attrs:{'data-id':dstep.id, 'data-hname':dstep.hname}})
   }
 /**
   Observation de la fenêtre

@@ -3,10 +3,11 @@
 ### Traiter :
 
 * Script d'assemblage
-  - mettre le title du document plutôt que son id
-  - voir comment mémoriser les éléments aléatoires (les custom-doc) et surtout
-    comment les gérer au niveau de l'affichage, pour qu'ils ne soient pas
-    réaffichés à droite
+  - définir comment on va partir de l'id enregistré dans le fichier script, et
+    arriver à la méthode de construction. Comme avant, avec les BUILD et
+    autre ajout.
+    - Comment le faire, surtout, avec les éléments aléatoires (custom-docs)
+
 
 * Pour les associés qui n'existent plus, utiliser la classe `FAUnknownElement`
   - Faut-il faire un check régulier, partout ?

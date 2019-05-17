@@ -9,10 +9,16 @@ const FABuildingScript = {
 
 , toggle(){
     // Il faut charger les données existantes, le cas échéant
-    if (isNotTrue(this.loaded)) return this.load({after:this.toggle.bind(this)})
+    if (isNotTrue(this.loaded)){
+      this.init()
+      return this.load({after:this.toggle.bind(this)})
+    }
     this.fwindow.toggle()
   }
 
+, init(){
+    this.CustomElementsIdToHname = {}
+  }
 /**
   Pour enregistrer la donnée
 **/
@@ -54,7 +60,7 @@ const FABuildingScript = {
     this.stepsListObj.find('.step').each((i, e) => {
       e = $(e)
       checked = e.find('input[type="checkbox"]')[0].checked === true
-      lines.push(`${e.attr('data-id')}:${checked?1:0}`)
+      lines.push(`${e.data('id')}:${checked?1:0}:${e.data('hname')}`)
     })
     // console.log("lines: ", lines)
     this.contents = lines.join(RC)
@@ -66,8 +72,8 @@ const FABuildingScript = {
 **/
 , decomposeData(data){
     this._data = data.split(RC).map(line => {
-      var [step_id, checked] = line.split(':')
-      return {id: step_id, checked: (1 == parseInt(checked,10))}
+      var [step_id, checked, hname] = line.split(':')
+      return {id: step_id, hname: hname, checked: (1 == parseInt(checked,10))}
     })
   }
 
@@ -77,7 +83,7 @@ const FABuildingScript = {
 **/
 , customDocumentsAsSteps(){
     return FADocument.allDocuments.filter(doc => doc.dtype === 'custom').map(doc => {
-      return {hname: doc.title}
+      return {hname: doc.title, id:`custom-${doc.id}`}
     })
   }
 
@@ -86,7 +92,9 @@ const FABuildingScript = {
 **/
 , brinsAsSteps(){
     if(isNullish(FABrin.data)) return []
-    return FABrin.data.map(brin => {hname: brin.toString()})
+    return FABrin.data.map(brin => {
+      return {hname: brin.toString(), id:`brin-${brin.id}`}
+    })
   }
 
 } ; /* /FABuildingScript */
