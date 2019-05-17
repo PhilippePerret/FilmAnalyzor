@@ -37,7 +37,13 @@ function isNotString(foo){return false === isString(foo)}
 function isObject(foo)  { return STRobject == typeof(foo) && !isArray(foo) }
 function isArray(foo)   { return Array.isArray(foo) }
 
-// Fonction utiles un peu plus particulière
+// Fonction utiles pour le dom
+
+function isTextarea(foo){
+  if(isDefined(foo.length)) foo = foo[0] // jquerySet
+  if(isDefined(foo.tagName)) return foo.tagName === 'TEXTAREA'
+  return false
+}
 
 /**
   Retourne false si l'élément +domE+ ne possède pas l'attribut +attr+ ou,
