@@ -19,7 +19,9 @@ button.tiny {
   font-size: 0.65em !important;
   padding:1px 7px 0 7px;
 }
-button + span {margin-left:12px;}
+button + span,
+button + button
+{margin-left:12px;}
 
 .align-middle,
 .align-middle > *

@@ -4,17 +4,24 @@
 // TODO Peut-être les mettre dans des fichier JSON à requérir, en fonction de
 // la langue
 const ERRORS = {
+
   "--- GÉNÉRAL ---":""
 , "too-much-tries": "Trop de tentatives de chargement. Un composant empêche le chargement. J’interromps la procédure."
+
 , "--- ANALYSE ---":""
 , "analyse-locked-no-save": "L'analyse est verrouillée, impossible de la modifier."
 , "invalid-folder": "Le dossier \"%{fpath}\" n’est pas un dossier d’analyse valide."
 , "already-analyse-folder": "Ce dossier est déjà un dossier d'analyse ! Utiliser le menu « Ouvrir… » pour l'ouvrir."
+
+, "--- FILM ---":""
+, "export-infos-film-not-defined":"Les informations sur le film ne sont pas définis, je ne peux pas les inscrire. Il faudra absolument le faire pour connaitre le film et pouvoir régler la vidéo."
+
 , "--- DOCUMENTS ---":""
 , "ask-for-save-document-modified": "Le document courant, de type « %{type} », a été modifié. Voulez-vous enregistrer les changements ou les ignorer ?"
 , "new-custom-document-created": "Document créé. Sa première ligne définit son titre."
 , "same-document-no-association": "Un document ne peut pas être associé avec lui-même, désolé."
 , "no-association-event-in-doc": "Pour lier un event à un document, il faut le glisser dans son texte."
+
 , "--- FILES ---": ""
 , "code-to-save-is-empty":"Le code à sauver est vide, malheureusement."
 , "error-while-saving-file": "Une erreur s'est produite à l'enregistrement du fichier. Il ne contient pas le bon nombre d'octets.<br>%{fpath}."
@@ -23,11 +30,14 @@ const ERRORS = {
 , "code-to-save-is-undefined":"Le code à sauver est indéfini (undefined), c'est impossible !"
 , "code-to-save-is-null":"Le code à sauver vaut `null`, c'est impossible !"
 , "code-to-save-not-ok": "Le code à enregistrer est invalide : %{raison}.\n\nCorrigez-le pour pouvoir l'enregistrer."
+
 , "--- VIDÉO ---": ""
 , "video-path-required": "Il faut indiquer la vidéo du film, en actionnant le menu « Analyse > Choisir la vidéo du film »."
 , "video-required": "La vidéo du film est absolument requise pour analyser le film…<br>Astuce : utilisez une autre vidéo si vous voulez travailler « à blanc »."
+
 , "---- SCÈNES ---":""
 , "scene-to-close": "Une scène se trouve à moins de 2 secondes. Impossible d'en créer une autre si proche…"
+
 , "---- EVENTS ----":""
 , "same-event-no-association": "Désolé, mais un event ne peut être associé avec lui-même."
 , "data-type-required-for-association": "L'élément droppé devrait définir son data-type. Cet attribut n'est pas défini."
@@ -44,6 +54,7 @@ const ERRORS = {
 , "idee-setup-required":"L'installation de l'idée est requise"
 , "no-event-with-filter":"Aucun event n'a été trouvé avec le filtre demandé."
 , "explaination-cur-image":"Si cette case est cochée, l'event est lié à l'image de son temps courant, c'est-à-dire que cette image sera affichée en regard de l'affichage de l'event.\n\nOn pourra définir une légende, une taille et une position en éditant l'image depuis le listing des images."
+
 , "--- FLYING WINDOW ---":""
 , "fwindow-required-owner": "Pour instancier une flying-window (FWindow), le propriétaire est requis en premier argument."
 , "fwindow-required-data": "Pour instancier une Flying-Window (FWindow), il faut deux arguments : le propriétaire et les data."
@@ -51,8 +62,10 @@ const ERRORS = {
 , "fwindow-invalid-container": "Le container pour placer la flying-window est invalide (introuvable)"
 , "fwindow-contents-required": "Pour instancier une flying-window, il faut fournir le contenu HTML (noeud principal). On peut le faire soit par les data (propriété `contents`) soit en définissant `FWcontents` dans le propriétaire."
 , "fwindow-owner-has-build-function": "Le propriétaire d'une flying-window doit définir la méthode `build` qui doit construire le contenu de la fenêtre volante."
+
 , "--- TEXTES ---": ""
 , "notify-missed-variable": "La variable “{{%{var}}}” est inconnue. Il faut la définir dans le documents “Documents > Informations/variables” en ajoutant la ligne `%{var}: Valeur` (code YAML)."
+
 , "--- DATA ÉDITOR ---":""
 , "deditor-data-required": "Les données d'édition sont requises pour éditer un élément de l'analyse (`DataEditorData`)."
 , "deditor-title-required": "La propriété `title` définissant le titre de la fenêtre est requise."
@@ -67,6 +80,7 @@ const ERRORS = {
 , "deditor-must-have-prop-dataEditor": "La classe %{classe} devrait avoir une propriété objet `dataEditor` (qui définira tout)."
 , "deditor-fields-undefined": "`%{classe}.dataEditor.dataFields` doit définir les champs permettant d'éditer un élément."
 , "deditor-function-required": "La classe %{classe} devrait définir la fonction `%{function}()`?"
+
 , "--- FA LISTING ---":""
 , "falist-data-required": "REQUIS : %{classe}.DataFAListing\n\nLa classe propriétaire doit définir la propriété `DataFAListing`."
 , "falist-items-required": "`%{classe}.DataFAListing` doit impérativement définir la liste array `items` contenant les instances à afficher."

@@ -63,8 +63,8 @@ const App = {
   }
 // Pour ouvrir le manuel de développement
 , openManuelDeveloppement(){
-    let pref  = path.join(APPFOLDER,'Manuel','Manuel_developpement.md')
-      , pdest = path.join(APPFOLDER,'Manuel','Manuel_developpement.html')
+    let pref  = path.join(APPFOLDER,'Manuel','Manuel_developpeur.md')
+      , pdest = path.join(APPFOLDER,'Manuel','Manuel_developpeur.html')
     if (this.isOutOfDate(pref, pdest)){
       this.updateManual(true, pdest)
     } else {
@@ -81,7 +81,7 @@ const App = {
 , updateManual(isDev, fpath){
     log.info('-> App::updateManual')
     let my  = this
-      , cmd = `cd "${path.join(APPFOLDER,'Manuel')}";pandoc -s Manuel${isDev?'_developpement':''}.md --css="manuel.css" --metadata pagetitle="Manuel" --from=markdown --output=Manuel${isDev?'_developpement':''}.html`
+      , cmd = `cd "${path.join(APPFOLDER,'Manuel')}";pandoc -s Manuel${isDev?'_developpeur':''}.md --css="manuel.css" --metadata pagetitle="Manuel" --from=markdown --output=Manuel${isDev?'_developpeur':''}.html`
     exec(cmd, err => {
       if(err) throw err
       my.openInBrowser(fpath)

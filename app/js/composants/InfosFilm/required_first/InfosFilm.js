@@ -1,5 +1,15 @@
 'use strict'
 
+function loadPannelInfosFilmComponants(fn_suite){
+  const {
+    INFOSFILM_METHS
+  , INFOSFILM_PROPS
+  } = require(path.join(APPFOLDER,'app/js/tools/building/infos_film.js'))
+  Object.assign(InfosFilm.prototype, INFOSFILM_METHS)
+  Object.defineProperties(InfosFilm.prototype, INFOSFILM_PROPS)
+  // On passe à la suite
+  fn_suite()
+}
 
 class InfosFilm {
 static get current(){
@@ -10,6 +20,19 @@ static get current(){
 }
 // ---------------------------------------------------------------------
 //  INSTANCE
+
+/**
+  Méthode qui permet d'afficher le panneau des infos du film
+
+  Mais on doit auparavant s'assurer que les extension pour la construction
+  de ce panneau sont bien chargées.
+
+**/
+toggle(){
+  if(isFunction(this.build)) this.fwindow.toggle()
+  else loadPannelInfosFilmComponants(this.toggle.bind(this))
+}
+
 
 get id(){return 'infos'}
 
@@ -32,7 +55,7 @@ get dataExistent(){ return fs.existsSync(this.path) }
 
 get data(){
   // if(isUndefined(this._data)){
-  isDefined(this._data) || (
+  isDefined(this._data) || isFalse(this.dataExistent) || (
     this._data = YAML.safeLoad(fs.readFileSync(this.path, 'utf8'))
   )
   // console.log("this.data",this._data)

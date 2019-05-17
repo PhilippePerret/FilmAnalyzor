@@ -31,8 +31,8 @@ constructor(analyse){
  */
 show(options){
   log.info(`-> FABuilder.show(${options})`)
-  if(undefined === options) options = {}
-  if(false == this.isUpToDate || options.force_update) this.build(options, this.showReally.bind(this))
+  isDefined(options) || ( options = {} )
+  if(isFalse(this.isUpToDate) || options.force_update) this.build(options, this.showReally.bind(this))
   log.info('<- FABuilder.show')
 }
 
@@ -55,7 +55,7 @@ build(options, fn_callback){
 
   // On s'assure que tous les composants soient bien chargés
   this.buildLoopTries = 0
-  if(!this.componantsLoaded){
+  if(not(this.componantsLoaded)){
     return this.loadAllComponants(this.build.bind(this, options, fn_callback))
   } else {
     delete this.buildLoopTries

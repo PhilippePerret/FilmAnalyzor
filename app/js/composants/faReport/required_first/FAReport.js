@@ -58,6 +58,7 @@ constructor(reportType){
 *
 **/
 add(msg, type, options){
+  if(type === 'error' || type === 'warning') type = `${type} bold`
   this.messages.push({message: msg, type: (type || 'normal'), time: new Date().getTime()})
 }
 /**
@@ -105,7 +106,7 @@ build(){
 allObjMsgs(){
   var msgs = []
   for(var msg of this.messages){
-    msgs.push(DCreate('DIV', {class: `report-msg ${msg.type}`, inner: msg.message}))
+    msgs.push(DCreate(DIV, {class: `report-msg ${msg.type}`, inner: msg.message}))
   }
   return msgs
 }
@@ -127,7 +128,7 @@ get contents(){
 }
 get messagesDomObjects(){
   if(undefined === this._messagesDomObjects){
-    this._messagesDomObjects = DCreate('DIV',{class: 'report-contents', append: this.allObjMsgs()})
+    this._messagesDomObjects = DCreate(DIV,{class: 'report-contents', append: this.allObjMsgs()})
   }
   return this._messagesDomObjects
 }

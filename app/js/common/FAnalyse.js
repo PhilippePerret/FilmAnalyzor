@@ -240,6 +240,7 @@ displayFullAnalyse(forcer){
   if(NONE === typeof(FABuilder))  return this.loadBuilder(this.callback_dispfullana)
   if(NONE === typeof(FAExporter)) return this.loadExporter(this.callback_dispfullana)
   if(NONE === typeof(FAReport))   return this.loadReporter(this.callback_dispfullana)
+  if(NONE === typeof(InfosFilm))  return this.loadInfosFilm(this.callback_dispfullana)
   log.info('   Composants full analyse chargés. Je peux la créer')
   FABuilder.createNew().show({force_update: forcer})
   delete this.callback_dispfullana
@@ -257,8 +258,8 @@ displayPFA(){
   this.PFA.toggle()
 }
 togglePanneauInfosFilm(){
-  window.iPanelInfosFilm = window.iPanelInfosFilm || App.loadTool('building/infos_film')
-  iPanelInfosFilm.toggle()
+  if(NONE === typeof(InfosFilm)) return this.loadInfosFilm(this.togglePanneauInfosFilm.bind(this))
+  InfosFilm.current.toggle()
 }
 togglePanneauFondamentales(){
   window.PanelFonds = window.PanelFonds || App.loadTool('building/fondamentales')

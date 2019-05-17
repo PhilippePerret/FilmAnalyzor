@@ -5,8 +5,6 @@ class DataEditor {
 //  INSTANCE
 constructor(mainClass, data){
   this.mainClass    = mainClass // FAPersonnage, FABrin, etc.
-  this.isAssociable = isFunction(this.mainClass.divsAssociates)
-  console.log(`this.isAssociable de ${mainClass.name} est ${this.isAssociable}`)
   this.data         = data
   this.items        = data.items
   this.titleProp    = data.titleProp

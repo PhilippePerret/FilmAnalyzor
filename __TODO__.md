@@ -2,7 +2,11 @@
 
 ### Traiter :
 
+* Le bug #74
+  Voir ce que ça donne en sortie du livre (celui des rides invisibles va très bien)
+
 * Pour les associés qui n'existent plus, utiliser la classe `FAUnknownElement`
+  - Faut-il faire un check régulier, partout ?
 
 - Réimplémenter le check des résolutions des QRD pour qu'il se fasse seulement quand toutes les classes sont chargées — + quand on vient d'en créer une. Il faut appeler `FAEqrd#checkResolution()`. Voir aussi sur les procédés à résolution ?
 

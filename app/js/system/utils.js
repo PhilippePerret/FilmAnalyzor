@@ -10,9 +10,9 @@ function isNull(foo){ return null === foo }
 function isNullish(foo){ return isNull(foo) || isUndefined(foo) }
 function isNotNullish(foo){ return false === isNullish(foo) }
 
-function isFalse(foo){
-  return false === foo
-}
+function isFalse(foo){ return false === foo }
+function not(foo){ return false == foo }
+
 function isTrue(foo){
   return true === foo
 }

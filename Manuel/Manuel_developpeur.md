@@ -40,6 +40,7 @@
   * [Sauvegarde protégée des documents (IOFile)](#saving_protected)
 * [Assemblage de l'analyse](#assemblage_analyse)
   * [Script d'assemblage](#script_assemblage_analyse)
+  * [Messages de suivi](#assemblage_messages_suivis)
 * [Test de la l'application](#test_application)
 * [Les « Hand-Tests », test manuels de l'application](#tests_manuels)
   * [Lancement des hand-tests](#running_hand_tests)
@@ -954,11 +955,34 @@ On peut mettre au format `raw` lorsque le format est reconnaissable par l'extens
 
 Cette partie traite de l'assemblage de l'analyse côté programmation.
 
-Pour assembler l'analyse, l'application se sert principalement de la classe `FABuilder` et de la classe `FAExporter`.
+Pour assembler l'analyse, l'application se sert principalement de la classe `FABuilder` (pour la construction) et de la classe `FAExporter` (pour le rapport).
 
 ## Script d'assemblage {#script_assemblage_analyse}
 
 Le « script d'assemblage » définit la façon d'assembler les différents composants de l'analyse pour composer le document final.
+
+## Messages de suivi {#assemblage_messages_suivis}
+
+On peut envoyer des messages de suivi grâce à l'instance `report` du builder qui construit l'analyse. Cela consiste la plupart du temps à faire :
+
+```javascript
+
+this.report.add('mon message', 'mon type de message')
+
+```
+
+Les types de message sont :
+
+
+| Type | Description               |
+|-----------|---------------------------|
+|           |                           |
+| `title`             | Pour un titre             |
+| `error`   | Pour signaler une erreur  |
+| `notice`  | Message en bleu à remarquer |
+| `warning` | Une alerte moins forte qu'error |
+| `normal`  | Le type par défaut, neutre |
+<!-- la ligne `title` contient les insécables qui donnent la dimension -->
 
 ---------------------------------------------------------------------
 
