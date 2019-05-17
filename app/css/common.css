@@ -20,7 +20,7 @@ button.tiny {
   padding:1px 7px 0 7px;
 }
 button + span,
-button + button
+div:not(#buttons-new-event) button + button
 {margin-left:12px;}
 
 .align-middle,
