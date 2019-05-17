@@ -15,7 +15,7 @@ t.case("On peut mettre en route depuis le reader", () => {
     let btn = $(`div#${eventer.domId} #revent-1 button.btnplay-1`)
     btn.focus()
     btn.focus()
-    btn.trigger('click')
+    btn.trigger(STRclick)
     // ça doit jouer
     let img = $(`div#${eventer.domId} #revent-1 button.btnplay-1 img`)[0]
     assert_equal(
@@ -24,7 +24,7 @@ t.case("On peut mettre en route depuis le reader", () => {
     )
     return wait(3000)
     .then(() => {
-      btn.trigger('click')
+      btn.trigger(STRclick)
       assert_equal(
         'btn-play.png', path.basename(img.src)
         , {success: 'Le bouton est bien réglé (PLAY)', failure: `Le bouton PLAY devrait être appliqué. C'est le bouton ${img.src} qui est utilisé.`}

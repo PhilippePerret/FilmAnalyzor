@@ -45,12 +45,12 @@ Object.assign(FAWriter, {
     })
 
     var header = DCreate('DIV',{
-      class: 'header'
+      class: STRheader
     , append: [btnClose, doctitle, divmodeles, btnNew]
     })
 
     var body = DCreate('DIV', {
-      class: 'body'
+      class: STRbody
     , append: [DCreate('TEXTAREA', {id: 'document-contents', attrs:{autofocus: true}})]
     })
 
@@ -64,7 +64,7 @@ Object.assign(FAWriter, {
     })
 
     var footer = DCreate('DIV', {
-      class: 'footer',
+      class: STRfooter,
       append: [
         DCreate(LABEL, {id: 'writer-message', inner: '...'})
       , selThemes
@@ -120,15 +120,15 @@ Object.assign(FAWriter, {
     this.setTextFieldsAssociableIn(my.section)
 
     // Le bouton pour sauver le document courant
-    my.btnSave.on('click',my.saveCurrentDoc.bind(my))
+    my.btnSave.on(STRclick,my.saveCurrentDoc.bind(my))
     // On observe la case à cocher qui permet de sauvegarder automatiquement
     // le document
-    $('input#cb-save-auto-doc').on('click', my.setAutoSave.bind(my))
+    $('input#cb-save-auto-doc').on(STRclick, my.setAutoSave.bind(my))
     // // On observe la case à cocher pour visualiser régulièrement le document
     $('input#cb-auto-visualize').on('change', my.setAutoVisualize.bind(my))
 
     // On observe le bouton pour créer un nouveau document
-    $('button#writer-btn-new-doc').on('click', FADocument.new.bind(FADocument))
+    $('button#writer-btn-new-doc').on(STRclick, FADocument.new.bind(FADocument))
 
     // On rend le petit bouton pour drag-dropper le document courant
     // draggable

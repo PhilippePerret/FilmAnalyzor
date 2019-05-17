@@ -49,7 +49,7 @@ build(){
     divsHeader.push(DCreate(BUTTON, {type:STRbutton, class:'btn-add', inner: '+'}))
   }
   divsHeader.push(DCreate(H3, {inner: this.mainTitle}))
-  var header = DCreate(DIV,{class:'header', append:divsHeader})
+  var header = DCreate(DIV,{class:STRheader, append:divsHeader})
 
   var divsBody = []
   if(this.collapsable){
@@ -63,12 +63,12 @@ build(){
   }
   if(this.data.explication) divsBody.push(DCreate(DIV,{class:'explication', inner:this.data.explication}))
   divsBody.push(DCreate(DIV,{class:'falisting', append:this.divsItems()}))
-  var body = DCreate(DIV,{class:'body', append: divsBody})
+  var body = DCreate(DIV,{class:STRbody, append: divsBody})
 
-  var footer = DCreate(DIV,{class:'footer', append:[
+  var footer = DCreate(DIV,{class:STRfooter, append:[
       DCreate(BUTTON, {type:STRbutton, class:'btn small update fleft', inner:'Update'})
     , DCreate(BUTTON, {type:STRbutton, class:'small btn-show-all fleft', inner:'Tout', style:'visibility:none;'})
-    , DCreate(BUTTON, {type:STRbutton, class:'main-button small btn-ok', inner:'OK'})
+    , DCreate(BUTTON, {type:STRbutton, class:'main-button small btn-ok', inner:OK})
     ]})
 
   return [header, body, footer]
@@ -88,18 +88,18 @@ observe(){
 
   if(this.data.creatable){
     // Le bouton '+' doit être surveillé, pour créer un nouvel item
-    this.jqObj.find('.header .btn-add').on('click', this.createItem.bind(this))
+    this.jqObj.find('.header .btn-add').on(STRclick, this.createItem.bind(this))
   }
   if(this.data.collapsable){
-    this.jqObj.find('.body .btn-collapse-all').on('click', this.setCollapseAll.bind(this,true))
-    this.jqObj.find('.body .btn-uncollapse-all').on('click', this.setCollapseAll.bind(this,false))
+    this.jqObj.find('.body .btn-collapse-all').on(STRclick, this.setCollapseAll.bind(this,true))
+    this.jqObj.find('.body .btn-uncollapse-all').on(STRclick, this.setCollapseAll.bind(this,false))
   }
   // Le bouton OK doit être surveillé
-  this.btnOK.on('click', this.onOK.bind(this))
+  this.btnOK.on(STRclick, this.onOK.bind(this))
   // Le bouton pour actualiser la liste
-  this.jqObj.find('.footer BUTTON.update').on('click', this.update.bind(this))
+  this.jqObj.find('.footer BUTTON.update').on(STRclick, this.update.bind(this))
   // Le bouton pour montrer tous les éléments
-  this.btnShowAll.on('click', this.showAll.bind(this))
+  this.btnShowAll.on(STRclick, this.showAll.bind(this))
 
 }
 setCollapseAll(collapsed, e){

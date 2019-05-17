@@ -50,37 +50,6 @@ reset(){
     log.info('<- FABrin.init')
   }
 
-, load(){
-    log.info("-> FABrin::load")
-    this.loading = true
-    this.iofile.loadIfExists({after: this.afterLoad.bind(this)})
-    log.info("<- FABrin::load")
-  }
-
-, afterLoad(data){
-    log.info("-> FABrin::afterLoad")
-    this.reset()
-    this.data     = data // une Array d'objet contenant les données
-    this.loading  = false
-    this.loaded   = true
-    log.info("<- FABrin::afterLoad")
-  }
-
-, save(){
-    log.info('-> FABrin::save')
-    if(this.a.locked) return F.notify(T('analyse-locked-no-save'))
-    this.saving = true
-    this.composeThisData()
-    // console.log("this.data avant save:", this.data)
-    this.iofile.save({after:this.afterSaving.bind(this)})
-    log.info('<- FABrin::save')
-  }
-, afterSaving(){
-    if(this.analyseWasNotModified) this.a.modified = false
-    this.modified = false
-    this.saving   = false
-  }
-
 /**
   Pour détruire le brin
 **/
@@ -98,9 +67,10 @@ reset(){
 /**
   Méthode qui reconstitue les data pour le fichier (utilisé par
   le data éditor)
+  Utilisé par la méthode `save` de FAElement
 **/
-, composeThisData(){
-    this.contents = Object.values(this.brins).map(brin => brin.dataEpured())
+, getData(){
+    return Object.values(this.brins).map(brin => brin.dataEpured())
   }
 
 })//assign
@@ -142,7 +112,7 @@ Object.defineProperties(FABrin,{
   , set(v){
       if(v && this.a.locked) return F.notify(T('analyse-locked-no-save'))
       this._modified = v
-      this.listing.btnOK.html(v ? 'Enregistrer' : 'OK')
+      this.listing.btnOK.html(v ? 'Enregistrer' : OK)
     }
   }
 

@@ -147,9 +147,7 @@ static getPersonnagesIn(str){
 static get count(){return this._count||defP(this,'_count', Object.keys(this.data).length)}
 
 static get data(){return this._data || {}}
-static exists(){return fs.existsSync(this.path)}
 static get path(){return this._path||defP(this,'_path',this.a.filePathOf('dpersonnages.yaml'))}
-static get a(){return current_analyse}
 
 // ---------------------------------------------------------------------
 //  INSTANCE
@@ -189,7 +187,7 @@ set modified(v){
   this._modified = v
   this.constructor.modified = v
   if(v) this.onUpdate()
-  if(PanelPersos.opened) PanelPersos.btnOK.html(v ? 'Enregistrer' : 'OK')
+  if(PanelPersos.opened) PanelPersos.btnOK.html(v ? 'Enregistrer' : OK)
 }
 
 get pseudo(){return this._pseudo}

@@ -132,14 +132,14 @@ const AnalyseState = {
       n.appendChild(v)
       div.appendChild(n)
 
-      $('body').append(div)
+      $(STRbody).append(div)
       this.built = true
     }
     // /build
 
     , observe(){
         $('#div-analyse-state').draggable()
-        $('#div-analyse-state button.close').on('click', this.hide.bind(this))
+        $('#div-analyse-state button.close').on(STRclick, this.hide.bind(this))
       }
 }
 Object.defineProperties(AnalyseState,{

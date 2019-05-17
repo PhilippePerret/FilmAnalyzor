@@ -81,7 +81,7 @@ build(){
 }
 
 observe(){
-  this.jqBtn.on('click', this.toggle.bind(this))
+  this.jqBtn.on(STRclick, this.toggle.bind(this))
 }
 
 // Le bouton (jQuery)

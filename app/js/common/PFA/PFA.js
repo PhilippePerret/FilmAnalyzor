@@ -113,7 +113,7 @@ Object.assign(PFA, {
       , helper: 'clone'
       , revert: true
       })
-      .on('click', function(e){
+      .on(STRclick, function(e){
         var event_id = parseInt($(this).attr(STRdata_id),10)
         FAEvent.edit.bind(ca, event_id)()
         stopEvent(e)//sinon le pfa est remis au premier plan

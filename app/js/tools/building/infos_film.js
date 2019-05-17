@@ -76,19 +76,19 @@ build(){
   }
 
   return [
-    DCreate(DIV, {class: 'header', append:[
+    DCreate(DIV, {class: STRheader, append:[
         DCreate(H3, {inner: 'INFORMATIONS TECHNIQUES SUR LE FILM'})
       ]})
-  , DCreate(DIV, {class:'body', append: divs})
-  , DCreate(DIV, {class:'footer', append:[
+  , DCreate(DIV, {class:STRbody, append: divs})
+  , DCreate(DIV, {class:STRfooter, append:[
       DCreate(BUTTON, {inner: 'Actualiser', class: 'btn-update small fleft'})
-    , DCreate(BUTTON, {type:BUTTON, inner: 'OK', class: 'btn-ok main-button small'})
+    , DCreate(BUTTON, {type:BUTTON, inner: OK, class: 'btn-ok main-button small'})
     ]})
   ]
 }
 observe(){
-  this.fwindow.jqObj.find('.btn-ok').on('click', this.close.bind(this))
-  this.fwindow.jqObj.find('.btn-update').on('click', this.update.bind(this))
+  this.fwindow.jqObj.find('.btn-ok').on(STRclick, this.close.bind(this))
+  this.fwindow.jqObj.find('.btn-update').on(STRclick, this.update.bind(this))
 }
 // ---------------------------------------------------------------------
 // Méthodes d'helper
@@ -125,34 +125,6 @@ get f_date_fin(){return this.formate_prop_or_warning('date_fin')}
 
 // ---------------------------------------------------------------------
 //  TOUTES LES DONNÉES
-
-get title(){return this.data.title}
-get title_fr(){return this.data.title_fr}
-get date(){return this._date||defP(this,'_date',this.dateOrNull('date'))}
-get realisation(){return this.data.realisation}
-get ecriture(){return this.data.ecriture}
-get production(){return this.data.production}
-get zero(){return this.data.zero}
-get first_image(){return this.data.first_image}
-get end_time(){return this._end_time||defP(this,'_end_time', this.timeOrNull('end_time'))}
-get generic_end_time(){return this._generic_end_time||defP(this,'_generic_end_time', this.timeOrNull('generic_end_time'))}
-get date_debut(){return this._date_debut||defP(this,'_date_debut',this.dateOrNull('date_debut'))}
-get date_fin(){return this._date_fin||defP(this,'_date_fin',this.dateOrNull('date_fin'))}
-get analystes(){return this.data.analystes}
-get correcteurs(){return this.data.correcteurs}
-
-get dataExistent(){
-  return fs.existsSync(this.infosPath)
-}
-get data(){
-  if(undefined === this._data){
-    this._data = YAML.safeLoad(fs.readFileSync(this.infosPath, 'utf8'))
-  }
-  return this._data
-}
-get infosPath(){
-  return this.a.filePathOf('infos.yaml')
-}
 
 /**
   Méthode qui répond au bouton 'Actualiser', pour actualiser l'affichage sans
@@ -201,7 +173,7 @@ formate_prop_time_or_warning(prop){
 formateAsPeopleList(people){
   if(!people) return
   var arr = [], nom, prenom, fonction, patro
-  console.log("people:",people)
+  // console.log("people:",people)
   people.map(real => {
     [nom, prenom, fonction] = real.split(',').map(n => n.trim())
     if(nom && nom.toLowerCase() == 'nom') return
@@ -222,7 +194,7 @@ dateOrNull(dateProp){
   try {
     let val = this.data[dateProp]
     if(!val) return val
-    if('number'===typeof(val)) return `${val}` // juste l'année, par exemple
+    if(isNumber(val)) return `${val}` // juste l'année, par exemple
     return val.match(REG_DATE) ? val : null
   } catch (e) {
     console.error(`Problème avec la propriété "${dateProp}" de valeur ${val} de typeof ${typeof(val)}`)
@@ -236,11 +208,6 @@ timeOrNull(timeProp){
   if(!this.data[timeProp]) return this.data[timeProp]
   return (this.data[timeProp].toLowerCase().substring(0,7) === 'h:mm:ss') ? null : this.data[timeProp]
 }
-
-// ---------------------------------------------------------------------
-// AUTRES PROPRIÉTÉS
-
-get fwindow(){return this._fwindow||defP(this,'_fwindow', new FWindow(this,{class:'fwindow-listing-type infos-film', x:10, y:10}))}
 
 }
 

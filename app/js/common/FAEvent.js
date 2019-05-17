@@ -562,7 +562,7 @@ observe(container){
     log.warn(`BIZARREMENT, le jqReaderObj de l'event #${this.id} est introuvable dans le reader. recherché avec domReaderId:${domReaderId}`)
   } else {
     // On rend actif les boutons d'édition
-    o.find('.e-tools button.btn-edit').on('click', EventForm.editEvent.bind(EventForm, this))
+    o.find('.e-tools button.btn-edit').on(STRclick, EventForm.editEvent.bind(EventForm, this))
 
     // On rend actif les boutons play
     BtnPlay.setAndWatch(this.jqReaderObj, this)

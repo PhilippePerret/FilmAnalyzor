@@ -150,7 +150,7 @@ const HandTests = {
     , DCreate(BUTTON, {id: 'btn-next-test', inner: 'Next Test'})
     , DCreate(BUTTON, {id: 'btn-next-step', inner: 'Next Step'})
     , DCreate('SPAN', {class:'separator', style:'display:inline-block;width:50px;'})
-    , DCreate(BUTTON, {id: 'btn-step-success', inner: 'OK'})
+    , DCreate(BUTTON, {id: 'btn-step-success', inner: OK})
     , DCreate(BUTTON, {id: 'btn-step-failure', inner: 'ERROR'})
     ]})
 
@@ -160,15 +160,15 @@ const HandTests = {
 , observe(){
   let jqo = this.fwindow.jqObj
 
-  jqo.find('#btn-next-file').on('click',  this.nextFile.bind(this))
-  jqo.find('#btn-next-test').on('click',  this.nextTest.bind(this))
-  jqo.find('#btn-next-step').on('click',  this.nextStep.bind(this))
-  jqo.find('#btn-finir').on('click',      this.resumeTests.bind(this))
-  jqo.find('#btn-step-success').on('click', this.markSuccessOrNormal.bind(this))
-  jqo.find('#btn-step-failure').on('click', this.markFailure.bind(this))
+  jqo.find('#btn-next-file').on(STRclick,  this.nextFile.bind(this))
+  jqo.find('#btn-next-test').on(STRclick,  this.nextTest.bind(this))
+  jqo.find('#btn-next-step').on(STRclick,  this.nextStep.bind(this))
+  jqo.find('#btn-finir').on(STRclick,      this.resumeTests.bind(this))
+  jqo.find('#btn-step-success').on(STRclick, this.markSuccessOrNormal.bind(this))
+  jqo.find('#btn-step-failure').on(STRclick, this.markFailure.bind(this))
 
   // Le bouton pour jouer le test entré dans le champ
-  jqo.find('#btn-htest-path').on('click', this.runThisTest.bind(this))
+  jqo.find('#btn-htest-path').on(STRclick, this.runThisTest.bind(this))
 }
 
 /**

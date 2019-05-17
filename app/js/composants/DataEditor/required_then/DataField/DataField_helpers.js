@@ -23,14 +23,14 @@ Object.assign(DataField.prototype,{
 **/
   observeIfNecessary(){
     if(this.isSelectUpdatable){
-      this.dataEditor.jqObj.find(`.update-${this.prop}-values`).on('click', this.updateSelectValues.bind(this))
-      this.dataEditor.jqObj.find(`.open-${this.prop}-values`).on('click', this.openValues.bind(this))
+      this.dataEditor.jqObj.find(`.update-${this.prop}-values`).on(STRclick, this.updateSelectValues.bind(this))
+      this.dataEditor.jqObj.find(`.open-${this.prop}-values`).on(STRclick, this.openValues.bind(this))
     }
     if(this.showLink){
-      this.dataEditor.jqObj.find(`img#${this.domId}-show-link`).on('click',this.execShowLink.bind(this))
+      this.dataEditor.jqObj.find(`img#${this.domId}-show-link`).on(STRclick,this.execShowLink.bind(this))
     }
     if(this.editLink){
-      this.dataEditor.jqObj.find(`img#${this.domId}-edit-link`).on('click',this.execEditLink.bind(this))
+      this.dataEditor.jqObj.find(`img#${this.domId}-edit-link`).on(STRclick,this.execEditLink.bind(this))
     }
 
     if (this.observe){

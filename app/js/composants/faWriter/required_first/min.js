@@ -24,10 +24,11 @@ const DATA_DOCUMENTS = {
 
 , separatorInfos: 'separator'
 
-, infos:            {hname: 'Informations/variables', format: 'yaml', type:'data'}
+, infos:            {hname: 'Infos film \& analyse', format: 'yaml', type:'data', dataeditor: true}
 
 , separator2: 'separator'
 
+, variables:        {hname: 'Variables', format: 'yaml', type:'data', dataeditor: true}
 , diminutifs:       {hname: 'Diminutifs', format:'yaml', type:'data'}
 , snippets:         {hname: 'Snippets', format:'yaml', type:'data'}
 

@@ -157,9 +157,9 @@ build(){
 observe(){
   var my = this
   // On observe les boutons
-  this.oButtons.find(`#${this.idFor('cb-visualizor')}`).on('click', this.toggleVisualizor.bind(this))
-  this.oButtons.find(`#${this.idFor('cb-mask-fond')}`).on('click', this.toggleMaskFond.bind(this))
-  this.oButtons.find('button.btn-ok').on('click', this.finir.bind(this))
+  this.oButtons.find(`#${this.idFor('cb-visualizor')}`).on(STRclick, this.toggleVisualizor.bind(this))
+  this.oButtons.find(`#${this.idFor('cb-mask-fond')}`).on(STRclick, this.toggleMaskFond.bind(this))
+  this.oButtons.find('button.btn-ok').on(STRclick, this.finir.bind(this))
   this.textField.on('keydown',  this.onKeyDown.bind(this))
   this.textField.on('keyup',    this.onKeyUp.bind(this))
 

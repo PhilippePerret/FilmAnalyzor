@@ -5,19 +5,19 @@ const PanelStatistiques = {
 
 , build(){
     return [
-      DCreate('DIV', {class: 'header', append:[
+      DCreate('DIV', {class: STRheader, append:[
           DCreate(BUTTON, {type:STRbutton, class:'btn-close'})
         , DCreate('H3', {inner: `Statistiques`})
         ]})
-    , DCreate('DIV', {class:'body', append: [DCreate('DIV', {inner:"Ici, bientôt, les statistiques"})]})
-    , DCreate('DIV', {class:'footer', append:[
-        DCreate(BUTTON, {type:STRbutton, inner: 'OK', class: 'btn-ok'})
+    , DCreate('DIV', {class:STRbody, append: [DCreate('DIV', {inner:"Ici, bientôt, les statistiques"})]})
+    , DCreate('DIV', {class:STRfooter, append:[
+        DCreate(BUTTON, {type:STRbutton, inner: OK, class: 'btn-ok'})
       ]})
     ]
   }
 
 , observe(){
-    this.fwindow.jqObj.find('.btn-ok').on('click', this.fwindow.toggle.bind(this.fwindow))
+    this.fwindow.jqObj.find('.btn-ok').on(STRclick, this.fwindow.toggle.bind(this.fwindow))
   }
 
 }

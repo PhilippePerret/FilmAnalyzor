@@ -84,7 +84,7 @@ const Flash = {
       if(options && options.no_buttons){
         this.hide_buttons()
         // Mais on peut cliquer sur la notification pour la fermer
-        jqIn.on('click',this.denotify.bind(this))
+        jqIn.on(STRclick,this.denotify.bind(this))
       }
       else { this.show_buttons() };
       this.open();
@@ -179,7 +179,7 @@ const Flash = {
   // MÉTHODES DE CONSTRUCTION //
 
   build: function(){
-    $('body').append(`
+    $(STRbody).append(`
       ${this.css}
       <div id="flash" style="display:none;">
         <div id="flash-notice" class="msg" style="display:none;"></div>

@@ -1,0 +1,14 @@
+# Les variables permettent d'utiliser des textes dynamique
+# dans les textes. Par exemple, si la balise suivante est
+# définie :
+#   mabalise: Ceci est le texte de remplacement
+# Chaque fois que j'écrirais '{{mabalise}}' dans le texte,
+# ce sera remplacé par "Ceci est le texte de remplacement"
+#
+# Noter qu'il peut y avoir une variable dans une variable,
+# mais la variable imbriquée doit être définie avant la
+# variable qui l'utilise. Par exemple :
+#   mabalisei: une balise imbriquée
+#   balisep:  'Cette balise porte {{mabalisei}}'
+#
+valeurbalise: Valeur réelle

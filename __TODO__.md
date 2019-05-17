@@ -4,24 +4,11 @@
 
 * Pour les associés qui n'existent plus, utiliser la classe `FAUnknownElement`
 
-* Essayer de généraliser l'utilisation de `iofile`, `save`, `getData` pour tous les éléments, afin de réduire considérablement les méthodes. Voir dans FAElement.js et FAImage.js
-
-
-* Voir comment est traité la propriété `associable: true` dans le DataEditor. Il faut :
-  1. Qu'on puisse dragguer un élément associable sur la fenêtre d'édition
-  2. Qu'on puisse dragguer depuis la fenêtre d'édition un petit picto (comme pour les documents) pour associer l'élément à un autre
-  3. Ça doit ajouter un div contenant les associables, comme dans le listing, avec des boutons 'dissocier'
-  - dans le listing, ne pas mettre de numéro #1 au brin, on a l'impression que c'est son identifiant.
-  Implémenter pour les brins la nouvelle façon d'associer les éléments
-  - À quoi sert le numéro du brin ?
-
-
 - Réimplémenter le check des résolutions des QRD pour qu'il se fasse seulement quand toutes les classes sont chargées — + quand on vient d'en créer une. Il faut appeler `FAEqrd#checkResolution()`. Voir aussi sur les procédés à résolution ?
 
 * DATAEDITOR
   - Faire un fichier pfa alt (les mettre dans min.js)
   - Faire la même chose pour les variables ?
-  - Faire la même chose pour les infos du film ?
 
 * CHECK ANALYSE
   - Poursuivre le check de la validité des données (app/js/tools/analyse_checker.js)
@@ -32,10 +19,6 @@
 
 - Checker la résolution quand on modifie le procédé (pour le moment, ça n'est traité à la création et à l'instanciation)
   - Si la résolution ne commence pas par une balise de temps, il faut considérer que c'est l'explication de la non résolution.
-
-
-* [BUGS]
-  cf. les listes sur ghi
 
 * HANDTESTS
   - Il faut créer le test de la création de chaque type d'event. Peut-être qu'on peut même l'automatiser presque entièrement avec les hand-tests.

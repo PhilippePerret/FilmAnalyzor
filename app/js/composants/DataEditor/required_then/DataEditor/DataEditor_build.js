@@ -47,7 +47,7 @@ Object.assign(DataEditor.prototype,{
     var divsFooter = []
     let visuBtns = this.data.no_new_item ? STRhidden : STRvisible
     if(this.data.checkOnDemand){
-      divsFooter.push(DCreate(BUTTON, {id:my.idFor('btn-check'), type:STRbutton, class:'btn-check small', inner:"Check now!", style:`visibility:${visuBtns};`}))
+      divsFooter.push(DCreate(BUTTON, {id:my.idFor('btn-check'), type:STRbutton, class:'btn-check small', inner:"Check now!"}))
     }
     divsFooter.push(...[
         DCreate(SPAN,{class:STRsmall,append:[
@@ -58,12 +58,12 @@ Object.assign(DataEditor.prototype,{
       ])
 
     return [
-        DCreate(DIV,{class:'header', append:divsHeader})
+        DCreate(DIV,{class:STRheader, append:divsHeader})
       , DCreate(DIV,{class:`body${this.dataPanels?' plain':''}`, append:[
             DCreate(SELECT,{id:my.idFor('menu_items'), class:'menu-items main'})
           , ...divsForm
           ]})
-      , DCreate(DIV,{class:'footer', append:divsFooter})
+      , DCreate(DIV,{class:STRfooter, append:divsFooter})
       ]
   }
 
@@ -75,20 +75,24 @@ Object.assign(DataEditor.prototype,{
       this.dataPanels[0].activate()
     }
 
+    if(this.data.items.length === 1 && this.data.no_new_item){
+      this.menuItems[0].disabled = true
+    }
+
   }
 
 , idFor(suf){ return `${this.id}-${suf}`}
 
 , observe(){
-    this.jqObj.find(`#${this.id}-btn-add`).on('click', this.addElement.bind(this))
-    this.jqObj.find(`#${this.id}-btn-del`).on('click', this.removeCurrentItem.bind(this))
-    this.jqObj.find(`#${this.id}-menu_items`).on('change', this.editElement.bind(this))
+    this.jqObj.find(`#${this.id}-btn-add`).on(STRclick, this.addElement.bind(this))
+    this.jqObj.find(`#${this.id}-btn-del`).on(STRclick, this.removeCurrentItem.bind(this))
+    this.menuItems.on('change', this.editElement.bind(this))
 
     if(this.data.checkOnDemand){
-      this.checkBtn.on('click', this.onCheckOnDemand.bind(this))
+      this.checkBtn.on(STRclick, this.onCheckOnDemand.bind(this))
     }
 
-    this.saveBtn.on('click', this.saveElement.bind(this))
+    this.saveBtn.on(STRclick, this.saveElement.bind(this))
 
     // Les champs d'édition répondent au cmd-enter pour soumettre le
     // formulaire (enfin… façon de parler)
@@ -101,7 +105,7 @@ Object.assign(DataEditor.prototype,{
     // Si l'interface est composée de panneaux, on met un observer
     // sur chaque onglet
     if(this.dataPanels){
-      this.dataPanels.map(panel => panel.DOMOnglet.on('click', panel.activate.bind(panel)))
+      this.dataPanels.map(panel => panel.DOMOnglet.on(STRclick, panel.activate.bind(panel)))
     }
 
     // On rend les champs d'édition sensible au drop d'event, de temps

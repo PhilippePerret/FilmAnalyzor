@@ -25,7 +25,7 @@ Object.assign(DataEditor.prototype,{
       // On met la valeur dans l'instance, pour ne pas avoir à trimbaler
       // la table formData
       dField.formValue = fval
-      formData[dField.key] = fval
+      isNotNullish(fval) && ( formData[dField.key] = fval )
     })
     return formData
   }
@@ -46,7 +46,7 @@ Object.assign(DataEditor.prototype,{
 , checkFormValues(formData, forcer){
     log.info(`-> DataEditor#checkFormValues(data=${JSON.stringify(formData)})`)
     if(this.data.checkOnDemand && !forcer) return
-    if(undefined === formData) this.getFormValues()
+    isDefined(formData) || this.getFormValues()
     var val
       , res
       , errors = []

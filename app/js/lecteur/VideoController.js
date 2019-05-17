@@ -303,14 +303,14 @@ observe(){
 })
 
   // Sur les parties à droite de l'horloge principale
-  this.markMainPartAbs.on('click', this.onClickMarkStt.bind(this, 'Main', 'Abs'))
-  this.markSubPartAbs.on('click', this.onClickMarkStt.bind(this, 'Sub', 'Abs'))
-  this.markMainPartRel.on('click', this.onClickMarkStt.bind(this, 'Main', 'Rel'))
-  this.markSubPartRel.on('click', this.onClickMarkStt.bind(this, 'Sub', 'Rel'))
+  this.markMainPartAbs.on(STRclick, this.onClickMarkStt.bind(this, 'Main', 'Abs'))
+  this.markSubPartAbs.on(STRclick, this.onClickMarkStt.bind(this, 'Sub', 'Abs'))
+  this.markMainPartRel.on(STRclick, this.onClickMarkStt.bind(this, 'Main', 'Rel'))
+  this.markSubPartRel.on(STRclick, this.onClickMarkStt.bind(this, 'Sub', 'Rel'))
 
   // Pour afficher les scènes, le div est sensible au clic et permet
   // d'éditer la scène
-  this.markCurrentScene.on('click', () => {
+  this.markCurrentScene.on(STRclick, () => {
     if (this.locator.currentScene){
       EventForm.editEvent.bind(EventForm)(this.locator.currentScene)
     }

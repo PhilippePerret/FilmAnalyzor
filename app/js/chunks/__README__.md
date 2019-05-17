@@ -47,7 +47,7 @@ Dans le fichier `..../chunks/maClasse/maMethode.js`, on définit :
   let maMethode /* ou autre nom */ = function(args){
     this.property = "propriété de l'instance"
     var my = this
-    $(buttons).each(function(o){ o.on('click', my.fonctionClick) })
+    $(buttons).each(function(o){ o.on(STRclick, my.fonctionClick) })
   }
 
   module.exports = maMethode /* ou autre nom */

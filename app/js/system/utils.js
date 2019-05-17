@@ -3,9 +3,13 @@
 function isUndefined(foo){
   return STRundefined === typeof(foo)
 }
-function isNull(foo){
-  return null === foo
-}
+function isNumber(foo){return STRnumber === typeof(foo)}
+function isNotNumber(foo){return false === isNumber(foo)}
+
+function isNull(foo){ return null === foo }
+function isNullish(foo){ return isNull(foo) || isUndefined(foo) }
+function isNotNullish(foo){ return false === isNullish(foo) }
+
 function isFalse(foo){
   return false === foo
 }
@@ -253,7 +257,7 @@ function toggleVisible(jqId, v){
 }
 
 // Pour écouter un objet
-// p.e. listen(btnPlay, 'click', Controller, 'start')
+// p.e. listen(btnPlay, STRclick, Controller, 'start')
 function listen(cible, ename, objet, method, param){
   if('string'===typeof(cible)){cible = DGet(cible)}
   try {
@@ -269,7 +273,7 @@ function listen(cible, ename, objet, method, param){
     })
   }
 }
-function listenClick(cible, objet, method, param){listen(cible,'click',objet,method, param)}
+function listenClick(cible, objet, method, param){listen(cible,STRclick,objet,method, param)}
 function listenMDown(cible, objet, method, param){listen(cible,'mousedown',objet,method, param)}
 function listenMUp(cible, objet, method, param){listen(cible,'mouseup',objet,method, param)}
 

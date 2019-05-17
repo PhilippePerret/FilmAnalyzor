@@ -244,5 +244,8 @@ loadReporter(fn_callback){
 , loadFondamentales(fn_callback){
     return System.loadComponant('Fondamentales', fn_callback)
 }
+, loadInfosFilm(fn_callback){
+  return System.loadComponant('InfosFilm', fn_callback)
+}
 
 }) // assign FAnalyse.prototype
