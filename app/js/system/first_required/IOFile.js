@@ -224,10 +224,10 @@ loadIfExists(options, fn_pour_suivre){
   // Noter que la méthode peut être rappelée depuis elle-même, donc
   // sans redéfinir options ou fn_pour_suivre. Donc il ne faut les
   // définir que s'ils sont définis.
-  if(undefined !== options) my.options = options
-  if(undefined !== fn_pour_suivre) my.methodAfterLoading = fn_pour_suivre
-  else if(options && options.after) my.methodAfterLoading = options.after
-  if(false === this.exists()){
+  isDefined(options) && ( my.options = options )
+  isDefined(fn_pour_suivre) && ( my.methodAfterLoading = fn_pour_suivre )
+  if(options && options.after) my.methodAfterLoading = options.after
+  if(isFalse(this.exists())){
     my.endLoad(false)
   } else {
     if(my.size === 0) {
@@ -329,9 +329,10 @@ set code(v){this._code = v}
 // ce ne serait pas le nouveau contenu du document qui serait enregistré,
 // mais toujours son contenu initial.
 get code(){
-  if (undefined === this.owner) {
+  if (isUndefined(this.owner)) {
     return this._code
   } else {
+    // console.log("Je prends code dans le propriétaire (pas dans _code)")
     // Le code doit être défini dans la propriété `contents` ou `code`
     // du propriétaire de l'instance
     return this.owner.contents || this.owner.code || this.owner.data || this._code
@@ -353,18 +354,18 @@ get code(){
   */
 get decodedCode(){return this._decodedCode || defP(this,'_decodedCode',this.decode())}
 decode(){
-  if(!this.code) return null // fichier inexistant, par exemple
+  if(!this._code) return null // fichier inexistant, par exemple
   try {
     switch (this.format.toUpperCase()) {
       case 'RAW':
-        return this.code // pour la clarté
+        return this._code // pour la clarté
       case 'JSON':
-        if ('object' === typeof this.code) return this.code
-        else return JSON.parse(this.code)
+        if ('object' === typeof this._code) return this._code
+        else return JSON.parse(this._code)
       case 'YAML':
-        return YAML.safeLoad(this.code)
+        return YAML.safeLoad(this._code)
       default:
-        return this.code
+        return this._code
     }
   } catch (e) {
     console.log(`ERROR ${this.format} AVEC:`, this.path)

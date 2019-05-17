@@ -87,7 +87,7 @@ Object.defineProperties(FABrin,{
 
 , brins:{
     get(){
-      if(undefined === this._brins){
+      if(isUndefined(this._brins)){
         this._brins = {}
         if(this.data){
           for(var dbrin of this.data){

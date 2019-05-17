@@ -7,74 +7,103 @@
 const FABuildingScript = {
   class: 'FABuildingScript'
 
-, toggle(){ this.fwindow.toggle() }
-/**
-  Définition des données assemblables
-**/
-  /**
-    // TODO case a cocher pour introduire le texte sur la version originale
-  **/
-
-/**
-  Construction de la fenêtre, avec FWindow
-**/
-, build(){
-    let divsHeader = [
-        DCreate(BUTTON,{type:STRbutton, class:'btn-close'})
-      , DCreate(H3,{inner:'SCRIPT D’ASSEMBLAGE DE L’ANALYSE'})
-      ]
-
-    // Tous les steps d'assemblage que l'on peut déplacer
-    let movableElements = [
-        DCreate(DIV,{class:'step', inner:'Note film en langue originale'})
-      , DCreate(DIV,{class:'step', inner:'Introduction générale'})
-      ]
-    let divsBody = [
-        DCreate(DIV,{id:'bse-left-column', append:[
-            DCreate(DIV,{id:'bse-steps-list'})
-          ]})
-      , DCreate(DIV,{id:'bse-right-column', append:[
-            DCreate(DIV,{id:'bse-steps-outlist', append:movableElements})
-          ]})
-      ]
-    return [
-      DCreate(DIV,{class:STRheader, append: divsHeader})
-    , DCreate(DIV,{class:`${STRbody} plain`, append:divsBody})
-    , DCreate(DIV,{class:STRfooter})
-    ]
+, toggle(){
+    // Il faut charger les données existantes, le cas échéant
+    if (isNotTrue(this.loaded)) return this.load({after:this.toggle.bind(this)})
+    this.fwindow.toggle()
   }
 
 /**
-  Observation de la fenêtre
+  Pour enregistrer la donnée
 **/
-, observe(){
-
-    let dataDrop = {
-      accept:'.step'
+, save(){
+    // TODO Il faut préparer la donnée avant de l'enregistrer
+    // Ça se fait simplement en relevant les identifiants dans la liste des
+    // étapes retenues
+    this.composeData()
+    this.iofile.save({after: this.afterSave.bind(this)})
+  }
+, afterSave(){
+    F.notify("Le script d'assemblage de l'analyse a été sauvegardé avec succès.")
+  }
+/**
+  Pour lire la donnée
+**/
+, load(opts){
+    if(this.iofile.exists()){
+      this.decomposeData(this.iofile.loadSync({format:'raw'}))
+    } else {
+      this._data = []
     }
-    let dataSort = {
-      connectWith:'#bse-steps-outlist'
-    , items:'> div'
-    }
-    // On doit pouvoir classer dans la liste des steps
-    this.stepsListObj
-      .sortable(dataSort)
-      .droppable(dataDrop)
+    this.loaded = true
+    if (opts && opts.after) opts.after.call()
+  }
 
-    this.stepsOutListObj
-      .sortable({items:'> div'})
+/**
+  Affiche l'explication de l'étape dont l'idée se trouve dans l'attribut
+  `id-explication` de la cible de l'image cliqu"e
+**/
+, showStepExplaination(e){
+    let step_id = $(e.target).attr('id-explication')
+    F.notice(BUILDING_SCRIPT_DATA[step_id].explication)
+    return stopEvent(e)
+  }
 
-    this.jqObj.find('.step').draggable({
-      connectToSortable: '#bse-steps-list'
-    , helper:'clone'
-    , containment:this.jqObj
+, composeData(){
+    var lines = [], checked
+    this.stepsListObj.find('.step').each((i, e) => {
+      e = $(e)
+      checked = e.find('input[type="checkbox"]')[0].checked === true
+      lines.push(`${e.attr('data-id')}:${checked?1:0}`)
     })
+    // console.log("lines: ", lines)
+    this.contents = lines.join(RC)
+    lines = null
+  }
+
+/**
+  Déposition des données après chargement
+**/
+, decomposeData(data){
+    this._data = data.split(RC).map(line => {
+      var [step_id, checked] = line.split(':')
+      return {id: step_id, checked: (1 == parseInt(checked,10))}
+    })
+  }
+
+/**
+  Méthode qui retourne les données des documents personnalisés de l'analyse
+  courante, sous forme de données d'étape.
+**/
+, customDocumentsAsSteps(){
+    return FADocument.allDocuments.filter(doc => doc.dtype === 'custom').map(doc => {
+      return {hname: doc.title}
+    })
+  }
+
+/**
+  Retourne les brins comme étapes du script d'assemblage
+**/
+, brinsAsSteps(){
+    if(isNullish(FABrin.data)) return []
+    return FABrin.data.map(brin => {hname: brin.toString()})
   }
 
 } ; /* /FABuildingScript */
 Object.defineProperties(FABuildingScript,{
+// ---------------------------------------------------------------------
+// PROPRIÉTÉS GÉNÉRALES
+  data:{get(){return this._data || []}}
 
-  stepsListObj:{get(){
+, iofile:{get(){return this._iofile || defP(this,'_iofile', new IOFile(this))}}
+, path:{get(){
+    return this._path||defP(this,'_path',this.a.filePathOf('building_script'))
+  }}
+, a:{get(){return current_analyse}}
+
+// ---------------------------------------------------------------------
+//  PROPRIÉTÉS DOM
+, stepsListObj:{get(){
     if(isUndefined(this._stepslistobj)){
       this._stepslistobj = this.fwindow.jqObj.find('.body #bse-left-column #bse-steps-list')
       if(isEmpty(this._stepslistobj)) delete this._stepslistobj

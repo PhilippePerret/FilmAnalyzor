@@ -31,7 +31,7 @@ static new(){
 }
 
 static newId(){
-  if(undefined === this.lastID) this.lastID = 0
+  isDefined(this.lastID) || ( this.lastID = 0 )
   return ++ this.lastID
 }
 
@@ -42,10 +42,10 @@ static newId(){
  d'un document personnalisé.
 **/
 static get(doc_id){
-  if(undefined === this.documents) this.documents = {}
-  if(undefined === this.documents[doc_id]){
+  isDefined(this.documents) || ( this.documents = {} )
+  if( isUndefined(this.documents[doc_id])){
     let [dtype, realid] = doc_id.split('-')
-    if(dtype === 'custom') customid = parseInt(customid,10)
+    if(dtype === 'custom') realid = parseInt(realid,10)
     else [dtype, realid] = ['regular', doc_id]
     this.documents[doc_id] = new FADocument(dtype, realid)
   }
@@ -83,7 +83,7 @@ static findAssociations(){
           found = reg.exec(value)
           if(found != null){
             // console.log(`Trouvé dans event #${ev.id} :`, found, reg.lastIndex)
-            if(undefined === dDocuments[found[1]]){
+            if(isUndefined(dDocuments[found[1]])){
               dDocuments[found[1]] = []
             }
             dDocuments[found[1]].push(ev)
@@ -116,13 +116,15 @@ static forEachDocument(fn){
 
 **/
 static get allDocuments(){
-  var all = glob.sync(`${current_analyse.folderFiles}/*.*`)
-    , alldocs = []
-  for(var pdoc of all){
-    this.get(path.basename(pdoc,path.extname(pdoc)))
+  if(isUndefined(this._alldocuments)) {
+    var all = glob.sync(`${current_analyse.folderFiles}/*.*`)
+    for(var pdoc of all){
+      this.get(path.basename(pdoc,path.extname(pdoc)))
+    }
+    this._alldocuments = Object.values(this.documents)
+    all = null
   }
-  all = null
-  return this.documents
+  return this._alldocuments
 }
 
 /**
@@ -158,7 +160,7 @@ constructor(dtype, id, docPath){
   ['regular','custom','any'].indexOf(dtype) > -1 || raise(`Le doc-type (dtype) "${dtype}" est inconnu.`)
   this.dtype = dtype
   if(dtype === 'any'){
-    if(undefined === docPath) docPath = id
+    isDefined(docPath) || ( docPath = id )
     docPath || raise("Il faut absolument fournir le path en troisième argument.")
     fs.existsSync(docPath) || raise(`Le path "${docPath}" est introuvable. Je ne peux pas éditer ce document.`)
     this._path  = docPath

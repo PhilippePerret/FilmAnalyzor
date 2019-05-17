@@ -16,6 +16,8 @@ function not(foo){ return false == foo }
 function isTrue(foo){
   return true === foo
 }
+function isNotTrue(foo){return false === isTrue(foo)}
+
 function isDefined(foo){
   return false === isUndefined(foo)
 }
