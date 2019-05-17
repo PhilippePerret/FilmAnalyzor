@@ -89,6 +89,7 @@ for(var doc_id in DATA_DOCS){
       , id:       menu_id
       , enabled:  false
       , click:    method
+      , accelerator: ddoc.accelerator
     })
   }
 }

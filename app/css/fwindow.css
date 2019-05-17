@@ -2,6 +2,13 @@
   Pour les fwindows
 */
 
+.fwindow-listing-type,
+.fwindow.large-edition
+{
+  background-color:white;
+  border:1px solid black;
+
+}
 /* ---------------------------------------------------------------------
   Le format utilisé pour afficher les brins, les infos du
   film, les décors, etc., les listes en général, d'où son
@@ -10,21 +17,29 @@
   Ce type est composé d'un .header, d'un .body et d'un .footer
 */
 .fwindow-listing-type {
-  background-color:white;
   max-width:540px;
   min-width:540px;
   max-height:600px;
   min-height:600px;
-  border:1px solid #516468;
 }
 
-.fwindow-listing-type .header {
+.fwindow.large-edition {
+  max-width:680px;
+  min-width:680px;
+  max-height:800px;
+  min-height:800px;
+}
+
+.fwindow-listing-type .header,
+.fwindow.large-edition .header
+ {
   height: 42px;
   background-color:#516468;
   color:white;
 }
 
-.fwindow-listing-type .header h3 {
+/* .fwindow-listing-type .header h3 { */
+.fwindow .header h3 {
   font-weight:normal;
   font-size:14pt;
   padding:0.3em 1em;
@@ -32,14 +47,26 @@
   margin-left:1em; /* pour le bouton close */
 }
 
-.fwindow-listing-type .body {
+/* .fwindow-listing-type .body { */
+.fwindow .body:not(.plain) {
   padding:2em;
+}
+.fwindow .body {
   overflow:auto;
+}
+.fwindow-listing-type .body {
   height:458px;
   max-height:458px;
 }
+.fwindow.large-edition .body {
+  height:658px;
+  max-height:658px;
+}
 
-.fwindow-listing-type .footer {
+
+.fwindow-listing-type .footer,
+.fwindow.large-edition .footer
+{
   position:absolute;
   background-color:#516468;
   bottom:0;
@@ -48,7 +75,8 @@
   width:90%;
   text-align:right;
 }
-.fwindow-listing-type .footer button {
+/* .fwindow-listing-type .footer button { */
+.fwindow .footer button {
   font-size:inherit;
   margin-top:4px;
 }

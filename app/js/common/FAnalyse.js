@@ -309,9 +309,15 @@ newVersionRequired(){
  * Méthode qui ouvre le writer
  */
 openDocInWriter(dtype){
-  if('undefined' === typeof Snippets) return FAnalyse.loadSnippets(this.openDocInWriter.bind(this, dtype))
-  if(dtype && dtype.startsWith('fondamentales') && NONE === typeof(Fondamentales)){
-    return this.loadFondamentales(this.openDocInWriter.bind(this, dtype))
+  if(NONE === typeof(Snippets)) return FAnalyse.loadSnippets(this.openDocInWriter.bind(this, dtype))
+  if(dtype){
+    if(dtype.startsWith('fondamentales') && NONE === typeof(Fondamentales)){
+      return this.loadFondamentales(this.openDocInWriter.bind(this, dtype))
+    } else if (dtype == 'building_script') {
+      // Maintenant, on ouvre le building script avec son éditeur propre
+      if(NONE == typeof(FABuildingScript)) return System.loadComponant('faBuildingScript', this.openDocInWriter.bind(this,dtype))
+      return FABuildingScript.toggle()
+    }
   }
   if(!FAWriter.inited) FAWriter.init()
   FAWriter.openDoc(dtype)

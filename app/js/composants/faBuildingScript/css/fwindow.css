@@ -1,0 +1,30 @@
+/*
+  Styles propres à la flying-window de l'édition du script d'assemblage
+*/
+.fwindow .body #bse-left-column {
+  float: left;
+  width:55%;
+}
+/* La liste contenant les steps */
+.fwindow .body #bse-left-column #bse-steps-list {
+  width:100%;
+  border:1px solid green;
+  height:600px;
+  overflow:auto;
+}
+.fwindow .body #bse-left-column #bse-steps-list > .step {
+  border:1px solid #CCFFCC;
+  padding:1px 1em;
+  width:100%;
+}
+
+.fwindow .body #bse-right-column {
+  width:40%;
+  margin-left:60%;
+  font-size:12pt;
+}
+
+.fwindow .body #bse-right-column > div.step {
+  padding:4px 1em;
+  border:1px solid #DDDDDD;
+}
