@@ -49,3 +49,7 @@ const {
 , ERRORS
 , MESSAGES
 } = FReqGet('messages_et_errors')
+
+const {
+  UnknownStepError
+} = FReqGet('errors_classes')

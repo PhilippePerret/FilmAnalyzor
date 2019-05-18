@@ -6,7 +6,11 @@
 
 const BUILDING_SCRIPT_DATA = {
 
-  infos_film:{
+  cover:{
+      hname: 'Page de couverture'
+    , explication: "La page de couverture est constituée à partir des informations sur le film. Sauve la couverture qui doit être défini sous le nom `cover.jpg` à la racine du dossier ./exports/img/."
+  }
+, infos_film:{
       hname: 'Infos sur le film (et analyse)'
   }
 
@@ -14,13 +18,14 @@ const BUILDING_SCRIPT_DATA = {
       hname: 'Récompenses obtenues'
   }
 
-, note_version_original:{
+, note_version_originale:{
       hname: "Note sur version originale"
     , explication: 'Ajoute une note qui invite à regarder le film dans sa langue originale'
   }
 
 , synopsis: {
       hname: 'Synopsis'
+    , realType: 'reg-doc'
   }
 
 , scenier: {

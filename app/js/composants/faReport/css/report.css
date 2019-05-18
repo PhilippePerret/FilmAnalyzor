@@ -1,0 +1,48 @@
+div.report-contents {
+  width: 800px;
+  padding:2em;
+  background-color:#DDDDFF;
+}
+div.report-contents,
+div.report-contents * {
+  font-size:0.85em;
+  font-family:Monospace;
+}
+
+div.report-contents div.report-msg.warning { color:unset; }
+
+div.report-contents div.report-msg {
+  margin-bottom:4px;
+}
+div.report-contents div.report-msg span.msg {
+  font-size:1.1em;
+}
+div.report-contents div.report-msg.title span.msg  {
+  font-size:1.1em;
+  margin-top:1em;
+  font-weight:bold;
+}
+div.report-contents div.report-msg.subtitle span.msg {
+  margin-top:0.6em;
+  font-size:1.05em;
+  font-weight:bold;
+}
+div.report-contents div.report-msg.normal span.msg { color: black; }
+div.report-contents div.report-msg.warning span.msg {
+  color: orange; font-weight:bold; }
+div.report-contents div.report-msg.error span.msg  { color: red; font-weight:bold;}
+div.report-contents div.report-msg.notice span.msg { color: blue; }
+
+div.report-contents div.report-msg.indent0 span.msg { margin-left:0;}
+div.report-contents div.report-msg.indent1 span.msg { margin-left:8px;}
+div.report-contents div.report-msg.indent2 span.msg { margin-left:12px;}
+div.report-contents div.report-msg.indent3 span.msg { margin-left:16px;}
+div.report-contents div.report-msg.indent4 span.msg { margin-left:4em;}
+
+div.report-contents div.report-msg span.time {
+  all:unset;
+  font-size:8.5pt;
+  display:inline-block;
+  width:100px;
+
+}

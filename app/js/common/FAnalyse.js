@@ -234,7 +234,7 @@ displayTimeline(){MainTimeline.toggle()}
  */
 displayFullAnalyse(forcer){
   log.info(`-> FAnalyse.displayFullAnalyse(forcer:${forcer})`)
-  if(undefined === this.callback_dispfullana){
+  if(isUndefined(this.callback_dispfullana)){
     this.callback_dispfullana = this.displayFullAnalyse.bind(this, forcer||false)
   }
   if(NONE === typeof(FABuilder))  return this.loadBuilder(this.callback_dispfullana)
@@ -242,8 +242,8 @@ displayFullAnalyse(forcer){
   if(NONE === typeof(FAReport))   return this.loadReporter(this.callback_dispfullana)
   if(NONE === typeof(InfosFilm))  return this.loadInfosFilm(this.callback_dispfullana)
   log.info('   Composants full analyse chargés. Je peux la créer')
-  FABuilder.createNew().show({force_update: forcer})
   delete this.callback_dispfullana
+  FABuilder.createNew().show({force_update: forcer})
   log.info('<- FAnalyse.displayFullAnalyse')
 }
 
