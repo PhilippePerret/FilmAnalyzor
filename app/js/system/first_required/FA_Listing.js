@@ -26,9 +26,10 @@ constructor(classeFAElement){
   this.owner = classeFAElement
 }
 // Pour ouvrir et fermer le panneau
-toggle(force_opened){
-  if(undefined === force_opened) this.fwindow.toggle()
+toggle(force_opened, selected_item){
+  if (isUndefined(force_opened)) this.fwindow.toggle()
   else this.fwindow[force_opened?'show':'hide']()
+  selected_item && this.select(selected_item)
 }
 get opened(){return this.fwindow.visible}
 
@@ -138,7 +139,7 @@ onOK(){
 select(item_id){
   let item = this.owner.get(item_id)
   this.jqObj.find('.body .falisting > LI').hide()
-  this.jqObj.find(`.body > LI.falisting-${item.domClass}`).show()
+  this.jqObj.find(`.body > LI[data-id="${item_id}"]`).show()
   this.btnShowAll.css('visibility',STRvisible)
 }
 

@@ -23,6 +23,7 @@
   * [Association des events](#associations_elements)
 * [Autres données de l'analyse](#analyse_autres_donnees)
   * [Éléments propres de l'analyse (Personnages, Brins, etc.)](#elements_analyse)
+  * [Récupérer une instance par son type et son id](#get_instance_with_type_and_id)
   * [FAListing, listing des éléments](#falisting_elements)
   * [DataEditor, l'éditeur de données](#data_editor)
   * [Actualisation automatique des éléments affichés lors des modifications](#autoupdate_after_edit)
@@ -328,6 +329,18 @@ Le nom d'un tel élément doit impérativement :
 * définir la méthode de classe `Classe::get(identifiant)` qui reçoit un identifiant et retourne l'instance correspondante.
 
 Voir dans [Association des éléments](#associations_elements) tout ce qu'on peut faire avec l'élément, en tant qu'élément associable à un autre élément.
+
+### Récupérer une instance par son type et son id {#get_instance_with_type_and_id}
+
+La méthode générique `FAnalyse.instanceOfElement` permet de récupérer n'importe quelle instance d'élément de l'analyse en fournissant en argument un `object` contenant `{type:<type>, id:<identifiant>}`.
+
+```javascript
+
+var inst = current_analyse.instanceOfElement({type:'monType', id:'monID'})
+
+```
+
+Une instance est toujours retournée, que l'élément existe ou pas. S'il n'existe pas, c'est un objet de la classe `FAUnknownElement` qui est retourné.
 
 ### FAListing, listing des éléments {#falisting_elements}
 

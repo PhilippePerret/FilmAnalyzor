@@ -182,7 +182,7 @@ static defineTableDims(){
   var tbl = {}, reg
   for(var dim in this.dimsData){
     reg = new RegExp(`(^|[^a-zA-Z0-9_])@${dim}([^a-zA-Z0-9_]|$)`, 'g')
-    tbl[dim] = {dim: dim, value: `$1<a class="lkshow" onclick="showPersonnage('${this.dimsData[dim].id}')">${this.dimsData[dim].pseudo}</a>$2`, regexp: reg}
+    tbl[dim] = {dim: dim, value: `$1<a class="lkshow" onclick="showPersonnage('${this.dimsData[dim].id}',event)">${this.dimsData[dim].pseudo}</a>$2`, regexp: reg}
   }
   return tbl
 }

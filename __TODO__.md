@@ -7,6 +7,10 @@
     arriver à la méthode de construction. Comme avant, avec les BUILD et
     autre ajout.
     - Comment le faire, surtout, avec les éléments aléatoires (custom-docs)
+  - traiter les brins (pouvoir les glisser depuis la liste)
+    + mettre juste un élément, seulement clickable, pour l'explication, dans la liste
+  - voir comment on peut faire des "blocs" si nécessaire
+  - traiter l'insertion d'images (on doit pouvoir les glisser de puis leur liste, mais alors, pourquoi ne pas faire ça avec le reste ?)
 
 
 * Pour les associés qui n'existent plus, utiliser la classe `FAUnknownElement`

@@ -265,9 +265,9 @@ togglePanneauFondamentales(){
   window.PanelFonds = window.PanelFonds || App.loadTool('building/fondamentales')
   PanelFonds.toggle()
 }
-togglePanneauPersonnages(opened){
+togglePanneauPersonnages(opened, perso_id){
   FAPersonnage.listing || App.loadTool('building/listing_personnages')
-  FAPersonnage.listing && FAPersonnage.listing.toggle(opened) // seulement si valide
+  FAPersonnage.listing && FAPersonnage.listing.toggle(opened, perso_id) // seulement si valide
 }
 
 togglePanneauDecors(opened){
@@ -277,12 +277,14 @@ togglePanneauDecors(opened){
   FADecor.listing && FADecor.listing.toggle(opened) // seulement si valide
 }
 
-togglePanneauImages(opened){
+togglePanneauImages(opened, e){
+  e && stopEvent(e) // N0001
   FAImage.listing || App.loadTool('building/listing_images')
   FAImage.listing && FAImage.listing.toggle(opened) // seulement si valide
 }
 
-togglePanneauBrins(opened){
+togglePanneauBrins(opened, e){
+  e && stopEvent(e) // N0001
   if(FABrin.loaded){
     FABrin.listing || App.loadTool('building/listing_brins')
     FABrin.listing && FABrin.listing.toggle(opened) // seulement si valide

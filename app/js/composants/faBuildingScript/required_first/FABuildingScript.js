@@ -31,6 +31,7 @@ const FABuildingScript = {
   }
 , afterSave(){
     F.notify("Le script d'assemblage de l'analyse a été sauvegardé avec succès.")
+    this.modified = false
   }
 /**
   Pour lire la donnée
@@ -60,7 +61,7 @@ const FABuildingScript = {
     this.stepsListObj.find('.step').each((i, e) => {
       e = $(e)
       checked = e.find('input[type="checkbox"]')[0].checked === true
-      lines.push(`${e.data('id')}:${checked?1:0}:${e.data('hname')}`)
+      lines.push(`${e.data(STRtype)}:${e.data(STRid)}:${checked?1:0}:${e.data('hname')}`)
     })
     // console.log("lines: ", lines)
     this.contents = lines.join(RC)
@@ -72,8 +73,8 @@ const FABuildingScript = {
 **/
 , decomposeData(data){
     this._data = data.split(RC).map(line => {
-      var [step_id, checked, hname] = line.split(':')
-      return {id: step_id, hname: hname, checked: (1 == parseInt(checked,10))}
+      var [step_type, step_id, checked, hname] = line.split(':')
+      return {id: step_id, type:step_type, hname: hname, checked: (1 == parseInt(checked,10))}
     })
   }
 
@@ -83,25 +84,26 @@ const FABuildingScript = {
 **/
 , customDocumentsAsSteps(){
     return FADocument.allDocuments.filter(doc => doc.dtype === 'custom').map(doc => {
-      return {hname: doc.title, id:`custom-${doc.id}`}
-    })
-  }
-
-/**
-  Retourne les brins comme étapes du script d'assemblage
-**/
-, brinsAsSteps(){
-    if(isNullish(FABrin.data)) return []
-    return FABrin.data.map(brin => {
-      return {hname: brin.toString(), id:`brin-${brin.id}`}
+      return {hname: doc.title, id:`doc:custom-${doc.id}`}
     })
   }
 
 } ; /* /FABuildingScript */
 Object.defineProperties(FABuildingScript,{
+
 // ---------------------------------------------------------------------
 // PROPRIÉTÉS GÉNÉRALES
-  data:{get(){return this._data || []}}
+
+  modified:{
+    get(){return this._modified || false}
+  , set(v){
+      this._modified = v
+      // TODO Faire apparaitre le bouton "sauver" quand il y a
+      // des modifications
+    }
+  }
+
+, data:{get(){return this._data || []}}
 
 , iofile:{get(){return this._iofile || defP(this,'_iofile', new IOFile(this))}}
 , path:{get(){
@@ -127,6 +129,6 @@ Object.defineProperties(FABuildingScript,{
   }}
 , jqObj:{get(){return this.fwindow.jqObj}}
 , fwindow:{get(){
-    return this._fwindow||defP(this,'_fwindow',new FWindow(this,{class:'large-edition', name:'Building-script-editor', x:400}))
+    return this._fwindow||defP(this,'_fwindow',new FWindow(this,{id:'building-script', class:'large-edition', name:'Building-script-editor', x:400}))
   }}
 })

@@ -71,6 +71,24 @@ const BUILDING_SCRIPT_DATA = {
       hname: 'PFA alternatif'
   }
 
+, brins: {
+      hname: 'Brin (afficher liste)'
+    , explication: "Pour les brins, il faut les glisser dans la liste de script depuis leur listing."
+    , onclick: "current_analyse.togglePanneauBrins(true,event)"
+  }
+
+, brins_personnages:{
+      hname: 'Brins auto des personnages'
+    , explication: "Ce document présente les données générales de chaque brin de personnage, automatiquement réalisé."
+  }
+
+
+, images: {
+      hname: 'Images (afficher liste)'
+    , explication: "Pour les images, il faut les glisser dans la liste des script depuis leur listing."
+    , onclick: "current_analyse.togglePanneauImages(true,event)"
+  }
+
 , diagramme_dramatique: {
       hname: 'Diagramme dramatique'
   }
@@ -91,16 +109,6 @@ const BUILDING_SCRIPT_DATA = {
 , documents: {
       hname: null
     , items_method: FABuildingScript.customDocumentsAsSteps.bind(FABuildingScript)
-  }
-
-, custom_brins: {
-      hname: null
-    , items_method: FABuildingScript.brinsAsSteps.bind(FABuildingScript)
-  }
-
-, brins_personnages:{
-      hname: 'Brins des personnages'
-    , explication: "Ce document présente les données générales de chaque brin de personnage, automatiquement réalisé."
   }
 
 , annexes: {

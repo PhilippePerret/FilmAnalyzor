@@ -77,19 +77,37 @@ Object.assign(FABuildingScript,{
   Retourne le DIV de l'étape qui comporte les données +dstep+
 **/
 , divStepFor(dstep, opts){
-    console.log("-> divStepFor(dstep)", dstep)
-    var cbattrs = {}
-    opts && opts.checked && ( cbattrs.checked = 'CHECKED' )
-    var divs = [
-        DCreate(INPUT,{type:STRcheckbox, attrs:cbattrs})
-      , DCreate(SPAN,{class:'name', inner:dstep.hname})
-    ]
+    log.info("-> divStepFor(dstep)", dstep)
+    var divClass = ''   // class final du div principal
+      , spanAttrs = {}  // attributs pour le span du nom humain
+      , cbattrs = {}    // attributs pour la case à cocher
+
+    opts && Object.assign(dstep,opts) // j'essaie
+
+    if (dstep.onclick){
+      // Quand une donnée possède la propriété 'onclick', c'est qu'elle ne
+      // se déplace pas dans la liste, mais sert plutôt d'aide, comme pour
+      // les images ou les brins, qui s'ajoutent depuis leurs listings
+      // respectif
+      spanAttrs.onclick = dstep.onclick
+    } else {
+      // Sinon, on lui donne la classe .step pour qu'il puisse être
+      // draggué
+      divClass = STRstep
+    }
+
+    dstep.checked && ( cbattrs.checked = 'CHECKED' )
+    var divs = []
     isNotNullish(dstep.explication) && (
-      divs.unshift(DCreate(IMG,{src:'img/picto_info_dark.png',
-        attrs:{'id-explication':dstep.id}
-      }))
+      divs.push(DCreate(IMG,{src:'img/picto_info_dark.png', attrs:{'id-explication':dstep.id}}))
     )
-    return DCreate(DIV,{class:'step', append:divs, attrs:{'data-id':dstep.id, 'data-hname':dstep.hname}})
+    divs.push(...[
+        DCreate(BUTTON,{type:STRbutton,class:'btn-sup', inner:'–'})
+      , DCreate(INPUT,{type:STRcheckbox, attrs:cbattrs})
+      , DCreate(SPAN,{class:STRname, inner:dstep.hname, attrs:spanAttrs})
+    ])
+
+    return DCreate(DIV,{class:divClass, append:divs, attrs:{'data-type':(dstep.type||STRstep), 'data-id':dstep.id, 'data-hname':dstep.hname}})
   }
 /**
   Observation de la fenêtre
@@ -97,7 +115,7 @@ Object.assign(FABuildingScript,{
 , observe(){
 
     let dataDrop = {
-      accept:'.step'
+      accept:'.step, .brin, .image'
     }
     let dataSort = {
       connectWith:'#bse-steps-outlist'
@@ -116,18 +134,31 @@ Object.assign(FABuildingScript,{
         , cursor:'move'
       })
 
+    // On rend tous les div.step draggable
     this.jqObj.find('.step').draggable({
       connectToSortable: '#bse-steps-list'
     , containment:this.jqObj
     , revert:true
     })
 
-    // On observe toutes les images permettant d'obtenir des informations
+    // On observe tous les "-" qui permettent de retirer les éléments
+    this.jqObj.find('.btn-sup').on(STRclick,this.wantSupStep.bind(this))
+
+    // On observe toutes les "?" permettant d'obtenir des informations
     this.jqObj.find('img[id-explication]').on(STRclick, this.showStepExplaination.bind(this))
 
     // On observe le bouton pour enregistrer
     this.jqObj.find('.btn-ok').on(STRclick, this.save.bind(this))
   }
 
+/**
+  Reçoit un div d'étape à observer dans le script d'assemblage
+  Elle est appelée à la création d'étape personnalisées comme les
+  images ou les brins, par exemple.
+**/
+, observeDiv(odiv){
+    // Le bouton "-" pour le supprimer
+    $(odiv).find('.btn-sup').on(STRclick,this.wantSupStep.bind(this))
+  }
 
 }) // /Object.assign

@@ -5,7 +5,7 @@ class FAImage extends FAElement {
 // ---------------------------------------------------------------------
 //  CLASS
 
-static get PROPS(){return ['id','legend','size','position',STRtime,'path','fname','associates']}
+static get PROPS(){return [STRid,'legend','size','position',STRtime,'path','fname','associates']}
 
 static get positionsValues(){
   if(undefined === this._positionsvalues){
@@ -212,6 +212,7 @@ toString(){return `Image à ${this.otime.horloge_simple}`}
 
 get id(){return this._id} // pour associés
 set id(v){this._id = v}
+get title(){return this.f_legend} // consistence avec autres éléments
 get legend(){return this._legend}
 get position(){return this._position}
 get size(){return this._size}
