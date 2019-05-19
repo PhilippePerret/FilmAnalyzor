@@ -14,17 +14,13 @@ Object.assign(FAnalyse,{
  */
   load(aFolder, fn_afterLoading){
     // On mémorise le dossier à charger et la méthode pour poursuivre
-    if(undefined === this.loadingData){
+    isDefined(this.loadingData) || (
       this.loadingData = {folder: aFolder, after: fn_afterLoading}
-    }
+    )
     // On commence par vérifier que tous les composants soient bien chargés
     if (!this.allComponantsLoaded){
-      try {
-        return this.loadAllComponants()
-      } catch (e) {
-        console.error()
-        return
-      }
+      try { return this.loadAllComponants()}
+      catch (e) { console.error() ; return }
     }
 
     // On reprend les données initiales
@@ -38,9 +34,9 @@ Object.assign(FAnalyse,{
       UI.startWait(T('loading-analyse'))
       this.resetAll()
       window.current_analyse = new FAnalyse(aFolder)
-      if(undefined !== fn_afterLoading){
+      isDefined(fn_afterLoading) && (
         window.current_analyse.methodAfterLoadingAnalyse = fn_afterLoading
-      }
+      )
       current_analyse.load()
       return true
     } catch (e) {
@@ -110,7 +106,7 @@ Object.assign(FAnalyse,{
   Méthodes de chargement des composants (au load principal)
 **/
 , loadComponant(componant, fn_callback){
-    if(undefined === fn_callback) fn_callback = this.loadAllComponants.bind(this)
+    fn_callback || (fn_callback = this.loadAllComponants.bind(this))
     log.info(`  Chargement du composant <${componant}>`)
     return System.loadComponant(componant, fn_callback)
   }
@@ -192,6 +188,7 @@ load(){
     FAPersonnage.reset().init()
     this.options.setInMenus()
     this.videoController.init()
+    UI.setModeAffichage() // par exemple en mode ban timeline
     this.runTimerSave()
     // Si une méthode après le chargement est requise, on
     // l'invoque.

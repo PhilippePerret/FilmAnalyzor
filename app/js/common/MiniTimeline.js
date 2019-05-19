@@ -27,8 +27,8 @@ build(options){
   log.info("-> MiniTimeline#build()",options)
   // return DCreate('DIV',{inner:'rien pour le moment'})
 
-  if(undefined === options) options = {}
-  if(undefined === options.width){
+  isDefine(options) || ( options = {} )
+  if(isUndefined(options.width)){
     options.width = 100 /* i.e. 100 % */
     options.unit = '%'
   } else if(undefined === options.unit){

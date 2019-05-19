@@ -1,0 +1,96 @@
+/*
+  STYLES DU MODE BAN TIMELINE
+*/
+body {
+  all:unset;
+  display:grid;
+  overflow:hidden;
+  grid-template-rows: auto auto; /* sera réglé plus tart */
+  grid-template-columns: 60% 40%;
+  background-color:#CCCCCC;
+}
+
+/* --------------------------------------------------------------------- */
+/* LA BANDE INFÉRIEURE DE TIMELINE */
+section#bantime-ban-timeline {
+  grid-column:1/3;
+  grid-row:2/3;
+  background-color:#555555;
+  border:5px solid #333333;
+  position:relative;
+}
+section#bantime-ban-timeline div#bantime-tape {
+  overflow:scroll;
+  position:relative;
+}
+
+section#bantime-ban-timeline div#bantime-cursor {
+  width:4px;
+  background-color:green;
+  z-index:50;
+  position:absolute;
+  left:0;
+  top:0;
+}
+
+section#bantime-ban-timeline div#bantime-scaletape {
+  height:20px;
+  background-color:#505050;
+  /* background-color:#777777; */
+  position:absolute;
+  top:0;
+  width:100%;
+  z-index:1;
+}
+
+/* --------------------------------------------------------------------- */
+/* === VIDÉO === */
+
+section#section-videos {
+  all:unset;
+  grid-column:1;
+  grid-row:1;
+  background-color:#777777;
+  border:5px solid #333333;
+}
+section#section-videos section.section-video {
+  padding:4%;
+  width:100%;
+}
+section#section-videos section.section-video video {
+  width:92%;
+}
+section#section-videos div.video-header,
+section#section-videos div.timeline,
+section#section-videos div.div-nav-video-buttons
+{
+  display:none;
+}
+
+section#section-reader {
+  /* all:unset; */
+  grid-column:2;
+  grid-row:1/2;
+  border:5px solid #333333;
+  min-height:auto;
+  height:auto;
+}
+
+section#section-reader,
+section#section-reader #reader {
+  width:auto;
+}
+
+/* --------------------------------------------------------------------- */
+/* --- READER --- */
+
+
+
+/* --------------------------------------------------------------------- */
+/* === ÉLÉMENTS EVENTS === */
+section#bantime-ban-timeline div#bantime-tape div.bantime-element {
+  position:absolute;
+  background-color:darkorange;
+  top:30px;
+  height:20px;
+}

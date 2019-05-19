@@ -39,21 +39,20 @@ loadComponant(compName, fn_callback){
 , loadJSFolders(mainFolder, subFolders, fn_callback){
     log.info(`-> System::loadJSFolders(mainFolder:${mainFolder}, subFolders:${JSON.stringify(subFolders)})`)
     this.folders = []
-    for(var subFolder of subFolders){
-      this.folders.push(path.join(mainFolder,subFolder))
-    }
+    subFolders.map(subFolder => this.folders.push(path.join(mainFolder,subFolder)))
+    log.info(`   folders: ["${this.folders.join('", "')}"]`)
     this.methodAfterLoadingFolders = fn_callback
     this.loadNextFolder()
   }
 
 , loadNextFolder(){
-    log.info('-> System::loadNewFolder')
+    log.info('-> System::loadNextFolder')
     var folder = this.folders.shift()
-    log.info(`   Folder: ${folder}`)
+    log.info(`   Folder: "${folder}"`)
     // Protection contre les dossiers vides
     if(folder && fs.existsSync(folder)){
       if(glob.sync(`./${folder}/**/*.js`).length === 0){
-        log.info(`<- System::loadNewFolder (pas de script dans le dossier)`)
+        log.info(`<- System::loadNextFolder (pas de script dans le dossier)`)
         return this.loadNextFolder()
       }
     }
@@ -64,7 +63,7 @@ loadComponant(compName, fn_callback){
       return this.methodAfterLoadingFolders()
     }
     glob(`./${folder}/**/*.js`, (err, files) => {
-      if(err)throw(err)
+      if(err)throw new Error(err)
       this.loadScripts(files)
     })
     log.info(`<- System::loadNewFolder(${folder})`)
@@ -87,7 +86,7 @@ loadComponant(compName, fn_callback){
       script = null
     }
     script.onerror = function(err){
-      throw(`Une erreur est malheureusement survenue en chargement le script ${file} : ${err}`)
+      throw new Error(`Une erreur est malheureusement survenue en chargement le script ${file} : ${err}`)
     }
   }
 
@@ -101,15 +100,19 @@ loadComponant(compName, fn_callback){
   }
 
 , loadCSSFolder(folder){
+  let my = this
   if(!fs.existsSync(folder)) return // pas de dossier css => finir
   glob(`${folder}/**/*.css`, (err, files) => {
-    if(err) throw(err)
-    for(var file of files){
-      var relpath = file.replace(/\.\/app/,'.')
-      document.head.append(DCreate('LINK', {attrs:{href: relpath, rel:'stylesheet'}}))
-    }
+    if(err) throw new Error(err)
+    files.map(file => this.loadCSSFile(file))
   })
 }
+
+, loadCSSFile(file, id){
+    var relpath = file.replace(/\.\/app/,'.')
+    document.head.append(DCreate(LINK, {id:id, attrs:{href: relpath, rel:'stylesheet'}}))
+}
+
 }
 
 module.exports = System

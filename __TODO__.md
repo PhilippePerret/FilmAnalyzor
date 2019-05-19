@@ -12,6 +12,17 @@
   - voir comment on peut faire des "blocs" si nécessaire
   - traiter l'insertion d'images (on doit pouvoir les glisser de puis leur liste, mais alors, pourquoi ne pas faire ça avec le reste ?)
 
+* Puisque System.loadTruc inscrit des balises <script> dans le document, on peut l'utiliser pour charger tous les scripts, sans avoir à faire de require et toute la complication qui va avec
+
+* Faire le mode "Mode Ban Timeline" qui permet de transformer l'interface en sorte de ban de montage, avec des fenêtres fixes
+  - surveiller onresize de la fenêtre principale et recalculer la taille de l'interface
+    - une méthode isolée pour calculer les tailles.
+  - régler les widths en fonction des durées
+  - rendre les éléments éditables
+  - pouvoir les déplacer et changer leur temps
+  - ligne différente suivant type d'event
+  - une image graduée pour déplacer le curseur
+
 
 * Pour les associés qui n'existent plus, utiliser la classe `FAUnknownElement`
   - Faut-il faire un check régulier, partout ?

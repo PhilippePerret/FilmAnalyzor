@@ -98,7 +98,7 @@ static toggleGlobalOption(opt_id){
  * l'user de créer une nouvelle analyse.
  */
 static isDossierAnalyseValid(folder, withMessage){
-  if(undefined === withMessage) withMessage = true
+  isDefined(withMessage) || (withMessage = true)
   try {
     var eventsPath = path.join(folder,'events.json')
     var dataPath   = path.join(folder,'data.json')

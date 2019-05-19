@@ -31,6 +31,26 @@ const UI = {
     this.inited = true
   }
 
+/**
+  Méthode appelée au chargement de l'analyse, pour régler le mode d'affichage
+  de l'analyse. Pour le moment, programmé pour le mode ban timeline
+**/
+, setModeAffichage(){
+    this.ModeBanTimeline = true === current_analyse.options.get('option_ban_timeline')
+    this.ModeBanTimeline && this.toggleModeBanTimeline()
+  }
+
+/**
+  Basculer dans le mode "Ban Timeline" qui présente l'interface comme un
+  ban de montage, de façon fixe.
+**/
+, toggleModeBanTimeline(){
+    if(NONE === typeof(BanTimeline)){
+      window.BanTimeline = App.loadTool('ui/mode_ban_timeline')
+    }
+    BanTimeline.toggle.bind(BanTimeline)()
+  }
+
 , setDroppable(container, options){
     let dataDrop = Object.assign({}, DATA_ASSOCIATES_DROPPABLE, {
       drop(e, ui){

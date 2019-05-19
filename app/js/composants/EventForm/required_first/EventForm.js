@@ -32,7 +32,7 @@ static onClickNewEvent(e, eventType){
   e && stopEvent(e)
   this.videoWasPlaying = !!this.a.locator.playing
   if(this.a.locator.playing) this.a.locator.togglePlay()
-  if(e.metaKey === true){
+  if(e && e.metaKey){
     FAEvent.FAlistingEvents(eventType)
   } else {
     if (eventType == STRscene && this.notConfirmNewScene() ) return false

@@ -13,7 +13,9 @@ function WhenAllIsReallyReady(){
   // setTimeout(current_analyse.togglePanneauBrins.bind(current_analyse),1000)
   // current_analyse.togglePanneauImages()
   // current_analyse.togglePanneauPersonnages()
-  current_analyse.displayFullAnalyse(true)
+
+  // // Construire l'analyse
+  // current_analyse.displayFullAnalyse(/*forcer update = */true)
 }
 
 $(document).ready(() => {

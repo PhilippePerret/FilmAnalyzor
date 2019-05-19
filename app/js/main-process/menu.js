@@ -27,7 +27,7 @@ const CURRENT_THING_MENUS = [
   'display-timeline', 'display-analyse-state', 'display-last-report',
   'display-protocole', 'option-locked', 'new-version', 'display-brins',
   'goto-last-scene', 'display-decors', 'check-data-validity',
-  'display-personnages', 'display-images', 'open-in-finder'
+  'display-personnages', 'display-images', 'open-in-finder', 'mode-ban-timeline'
 ]
 // Note : les ID des menus de documents seront ajoutés "à la volée"
 
@@ -306,7 +306,17 @@ const DATA_MENUS = [
       , enabled: true
       , submenu: [
             {
-              label: "Analyse complète"
+                label: "Mode Ban Timeline"
+              , id: 'mode-ban-timeline'
+              , type:'checkbox'
+              , click:()=>{
+                  var c = ObjMenus.getMenu('mode-ban-timeline').checked ? 'true' : 'false'
+                  execJsOnCurrent(`options.set('option_ban_timeline',${c})`)
+                }
+            }
+          , {type:'separator'}
+          , {
+                label: "Analyse complète"
               , id: 'display-full-analyse'
               , accelerator: 'CmdOrCtrl+Alt+Shift+A'
               , enabled: false

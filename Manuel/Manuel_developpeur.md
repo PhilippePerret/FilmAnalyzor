@@ -708,7 +708,26 @@ var opt = current_analyse.options.get('<id de l’option>')
 
 1. Dans le fichier `./app/js/system/Options.js`, ajouter l'option à la donnée `Options.DEFAULT_DATA`.
 
-2. Demander le réglage de l'option dans `FAnalyse#setOptionsInMenus` dans le fichier `common/FAnalyse.js` en s'inspirant des autres options.
+
+2. Traiter l'option dans `Option#onSetByApp` dans le fichier `system/first_required/Options.js` en s'inspirant des autres options.
+
+3. Implémenter le menu (dans le menu "Options" en général) avec :
+
+```javascript
+
+{
+    label: "<titre de l'option>"
+  , id: 'ID-MENU-DE-L-OPTION'
+  , type:'checkbox'
+  , click:()=>{
+      var c = ObjMenus.getMenu('ID-MENU-DE-L-OPTION').checked ? 'true' : 'false'
+      execJsOnCurrent(`options.set('ID-DE-L-OPTION-REEL',${c})`)
+    }
+}
+
+```
+
+> Si on veut faciliter les choses, on mettre un id de menu de l'option identique à l'id de l'option elle-même, mais ça n'est pas obligatoire.
 
 3. Traiter l'utilisation de l'option en se servant de la valeur de `current_analyse.options.get('<id_universel_option>')`.
 
