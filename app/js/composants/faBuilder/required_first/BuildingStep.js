@@ -1,5 +1,6 @@
 'use strict'
 
+System.loadScript(path.join('./js/composants/faBuildingScript/required_then/BuildingScript_data.js'))
 // const child_process = require('child_process')
 
 /**
@@ -16,6 +17,12 @@ static newUUID(){
   isDefined(this._lastid) || ( this._lastid = 0 )
   return `STP${`${++this._lastid}`.padStart(3,'0')}`
 }
+
+
+static get AbsData(){return this._absdata || defP(this,'_absdata', this.getAbsData())}
+static getAbsData(){ return BUILDING_SCRIPT_DATA }
+// ---------------------------------------------------------------------
+//  INSTANCE
 /**
   Instanciation d'une nouvelle étape
 
@@ -34,17 +41,6 @@ constructor(builder, line){
   this.id       = i
   this.checked  = c == '1'
   this.title    = l
-
-  this.realType = null
-  // Ici, il faut affiner le type en fonction des données absolues
-  // du script d'assemblage. Par exemple, le type 'step' d'id 'synopsis'
-  // correspond en fait à un document régulier, synopsis.md, qu'il faut
-  // traiter comme tel
-  if(this.type === STRstep){
-
-  } else {
-    this.realType = this.type
-  }
 }
 
 toString(){return this._tostring||defP(this,'_tostring',`${this.UUID} - ${this.realType} - ${this.id}`)}
@@ -145,5 +141,19 @@ report(msg,typ,indent){
   this.builder.report.add(msg,typ,indent)
 }
 log(msg, typ){this.builder.log(msg,typ)}
+
+// ---------------------------------------------------------------------
+//  PROPRIÉTÉS
+
+get AbsData(){
+  return this._absdata || defP(this,'_absdata', this.constructor.AbsData[this.id])
+}
+
+get realType(){return this._realtype || defP(this,'_realtype', this.getRealType())}
+getRealType(){
+  let rt
+  if ( isDefined(this.AbsData) ) rt = this.AbsData.realType // peut être undefined
+  return rt  || this.type
+}
 
 }// /class BuildingScriptStep

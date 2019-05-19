@@ -23,9 +23,16 @@ const BUILDING_SCRIPT_DATA = {
     , explication: 'Ajoute une note qui invite à regarder le film dans sa langue originale'
   }
 
+, introduction:{
+      hname:'Introduction général'
+    , realType: 'reg-doc'
+    , fname: 'introduction'
+  }
+
 , synopsis: {
       hname: 'Synopsis'
     , realType: 'reg-doc'
+    , fname: 'synopsis'
   }
 
 , scenier: {
@@ -43,11 +50,6 @@ const BUILDING_SCRIPT_DATA = {
     , explication: "Pour une utilisation particulière de l'application qui permet de produire un commentaire sur un film."
   }
 
-, intro_generale:{
-      hname: 'Introduction générale'
-
-  }
-
 , fondamentales:{
       hname: 'Fondamentales principales'
   }
@@ -58,14 +60,15 @@ const BUILDING_SCRIPT_DATA = {
 
 , personnages:{
       hname: 'Commentaires sur personnages'
+    , realType: 'reg-doc'
+    , fname: 'personnages'
 }
+
 
 , themes: {
       hname: 'Commentaires sur les thèmes'
-  }
-
-, intrigues: {
-      hname: 'Commentaires sur intrigues'
+    , realType: 'reg-doc'
+    , fname: 'themes'
   }
 
 , pfa: {
@@ -113,7 +116,7 @@ const BUILDING_SCRIPT_DATA = {
 
 , documents: {
       hname: null
-    , items_method: FABuildingScript.customDocumentsAsSteps.bind(FABuildingScript)
+    , items_method: () => {return FABuildingScript.customDocumentsAsSteps.bind(FABuildingScript)}
   }
 
 , annexes: {
@@ -129,5 +132,12 @@ const BUILDING_SCRIPT_DATA = {
       hname: 'Statistiques générales'
     , explication: "Les statistiques générales, telles que le nombre de scènes et leur durée moyenne, le pourcentage d'utilisation des personnages et des décors, etc."
   }
+
+, comments_stats: {
+      hname: 'Commentaires sur les stats'
+    , realType: 'reg-doc'
+    , fname: 'comments_stats'
+}
+
 
 }
