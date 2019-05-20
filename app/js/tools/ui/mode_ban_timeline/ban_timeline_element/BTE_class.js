@@ -7,6 +7,10 @@ module.exports = {
   une rangée où l'élément puisse être placé.
 **/
 defineTopDiv(element){
+  if(element.event.isScene){
+    element.row = 6
+    return this.FIRST_TOP_ELEMENT + element.row * this.HEIGHT_ELEMENT
+  }
   var kel, el, row, rowsOccuped = []
   for(kel in this.items){
     el = this.items[kel]
@@ -30,7 +34,7 @@ defineTopDiv(element){
   if(isUndefined(element.row)){
     element.row = 1
   }
-  return this.FIRST_TOP_ELEMENT + element.row * 20
+  return this.FIRST_TOP_ELEMENT + element.row * this.HEIGHT_ELEMENT
 }// /defineTopDiv
 
 }

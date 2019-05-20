@@ -326,14 +326,23 @@ resetAllTimes(){
 
 
 /**
- * Méthode permettant de rejoindre le début du film
+ * Méthode permettant de rejoindre le début du film (ou le 0)
  */
 goToFilmStart(){
-  if(undefined === this.analyse.filmStartTime){
-    F.error("Le début du film n'est pas défini. Cliquer sur le bouton adéquat pour le définir.")
-  }else{
-    this.setTime(this.startTime)
-  }
+
+  if(isDefined(this.analyse.filmStartTime)) this.setTime(this.startTime)
+  else F.error("Le début du film n'est pas défini. Cliquer sur le bouton adéquat pour le définir.")
+}
+
+goToFilmStartOrZero(){
+  this.setTime(this.a.filmStartTime ? this.startTime : OTime.ZERO)
+}
+
+// Méthode permettant de rejoindre la fin du film (avant le générique, s'il
+// est défini.)
+goToFilmEndOrEnd(){
+  if(isDefined(this.a.filmEndTime)) this.setTime(this.endTime)
+  else this.video.currentTime = this.video.duration
 }
 
 // ---------------------------------------------------------------------
@@ -425,9 +434,10 @@ addStopPoint(otime){
 // ---------------------------------------------------------------------
 // Méthodes de données
 
-get startTime(){return this._startTime||defP(this,'_startTime', new OTime(0))}
+get startTime(){return this._startTime||defP(this,'_startTime', OTime.ZERO)}
+get endTime(){return this._endtime||defP(this,'_endtime', new OTime(this.video.duration))}
 get currentTime(){
-  if(undefined === this._currentTime) this._currentTime = new OTime(0)
+  isDefined(this._currentTime) || ( this._currentTime = OTime.ZERO )
   this._currentTime.vtime = this.video.currentTime.round(2)
   return this._currentTime
 }

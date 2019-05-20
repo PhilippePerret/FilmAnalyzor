@@ -31,7 +31,12 @@ toggle(){
 **/
 , dispatchElementOnTape(){
     log.info("-> BanTimeline::dispatchElementOnTape()")
-    this.a.forEachEvent(e => { new BanTimelineElement(e).place() })
+    BanTimeline.items = []
+    this.a.forEachEvent(e => {
+       var bte = new BanTimelineElement(e)
+       BanTimeline.items.push(bte)
+       bte.place()
+     })
   }
 
 // ---------------------------------------------------------------------
@@ -125,6 +130,7 @@ Object.assign(BanTimeline.UI, require(`./mode_ban_timeline/ban_timeline/ui`))
 Object.assign(BanTimeline, require(`./mode_ban_timeline/ban_timeline/calculs_methods`))
 Object.assign(BanTimeline, require(`./mode_ban_timeline/ban_timeline/domEvents_methods`))
 Object.assign(BanTimeline, require(`./mode_ban_timeline/ban_timeline/on_key_up`))
+Object.assign(BanTimeline, require(`./mode_ban_timeline/ban_timeline/on_key_down`))
 //
 Object.assign(BanTimelineElement, require(`./mode_ban_timeline/ban_timeline_element/BTE_class`))
 Object.defineProperties(BanTimelineElement, require(`./mode_ban_timeline/ban_timeline_element/BTE_class_props`))

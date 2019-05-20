@@ -12,11 +12,12 @@ module.exports = {
     return DCreate(DIV,{
       id:this.domId
     , class:`bantime-element ${this.event.type}`
-    , style:`width:${this.width}px;left:${this.left}px;top:${this.top}px;`
+    , style:this.style
     , attrs:attrs
     })
   }}
 
+, style:{get(){return this._style || defP(this,'_style', `width:${this.width}px;left:${this.left}px;top:${this.top}px;`)}}
   /**
     Les trois méthodes qui permettent d'obtenir les width, left et top du div
     à placer sur la timeline
@@ -35,7 +36,8 @@ module.exports = {
 , left:{get(){ return this._left || defP(this,'_left', BanTimeline.t2p(this.event.otime.vtime))}}
 , right:{get(){return this._right || defP(this,'_right', this.left + this.width)}}
 
-  // La rangée sur laquelle l'élément est placé
+  // La rangée sur laquelle l'élément est placé (calculé en fonction de son type
+  // et de sa position, pour éviter les chevauchements)
 , row:{
     get(){return this._row}
   , set(v){this._row = v}

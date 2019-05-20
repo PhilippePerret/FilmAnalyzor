@@ -15,7 +15,8 @@ observeModeBanTimeline(){
 
     // Dans le mode ban timeline, toutes les touches forment des combinaisons
     // clavier, tant qu'on n'est pas dans un champ de texte.
-    window.onkeyup = this.onKeyUpModeBanTimeline.bind(this)
+    window.onkeyup    = this.onKeyUpModeBanTimeline.bind(this)
+    window.onkeydown  = this.onKeyDownModeBanTimeline.bind(this)
   }
 
 }

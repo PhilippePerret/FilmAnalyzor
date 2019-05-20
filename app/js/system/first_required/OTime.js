@@ -18,6 +18,10 @@ class OTime {
 static get(time){
   return new OTime(time)
 }
+
+// Retourne une instance dont le temps est 0:00:00
+static get ZERO(){return this._zero||defP(this,'_zero',new OTime(0))}
+
 // ---------------------------------------------------------------------
 // INSTANCE
 

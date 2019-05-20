@@ -101,11 +101,11 @@ setDimensions(){
  * de l'analyse courante.
  */
 setSize(v, save){
-  if(undefined===v) v = this.menuVideoSize.value
+  isDefined(v) || ( v = this.menuVideoSize.value )
   this.video.width = VideoController.VIDEO_SIZES[v] || v // peut-être un nombre
   this.section.css('width', `${this.video.width + 10}px`)
   // this.mainHorloge.className = `horloge ${v}` // normalement on ne  change plus
-  if (save === true) this.a.options.videoSize = v
+  isTrue(save) && ( this.a.options.videoSize = v )
 }
 // retourne la taille actuelle de la vidéo
 getSize(){ return this.video.width}
@@ -291,7 +291,7 @@ observe(){
       var attrs = {'data-value': otime.horloge}
       attrs[STRdata_type] = STRtime
       attrs[STRdata_id]   = otime.seconds.round(2)
-      return DCreate('DIV', {
+      return DCreate(DIV, {
         inner: otime.horloge
       , class: 'dropped-time'
       , attrs:attrs
@@ -354,22 +354,22 @@ build(){
   // La section principale
   let sectionVideo = DCreate('SECTION', {class: 'section-video', id: `section-video-${this.id}`, append:[
       // ENTÊTE
-      DCreate('DIV', {class:'video-header no-user-selection', append:[
+      DCreate(DIV, {class:'video-header no-user-selection', append:[
             DCreate('HORLOGE', {class: 'main-horloge horloge vignette horlogeable', inner: '0:00:00.0'})
-          , DCreate('DIV', {class: 'main-part part-abs main-part-abs', inner: '...'})
-          , DCreate('DIV', {class: 'sub-part part-abs sub-part-abs', inner: '...'})
-          , DCreate('DIV', {class: 'main-part part-rel main-part-rel', inner: '...'})
-          , DCreate('DIV', {class: 'sub-part part-rel sub-part-rel', inner: '...'})
-          , DCreate('DIV', {class: 'mark-current-scene', inner: '...'})
+          , DCreate(DIV, {class: 'main-part part-abs main-part-abs', inner: '...'})
+          , DCreate(DIV, {class: 'sub-part part-abs sub-part-abs', inner: '...'})
+          , DCreate(DIV, {class: 'main-part part-rel main-part-rel', inner: '...'})
+          , DCreate(DIV, {class: 'sub-part part-rel sub-part-rel', inner: '...'})
+          , DCreate(DIV, {class: 'mark-current-scene', inner: '...'})
       ]})
       // VIDÉO
     , DCreate('VIDEO', {id: `video-${this.id}`, class:'video no-user-selection time', append:[
             DCreate('SOURCE', {id: `video-${this.id}-src`, type: 'video/mp4', attrs:{src:""}})
       ]})
       // INDICATEUR DE POSITION (aka TIMELINE)
-    , DCreate('DIV', {class: 'timeline'})
+    , DCreate(DIV, {class: 'timeline'})
       // Le DIV principal contenant les boutons de contrôle
-    , DCreate('DIV', {class: 'div-nav-video-buttons no-user-selection'})
+    , DCreate(DIV, {class: 'div-nav-video-buttons no-user-selection'})
   ]})
   $('section#section-videos').append(sectionVideo)
   this.buildControllerBox()
@@ -378,21 +378,21 @@ build(){
 buildControllerBox(){
   let btns = [], suf, dbtn
 
-  let spanHorlogeReal = DCreate('SPAN', {class: 'real-horloge horloge mini fleft', inner: '0:00:00.0'})
+  let spanHorlogeReal = DCreate(SPAN, {class: 'real-horloge horloge mini fleft', inner: '0:00:00.0'})
 
-  let divGoToTime = DCreate('DIV', {class:'go-to-time', append: [
+  let divGoToTime = DCreate(DIV, {class:'go-to-time', append: [
       DCreate(BUTTON, {type: STRbutton, class:'small btn-go-to-time-video', inner: 'Aller au temps'})
-    , DCreate('INPUT',  {type: STRtext, id:`request_time-${this.id}`, class: 'requested_time horloge small', value: '', attrs:{placeholder:'0,0,0.0'}})
+    , DCreate(INPUT,  {type: STRtext, id:`request_time-${this.id}`, class: 'requested_time horloge small', value: '', attrs:{placeholder:'0,0,0.0'}})
   ]})
   // Les boutons rewind et forward, etc.
   for(suf of this.CTRL_BUTTONS.tiny_buttons){
     btns.push(
         DCreate(BUTTON, {type: STRbutton, class: `controller btn-${suf}`, append:[
-        DCreate('IMG', {attrs:{src: `./img/btns-controller/btn-${suf}.png`}})
+        DCreate(IMG, {attrs:{src: `./img/btns-controller/btn-${suf}.png`}})
       ]})
     )
   }
-  let divTinyBtns = DCreate('DIV', {class: 'vcontroller-tiny-btns no-user-selection', append: btns})
+  let divTinyBtns = DCreate(DIV, {class: 'vcontroller-tiny-btns no-user-selection', append: btns})
 
   // Les boutons principaux du controller de vidéo
   btns = []
@@ -400,13 +400,13 @@ buildControllerBox(){
     dbtn = this.CTRL_BUTTONS.main_buttons[suf]
     btns.push(
       DCreate(BUTTON, {type:STRbutton, class: `main btn-${suf}`, attrs:{title:dbtn.title}, append:[
-        DCreate('IMG', {attrs:{src: `./img/btns-controller/btn-${suf}.png`}})
+        DCreate(IMG, {attrs:{src: `./img/btns-controller/btn-${suf}.png`}})
       ]})
     )
   }
-  let divMainBtns = DCreate('DIV', {class: 'vcontroller-main-btns no-user-selection', append:btns})
+  let divMainBtns = DCreate(DIV, {class: 'vcontroller-main-btns no-user-selection', append:btns})
 
-  let divControlBox = DCreate('DIV', {class: 'video-controller no-user-selection', id: `video-controller-${this.id}`, append:[
+  let divControlBox = DCreate(DIV, {class: 'video-controller no-user-selection', id: `video-controller-${this.id}`, append:[
     spanHorlogeReal, divGoToTime, divTinyBtns, divMainBtns
   ]})
 

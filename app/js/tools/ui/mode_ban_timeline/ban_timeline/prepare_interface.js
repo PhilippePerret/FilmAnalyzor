@@ -19,7 +19,8 @@ module.exports = function(){
 
   // Retirer le placement imprimé au reader
   $('#reader').attr('style', null)
-  // Retirer le draggable du
+
+  // Retirer le draggable du reader
   current_analyse.reader.fwindow.jqObj.draggable('option','disabled','true')
 
 
@@ -30,14 +31,14 @@ module.exports = function(){
     , DCreate(DIV,{id:'bantime-cursor'}) // curseur de timeline
     ]}))
 
-  // Il faut régler les hauteurs aux hauteurs de l'écran
+  // Il faut régler les hauteurs aux hauteurs par rapport à l'écran
   let timelineRowHeight = 260
     , topRowHeight = ScreenHeight - timelineRowHeight - 80
     , timelineTapeHeight = timelineRowHeight - this.scaleTape.height()
 
   $(STRbody).css('grid-template-rows', `${topRowHeight}px ${timelineRowHeight}px`)
 
-  // Hauteur de la tape de timeline
+  // Hauteur de la tape de timeline (là où sont déposés les events)
   this.timelineTape.css('height', `${timelineTapeHeight}px`)
 
   // Hauteur du curseur de timeline

@@ -38,9 +38,11 @@ section#bantime-ban-timeline div#bantime-cursor {
 
 /* La bande avec les graduations, pour placer le curseur */
 section#bantime-ban-timeline div#bantime-scaletape {
-  height:20px;
+  height:14px;
   background-color:#505050;
-  background-image:url('img/graduations.png')
+  background-image:url('../img/graduations.png');
+  background-size:28px;
+  background-repeat:repeat;
   /* background-color:#777777; */
   position:absolute;
   top:0;
@@ -56,11 +58,15 @@ section#bantime-ban-timeline div#bantime-tape div.bantime-element {
   top:30px;
   height:18px;
   border:1px solid white;
+}
+/* La width minimum pour les largeurs d'events, sauf les scènes */
+section#bantime-ban-timeline div#bantime-tape div.bantime-element:not(.scene) {
   min-width:8px;
 }
 
 /* COULEURS EN FONCTION DU TYPE D'ÉLÉMENT */
 div.bantime-element.event {
+  all:unset;
   background-color: #CCCCCC;
 }
 div.bantime-element.scene {
@@ -87,7 +93,7 @@ div.bantime-element.info {
 div.bantime-element.qrd {
   background-color: #F7DC6F;
 }
-div.bantime-element.act {
+div.bantime-element.action {
   background-color: #F06292;
 }
 div.bantime-element.dialog {

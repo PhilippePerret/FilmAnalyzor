@@ -38,6 +38,14 @@ Object.assign(MaSousClasse, require('./montool/ma_sous_classe/fichier'))
 Avec possibilité de boucle pour charger tous les fichiers voulus.
 
 
+* BAN TIMELINE
+  - [BUG] Quand on fait CMD-Flèche, ça saute deux scènes
+  - Écrire les infos sur la scène courante quelque part
+    (en fait, il suffit de modifier le style du bloc existant)
+  - pouvoir définir un marqueur avec "m" (comment passer en revue les marqueurs ?)
+    Peut-être : CMD-M pour créer le marqueur (si ça coupe bien le comportement par défaut)
+    et "m" pour aller de marqueur en marqueur et "MAJ-m" pour faire apparaitre la liste des marqueurs
+
 * Script d'assemblage
   - définir comment on va partir de l'id enregistré dans le fichier script, et
     arriver à la méthode de construction. Comme avant, avec les BUILD et

@@ -2,6 +2,9 @@
 
 module.exports = {
 /**
+  Méthode qui calcule la rangée d'un event
+**/
+/**
   Méthode qui reçoit un nombre de pixels +x+ correspondant à une coordonnée
   dans le ban de timeline et retourne le temps correspondant en fonction :
     - du zoom appliquée, de la position 0 de la timeline (son scroll horizontal)
