@@ -52,6 +52,7 @@ const STRtime       = 'time'
 const STRtype       = 'type'
 const STRvisible    = 'visible'
 const STRundefined  = 'undefined'
+const STRz          = 'z'
 
 const NONE = 'undefined'
 

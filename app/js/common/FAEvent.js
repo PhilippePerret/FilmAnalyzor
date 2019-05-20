@@ -349,7 +349,7 @@ get end(){
 
 remove(){
   delete this._div
-  if(this.jqReaderObj.length) this.jqReaderObj.remove()
+  isEmpty(this.jqReaderObj) || this.jqReaderObj.remove()
   delete this._domreaderobj
   delete this._jqreaderobj
   this.shown = false

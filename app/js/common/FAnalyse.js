@@ -106,6 +106,7 @@ static isDossierAnalyseValid(folder, withMessage){
     fs.existsSync(dataPath)   || raise('Le fichier de data est introuvable.')
     return true
   } catch (e) {
+    log.error(e)
     withMessage && console.log(e)
     return false
   }
