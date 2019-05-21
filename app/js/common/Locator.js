@@ -495,13 +495,13 @@ actualizeALL(){
   this.actualizeReader(curt)
   this.actualizeMarkersStt(curt)
   this.actualizeCurrentScene(curt)
-  this.actualiseBanTimeline(curt) // si on est en mode Ban Timeline
+  this.actualiseBancTimeline(curt) // si on est en mode Ban Timeline
   curt = null
 }
 
-actualiseBanTimeline(curt){
-  if (!UI.ModeBanTimeline) return
-  BanTimeline.setCursorByTime(curt)
+actualiseBancTimeline(curt){
+  if (!UI.ModeBancTimeline) return
+  BancTimeline.setCursorByTime(curt)
 }
 
 actualizeHorloge(curt){

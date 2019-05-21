@@ -36,19 +36,19 @@ const UI = {
   de l'analyse. Pour le moment, programmé pour le mode ban timeline
 **/
 , setModeAffichage(){
-    this.ModeBanTimeline = true === current_analyse.options.get('option_ban_timeline')
-    this.ModeBanTimeline && this.toggleModeBanTimeline()
+    this.ModeBancTimeline = true === current_analyse.options.get('option_banc_timeline')
+    this.ModeBancTimeline && this.toggleModeBancTimeline()
   }
 
 /**
   Basculer dans le mode "Ban Timeline" qui présente l'interface comme un
   ban de montage, de façon fixe.
 **/
-, toggleModeBanTimeline(){
-    if(NONE === typeof(BanTimeline)){
-      window.BanTimeline = App.loadTool('ui/mode_ban_timeline')
+, toggleModeBancTimeline(){
+    if(NONE === typeof(BancTimeline)){
+      window.BancTimeline = App.loadTool('ui/mode_banc_timeline')
     }
-    BanTimeline.toggle.bind(BanTimeline)()
+    BancTimeline.toggle.bind(BancTimeline)()
   }
 
 , setDroppable(container, options){

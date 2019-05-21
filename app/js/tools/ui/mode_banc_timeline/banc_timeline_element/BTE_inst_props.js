@@ -11,7 +11,7 @@ module.exports = {
 
     return DCreate(DIV,{
       id:this.domId
-    , class:`bantime-element ${this.event.type}`
+    , class:`banctime-element ${this.event.type}`
     , style:this.style
     , attrs:attrs
     })
@@ -26,14 +26,14 @@ module.exports = {
 
 , width:{get(){
     isDefined(this._width) || (
-      this._width = BanTimeline.t2p(this.event.duree)
+      this._width = BancTimeline.t2p(this.event.duree)
       // Noter que même si la largeur est trop courte, la propriété css
       // min-width empêche de faire trop court
     )
     return this._width;
   }}
 
-, left:{get(){ return this._left || defP(this,'_left', BanTimeline.t2p(this.event.otime.vtime))}}
+, left:{get(){ return this._left || defP(this,'_left', BancTimeline.t2p(this.event.otime.vtime))}}
 , right:{get(){return this._right || defP(this,'_right', this.left + this.width)}}
 
   // La rangée sur laquelle l'élément est placé (calculé en fonction de son type
@@ -45,7 +45,7 @@ module.exports = {
 
 , jqObj:{get(){return $(`#${this.domId}`)}}
 
-, domId:{get(){return this._domid||defP(this,'_domid',`bantime-event-${this.event.id}`)}}
+, domId:{get(){return this._domid||defP(this,'_domid',`banctime-event-${this.event.id}`)}}
 , a:{get(){return current_analyse}}
 
 }

@@ -23,7 +23,7 @@ static get DEFAULT_DATA(){
     , 'option_start_3secs_before_event':  false
     , 'option_edit_in_mini_writer':       false
     , 'option_duree_scene_auto':          true
-    , 'option_ban_timeline':              false
+    , 'option_banc_timeline':              false
   }
 }
 
@@ -77,8 +77,8 @@ onSetByApp(opid, value){
       return this.a.videoController.setSpeed(value)
     case 'option_edit_in_mini_writer':
       return UI.miniWriterizeTextFields(null, value)
-    case 'option_ban_timeline':
-      return UI.toggleModeBanTimeline(value)
+    case 'option_banc_timeline':
+      return UI.toggleModeBancTimeline(value)
   }
 }
 

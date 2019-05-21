@@ -1,0 +1,124 @@
+// STYLES DU MODE BAN TIMELINE
+body
+  all: unset
+  display: grid
+  overflow: hidden
+  grid-template-rows: auto auto
+  grid-template-columns: 60% 40%
+  background-color: #CCCCCC
+
+//* --------------------------------------------------------------------- */
+
+//* LA BANDE INFÉRIEURE DE TIMELINE */
+
+section#banctime-ban-timeline
+  grid-column: 1/3
+  grid-row: 2/3
+  background-color: #555555
+  border: 5px solid #333333
+  position: relative
+
+  div#banctime-cursor
+    width: 4px
+    background-color: green
+    z-index: 50
+    position: absolute
+    left: 0
+    top: 0
+
+
+  div#banctime-scaletape
+    height: 14px
+    background-color: #505050
+    background-image: url('../img/graduations.png')
+    background-size: 28px
+    background-repeat: repeat
+    position: absolute
+    top: 0
+    width: 100%
+    z-index: 1
+
+
+  div#banctime-tape
+    overflow: scroll
+    position: relative
+
+    // === ÉLÉMENTS EVENTS ===
+
+    div.banctime-element
+      position: absolute
+      height: 18px
+      border: 1px solid white
+
+      // La width minimum pour les largeurs d'events, sauf les scènes
+      &:not(.scene)
+        min-width: 8px
+
+      // COULEURS EN FONCTION DU TYPE D'ÉLÉMENT
+      &.event
+        all: unset
+        background-color: #CCCCCC
+      &.scene
+        background-color: #58D68D
+      &.stt
+        background-color: #EC7063
+      &.dyna
+        background-color: #A569BD
+      &.proc
+        background-color: #48C9B0
+      &.note
+        background-color: #F4D03F
+      &.idee
+        background-color: #EB984E
+      &.info
+        background-color: #DC7633
+      &.qrd
+        background-color: #F7DC6F
+      &.action
+        background-color: #F06292
+      &.dialog
+        background-color: #827717
+
+
+
+// ---------------------------------------------------------------------
+
+// === VIDÉO ===
+section#section-videos
+  all: unset
+  grid-column: 1
+  grid-row: 1
+  background-color: #777777
+  border: 5px solid #333333
+
+  section.section-video
+    padding: 4%
+    width: 100%
+
+  video
+    width: 92%
+
+  div.video-header,
+  div.timeline,
+  div.div-nav-video-buttons
+    display: none
+
+  div#bt-video-toolbox
+    border: 1px solid white
+
+    span#banctime-mode-shortcuts
+      font-size: 9pt
+
+
+
+// --- READER ---
+
+section#section-reader
+  grid-column: 2
+  grid-row: 1/2
+  border: 5px solid #333333
+  min-height: auto
+  height: auto
+
+  &, #reader
+    width: auto

@@ -3,7 +3,7 @@
 
 
 
-const BanTimeline = {
+const BancTimeline = {
 
 toggle(){
   let my = this
@@ -12,14 +12,15 @@ toggle(){
   // TODO : pouvoir repasser dans le mode normal
 
   // --- PRÉPARATION DE L'INTERFACE ---
-  this.prepareInterface = require('./mode_ban_timeline/ban_timeline/prepare_interface').bind(this)
+  this.prepareInterface = require('./mode_banc_timeline/banc_timeline/prepare_interface').bind(this)
   this.prepareInterface()
 
   // --- ÉCRITURE DE L'ANALYSE ---
   this.dispatchElementOnTape()
 
   // Observation de l'interface
-  this.observeModeBanTimeline()
+  this.observeModeBancTimeline = require('./mode_banc_timeline/banc_timeline/observe_interface').bind(this)
+  this.observeModeBancTimeline()
 
 }
 
@@ -30,11 +31,11 @@ toggle(){
   Méthode qui place les éléments courants sur la "tape" de la timeline
 **/
 , dispatchElementOnTape(){
-    log.info("-> BanTimeline::dispatchElementOnTape()")
-    BanTimeline.items = []
+    log.info("-> BancTimeline::dispatchElementOnTape()")
+    BancTimeline.items = []
     this.a.forEachEvent(e => {
-       var bte = new BanTimelineElement(e)
-       BanTimeline.items.push(bte)
+       var bte = new BancTimelineElement(e)
+       BancTimeline.items.push(bte)
        bte.place()
      })
   }
@@ -72,8 +73,8 @@ toggle(){
   }
 
 
-}// /const BanTimeLine
-Object.defineProperties(BanTimeline, {
+}// /const BancTimeline
+Object.defineProperties(BancTimeline, {
   // Propriétés diverses
   a:{get(){return current_analyse}}
 
@@ -102,22 +103,22 @@ Object.defineProperties(BanTimeline, {
 
 //
 , width:{get(){
-    return this._width || defP(this,'_width', this.banTimeline.width())
+    return this._width || defP(this,'_width', this.BancTimeline.width())
   }}
 
 // ---------------------------------------------------------------------
 //  OBJETS DOM
 
-, cursor:{get(){return $('section#bantime-ban-timeline div#bantime-cursor')}}
+, cursor:{get(){return $('section#banctime-ban-timeline div#banctime-cursor')}}
   // Bande sur laquelle on dépose les éléments.
-, timelineTape:{get(){return $('section#bantime-ban-timeline div#bantime-tape')}}
-, scaleTape:{get(){return $('section#bantime-ban-timeline div#bantime-scaletape')}}
-, banTimeline:{get(){return $('section#bantime-ban-timeline')}}
+, timelineTape:{get(){return $('section#banctime-ban-timeline div#banctime-tape')}}
+, scaleTape:{get(){return $('section#banctime-ban-timeline div#banctime-scaletape')}}
+, BancTimeline:{get(){return $('section#banctime-ban-timeline')}}
 })
 
 
-class BanTimelineElement {
-// Instanciation de l'élément de BanTime, avec un FAEvent pour le moment
+class BancTimelineElement {
+// Instanciation de l'élément de banctime, avec un FAEvent pour le moment
 constructor(ev){
   this.event = ev
   isDefined(this.constructor.items) || (this.constructor.items = {})
@@ -125,18 +126,19 @@ constructor(ev){
 }
 }
 
-BanTimeline.UI = {}
-Object.assign(BanTimeline.UI, require(`./mode_ban_timeline/ban_timeline/ui`))
-Object.assign(BanTimeline, require(`./mode_ban_timeline/ban_timeline/calculs_methods`))
-Object.assign(BanTimeline, require(`./mode_ban_timeline/ban_timeline/domEvents_methods`))
-Object.assign(BanTimeline, require(`./mode_ban_timeline/ban_timeline/on_key_up`))
-Object.assign(BanTimeline, require(`./mode_ban_timeline/ban_timeline/on_key_down`))
+BancTimeline.UI = {}
+Object.assign(BancTimeline.UI, require(`./mode_banc_timeline/banc_timeline/ui`))
+Object.assign(BancTimeline, require(`./mode_banc_timeline/banc_timeline/calculs_methods`))
+Object.assign(BancTimeline, require(`./mode_banc_timeline/banc_timeline/domEvents_methods`))
+Object.assign(BancTimeline, require(`./mode_banc_timeline/banc_timeline/on_key_up`))
+Object.assign(BancTimeline, require(`./mode_banc_timeline/banc_timeline/on_key_down`))
+Object.defineProperties(BancTimeline, require(`./mode_banc_timeline/banc_timeline/dom_elements`))
 //
-Object.assign(BanTimelineElement, require(`./mode_ban_timeline/ban_timeline_element/BTE_class`))
-Object.defineProperties(BanTimelineElement, require(`./mode_ban_timeline/ban_timeline_element/BTE_class_props`))
+Object.assign(BancTimelineElement, require(`./mode_banc_timeline/banc_timeline_element/BTE_class`))
+Object.defineProperties(BancTimelineElement, require(`./mode_banc_timeline/banc_timeline_element/BTE_class_props`))
 //
-Object.assign(BanTimelineElement.prototype, require(`./mode_ban_timeline/ban_timeline_element/BTE_inst_meths`))
-Object.defineProperties(BanTimelineElement.prototype, require(`./mode_ban_timeline/ban_timeline_element/BTE_inst_props`))
+Object.assign(BancTimelineElement.prototype, require(`./mode_banc_timeline/banc_timeline_element/BTE_inst_meths`))
+Object.defineProperties(BancTimelineElement.prototype, require(`./mode_banc_timeline/banc_timeline_element/BTE_inst_props`))
 
 
-module.exports = BanTimeline
+module.exports = BancTimeline

@@ -311,7 +311,7 @@ const DATA_MENUS = [
               , type:'checkbox'
               , click:()=>{
                   var c = ObjMenus.getMenu('mode-ban-timeline').checked ? 'true' : 'false'
-                  execJsOnCurrent(`options.set('option_ban_timeline',${c})`)
+                  execJsOnCurrent(`options.set('option_banc_timeline',${c})`)
                 }
             }
           , {type:'separator'}

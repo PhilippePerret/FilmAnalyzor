@@ -2,8 +2,8 @@
 
 ### Traiter :
 
-* Document la façon de charger un tool complexe (ou même n'importe quel objet) en utilisant la technique de mode_ban_timeline.js : on définit l'objet (const BanTimeline = {...}) puis on requiert tous les éléments du dossier en faisant :
-  Object.assign(BanTimeline, require('./dossier/fichier'))
+* Document la façon de charger un tool complexe (ou même n'importe quel objet) en utilisant la technique de mode_banc_timeline.js : on définit l'objet (const BancTimeline = {...}) puis on requiert tous les éléments du dossier en faisant :
+  Object.assign(BancTimeline, require('./dossier/fichier'))
 On peut même imaginer avoir plusieurs objets et plusieurs dossiers à l'intérieur du dossier principal.
 Par exemple :
 
@@ -39,6 +39,8 @@ Avec possibilité de boucle pour charger tous les fichiers voulus.
 
 
 * BAN TIMELINE
+  - Faire le menu "Banc Timeline" en reprenant TOUS les raccourcis
+  - Implémenter les méthodes onkeyup et onkeydown lorsque l'on est dans des champs d'édition (reprendre les méthodes utilisées ailleurs et les mettre dans `banc_timeline/observers_methods.js`)
   - [BUG] Quand on fait CMD-Flèche, ça saute deux scènes
   - Écrire les infos sur la scène courante quelque part
     (en fait, il suffit de modifier le style du bloc existant)

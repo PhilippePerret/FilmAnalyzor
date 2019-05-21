@@ -8,7 +8,7 @@ module.exports = {
 /**
   Méthode principale qui reçoit les touches
 **/
-onKeyUpModeBanTimeline(e){
+onKeyUpModeBancTimeline(e){
   console.log("Touche pressée :", e.key)
   // On met la touche pressée dans une variable pour pouvoir la
   // modifier plus tard.
