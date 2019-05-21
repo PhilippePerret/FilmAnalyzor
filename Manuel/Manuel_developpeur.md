@@ -28,6 +28,8 @@
   * [DataEditor, l'éditeur de données](#data_editor)
   * [Actualisation automatique des éléments affichés lors des modifications](#autoupdate_after_edit)
   * [Association des éléments](#associations_elements)
+* [Vidéo](#la_video)
+  * [Actualisation des informations vidéo](#update_infos_video)
 * [Ajout de préférences globales](#add_global_prefs)
   * [Utilisation des préférences globales](#use_global_prefs})
 * [Ajout de préférence analyse](#add_analyse_pref)
@@ -223,6 +225,8 @@ Tout le reste est géré automatiquement, il n'y a rien à faire.
 
 ### Actualisation automatique des horloges, time et numéro {#autoupdate_horloge_time_numera}
 
+> Pour savoir comment fonctionne l'actualisation, voir plutôt [Actualisation des informations vidéo](#update_infos_video).
+
 Afin que les horloges et les times en attribut de balises soient automatiquement modifiés tous en même temps, il suffit de respecter les conventions suivantes :
 
 * Pour les horloges, ajouter la classe CSS `horloge-event` et mettre un attribut `data-id` avec la valeur de l'identifiant de l'event. Par exemple :
@@ -240,6 +244,7 @@ Afin que les horloges et les times en attribut de balises soient automatiquement
 Si ces conventions sont respectées, l'appel à la méthode `FAEvent#updateInUI` modification automatiquement les valeurs affichées et consignées. Pour ce qui est des scènes, c'est la méthode qui actualise tous les numéros qui se chargera d'actualiser les numéros de scène.
 
 Cf. aussi [Champs temporels](#temporal_fields) pour les champs *horlogeables* et *durationables*.
+
 
 ### Actualisation automatique du numéro de scène courante {#autoupdate_scene_courante}
 
@@ -637,6 +642,31 @@ La table `ASSOCIATES_COMMON_METHODS` et la table `ASSOCIATES_COMMON_PROPERTIES` 
       ```
 * La propriété `associatesCounter` qui retourne le nombre courant d'associés.
 
+---------------------------------------------------------------------
+
+## La vidéo {#la_video}
+
+### Actualisation des informations vidéo {#update_infos_video}
+
+Au lancement de la vidéo avec :
+
+* `Locator.togglePlay`, la vidéo est mise en route avec :
+* `video.play()`, ce qui génère une `Promise` qui
+* active les horloges avec `Locator.activateHorloge`
+
+La méthode `Locator.activateHorloge` génère un timer d'intervalle qui appelle la méthode `Locator.actualizeAll` tous les 1000/40e de seconde.
+
+La méthode `Locator.actualizeAll` :
+
+* prend le temps courant (`Locator.currentTime`)
+* actualise les horloges avec le temps courant
+* positionne l'indicator de position de la vidéo (`videoController.positionIndicator.positionneAt`)
+* actualise le Reader pour afficher les events au temps courant (`Locator.actualizeReader`)
+* actualise les marques de structure (`Locator.actualizeMarkersStt`)
+* actualise la marque de scène courante (`actualizeCurrentScene`)
+* actualise le Banc Timeline s'il est activé
+
+Note : à l'avenir, il faudrait pouvoir décider ce que l'on actualise pour alléger le travail. Donc la méthode `actualizeALL` serait définie dynamiquement avec les choix et, par exemple, on n'appellerait pas la méthode pour le positionIndicator si on est en mode Banc Timeline et inversement on ne demanderait pas l'actualisation du banc timeline si on n'est pas dans ce mode.
 
 ---------------------------------------------------------------------
 

@@ -21,6 +21,11 @@ Object.defineProperties(FAnalyse.prototype,{
       if(this.locator){
         spoints = (this.locator.stop_points||[]).map(sp => sp.seconds)
       } else { spoints = []}
+      delete this._lastCurT // pour actualiser le dernier temps
+      // if(isDefined(this.locator)){
+      //   console.log("this.lastCurrentTime: ", this.lastCurrentTime)
+      //   console.log("this.locator.currentTime:", this.locator.currentTime)
+      // }
       return {
           folder:             this.folder
         , title:              this.title
@@ -41,7 +46,7 @@ Object.defineProperties(FAnalyse.prototype,{
       this.filmStartTime        = v.filmStartTime || 0
       this.filmEndTime          = v.filmEndTime
       this.filmEndGenericFin    = v.filmEndGenericFin
-      this._videoPath           = this.resolvePath(v.videoPath)
+      this._videoPath           = v.videoPath ? this.resolvePath(v.videoPath) : undefined
       this.lastCurrentTime      = v.lastCurrentTime || 0
       this.stopPoints           = (v.stopPoints || []).map(st => new OTime(st))
     }
@@ -102,16 +107,8 @@ Object.defineProperties(FAnalyse.prototype,{
   }
 
 , lastCurrentTime:{
-    get(){return this._lastCurT||defP(this,'_lastCurT',this.locator ? this.locator.getTime().seconds: 0)}
+    get(){return this._lastCurT||defP(this,'_lastCurT',this.locator?this.locator.currentTime.vtime: 0)}
   , set(v){this._lastCurT = v}
-  }
-, lastCurrentOTime:{
-    get(){return this._lastCurOTime||defP(this,'_lastCurOTime',new OTime(this.lastCurrentTime))}
-  , set(v){
-      v instanceof(OTime)||raise(T('otime-arg-required'))
-      this._lastCurOTime = v
-      this._lastCurT = v.seconds
-    }
   }
 
 })

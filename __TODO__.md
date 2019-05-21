@@ -2,7 +2,20 @@
 
 ### Traiter :
 
-* Document la façon de charger un tool complexe (ou même n'importe quel objet) en utilisant la technique de mode_banc_timeline.js : on définit l'objet (const BancTimeline = {...}) puis on requiert tous les éléments du dossier en faisant :
+Comment créer une méthode `Locator.actualizeALL` qui soit dynamique, en fonction des choix (options)
+Les options sont les suivantes :
+
+* suivre les marques de structure
+* suivre la scène courante
+* suivre les events dans le Reader
+  (en sachant que maintenant, il faut tout écrire dans le Reader)
+
+```javascript
+
+```
+
+
+* Documenter la façon de charger un tool complexe (ou même n'importe quel objet) en utilisant la technique de mode_banc_timeline.js : on définit l'objet (const BancTimeline = {...}) puis on requiert tous les éléments du dossier en faisant :
   Object.assign(BancTimeline, require('./dossier/fichier'))
 On peut même imaginer avoir plusieurs objets et plusieurs dossiers à l'intérieur du dossier principal.
 Par exemple :

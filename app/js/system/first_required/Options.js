@@ -16,14 +16,20 @@ get type(){return 'object'}
   // Options par défaut
 static get DEFAULT_DATA(){
   return {
-      'option_start_when_time_choosed':   true
-    , 'option_lock_stop_points':          false
-    , 'video_size':                       "medium"
-    , 'video_speed':                      1
-    , 'option_start_3secs_before_event':  false
-    , 'option_edit_in_mini_writer':       false
-    , 'option_duree_scene_auto':          true
-    , 'option_banc_timeline':              false
+      'option_start_when_time_choosed':       true
+    , 'option_lock_stop_points':              false
+    , 'video_size':                           "medium"
+    , 'video_speed':                          1
+    , 'option_start_3secs_before_event':      false
+    , 'option_edit_in_mini_writer':           false
+    , 'option_duree_scene_auto':              true
+    , 'option_banc_timeline':                 false
+    // TODO : IMPLÉMENTER CES OPTIONS
+    , 'video.running.updates.reader':         true
+    , 'video.running.updates.stt':            false
+    , 'video.running.updates.current_scene':  false
+    , 'video.running.updates.banc_timeline':  false
+
   }
 }
 

@@ -1,15 +1,15 @@
 /*
   Section principale contenant toutes les vidéos
 */
-section#section-videos {
+/* section#section-videos {
   position: absolute;
   top:0;
   display:block;
   clear:both;
-  /* border:1px dashed red; */
+  border:1px dashed red;
   background:black;
   z-index:10;
-}
+} */
 
 /* Une section complète de vidéo */
 section.section-video {

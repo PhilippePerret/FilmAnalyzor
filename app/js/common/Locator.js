@@ -65,9 +65,11 @@ togglePlay(ev){
     this.video.pause()
     $(this.btnPlay).removeClass('actived')
     this.playing = false
+    this.actualizeALL() // à l'arrêt, on actualise tout
     this.desactivateHorloge()
     this.setPlayButton(this.playing)
     this.stopWatchTimerEvent()
+    this.a.modified = true // pour le temps courant
   } else {
     //
     // => PLAY
@@ -78,7 +80,7 @@ togglePlay(ev){
     var curT = this.getTime() // {OTime}
     // Pour gérer l'Autoplay Policy de Chromium
     var videoPromise = this.video.play()
-    if (videoPromise !== undefined) {
+    if (isDefined(videoPromise)) {
       videoPromise.then( _ => {
         // Autoplay started!
         this.lastStartTime = curT
@@ -244,11 +246,6 @@ setTime(time, dontPlay){
     if(this.playAfterSettingTime === true && !this.playing){
       this.togglePlay()
     }
-    if(this.currentScene){
-      log.info(`   À la fin de setTime, scène courante numéro est ${this.currentScene.numero} (${FAEscene.current.numero})`)
-    } else {
-      log.info(`   Pas de scène courante à la fin de Locator#setTime`)
-    }
     log.info('<- Locator#setTime')
   }
 
@@ -385,17 +382,17 @@ stopGoToPrevScene(){
 }
 
 goToNextScene(){
-  log.info("-> Locator#goToNextScene", (!FAEscene.current ? 'pas de scène courante' : `Numéro courante : ${FAEscene.current.numero}`))
+  log.info("-> Locator#goToNextScene", (!FAEscene.current ? 'pas de scène courante' : `Passer à la scène suivante de la ${FAEscene.current.numero}`))
   let method = () => {
     let nScene = this.nextScene
     if (nScene){
       this.setTime(nScene.otime)
       if(this.currentScene) log.info(`   Après setTime, numéro scène courant = ${this.currentScene.numero}`)
-      log.info(`   Après setTime, numéro scène suivante = ${nScene.numero}`)
+      log.info(`   [goToNextScene] Après setTime, numéro scène suivante = ${nScene.numero}`)
     } else if (FAEscene.current) {
-      F.notify(`   La scène ${FAEscene.current.numero} n'a pas de scène suivante.`)
+      F.notify(`   [goToNextScene] La scène ${FAEscene.current.numero} n'a pas de scène suivante.`)
     } else {
-      F.notify(`   Pas de scène suivante.`)
+      F.notify(`   [goToNextScene] Pas de scène suivante.`)
     }
   }
   this.timerNextScene = setTimeout(method, 500)
@@ -471,7 +468,13 @@ activateHorloge(){
   if (this.intervalTimer){
     this.desactivateHorloge()
   } else {
-    this.intervalTimer = setInterval(my.actualizeALL.bind(my), 1000/40)
+
+    // On construit la méthode d'actualisation en fonction des options et du
+    // mode d'affichage.
+    this.buildActualizeMainFunction()
+
+    // === INTERVAL TIMER QUI DEMANDE L'ACTUALISATION DE L'AFFICHAGE ===
+    this.intervalTimer = setInterval(my.actualizeMainFunction.bind(my), 1000/40)
   }
   my = null
 }
@@ -484,20 +487,62 @@ desactivateHorloge(){
 }
 
 /**
-  Méthode principale qui va se charger de tout actualiser,
+  Méthode qui se charge de tout actualiser,
   c'est-à-dire l'horloge, le reader (events proches) et le
   indicateur de structure.
+
+  Note : avant, c'était la méthode appelée tous les 40 millièmes de seconde
+  pour actualiser l'affichage. Maintenant, elle ne sert que lorsqu'on est à
+  l'arrêt.
 **/
 actualizeALL(){
+  log.info('-> Locator.actualizeALL')
   var curt = this.currentTime
   this.actualizeHorloge(curt)
-  this.videoController.positionIndicator.positionneAt(curt)
+  if(this.a.options.get('option_banc_timeline')){
+    this.actualiseBancTimeline(curt) // si on est en mode Ban Timeline
+  } else {
+    this.videoController.positionIndicator.positionneAt(curt)
+  }
   this.actualizeReader(curt)
   this.actualizeMarkersStt(curt)
   this.actualizeCurrentScene(curt)
-  this.actualiseBancTimeline(curt) // si on est en mode Ban Timeline
   curt = null
+  log.info('<- Locator.actualizeALL')
 }
+
+/**
+  Méthode qui construit la fonction d'actualisation en fonction des options
+  choisies.
+**/
+buildActualizeMainFunction(){
+  var codeLines = [] // on mettra les lignes de code dedans
+  // On actualise toujours les horloges
+  codeLines.push("var curt = this.currentTime;")
+  codeLines.push("this.actualizeHorloge(curt)")
+  if (this.a.options.get('video.running.updates.reader')){
+    codeLines.push("this.actualizeReader(curt)")
+  }
+  if (this.a.options.get('video.running.updates.stt')){
+    codeLines.push("this.actualizeMarkersStt(curt)")
+  }
+  if (this.a.options.get('video.running.updates.current_scene')){
+    codeLines.push("this.actualizeCurrentScene(curt)")
+  }
+  if (this.a.options.get('option_banc_timeline')){
+    if(this.a.options.get('video.running.updates.banc_timeline')){
+      codeLines.push("this.actualiseBancTimeline(curt)")
+    }
+  } else {
+    // Mode "normal"
+    codeLines.push("this.videoController.positionIndicator.positionneAt(curt)")
+  }
+
+  this.actualizeMainFunction = new Function(codeLines.join(RC))
+  this.actualizeMainFunction = this.actualizeMainFunction.bind(this)
+
+}
+
 
 actualiseBancTimeline(curt){
   if (!UI.ModeBancTimeline) return
@@ -505,9 +550,9 @@ actualiseBancTimeline(curt){
 }
 
 actualizeHorloge(curt){
-  if(undefined === curt) curt = this.currentTime
-  this.horloge.innerHTML = this.getRealTime(curt)
-  this.realHorloge.innerHTML = curt.vhorloge
+  isDefined(curt) || (curt = this.currentTime)
+  this.horloge.innerText      = curt.horloge
+  this.realHorloge.innerHTML  = curt.vhorloge
   this.oMainHorloge.time = curt
 }
 
@@ -588,22 +633,13 @@ actualizeMarkersStt(curt){
 
  */
 actualizeCurrentScene(curt){
-  // log.info("-> actualizeCurrentScene(curt=)", curt)
-  log.info(`-> actualizeCurrentScene(curt=${curt})`)
+  console.log("-> actualizeCurrentScene")
   if((this.timeNextScene && curt < this.timeNextScene) || FAEscene.count === 0) return
   var resat = FAEscene.atAndNext(curt)
   if(resat){
-    // console.log("resat:", resat)
-    if (resat.current){
-      log.info(`   Donnée de scène courante : {current: <<Scène ${resat.current.id} numéro=${resat.current.numero}>>}`)
-    }
     FAEscene.current = resat.current
-    if (resat.next){
-      log.info(`   Donnée de scène suivante : {next: <<Scène ${resat.next.id} numéro=${resat.next.numero}>>, next_time: ${resat.next_time}}`)
-    }
     this.timeNextScene  = resat.next ? resat.next.time : resat.next_time
   }
-  log.info("<- actualizeCurrentScene")
 }
 
 // ---------------------------------------------------------------------

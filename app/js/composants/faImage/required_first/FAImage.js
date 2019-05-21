@@ -180,9 +180,9 @@ static pickupImagesInFolder(){
   glob.sync(`${this.a.folderPictures}/*.*`).forEach(function(file){
     var fname = path.basename(file)
       , imgid = my.fname2id(fname)
-    if(undefined === my._images[imgid]){
+    if(isUndefined(my._images[imgid])){
       my._images[imgid] = new FAImage(imgid, fname)
-      my._byTimes.push({time: my._images[imgid].otime.seconds, id:imgid, fname: fname})
+      // my._byTimes.push({time: my._images[imgid].otime.seconds, id:imgid, fname: fname})
       log.info(`   ADD Image "${fname}" (#${imgid}) qui n'était pas dans le fichier des data images.`)
     }
   })

@@ -235,17 +235,38 @@ static at(otime){
 **/
 static atAndNext(otime){
   log.info('-> FAEscene#atAndNext(otime=)', otime.toString())
-  // console.log("[atAndNext] time:", time)
+
+  if(otime == this.lastTimeSearched) {
+    // On ne doit jamais rechercher deux fois le même temps
+    return
+  }
+  // log.info(`this.a.filmEndTime:${this.a.filmEndTime}, this.a.locator.video.duration:${this.a.locator.video.duration}, otime:${otime.vtime}`)
 
   // Si le temps courant est inférieur au temps du début du film, on
   // retour undefined
-  if (otime.vtime < this.a.filmStartTime) return
+  if (otime.vtime < this.a.filmStartTime){
+    log.info(`   [atAndNext] Temps inférieur au start-time défini.`)
+    return
+  }
+
+  // Si le temps de fin existe et que ce temps est supérieur, on doit retourner
+  // null
+  if((this.a.filmEndTime && this.a.filmEndTime <= otime.vtime) || otime.vtime === this.a.locator.video.duration ){
+    log.info(`   [atAndNext] Temps supérieur ou égal au temps de fin`)
+    return
+  }
 
   // Si la première scène existe et que ce temps est inférieur à la première
   // scène, on doit retourner une table contenant cette première scène.
   if (this.firstScene && otime < this.firstScene.time){
-    return {current_time: otime.rtime, current: null, next: this.firstScene, next_time: this.firstScene.time}
+    log.info(`   [atAndNext] Temps inférieur à temps de première scène`)
+    return {current_time:otime.rtime, current:null, next:this.firstScene, next_time:this.firstScene.time}
   }
+
+
+  // pour le moment
+  // return
+
 
   // Sinon, il faut chercher dans quelle scène on peut se trouver.
   var founded
@@ -253,7 +274,7 @@ static atAndNext(otime){
     , last_scene
 
   this.forEachSortedScene(function(scene){
-    log.info(`   Comparaison de scene.time (${scene.time}) > ${otime} ? (si oui, c'est la scène qu'on cherche)`)
+    log.info(`   Comparaison de scene.time (${scene.time}) > ${otime.rtime} ? (si oui, c'est la scène qu'on cherche)`)
     if(scene.time > otime) {
       founded     = last_scene
       next_scene  = scene
@@ -262,7 +283,9 @@ static atAndNext(otime){
     }
     last_scene = scene
   })
-  return {current_time: otime.seconds, current: founded || this.lastScene, next: next_scene, next_time: (next_scene ? next_scene.time : this.a.duree)}
+  this.lastTimeSearched = otime
+  if(isUndefined(founded)) return
+  return {current_time: otime.seconds, current:founded || this.lastScene, next:next_scene, next_time:(next_scene?next_scene.time:this.a.duree)}
 }
 
 /**

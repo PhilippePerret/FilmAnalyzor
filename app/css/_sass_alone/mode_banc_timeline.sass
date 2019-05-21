@@ -7,9 +7,9 @@ body
   grid-template-columns: 60% 40%
   background-color: #CCCCCC
 
-//* --------------------------------------------------------------------- */
+// ---------------------------------------------------------------------
 
-//* LA BANDE INFÉRIEURE DE TIMELINE */
+// LA BANDE INFÉRIEURE DE TIMELINE
 
 section#banctime-ban-timeline
   grid-column: 1/3
@@ -82,8 +82,8 @@ section#banctime-ban-timeline
 
 
 // ---------------------------------------------------------------------
-
 // === VIDÉO ===
+
 section#section-videos
   all: unset
   grid-column: 1
@@ -92,22 +92,50 @@ section#section-videos
   border: 5px solid #333333
 
   section.section-video
-    padding: 4%
+    padding: 0
     width: 100%
+    text-align: center
+
+    div.video-header
+      // pour retirer le display:grid
+      display: block
+      text-align: left
+      > div
+        display: none
+        &.mark-current-scene
+          display: inline-block
+          padding: 5px 1em
+          height: 20px
+      horloge
+        display: inline-block
+        font-size: 14.5pt
+        width: 118px
+
 
   video
     width: 92%
 
-  div.video-header,
+  // La boite ajoutée à la portion vidéo en mode banc timeline
+  div#bt-video-toolbox
+    border: 1px solid white
+    height: 150px
+    position: relative
+
+    span#mode-shortcuts-span
+      position: absolute
+      bottom: 0
+
+      span#banctime-mode-shortcuts
+        font-size: 9pt
+
+
+
   div.timeline,
   div.div-nav-video-buttons
     display: none
 
-  div#bt-video-toolbox
-    border: 1px solid white
-
-    span#banctime-mode-shortcuts
-      font-size: 9pt
+  video
+    text-align: left
 
 
 

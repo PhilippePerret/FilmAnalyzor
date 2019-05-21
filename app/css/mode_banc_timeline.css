@@ -69,18 +69,38 @@ section#section-videos {
   background-color: #777777;
   border: 5px solid #333333; }
   section#section-videos section.section-video {
-    padding: 4%;
-    width: 100%; }
+    padding: 0;
+    width: 100%;
+    text-align: center; }
+    section#section-videos section.section-video div.video-header {
+      display: block;
+      text-align: left; }
+      section#section-videos section.section-video div.video-header > div {
+        display: none; }
+        section#section-videos section.section-video div.video-header > div.mark-current-scene {
+          display: inline-block;
+          padding: 5px 1em;
+          height: 20px; }
+      section#section-videos section.section-video div.video-header horloge {
+        display: inline-block;
+        font-size: 14.5pt;
+        width: 118px; }
   section#section-videos video {
     width: 92%; }
-  section#section-videos div.video-header,
+  section#section-videos div#bt-video-toolbox {
+    border: 1px solid white;
+    height: 150px;
+    position: relative; }
+    section#section-videos div#bt-video-toolbox span#mode-shortcuts-span {
+      position: absolute;
+      bottom: 0; }
+      section#section-videos div#bt-video-toolbox span#mode-shortcuts-span span#banctime-mode-shortcuts {
+        font-size: 9pt; }
   section#section-videos div.timeline,
   section#section-videos div.div-nav-video-buttons {
     display: none; }
-  section#section-videos div#bt-video-toolbox {
-    border: 1px solid white; }
-    section#section-videos div#bt-video-toolbox span#banctime-mode-shortcuts {
-      font-size: 9pt; }
+  section#section-videos video {
+    text-align: left; }
 
 section#section-reader {
   grid-column: 2;

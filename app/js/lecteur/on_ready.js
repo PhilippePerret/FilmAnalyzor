@@ -3,6 +3,12 @@
 const APPFOLDER = path.resolve('.')
 
 function WhenAllIsReallyReady(){
+
+  $('#section-reader').append(DCreate(SECTION,{id:"try", style:'width:100px;height:100px;background-color:blue;'}))
+  var d = $('#try')
+  d.draggable()
+  d.resizable()
+
   // FAPersonnage.dataEditor.open()
   // FABrin.dataEditor.open()
   // current_analyse.openDocInDataEditor('fondamentales')

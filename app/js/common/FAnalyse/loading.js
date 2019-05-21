@@ -139,6 +139,7 @@ load(){
   // Les options peuvent être chargée en premier, de façon synchrone
   // Noter qu'elles seront appliquées plus tard, à la fin.
   this.options.load()
+
   // Les fichiers à charger
   var loadables = Object.assign([], my.SAVED_FILES)
   // Pour comptabiliser le nombre de fichiers chargés

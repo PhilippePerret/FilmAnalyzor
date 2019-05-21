@@ -4,10 +4,8 @@
 module.exports = function(){
   // On doit supprimer la pied de page
   $('#section-footer').hide()
-
-  // $('#section-videos').hide() // en attendant
-  // $('#section-reader').hide() // en attendant
-  $('#analyse-state-bar').hide() // en attendant
+  // On doit supprimer la barre d'état
+  $('#analyse-state-bar').hide()
 
   // Si c'est la première fois, il faut charger la feuille de style
   isEmpty($('#ban-timeline-stylesheet')) && (
@@ -19,7 +17,6 @@ module.exports = function(){
 
   // Retirer le draggable du reader
   current_analyse.reader.fwindow.jqObj.draggable('option','disabled','true')
-
 
   // Le ban timeline lui-même
   document.body.append(DCreate(SECTION,{id:'banctime-ban-timeline', append:[
@@ -54,5 +51,9 @@ module.exports = function(){
   // Lui donner la même taille que son container
   let readerHeight = topRowHeight - 8
   $('#reader').css({'height':readerHeight, 'min-height':readerHeight, 'max-height':readerHeight})
+
+
+  $('#section-videos').resizable()
+
 
 }

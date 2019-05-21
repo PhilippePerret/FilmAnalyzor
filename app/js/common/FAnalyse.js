@@ -327,12 +327,6 @@ openDocInWriter(dtype){
 }
 
 /**
-  Pour ouvrir (depuis le menu) l'analyse dans le finder
-**/
-openAnalyseInFinder(){
-  exec(`open "${this.folder}"`)
-}
-/**
   Méthode qui ouvre le DataEditor
 **/
 openDocInDataEditor(dtype){
@@ -344,6 +338,13 @@ openDocInDataEditor(dtype){
     return F.notify("Pas d'édition avec le data-editor pour les variables pour le moment. Utiliser le document complet.")
   }
   DataEditor.openPerType(dtype)
+}
+
+/**
+  Pour ouvrir (depuis le menu) l'analyse dans le finder
+**/
+openAnalyseInFinder(){
+  exec(`open "${this.folder}"`)
 }
 
 /**
@@ -511,7 +512,7 @@ setMarkModified(){
 }
 
 get SAVED_FILES(){
-  if(undefined === this._saved_files){
+  if(isUndefined(this._saved_files)){
     this._saved_files = [
         this.eventsFilePath
       , this.dataFilePath
@@ -521,7 +522,7 @@ get SAVED_FILES(){
 }
 
 get PROP_PER_FILE(){
-  if(undefined === this._prop_per_path){
+  if(isUndefined(this._prop_per_path)){
     this._prop_per_path = {}
     this._prop_per_path[this.eventsFilePath]  = 'eventsIO'
     this._prop_per_path[this.dataFilePath]    = 'data'
@@ -563,8 +564,9 @@ save() {
   }
 }
 /**
- * Méthode qui n'est appelée (a priori) qu'à la fermeture de la
- * fenêtre, et au changement d'analyse.
+ * Méthode est appelée à chaque sauvegarde et également à la fermeture de la
+ * fenêtre et au changement d'analyse.
+
  * @synchrone
  * Elle doit être synchrone pour quitter l'application
  * normalement.
