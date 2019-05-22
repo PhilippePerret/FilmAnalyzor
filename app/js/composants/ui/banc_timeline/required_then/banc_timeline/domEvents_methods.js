@@ -2,7 +2,7 @@
 /**
   Méthodes concernant les events DOM
 **/
-module.exports = {
+Object.assign(BancTimeline,{
   onFocusTextField(e){
     /**
       // TODO Mettre les raccourcis pour textes
@@ -13,8 +13,8 @@ module.exports = {
   }
 , onBlurTextField(e){
     // e && stopEvent(e)
-    window.onkeyup    = this.onKeyUpModeBancTimeline.bind(this)
-    window.onkeydown  = this.onKeyDownModeBancTimeline.bind(this)
+    window.onkeyup    = this.onKeyUpOutTextField.bind(this)
+    window.onkeydown  = this.onKeyDownOutTextField.bind(this)
     this.markShortcuts.html('INTERFACE')
   }
-}
+})

@@ -3,12 +3,12 @@
   Gestion des combinaisons de touches dans le mode Ban Timeline
 **/
 
-module.exports = {
+Object.assign(BancTimeline,{
 
 /**
   Méthode principale qui reçoit les touches
 **/
-onKeyUpModeBancTimeline(e){
+onKeyUpOutTextField(e){
   console.log("Touche pressée :", e.key)
   // On met la touche pressée dans une variable pour pouvoir la
   // modifier plus tard.
@@ -64,4 +64,4 @@ onKeyUpModeBancTimeline(e){
 }
 
 
-}
+})

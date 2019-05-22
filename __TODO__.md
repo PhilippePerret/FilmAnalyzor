@@ -2,6 +2,13 @@
 
 ### Traiter :
 
+Faire un controleur pour chaque partie de l'interface et notamment pour la colonne de droite qui doit s'ouvrir/se refermer, recevoir un élément à afficher, etc.
+
+Mettre en place des méthodes "une touche" comme :
+  - c => (create) afficher la liste des éléments "créable", la deuxième lettre choisie
+  - g => (goto) affiche les endroits où on peut se rendre, la deuxième lettre choisit le lieu
+  - f => (focus) affiche les endroits dans lesquels on peut focusser, la deuxième lettre choisit le champ
+
 Comment créer une méthode `Locator.actualizeALL` qui soit dynamique, en fonction des choix (options)
 Les options sont les suivantes :
 

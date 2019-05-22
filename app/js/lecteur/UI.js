@@ -5,26 +5,6 @@
 const UI = {
   class: 'UI'
 
-/**
-  Méthode appelée au chargement de l'analyse, pour régler le mode d'affichage
-  de l'analyse. Pour le moment, programmé pour le mode ban timeline
-**/
-, setModeAffichage(){
-    this.ModeBancTimeline = true === current_analyse.options.get('option_banc_timeline')
-    this.ModeBancTimeline && this.toggleModeBancTimeline()
-  }
-
-/**
-  Basculer dans le mode "Ban Timeline" qui présente l'interface comme un
-  ban de montage, de façon fixe.
-**/
-, toggleModeBancTimeline(){
-    if(NONE === typeof(BancTimeline)){
-      window.BancTimeline = App.loadTool('ui/mode_banc_timeline')
-    }
-    BancTimeline.toggle.bind(BancTimeline)()
-  }
-
 , setDroppable(container, options){
     let dataDrop = Object.assign({}, DATA_ASSOCIATES_DROPPABLE, {
       drop(e, ui){
@@ -149,7 +129,7 @@ const UI = {
 Object.defineProperties(UI,{
   // Note : la plupart des noms des éléments de l'interface
   // sont définis dans system/first_required/ui/ui_builder.js
-  
+
   /**
   La section qui affiche les procédés qui ont besoin de résolution
   lorsqu'elle n'est pas définie.

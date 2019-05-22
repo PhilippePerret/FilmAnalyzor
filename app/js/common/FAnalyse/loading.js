@@ -56,6 +56,7 @@ Object.assign(FAnalyse,{
 , loadAllComponants(){
     log.info("-> FAnalyse::FAnalyse::loadAllComponants")
     this.allComponantsLoaded = false
+    if(NONE === typeof BancTimeline)  return this.loadComponant('ui/banc_timeline')
     if(NONE === typeof DataEditor)    return this.loadComponant('DataEditor')
     if(NONE === typeof EventForm)     return this.loadComponant('EventForm')
     if(NONE === typeof FAWriter)      return this.loadComponant('faWriter')
@@ -191,7 +192,6 @@ load(){
     FAPersonnage.reset().init()
     this.options.setInMenus()
     this.videoController.init()
-    UI.setModeAffichage() // par exemple en mode ban timeline
     this.runTimerSave()
     // Si une méthode après le chargement est requise, on
     // l'invoque.

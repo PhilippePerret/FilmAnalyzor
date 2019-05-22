@@ -1,6 +1,6 @@
 'use strict'
 
-module.exports = {
+Object.defineProperties(BancTimelineElement.prototype, {
 
   div:{get(){
     var attrs = {
@@ -48,4 +48,4 @@ module.exports = {
 , domId:{get(){return this._domid||defP(this,'_domid',`banctime-event-${this.event.id}`)}}
 , a:{get(){return current_analyse}}
 
-}
+})

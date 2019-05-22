@@ -2,7 +2,8 @@
 /**
   Méthodes interface (objet UI de BancTimeline)
 **/
-module.exports = {
+BancTimeline.UI = {}
+Object.assign(BancTimeline.UI,{
   zoom(deca){
     this.setBTZoom(0.2 * (deca||1))
     BancTimeline.items.map(bte => bte.repositionne())
@@ -19,4 +20,4 @@ module.exports = {
     BancTimeline.zoom += value
     if(BancTimeline.zoom < 0) BancTimeline.zoom = 0.1
   }
-}
+})

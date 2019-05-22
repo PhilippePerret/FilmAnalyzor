@@ -306,16 +306,6 @@ const DATA_MENUS = [
       , enabled: true
       , submenu: [
             {
-                label: "Mode Ban Timeline"
-              , id: 'mode-ban-timeline'
-              , type:'checkbox'
-              , click:()=>{
-                  var c = ObjMenus.getMenu('mode-ban-timeline').checked ? 'true' : 'false'
-                  execJsOnCurrent(`options.set('option_banc_timeline',${c})`)
-                }
-            }
-          , {type:'separator'}
-          , {
                 label: "Analyse complète"
               , id: 'display-full-analyse'
               , accelerator: 'CmdOrCtrl+Alt+Shift+A'

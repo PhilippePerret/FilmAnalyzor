@@ -11,16 +11,11 @@ toggle(){
   // NOTE : pour le moment, on passe en mode ban timeline
   // TODO : pouvoir repasser dans le mode normal
 
-  // --- PRÉPARATION DE L'INTERFACE ---
-  this.prepareInterface = require('./mode_banc_timeline/banc_timeline/prepare_interface').bind(this)
-  this.prepareInterface()
-
   // --- ÉCRITURE DE L'ANALYSE ---
   this.dispatchElementOnTape()
 
   // Observation de l'interface
-  this.observeModeBancTimeline = require('./mode_banc_timeline/banc_timeline/observe_interface').bind(this)
-  this.observeModeBancTimeline()
+  this.observeBancTimeline()
 
 }
 
@@ -115,30 +110,3 @@ Object.defineProperties(BancTimeline, {
 , scaleTape:{get(){return $('section#banctime-ban-timeline div#banctime-scaletape')}}
 , BancTimeline:{get(){return $('section#banctime-ban-timeline')}}
 })
-
-
-class BancTimelineElement {
-// Instanciation de l'élément de banctime, avec un FAEvent pour le moment
-constructor(ev){
-  this.event = ev
-  isDefined(this.constructor.items) || (this.constructor.items = {})
-  this.constructor.items[ev.id] = this
-}
-}
-
-BancTimeline.UI = {}
-Object.assign(BancTimeline.UI, require(`./mode_banc_timeline/banc_timeline/ui`))
-Object.assign(BancTimeline, require(`./mode_banc_timeline/banc_timeline/calculs_methods`))
-Object.assign(BancTimeline, require(`./mode_banc_timeline/banc_timeline/domEvents_methods`))
-Object.assign(BancTimeline, require(`./mode_banc_timeline/banc_timeline/on_key_up`))
-Object.assign(BancTimeline, require(`./mode_banc_timeline/banc_timeline/on_key_down`))
-Object.defineProperties(BancTimeline, require(`./mode_banc_timeline/banc_timeline/dom_elements`))
-//
-Object.assign(BancTimelineElement, require(`./mode_banc_timeline/banc_timeline_element/BTE_class`))
-Object.defineProperties(BancTimelineElement, require(`./mode_banc_timeline/banc_timeline_element/BTE_class_props`))
-//
-Object.assign(BancTimelineElement.prototype, require(`./mode_banc_timeline/banc_timeline_element/BTE_inst_meths`))
-Object.defineProperties(BancTimelineElement.prototype, require(`./mode_banc_timeline/banc_timeline_element/BTE_inst_props`))
-
-
-module.exports = BancTimeline

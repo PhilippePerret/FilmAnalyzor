@@ -536,7 +536,6 @@ buildActualizeMainFunction(){
 
 
 actualiseBancTimeline(curt){
-  if (!UI.ModeBancTimeline) return
   BancTimeline.setCursorByTime(curt)
 }
 

@@ -288,7 +288,7 @@ static get CTRL_BUTTONS(){
     'go-to-film-start': {title:"Pour retourner au début du film (si défini) (CMD+MAJ+<-)"}
   , 'stop-points': {title:"Passe en revue les 3 derniers points d'arrêt"}
   , 'stop': {title:"1/ dernier point d'arrêt, 2/ début du film, 3/ début de la vidéo"}
-  , 'play': {title:"Lancer/pauser/relancer la vidéo"}
+  , 'play': {title:"Lancer/pauser/relancer la vidéo (SPACE ou l)"}
   }
 }
 }

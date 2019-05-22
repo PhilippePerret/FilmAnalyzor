@@ -1,6 +1,6 @@
 'use strict'
 
-module.exports = {
+Object.assign(BancTimelineElement.prototype, {
 /**
   Méthode qui place l'élément sur la tape de la timeline
 **/
@@ -27,4 +27,4 @@ module.exports = {
 
   }
 
-}
+})

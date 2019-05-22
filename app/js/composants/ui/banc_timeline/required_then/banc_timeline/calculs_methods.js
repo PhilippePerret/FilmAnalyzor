@@ -1,6 +1,6 @@
 'use strict'
 
-module.exports = {
+Object.assign(BancTimeline,{
 /**
   Méthode qui calcule la rangée d'un event
 **/
@@ -30,4 +30,4 @@ module.exports = {
 }
 
 
-}
+})

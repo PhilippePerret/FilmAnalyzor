@@ -55,15 +55,7 @@ const UIBuilder = {
 
 , buildSectionVideo(){
     require('./ui_builder/video_controller.js').bind(this)()
-    // La vidéo elle-même
-    // TODO
-    // L'horloge du temps réel
-    // TODO
-    // L'horloge du temps vidéo
-    // TODO
-    // Le span de scène courante si elle existe
-    // TODO
-    // On redéfinit les tailles "humaines" (large, medium, vignette)
+    // On redéfinit les tailles "humaines" de la vidéo (large, medium, vignette)
     VideoController.redefineVideoSizes()
   }
 , buildSectionReader(){

@@ -1,6 +1,6 @@
 'use strict'
 
-module.exports = {
+Object.assign(BancTimelineElement, {
 /**
   On cherche la place en hauteur du div de l'élément (event)
   Pour procéder on passe en revue tous les events (affichés) et on cherche
@@ -37,4 +37,4 @@ defineTopDiv(element){
   return this.FIRST_TOP_ELEMENT + element.row * this.HEIGHT_ELEMENT
 }// /defineTopDiv
 
-}
+})
