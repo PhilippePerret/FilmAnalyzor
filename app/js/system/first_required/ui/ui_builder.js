@@ -20,7 +20,7 @@ const UIBuilder = {
 
     // On définit tous les noms des éléments de l'interface,
     // colonnes, rangées, sections principales
-    this.defineUIComponants()
+    this.defineFirstUIComponants()
 
     // On règle les dimensions en fonction de la taille actuelle
     // de l'éditeur.
@@ -30,6 +30,9 @@ const UIBuilder = {
     this.buildSectionVideo()
     this.buildSectionReader()
     this.buildSectionTimeline()
+
+    // On définit les composants suivant (construits)
+    this.defineOtherUIComponants()
 
     // On observe l'interface
     this.observe_ui()
@@ -49,6 +52,8 @@ const UIBuilder = {
     // définir la hauteur de la fenêtre, i.e. du contenant principal.
     // `H` est une constante qui correspond à ScreenHeight
     UI.wholeUI.css(STRheight, `${H}px`)
+
+    UI.sectionTimeline.css(STRheight, '200px')
 
   }
 
@@ -97,6 +102,9 @@ const UIBuilder = {
         handles: 'e'
     })
 
+    // On enclenche la captation de touches pressées
+    UI.toggleKeyUpAndDown(/* vers out-text-field = */ true)
+
     // Extras
     // ------
     // Tous les champs input-text, on selectionne tout quand on focusse
@@ -107,7 +115,7 @@ const UIBuilder = {
   }
 
 
-, defineUIComponants(){
+, defineFirstUIComponants(){
 
     // Le container principal de toute la page
     UI.wholeUI  = $('body > div#whole-ui')
@@ -124,9 +132,23 @@ const UIBuilder = {
     // Section pour mettre la timeline
     UI.sectionTimeline = $('section#C1-R2-banc-timeline')
 
+  }
+
+, defineOtherUIComponants(){
+
+    // La vidéo proprement dite (attention DOMElement, pas jqSet)
+    UI.video = UI.sectionVideo.find('video#section-video-body-video-1')[0]
+
+    // L'horloge principal
+    UI.mainHorloge = UI.sectionVideo.find('div#section-video-header horloge.main-horloge')
+    UI.videoHorloge = UI.sectionVideo.find('div#section-video-footer span.video-horloge')
+
     // Pour la boucle d'attente
     UI.msgWaitingLoop = $('span#waiting-loop-message')
     UI.divWaitingLoop = $('div#waiting-loop')
+
+    // La marque des raccourcs courants
+    UI.markShortcuts = UI.sectionVideo.find('#banctime-mode-shortcuts')
   }
 }// /UIBuilder
 

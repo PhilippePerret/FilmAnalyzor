@@ -5,6 +5,18 @@
 const UI = {
   class: 'UI'
 
+/**
+  Méthode qui fait basculer la captation des touches du mode "out" champs de
+  texte au mode "in" (dans un champ de texte)
+**/
+, toggleKeyUpAndDown(versOut){
+    log.info("-> UI.toggleKeyUpAndDown")
+    window.onkeyup    = this[`onKeyUp${versOut?'Out':'In'}TextField`].bind(this)
+    window.onkeydown  = this[`onKeyDown${versOut?'Out':'In'}TextField`].bind(this)
+    this.markShortcuts.html(versOut?'INTERFACE':'CHAMP SAISIE')
+  }
+
+
 , setDroppable(container, options){
     let dataDrop = Object.assign({}, DATA_ASSOCIATES_DROPPABLE, {
       drop(e, ui){
@@ -127,6 +139,8 @@ const UI = {
 }
 
 Object.defineProperties(UI,{
+  a:{get(){ return current_analyse }}
+
   // Note : la plupart des noms des éléments de l'interface
   // sont définis dans system/first_required/ui/ui_builder.js
 
@@ -134,5 +148,7 @@ Object.defineProperties(UI,{
   La section qui affiche les procédés qui ont besoin de résolution
   lorsqu'elle n'est pas définie.
   **/
-  warningSection:{get(){return $('#section-qrd-pp')}}
+, warningSection:{get(){return $('#section-qrd-pp')}}
+
+
 })

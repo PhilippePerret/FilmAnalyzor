@@ -4,6 +4,7 @@
 const App = {
   class: 'App'
 , type: 'object'
+, allComponantsLoaded: false
 , ready: false
 
   // Quand App est prête
@@ -124,9 +125,48 @@ const AppLoader = {
       System.loadJSFolders(`./app/js/${folder}`, [subfolder], this.requireNext.bind(this))
     } else {
       // <= Il n'y a plus de modules à charger
-      // => On est prêt
-      this.onReady()
+      // => On est prêt à charger tous les composants
+      this.loadAllComponants()
     }
+  }
+
+  /**
+    Méthode qui s'assure, avant de charger l'analyse choisie, que tous les
+    composants sont bien chargés. Et les charge au besoin.
+  **/
+, loadAllComponants(){
+    log.info("-> AppLoader::loadAllComponants")
+    App.allComponantsLoaded = false
+    // return 
+    if(NONE === typeof UI)            return this.loadComponant('ui/ui')
+    if(NONE === typeof BancTimeline)  return this.loadComponant('ui/banc_timeline')
+    if(NONE === typeof DataEditor)    return this.loadComponant('DataEditor')
+    if(NONE === typeof EventForm)     return this.loadComponant('EventForm')
+    if(NONE === typeof FAWriter)      return this.loadComponant('faWriter')
+    if(NONE === typeof FAProtocole)   return this.loadComponant('faProtocole')
+    if(NONE === typeof FAStater)      return this.loadComponant('faStater')
+    if(NONE === typeof FAEventer)     return this.loadComponant('faEventer')
+    if(NONE === typeof FABrin)        return this.loadComponant('faBrin')
+    if(NONE === typeof FAPersonnage)  return this.loadComponant('faPersonnage')
+    if(NONE === typeof FAProcede)     return this.loadComponant('faProcede')
+    if(NONE === typeof FAReader)      return this.loadComponant('faReader')
+    if(NONE === typeof FAStats)       return this.loadComponant('faStats')
+    if(NONE === typeof FAImage)       return this.loadComponant('faImage')
+
+    // Si tout est OK, on peut rappeler la méthode Fanalyse.load
+    log.info("   Tous les composants sont chargés.")
+    App.allComponantsLoaded = true
+    this.onReady()
+    log.info("<- AppLoader::loadAllComponants")
+  }
+
+/**
+  Méthodes de chargement des composants (au load principal)
+**/
+, loadComponant(componant, fn_callback){
+    fn_callback || (fn_callback = this.loadAllComponants.bind(this))
+    log.info(`  Loading componant <${componant}>`)
+    return System.loadComponant(componant, fn_callback)
   }
 
 , onReady(){

@@ -13,18 +13,14 @@ Object.assign(FAnalyse,{
                     le moment.
  */
   load(aFolder, fn_afterLoading){
-
-    return
-
+    log.info(`-> FAnalyse::load(folder:${aFolder})`)
     // On mémorise le dossier à charger et la méthode pour poursuivre
     isDefined(this.loadingData) || (
       this.loadingData = {folder: aFolder, after: fn_afterLoading}
     )
     // On commence par vérifier que tous les composants soient bien chargés
-    if (!this.allComponantsLoaded){
-      try { return this.loadAllComponants()}
-      catch (e) { console.error() ; return }
-    }
+    if (isFalse(App.allComponantsLoaded)) throw("Impossible de continuer sans tous les composants.")
+    if(NONE === typeof FAImage) throw("Impossible de continuer sans tous les composants (FAImage n'existe pas, par exemple).")
 
     // On reprend les données initiales
     aFolder         = this.loadingData.folder
@@ -32,7 +28,6 @@ Object.assign(FAnalyse,{
     delete this.loadingData
 
     try {
-      log.info(`-> FAnalyse::load [Load analyse: ${aFolder}]`)
       this.isDossierAnalyseValid(aFolder) || raise(T('invalid-folder', {fpath: aFolder}))
       UI.startWait(T('loading-analyse'))
       this.resetAll()
@@ -41,40 +36,13 @@ Object.assign(FAnalyse,{
         window.current_analyse.methodAfterLoadingAnalyse = fn_afterLoading
       )
       current_analyse.load()
-      return true
+      log.info(`<- FAnalyse::load(folder:${aFolder})`)
+    return true
     } catch (e) {
       log.error(e)
       UI.stopWait()
       return F.error(e)
     }
-  }
-
-  /**
-    Méthode qui s'assure, avant de charger l'analyse choisie, que tous les
-    composants sont bien chargés. Et les charge au besoin.
-  **/
-, loadAllComponants(){
-    log.info("-> FAnalyse::FAnalyse::loadAllComponants")
-    this.allComponantsLoaded = false
-    if(NONE === typeof BancTimeline)  return this.loadComponant('ui/banc_timeline')
-    if(NONE === typeof DataEditor)    return this.loadComponant('DataEditor')
-    if(NONE === typeof EventForm)     return this.loadComponant('EventForm')
-    if(NONE === typeof FAWriter)      return this.loadComponant('faWriter')
-    if(NONE === typeof FAProtocole)   return this.loadComponant('faProtocole')
-    if(NONE === typeof FAStater)      return this.loadComponant('faStater')
-    if(NONE === typeof FAEventer)     return this.loadComponant('faEventer')
-    if(NONE === typeof FABrin)        return this.loadComponant('faBrin')
-    if(NONE === typeof FAPersonnage)  return this.loadComponant('faPersonnage')
-    if(NONE === typeof FAProcede)     return this.loadComponant('faProcede')
-    if(NONE === typeof FAReader)      return this.loadComponant('faReader')
-    if(NONE === typeof FAStats)       return this.loadComponant('faStats')
-    if(NONE === typeof FAImage)       return this.loadComponant('faImage')
-
-    // Si tout est OK, on peut rappeler la méthode Fanalyse.load
-    log.info("   Tous les composants sont chargés.")
-    this.allComponantsLoaded = true
-    this.load()
-    log.info("<- FAnalyse::FAnalyse::loadAllComponants")
   }
 
 /**
@@ -89,7 +57,6 @@ Object.assign(FAnalyse,{
       // => On doit tout initialiser
       FAReader.reset()
       EventForm.reset() // notamment destruction des formulaires
-      current_analyse.videoController.remove()
       FAEscene.reset()
       FABrin.reset()
       FAPersonnage.reset()
@@ -110,7 +77,7 @@ Object.assign(FAnalyse,{
 **/
 , loadComponant(componant, fn_callback){
     fn_callback || (fn_callback = this.loadAllComponants.bind(this))
-    log.info(`  Chargement du composant <${componant}>`)
+    log.info(`  Loading componant <${componant}>`)
     return System.loadComponant(componant, fn_callback)
   }
 
@@ -125,6 +92,7 @@ Object.assign(FAnalyse,{
 
 // ---------------------------------------------------------------------
 //  INSTANCE
+
 Object.assign(FAnalyse.prototype, {
 /**
   Méthode d'instance pour charger l'analyse (courante ou pas)
@@ -137,9 +105,10 @@ Object.assign(FAnalyse.prototype, {
 */
 load(){
   log.info("-> FAnalyse#load")
-  var my = this
-    , fpath ;
-  // Les options peuvent être chargée en premier, de façon synchrone
+  let my = this
+    , fpath
+
+  // Les options peuvent être chargées en premier, de façon synchrone
   // Noter qu'elles seront appliquées plus tard, à la fin.
   this.options.load()
 
@@ -156,11 +125,13 @@ load(){
 }
 
 , onLoaded(fpath){
-  this.loaders += 1
+  ++ this.loaders
   // console.log("-> onLoaded", fpath, this.loaders)
   if(this.loaders === this.loadables_count){
     // console.log("Analyse chargée avec succès.")
     // console.log("Event count:",this.events.length)
+    log.info('FAnalyse.onLoaded FIN (loaders = loadables count)')
+    console.log("Fin de onLoaded (loaders = loadables count)")
     this.ready = true
     this.onReady()
   }
@@ -192,6 +163,10 @@ load(){
     FAPersonnage.reset().init()
     this.options.setInMenus()
     this.videoController.init()
+    // Les raccourcis clavier
+    UI.toggleKeyUpAndDown(/* out texte field */ true)
+
+
     this.runTimerSave()
     // Si une méthode après le chargement est requise, on
     // l'invoque.

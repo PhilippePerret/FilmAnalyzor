@@ -23,20 +23,13 @@ static set current(v){this._current = v}
 constructor(analyse){
   this.analyse = this.a = analyse
   this.id = VideoController.newId()
-
-  // Maintenant, on construit toujours la section vidéo
-  // Dans UIBuilder.buildSectionVideo
-
   // Le mettre en vidéo courant
   VideoController.current = this
 }
 
+
 // La section contenant cette vidéo
 get section(){return this._section||defP(this,'_section',$(`#section-video-${this.id}`))}
-// Le contrôleur vidéo lui-même (la balise vidéo)
-get video(){return this._video||defP(this,'_video', this.section.find('.video')[0])}
-// L'horloge principale
-get mainHorloge(){return this._mainHorloge||defP(this,'_mainHorloge', this.section.find('.main-horloge'))}
 // La boite des boutons de navigation (control box, ou video-controller)
 get navButtons(){return this._navButtons||defP(this,'_navButtons', this.section.find('.video-controller'))}
 get inited(){return this._inited || false }
@@ -77,19 +70,19 @@ init(){
  */
 setSize(v, save){
   isDefined(v) || ( v = this.menuVideoSize.value )
-  this.video.width = VideoController.VIDEO_SIZES[v] || v // peut-être un nombre
+  UI.video.width = VideoController.VIDEO_SIZES[v] || v // peut-être un nombre
   isTrue(save) && ( this.a.options.videoSize = v )
 }
 // retourne la taille actuelle de la vidéo
-getSize(){ return this.video.width }
+getSize(){ return UI.video.width }
 
 /**
 * Pour définir la vitesse de la vidéo
 **/
 setSpeed(speed, save){
   log.info('-> videoController#setSpeed', speed)
-  this.video.defaultPlaybackRate = speed
-  this.video.playbackRate = speed
+  UI.video.defaultPlaybackRate = speed
+  UI.video.playbackRate = speed
   log.info(`  = Video speed: ${speed}`)
   isTrue(save) && ( this.a.options.videoSpeed = speed )
   log.info('<- videoController#setSpeed')
@@ -98,7 +91,7 @@ setSpeed(speed, save){
 // Retourne la vitesse actuelle de la vidéo
 getSpeed(){
   log.info('<-> videoController#getSpeed')
-  return this.video.playbackRate
+  return UI.video.playbackRate
 }
 
 /**
@@ -117,22 +110,23 @@ static redefineVideoSizes(w){
  */
 load(vpath){
   log.info("-> VideoController#load")
-  $(this.video)
+  let my = this
+  $(UI.video)
     .on('error', ()=>{
       log.warn("Une erreur s'est produite au chargement de la vidéo.", err)
     })
     .on('loadeddata', () => {
       UI.showVideoController()
       var lastCurTime = new OTime(this.a.lastCurrentTime)
-      lastCurTime && this.analyse.locator.setTime(lastCurTime, true)
-      this.a.onVideoLoaded.bind(this.a)()
+      lastCurTime && my.a.locator.setTime(lastCurTime, true)
+      my.a.onVideoLoaded.bind(this.a)()
     })
     .on('ended', () => {
       // Quand on atteint le bout de la vidéo
-      this.a.locator.stop()
+      my.a.locator.stop()
     })
-  this.video.src = path.resolve(vpath)
-  this.video.load() // la vidéo, vraiment
+  UI.video.src = path.resolve(vpath)
+  UI.video.load() // la vidéo, vraiment
   log.info("<- VideoController#load")
 }
 
@@ -202,11 +196,7 @@ get DATA_BUTTONS(){return [
 observe(){
   var my = this
 
-  // On observe les boutons de navigation
-  for(var dbtn of this.DATA_BUTTONS){
-    var [classe, method] = dbtn
-    listenClick(this.section.find(classe)[0], my.locator, method)
-  }
+  return
 
   var valsRewForw = [0.04, 1, 5]
   for(var i = 1; i < 4 ; ++ i){
@@ -232,7 +222,7 @@ observe(){
   listenMUp(btnNextScene, my.locator,'stopGoToNextScene')
 
   // La vidéo elle-même, peut être déplacée pour récupérer un temps
-  $(this.video).draggable({
+  $(UI.video).draggable({
     revert: true
   , cursorAt: {left: 40, top: 10}
   , helper: (e) => {
@@ -269,11 +259,14 @@ observe(){
   my = null
 }
 
-get btnPlay(){return this._btnPlay||defP(this,'_btnPlay', this.section.find('.btn-play')[0])}
-get btnStop(){return this._btnStop||defP(this,'_btnStop', this.section.find('.btn-stop')[0])}
+// Span contenant tous les boutons contrôleur
+get spanVCtrl(){
+  return this._spanvideoctrl || defP(this,'_spanvideoctrl', UI.sectionVideo.find(`#video-controller-${this.id}`))
+}
+
+get btnPlay(){return this._btnPlay||defP(this,'_btnPlay', this.spanVCtrl.find('.btn-play')[0])}
+get btnStop(){return this._btnStop||defP(this,'_btnStop', this.spanVCtrl.find('.btn-stop')[0])}
 get btnRewindStart(){return this.btnSop}
-get mainHorloge(){return this._mainHorloge||defP(this,'_mainHorloge', this.section.find('.main-horloge')[0])}
-get realHorloge(){return this._realHorloge||defP(this,'_realHorloge', this.section.find('.real-horloge')[0])}
 
 get markMainPartAbs(){return this._markMainPartAbs || defP(this,'_markMainPartAbs', this.section.find('.main-part-abs'))}
 get markSubPartAbs(){return this._markSubPartAbs || defP(this,'_markSubPartAbs',    this.section.find('.sub-part-abs'))}

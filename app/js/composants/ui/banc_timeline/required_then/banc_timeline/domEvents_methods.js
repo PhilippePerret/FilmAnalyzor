@@ -4,17 +4,11 @@
 **/
 Object.assign(BancTimeline,{
   onFocusTextField(e){
-    /**
-      // TODO Mettre les raccourcis pour textes
-    **/
-    delete window.onkeyup
-    delete window.onkeydown
-    this.markShortcuts.html('CHAMP SAISIE')
+    UI.toggleKeyUpAndDown(/* out-text-field = */ false)
   }
 , onBlurTextField(e){
     // e && stopEvent(e)
-    window.onkeyup    = this.onKeyUpOutTextField.bind(this)
-    window.onkeydown  = this.onKeyDownOutTextField.bind(this)
-    this.markShortcuts.html('INTERFACE')
+    UI.toggleKeyUpAndDown(/* out-text-field = */ true)
   }
+
 })

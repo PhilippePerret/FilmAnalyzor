@@ -12,17 +12,17 @@ class FAReader {
 // après tempsCourant + TIME_AROUND seront masqués (mais laissés dans le DOM)
 // TODO Plus tard, cette constante devra devenir une préférence qu'on peut
 // régler.
-static get TIME_AROUND(){ return 5*60 }
+static get TIME_AROUND(){ return 5 * 60 }
 
 static reset(){
-  UI.Reader.html('')
+  UI.sectionReader.html('')
 }
 
 // ---------------------------------------------------------------------
 //  INSTANCE
 
 constructor(analyse){
-  this.analyse = this.a = analyse
+  this.a = analyse
 }
 
 /**
@@ -51,7 +51,7 @@ remove(){ this.fwindow.remove() }
   Vide tout le reader
   Ne pas la confondre avec la méthode `resetBeyond` suivante
  */
-reset(){ this.container.innerHTML = ''}
+reset(){ this.reader.html('')}
 
 /**
  * Vide le reader, mais seulement en supprimant les évènements qui se trouvent
@@ -63,7 +63,7 @@ reset(){ this.container.innerHTML = ''}
 resetBeyond(from_time, to_time){
   var ti, id, my = this
   this.forEachEventNode(function(o){
-    ti  = parseFloat(o.getAttribute('data-time'))
+    ti  = parseFloat(o.getAttribute(STRdata_time))
     id  = parseInt(o.getAttribute(STRdata_id),10)
     if ( ti < from_time || ti > to_time){my.analyse.ids[id].hide()}
   })
@@ -88,13 +88,13 @@ append(ev){
   // On cherche à placer l'event au meilleur endroit temporel
   var hasBeenInserted = false
   this.forEachEventNode(function(ne){
-    if(parseFloat(ne.getAttribute('data-time')) > ev.time){
+    if(parseFloat(ne.getAttribute(STRdata_time)) > ev.time){
       hasBeenInserted = true
-      my.container.insertBefore(div, ne)
+      my.reader.insertBefore(div, ne)
       return false // pour interrompre la boucle
     }
   })
-  hasBeenInserted || this.container.append(div)
+  hasBeenInserted || this.reader.append(div)
 
   // Pour observer l'event dans le reader
   ev.observe()
@@ -113,7 +113,7 @@ forEachEventNode(fn){
     , eventNodes  = this.eventNodes
     , nb_nodes    = eventNodes.length
     , i = 0
-  for(;i<nb_nodes;++i){if(false === fn(eventNodes[i])) break}
+  for(;i<nb_nodes;++i){if(isFalse(fn(eventNodes[i]))) break}
 }
 
 /**
@@ -129,10 +129,10 @@ forEachEvent(fn){
   for(;i<nb_nodes;++i){
     no = eNodes[i]
     ev = this.a.ids[parseInt(no.getAttribute(STRdata_id),10)]
-    if(undefined === ev){
+    if(isUndefined(ev)){
       console.error("[Dans FAReader#forEachEvent], l'event d'id suivant est inconnu :", no.getAttribute(STRdata_id))
     } else {
-      if(false === fn(ev)) break
+      if(isFalse(fn(ev))) break
     }
   }
 }
@@ -142,7 +142,7 @@ get eventNodes(){
   // ERREUR CI-DESSOUS CAR D'AUTRES ÉLÉMENTS, DANS LES ÉLÉMENTS, PORTENT
   // LA CLASSE .event. DANS L'IDÉAL, IL FAUT QUE LES ÉLÉMENTS DE PREMIER
   // NIVEAU PORTENT UNE CLASSE VRAIMENT UNIQUE (p.e. reader-event)
-  return this.container.querySelectorAll('.reader-event')
+  return this.reader.find('.reader-event')
 }
 /**
  * Méthode qui permet d'afficher tous les events d'un coup
@@ -154,12 +154,8 @@ displayAll(){
 // ---------------------------------------------------------------------
 //  DOM ELEMENTS
 get fwindow(){
-  return this._fwindow || defP(this,'_fwindow', new FWindow(this, {id: 'reader', name:ReaderFWindowName, draggable:false, container: this.section, x: ScreenWidth - 650, y: 4}))
+  return this._fwindow || defP(this,'_fwindow', new FWindow(this, {id:'reader', name:ReaderFWindowName, draggable:false, container:UI.sectionReader, x: ScreenWidth - 650, y: 4}))
 }
-get container(){
-  return this._container || defP(this,'_container', DGet('reader'))
-}
-get section(){
-  return this._section || defP(this,'_section', UI.sectionReader)
-}
+get reader(){return this._reader || defP(this,'_reader', this.fwindow.jqObj)}
+
 }

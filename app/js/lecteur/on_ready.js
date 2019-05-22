@@ -28,10 +28,7 @@ $(document).ready(() => {
   var d = ipc.sendSync('get-screen-dimensions')
   window.W = ScreenWidth  = d.width
   window.H = ScreenHeight = d.height
-
-  // window.onkeydown  = KeyUpAndDown.commonKeyDown
-  // window.onkeyup    = KeyUpAndDown.commonKeyUp
-
+  
   // ATTENTION : QUAND ON PASSE ICI, TOUT N'EST
   // PAS ENCORE CHARGÉ CAR CERTAINS MODULES  SONT
   // CHARGÉS DE FAÇON DYNAMIQUE. C'EST LA MÉTHODE

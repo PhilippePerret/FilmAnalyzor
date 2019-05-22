@@ -251,7 +251,7 @@ static atAndNext(otime){
 
   // Si le temps de fin existe et que ce temps est supérieur, on doit retourner
   // null
-  if((this.a.filmEndTime && this.a.filmEndTime <= otime.vtime) || otime.vtime === this.a.locator.video.duration ){
+  if((this.a.filmEndTime && this.a.filmEndTime <= otime.vtime) || otime.vtime === UI.video.duration ){
     log.info(`   [atAndNext] Temps supérieur ou égal au temps de fin`)
     return
   }

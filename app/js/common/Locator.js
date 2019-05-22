@@ -8,7 +8,7 @@
 class Locator {
 
 constructor(analyse){
-  this.analyse = this.a = analyse
+  this.a = analyse
   this.stop_points = [] // pour mettre les OTime(s)
   this.stop_points_times = [] // pour mettre les seconds
 }
@@ -18,10 +18,7 @@ get playing(){return this._playing || false}
 set playing(v){ this._playing = v}
 
 init(){
-  var my = this
-
   this.videoController = this.a.videoController
-  this.video = this.a.videoController.video
 
   // Le bouton pour rejoindre le début du film. Il n'est défini que si
   // ce temps est défini pour l'analyse courante
@@ -29,22 +26,7 @@ init(){
 
   // L'horloge de la vidéo n'est visible que lorsque son temps est différent
   // du temps réel, donc lorsque le début du film est défini
-  if (!this.hasStartTime){
-    this.realHorloge.style.visibility = STRhidden
-  }
-
-  my = null
-}
-
-// L'instance DOMHorloge de l'horloge principale
-get oMainHorloge(){return this._oMainHorloge||defP(this,'_oMainHorloge', this.videoController.mainHorloge)}
-set oMainHorloge(v){
-  v.dispatch({
-      time: this.getTime().seconds // {OTime}
-    , synchroVideo: true
-    , unmodifiable: true // pour ne pas la marquer modifiée
-  })
-  this._oMainHorloge = v
+  this.hasStartTime && UI.videoHorloge.css('visibility', STRhidden)
 }
 
 // ---------------------------------------------------------------------
@@ -62,7 +44,7 @@ togglePlay(ev){
     //
     // => PAUSE
     //
-    this.video.pause()
+    UI.video.pause()
     $(this.btnPlay).removeClass('actived')
     this.playing = false
     this.actualizeALL() // à l'arrêt, on actualise tout
@@ -79,7 +61,7 @@ togglePlay(ev){
     // stop.
     var curT = this.getTime() // {OTime}
     // Pour gérer l'Autoplay Policy de Chromium
-    var videoPromise = this.video.play()
+    var videoPromise = UI.video.play()
     if (isDefined(videoPromise)) {
       videoPromise.then( _ => {
         // Autoplay started!
@@ -131,7 +113,7 @@ stopAndRewind(){
     // <= Le temps courant est supérieur au dernier temps de départ
     // => on revient au dernier temps de départ
     newOTime.rtime = this.lastStartTime.seconds
-  } else if (this.hasStartTime && curOTime > (this.analyse.filmStartTime + 5)){
+  } else if (this.hasStartTime && curOTime > (this.a.filmStartTime + 5)){
     // <= le temps courant est au-delà des 5 secondes après le début du film
     // => On revient au début du film
     newOTime.rtime = 0
@@ -161,7 +143,7 @@ startForward(sec){
  */
 rewind(secs){
   // console.log("-> rewind")
-  var newtime = this.video.currentTime - secs
+  var newtime = UI.video.currentTime - secs
   if(newtime < 0){
     newtime = 0
     if(this.timerRewind) this.stopRewind()
@@ -173,8 +155,8 @@ rewind(secs){
 
 forward(secs){
   // console.log("-> forward")
-  var newtime = this.video.currentTime + secs
-  if(newtime > this.video.duration){
+  var newtime = UI.video.currentTime + secs
+  if(newtime > UI.video.duration){
     if(this.timerForward) this.stopForward()
     return
   }
@@ -230,10 +212,10 @@ setTime(time, dontPlay){
   this.resetAllTimes()
 
   // Réglage de la vidéo. L'image au temps donné doit apparaitre
-  this.video.currentTime = time.vtime
+  UI.video.currentTime = time.vtime
 
   // Réglage de l'horloge principale.
-  this.oMainHorloge.time = time
+  UI.mainHorloge.html(time.vhorloge)
 
   if(!dontPlay){
     // Si l'on n'a pas précisé explicitement qu'on ne voulait
@@ -243,15 +225,13 @@ setTime(time, dontPlay){
     //  - elle n'est pas déjà en train de jouer
     //  - l'option de démarrer après le choix d'un temps est
     //    activée.
-    if(this.playAfterSettingTime === true && !this.playing){
-      this.togglePlay()
-    }
+    isTrue(this.playAfterSettingTime) && isFalse(this.playing) && this.togglePlay()
     log.info('<- Locator#setTime')
   }
 
   // Si la vidéo ne joue pas, on force l'actualisation de tous
   // les éléments, reader, horloge, markers de structure, etc.
-  this.video.paused && this.actualizeALL()
+  UI.video.paused && this.actualizeALL()
 
 }
 
@@ -327,7 +307,7 @@ resetAllTimes(){
  */
 goToFilmStart(){
 
-  if(isDefined(this.analyse.filmStartTime)) this.setTime(this.startTime)
+  if(isDefined(this.a.filmStartTime)) this.setTime(this.startTime)
   else F.error("Le début du film n'est pas défini. Cliquer sur le bouton adéquat pour le définir.")
 }
 
@@ -339,7 +319,7 @@ goToFilmStartOrZero(){
 // est défini.)
 goToFilmEndOrEnd(){
   if(isDefined(this.a.filmEndTime)) this.setTime(this.endTime)
-  else this.video.currentTime = this.video.duration
+  else UI.video.currentTime = UI.video.duration
 }
 
 // ---------------------------------------------------------------------
@@ -407,17 +387,17 @@ stopGoToNextScene(){
 //  Gestion des points d'arrêt
 
 goToNextStopPoint(){
-  if(undefined === this._i_stop_point) this._i_stop_point = -1
+  ifDefined(his._i_stop_point) || ( this._i_stop_point = -1 )
   ++ this._i_stop_point
   if(this._i_stop_point > this.stop_points.length - 1) this._i_stop_point = 0
-  if(undefined === this.stop_points[this._i_stop_point]){
+  if(isUndefined(this.stop_points[this._i_stop_point])){
     F.notify(T('no-stop-point'))
   } else {
     this.setTime(this.stop_points[this._i_stop_point])
   }
 }
 addStopPoint(otime){
-  if(current_analyse.options.get('option_lock_stop_points')) return
+  if(this.a.options.get('option_lock_stop_points')) return
   otime instanceof(OTime) || raise(T('otime-arg-required'))
   if (this.stop_points_times.indexOf(otime.seconds) > -1) return
   if (this.stop_points_times.length > 2) {
@@ -432,10 +412,10 @@ addStopPoint(otime){
 // Méthodes de données
 
 get startTime(){return this._startTime||defP(this,'_startTime', OTime.ZERO)}
-get endTime(){return this._endtime||defP(this,'_endtime', new OTime(this.video.duration))}
+get endTime(){return this._endtime||defP(this,'_endtime', new OTime(UI.video.duration))}
 get currentTime(){
   isDefined(this._currentTime) || ( this._currentTime = OTime.ZERO )
-  this._currentTime.vtime = this.video.currentTime.round(2)
+  this._currentTime.vtime = UI.video.currentTime.round(2)
   return this._currentTime
 }
 
@@ -541,13 +521,12 @@ actualiseBancTimeline(curt){
 
 actualizeHorloge(curt){
   isDefined(curt) || (curt = this.currentTime)
-  this.horloge.innerText      = curt.horloge
-  this.realHorloge.innerHTML  = curt.vhorloge
-  this.oMainHorloge.time = curt
+  UI.mainHorloge.html(curt.horloge)
+  UI.videoHorloge.html(curt.vhorloge)
 }
 
 actualizeReader(curt){
-  if(undefined === curt) curt = this.currentTime
+  isDefined(curt) || ( curt = this.currentTime )
   // Afficher les events autour du temps courant
   this.showEventsAt(curt)
   // Afficher les images autour du temps courant
@@ -555,7 +534,7 @@ actualizeReader(curt){
   // Arrêter de jouer si un temps de fin est défini et qu'il est dépassé
   if(this.wantedEndTime && this.currentTime > this.wantedEndTime){
     this.togglePlay()
-    if('function'===typeof this.wantedEndTimeCallback) this.wantedEndTimeCallback()
+    if(isFunction(this.wantedEndTimeCallback)) this.wantedEndTimeCallback()
   }
 }
 
@@ -575,11 +554,11 @@ actualizeReader(curt){
 actualizeMarkersStt(curt){
   // console.log("-> actualizeMarkersStt", curt)
   var vid = this.videoController
-  if(undefined === curt) curt = this.currentTime
-  if(undefined === this.a.PFA.TimesTables) this.a.PFA.setTimesTables()
-  if(undefined === this.nextTimes) {
+  isDefined(curt) || ( curt = this.currentTime )
+  isDefined(this.a.PFA.TimesTables) || this.a.PFA.setTimesTables()
+  isDefined(this.nextTimes) || (
     this.nextTimes = {'Main-Abs': null, 'Main-Rel': null, 'Sub-Abs':null, 'Sub-Rel': null}
-  }
+  )
   // On doit répéter pour les quatre tables, heureusement petites,
   // pour trouver :
   //  - la partie absolue
@@ -623,7 +602,7 @@ actualizeMarkersStt(curt){
 
  */
 actualizeCurrentScene(curt){
-  console.log("-> actualizeCurrentScene")
+  log.info("-> actualizeCurrentScene")
   if((this.timeNextScene && curt < this.timeNextScene) || FAEscene.count === 0) return
   var resat = FAEscene.atAndNext(curt)
   if(resat){
@@ -670,9 +649,9 @@ eventsAt(time) {
   var evsBT = this.eventsByTrancheTime
   for(var tranche = fromTranche; tranche <= toTranche; tranche+=5){
     // console.log("Recherche dans la tranche : ", tranche)
-    if(undefined === evsBT[tranche]) continue
+    if(isUndefined(evsBT[tranche])) continue
     for(var i=0, len=evsBT[tranche].length;i<len;++i){
-      evs.push(this.analyse.ids[evsBT[tranche][i]])
+      evs.push(this.a.ids[evsBT[tranche][i]])
     }
   }
   return evs
@@ -683,7 +662,7 @@ eventsAt(time) {
  */
 addEvent(ev){
   var tranche = parseInt(ev.time - (ev.time % 5),10)
-  if(undefined === this.eventsByTrancheTime[tranche]){
+  if(isUndefined(this.eventsByTrancheTime[tranche])){
     // <= La tranche n'existe pas encore
     // => On la crée et on ajoute l'identifiant de l'event
     this._events_by_tranche_time[tranche] = [ev.id]
@@ -710,13 +689,12 @@ addEvent(ev){
 
 /**
   Méthode appelée pour se rendre au temps voulu.
-
  */
 goToTime(ev){
   this.setTime(new OTime(VideoController.current.section.find('.requested_time').val()))
   // En pause, il faut forcer l'affichage du temps, ça ne se fait pas
   // tout seul.
-  if(this.video.paused) this.actualizeALL()
+  if(UI.video.paused) this.actualizeALL()
 }
 
 // ---------------------------------------------------------------------
@@ -725,13 +703,13 @@ goToTime(ev){
  * temps de 5 secondes.
  */
 get eventsByTrancheTime(){
-  if(undefined === this._events_by_tranche_time){
+  if(isUndefined(this._events_by_tranche_time)){
     this._events_by_tranche_time = {}
-    var i = 0, len = this.analyse.events.length, e, t
+    var i = 0, len = this.a.events.length, e, t
     for(i;i<len;++i){
-      e = this.analyse.events[i]
+      e = this.a.events[i]
       var t = parseInt(e.time - (e.time % 5),10)
-      if(undefined === this._events_by_tranche_time[t]){
+      if(isUndefined(this._events_by_tranche_time[t])){
         this._events_by_tranche_time[t] = []
       }
       this._events_by_tranche_time[t].push(e.id)
@@ -744,16 +722,14 @@ get eventsByTrancheTime(){
 // ---------------------------------------------------------------------
 // Méthodes d'état
 get hasStartTime(){
-  return this.analyse && this.analyse.filmStartTime > 0
+  return this.a && this.a.filmStartTime > 0
 }
 
 get playAfterSettingTime(){
-  return this.analyse.options.get('option_start_when_time_choosed')
+  return this.a.options.get('option_start_when_time_choosed')
 }
 
 // --- DOM ÉLÉMENTS ---
-get horloge(){return this.videoController.mainHorloge}
-get realHorloge(){return this.videoController.realHorloge}
 get btnPlay(){return this.videoController.btnPlay}
 get btnRewindStart(){return this.videoController._btnRwdSt}
 get imgPauser(){return '<img src="./img/btns-controller/btn-pause.png" />'}

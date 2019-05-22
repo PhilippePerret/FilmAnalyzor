@@ -57,7 +57,7 @@ build(){
 , buildControllerBox(){
     let btns = [], suf, dbtn, rac, attrs
 
-    let spanHorlogeReal = DCreate(SPAN, {class:'real-horloge horloge tiny fleft discret', inner: '0:00:00.0'})
+    let spanHorlogeReal = DCreate(SPAN, {class:'video-horloge horloge tiny fleft discret', inner: '0:00:00.0'})
 
     // Les boutons rewind et forward, etc.
     for(suf of VideoController.CTRL_BUTTONS.tiny_buttons){
