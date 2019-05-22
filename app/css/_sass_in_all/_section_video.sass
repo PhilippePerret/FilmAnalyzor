@@ -1,0 +1,95 @@
+// NOTE : voir à la fin les styles non utilisés
+
+section#C1-R1-C1-section-video
+
+  // Entête, contenant entre autres chose l'horloge et la scène courante
+  div#section-video-header
+
+    // Marque de scène courante
+    span#mark-current-scene
+      color:    white
+      display:  inline-block
+      width:    200px
+
+  div#section-video-body
+    text-align: center
+    padding:    1em
+    // La vidéo principale
+    video#section-video-body-video-1
+      width: 90%
+
+  div#section-video-footer
+    text-align: right
+
+    .video-controller
+      &, & *
+        background: #222222
+        vertical-align: middle
+
+      div.vcontroller-tiny-btns
+        padding-top: 8px
+
+      div.vcontroller-main-btns
+        padding-bottom: 8px
+
+      button
+        border: 0
+        border-bottom: 3px solid inherit
+        padding: 0
+
+        &.controller
+          vertical-align: middle
+          text-align: center
+          margin: 0 0.1em
+          img
+            width: 30px
+
+        &.main
+          padding-bottom: 2px
+          background-color: #CCFFCC
+          margin: 0 0.25em
+          img
+            width: 40px
+
+        &:active
+          background-color: #31d300
+
+        &.actived
+          // background-color: green
+          background-color: #31d300
+
+  // Autres éléments
+  // La boite ajoutée à la portion vidéo en mode banc timeline
+  div#bt-video-toolbox
+    border: 1px solid white
+    height: 150px
+    position: relative
+
+    span#mode-shortcuts-span
+      position: absolute
+      bottom: 0
+
+      span#banctime-mode-shortcuts
+        font-size: 9pt
+        color: white
+
+
+
+section.section-video div.video-header div.main-part
+  color: palevioletred
+
+section.section-video div.video-header div.part-abs
+  background-color: #222222
+
+section.section-video div.video-header div.sub-part
+  color: darkseagreen
+
+section.section-video div.video-header div.part-rel
+  background-color: #112211
+
+
+
+section.section-video div.video-header div.mark-current-scene
+  text-align: left
+  padding: 2px 2px 2px 12px
+  overflow: hidden

@@ -1,9 +1,5 @@
 'use strict'
 
-function affiche(msg){
-  $('div#message').html(msg)
-}
-
 class VideoController {
 
 // ---------------------------------------------------------------------
@@ -14,7 +10,7 @@ static get VIDEO_SIZES(){
 }
 
 static newId(){
-  if(undefined === this.lastId) this.lastId = 0
+  isDefined(this.lastId) || ( this.lastId = 0 )
   return ++ this.lastId
 }
 
@@ -29,9 +25,7 @@ constructor(analyse){
   this.id = VideoController.newId()
 
   // Maintenant, on construit toujours la section vidéo
-  log.info(`---> Build vidéo #${this.id}`)
-  this.build()
-  log.info(`<--- Build vidéo #${this.id}`)
+  // Dans UIBuilder.buildSectionVideo
 
   // Le mettre en vidéo courant
   VideoController.current = this
@@ -61,8 +55,6 @@ init(){
 
   this.locator = this.analyse.locator
 
-  this.setDimensions()
-
   // Si l'analyse a enregistré une taille de vidéo, on la règle. Sinon, on
   // met la taille médium. Idem pour la vitesse de lecture de la vidéo.
   this.setSize(this.a.options.videoSize)
@@ -70,28 +62,11 @@ init(){
 
   this.observe()
 
-  // On appelle juste l'indicateur de position pour l'initialiser
-  this.positionIndicator.init()
-
   this.inited = true
   log.info("<- VideoController#init()")
 
 }
 // /fin init
-
-// Tailles pour le lecteur video
-setDimensions(){
-  var videoReaderWidth = Math.round(ScreenWidth * 60 / 100)
-  this.section.css('width',`${videoReaderWidth}px`)
-  // Redéfinition de la taille large de la vidéo en fonction de
-  // l'écran.
-  this.redefineVideoSizes(videoReaderWidth)
-
-  var videoWidth   = Math.round(ScreenWidth * 60 / 100)
-  var readerWidth  = Math.round(ScreenWidth * 39 / 100)
-  var readerHeight = Math.round(ScreenHeight * 50 /100)
-
-}
 
 /**
  * Pour définir la taille de la vidéo (trois formats sont disponibles, pour
@@ -103,12 +78,10 @@ setDimensions(){
 setSize(v, save){
   isDefined(v) || ( v = this.menuVideoSize.value )
   this.video.width = VideoController.VIDEO_SIZES[v] || v // peut-être un nombre
-  this.section.css('width', `${this.video.width + 10}px`)
-  // this.mainHorloge.className = `horloge ${v}` // normalement on ne  change plus
   isTrue(save) && ( this.a.options.videoSize = v )
 }
 // retourne la taille actuelle de la vidéo
-getSize(){ return this.video.width}
+getSize(){ return this.video.width }
 
 /**
 * Pour définir la vitesse de la vidéo
@@ -118,7 +91,7 @@ setSpeed(speed, save){
   this.video.defaultPlaybackRate = speed
   this.video.playbackRate = speed
   log.info(`  = Video speed: ${speed}`)
-  if(save === true) this.a.options.videoSpeed = speed
+  isTrue(save) && ( this.a.options.videoSpeed = speed )
   log.info('<- videoController#setSpeed')
 }
 
@@ -128,26 +101,16 @@ getSpeed(){
   return this.video.playbackRate
 }
 
-
-/**
-  Pour détruire la vidéo courante, certainement au
-  chargement d'une autre analyse.
-**/
-remove(){ this.section.remove() }
-
 /**
  * Pour redéfinir les largeurs de la vidéo en fonction de la largeur
  * de l'écran.
  */
-redefineVideoSizes(w){
-  VideoController.VIDEO_SIZES['large']   = w - 10
-  if(w < 650){
-    VideoController.VIDEO_SIZES['medium']    = parseInt((w / 3) * 2, 10)
-    VideoController.VIDEO_SIZES['vignette']  = parseInt(w / 2.2, 10)
-  }
+static redefineVideoSizes(w){
+  isDefined(w) || ( w = UI.sectionVideo.width() )
+  VideoController.VIDEO_SIZES['large']    = w - 10
+  VideoController.VIDEO_SIZES['medium']   = parseInt((w / 3) * 2, 10)
+  VideoController.VIDEO_SIZES['vignette'] = parseInt(w / 2.2, 10)
 }
-
-
 
 /**
  * Pour charger la vidéo de path +vpath+
@@ -155,36 +118,22 @@ redefineVideoSizes(w){
 load(vpath){
   log.info("-> VideoController#load")
   $(this.video)
-  .on('error', ()=>{
-    log.warn("Une erreur s'est produite au chargement de la vidéo.", err)
-  })
-  .on('loadeddata', () => {
-    UI.showVideoController()
-    var lastCurTime = new OTime(this.a.lastCurrentTime)
-    lastCurTime && this.analyse.locator.setTime(lastCurTime, true)
-    this.a.onVideoLoaded.bind(this.a)()
-  })
-  .on('ended', () => {
-    // Quand on atteint le bout de la vidéo
-    this.a.locator.stop()
-  })
+    .on('error', ()=>{
+      log.warn("Une erreur s'est produite au chargement de la vidéo.", err)
+    })
+    .on('loadeddata', () => {
+      UI.showVideoController()
+      var lastCurTime = new OTime(this.a.lastCurrentTime)
+      lastCurTime && this.analyse.locator.setTime(lastCurTime, true)
+      this.a.onVideoLoaded.bind(this.a)()
+    })
+    .on('ended', () => {
+      // Quand on atteint le bout de la vidéo
+      this.a.locator.stop()
+    })
   this.video.src = path.resolve(vpath)
   this.video.load() // la vidéo, vraiment
   log.info("<- VideoController#load")
-}
-
-/**
- * Préparation de l'interface en fonction de la présence ou non d'une
- * vidéo.
- */
-setVideoUI(visible){
-  log.info("-> VideoController#setVideoUI")
-  let visu = visible ? STRvisible : STRhidden
-  this.section.find('.video-header')[visible?'show':'hide']()
-  for(var el of ['video','div-nav-video-buttons']){
-    this.section.find(el).css('visibility', visu)
-  }
-  log.info("<- VideoController#setVideoUI")
 }
 
 /**
@@ -298,8 +247,8 @@ observe(){
       , zindex:1000
       })
     }
-  , start:()=>{$('#section-videos, #section-videos *').css('z-index','1000')}
-  , stop:()=>{$('#section-videos, #section-videos *').css('z-index','1')}
+  , start:() => {zIndex(UI.sectionVideo, 1000, {deep: true})}
+  , stop:() =>  {zIndex(UI.sectionVideo, 1, {deep: true})}
 })
 
   // Sur les parties à droite de l'horloge principale
@@ -332,16 +281,11 @@ get markMainPartRel(){return this._markMainPartRel || defP(this,'_markMainPartRe
 get markSubPartRel(){return this._markSubPartRel || defP(this,'_markSubPartRel',    this.section.find('.sub-part-rel'))}
 get markCurrentScene(){return this._markCurrentScene||defP(this,'_markCurrentScene',this.section.find('.mark-current-scene'))}
 
-// Pour l'indicateur de position, une timeline sous
-// la vidéo.
-get positionIndicator(){return this._positionIndicator||defP(this,'_positionIndicator',new FATimeline(this.timeline))}
-get timeline(){return this._timeline||defP(this,'_timeline',this.section.find('.timeline')[0])}
-
-get CTRL_BUTTONS(){
+static get CTRL_BUTTONS(){
   return {
-  tiny_buttons:['prev-scene','rewind-3', 'rewind-2', 'rewind-1', 'forward-1', 'forward-2', 'forward-3', 'next-scene']
+  tiny_buttons:['prev-scene:CMD+<-','rewind-3', 'rewind-2', 'rewind-1', 'forward-1', 'forward-2', 'forward-3', 'next-scene:CMD+->']
 , main_buttons: {
-    'go-to-film-start': {title:"Pour retourner au début du film (si défini)"}
+    'go-to-film-start': {title:"Pour retourner au début du film (si défini) (CMD+MAJ+<-)"}
   , 'stop-points': {title:"Passe en revue les 3 derniers points d'arrêt"}
   , 'stop': {title:"1/ dernier point d'arrêt, 2/ début du film, 3/ début de la vidéo"}
   , 'play': {title:"Lancer/pauser/relancer la vidéo"}
@@ -349,68 +293,22 @@ get CTRL_BUTTONS(){
 }
 }
 
-build(){
-  // console.log('-> VideoController#build')
-  // La section principale
-  let sectionVideo = DCreate('SECTION', {class: 'section-video', id: `section-video-${this.id}`, append:[
-      // ENTÊTE
-      DCreate(DIV, {class:'video-header no-user-selection', append:[
-            DCreate('HORLOGE', {class: 'main-horloge horloge vignette horlogeable', inner: '0:00:00.0'})
-          , DCreate(DIV, {class: 'main-part part-abs main-part-abs', inner: '...'})
-          , DCreate(DIV, {class: 'sub-part part-abs sub-part-abs', inner: '...'})
-          , DCreate(DIV, {class: 'main-part part-rel main-part-rel', inner: '...'})
-          , DCreate(DIV, {class: 'sub-part part-rel sub-part-rel', inner: '...'})
-          , DCreate(DIV, {class: 'mark-current-scene', inner: '...'})
-      ]})
-      // VIDÉO
-    , DCreate('VIDEO', {id: `video-${this.id}`, class:'video no-user-selection time', append:[
-            DCreate('SOURCE', {id: `video-${this.id}-src`, type: 'video/mp4', attrs:{src:""}})
-      ]})
-      // INDICATEUR DE POSITION (aka TIMELINE)
-    , DCreate(DIV, {class: 'timeline'})
-      // Le DIV principal contenant les boutons de contrôle
-    , DCreate(DIV, {class: 'div-nav-video-buttons no-user-selection'})
-  ]})
-  $('section#section-videos').append(sectionVideo)
-  this.buildControllerBox()
-}
-
-buildControllerBox(){
-  let btns = [], suf, dbtn
-
-  let spanHorlogeReal = DCreate(SPAN, {class: 'real-horloge horloge mini fleft', inner: '0:00:00.0'})
-
-  let divGoToTime = DCreate(DIV, {class:'go-to-time', append: [
-      DCreate(BUTTON, {type: STRbutton, class:'small btn-go-to-time-video', inner: 'Aller au temps'})
-    , DCreate(INPUT,  {type: STRtext, id:`request_time-${this.id}`, class: 'requested_time horloge small', value: '', attrs:{placeholder:'0,0,0.0'}})
-  ]})
-  // Les boutons rewind et forward, etc.
-  for(suf of this.CTRL_BUTTONS.tiny_buttons){
-    btns.push(
-        DCreate(BUTTON, {type: STRbutton, class: `controller btn-${suf}`, append:[
-        DCreate(IMG, {attrs:{src: `./img/btns-controller/btn-${suf}.png`}})
-      ]})
-    )
-  }
-  let divTinyBtns = DCreate(DIV, {class: 'vcontroller-tiny-btns no-user-selection', append: btns})
-
-  // Les boutons principaux du controller de vidéo
-  btns = []
-  for(suf in this.CTRL_BUTTONS.main_buttons){
-    dbtn = this.CTRL_BUTTONS.main_buttons[suf]
-    btns.push(
-      DCreate(BUTTON, {type:STRbutton, class: `main btn-${suf}`, attrs:{title:dbtn.title}, append:[
-        DCreate(IMG, {attrs:{src: `./img/btns-controller/btn-${suf}.png`}})
-      ]})
-    )
-  }
-  let divMainBtns = DCreate(DIV, {class: 'vcontroller-main-btns no-user-selection', append:btns})
-
-  let divControlBox = DCreate(DIV, {class: 'video-controller no-user-selection', id: `video-controller-${this.id}`, append:[
-    spanHorlogeReal, divGoToTime, divTinyBtns, divMainBtns
-  ]})
-
-  $(`#section-video-${this.id} .div-nav-video-buttons`).append(divControlBox)
-}
+// build(){
+//
+//   // console.log('-> VideoController#build')
+//   // La section principale
+//   let sectionVideo = DCreate(SECTION, {class: 'section-video', id: `section-video-${this.id}`, append:[
+//       // ENTÊTE
+//       DCreate(DIV, {class:'video-header no-user-selection', append:[
+//
+//           , DCreate(DIV, {class: 'main-part part-abs main-part-abs', inner: '...'})
+//           , DCreate(DIV, {class: 'sub-part part-abs sub-part-abs', inner: '...'})
+//           , DCreate(DIV, {class: 'main-part part-rel main-part-rel', inner: '...'})
+//           , DCreate(DIV, {class: 'sub-part part-rel sub-part-rel', inner: '...'})
+//       ]})
+//       // VIDÉO
+//     ,
+//   ]})
+// }
 
 }

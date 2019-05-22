@@ -660,13 +660,12 @@ La méthode `Locator.actualizeAll` :
 
 * prend le temps courant (`Locator.currentTime`)
 * actualise les horloges avec le temps courant
-* positionne l'indicator de position de la vidéo (`videoController.positionIndicator.positionneAt`)
 * actualise le Reader pour afficher les events au temps courant (`Locator.actualizeReader`)
 * actualise les marques de structure (`Locator.actualizeMarkersStt`)
 * actualise la marque de scène courante (`actualizeCurrentScene`)
-* actualise le Banc Timeline s'il est activé
+* actualise le Banc Timeline en positionnant le curseur.
 
-Note : à l'avenir, il faudrait pouvoir décider ce que l'on actualise pour alléger le travail. Donc la méthode `actualizeALL` serait définie dynamiquement avec les choix et, par exemple, on n'appellerait pas la méthode pour le positionIndicator si on est en mode Banc Timeline et inversement on ne demanderait pas l'actualisation du banc timeline si on n'est pas dans ce mode.
+Note : à l'avenir, il faudrait pouvoir décider ce que l'on actualise pour alléger le travail. La méthode `actualizeALL` ne sert plus qu'à tout actualiser lorsque l'on s'arrête ou qu'on choisit un temps.
 
 ---------------------------------------------------------------------
 

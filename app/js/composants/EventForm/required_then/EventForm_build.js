@@ -51,7 +51,7 @@ Object.assign(EventForm.prototype,{
         DCreate(SPAN, {class: 'event-btn-drop event', inner: '⎆', style: 'background:transparent;', attrs:attrs})
       , DCreate(BUTTON, {class:'btnplay right', attrs:{size:30}})
       , DCreate(LABEL, {inner: 'Position'})
-      , DCreate('HORLOGE', {class:'small', id:my.fId(STRtime), value:'', inner: '...'})
+      , DCreate(HORLOGE, {class:'small', id:my.fId(STRtime), value:'', inner: '...'})
       , DCreate(LABEL, {inner: 'Durée'})
       , DCreate('DUREE', {id: my.fId('duree'), class: 'small dureeable'})
       ]}))

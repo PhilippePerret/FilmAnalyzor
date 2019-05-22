@@ -4,60 +4,31 @@ body
   background-color: #BBBBBB
   margin: 0
   padding: 0
+  overflow: hidden
 
   &, & *
   font-family: Avenir
 
-  div#main-container
-    display: flex
-    flex-flow: column nowrap
+// En attendant
+section#section-eventers
+  display: none
 
-    div#ui-left-column
-      flex: 1
-      background-color: red
+// En attendant
+section#section-qrd-pp
+  display: none
 
-    // La rangée supérieure qui contient tous les éléments principaux, dont
-    // la section vidéo et le reader.
-    div#ui-top-row
-      flex: 0 1 auto
-      display: flex
-      flex-direction: row
-      overflow: hidden
-      height: 60%
-      background-color: #333333
-      // avoid browser level touch actions
-      xtouch-action: none
-
-      section#section-videos
-        display: inline-block
-        flex: 0 0 auto
-        width: 60%
-        background-color: #333377
-
-      section#section-reader
-        display: inline-block
-        flex: 1 1 auto
-        width: 39%
-        background-color: #337733
-
-      section#section-eventers
-        display: none
-
-      section#section-qrd-pp
-        display: none
-
-
+// En attendant
 section#section-writer
   display: none
 
 
-div#contenant
+div#whole-ui
   display: flex
   flex-flow: row nowrap
   border: 2px solid black // red
   width: 100%
   > div
-    height: 600px
+    height: calc(100% - 87px)
 
   // LE DÉCOUPAGE DE L'INTERFACE EST LE SUIVANT
 
@@ -88,7 +59,7 @@ div#contenant
   //      le banc timeline
   div#C1
     flex: 0 0 1
-    width: 90%
+    width: 95%
     background-color: #FCC
     // Pour ses rangées
     display: flex
@@ -97,7 +68,7 @@ div#contenant
     // C1-R1 : contient la section vidéo et la section reader
     div#C1-R1
       flex: 0 0 1
-      height: 60%
+      height: 75% // donc 25% laissés pour le banc timeline
       // Ses colonnes, qui contiennent la vidéo et le reader
       display: flex
       flex-flow: row nowrap
@@ -106,20 +77,20 @@ div#contenant
       section#C1-R1-C1-section-video
         flex: 0 0 1
         width: 70%
-        background-color: #333333
+        background-color: #222222
         border: 2px solid black // red
 
       // La section reader
       section#C1-R1-C2-section-reader
         flex: 1 1 auto
-        background-color: #333366
+        background-color: #222244
         border: 2px solid black // red
 
     // C1-R2 : contient le banc timeline
     section#C1-R2-banc-timeline
       flex: 1 1 auto
       border: 2px solid black // red
-      background-color: #555555
+      background-color: #333333
 
   // C2 : colonne à droite qui contient deux rangées pour mettre par
   //      exemple les formulaires d'édition et la liste des QRD ou procédés

@@ -198,9 +198,7 @@ init(){
   this.setTitle()
   // On règle le cadenas si elle est verrouillée
   this.setMarkModified()
-  // Si l'analyse courante définit une vidéo, on la charge et on prépare
-  // l'interface. Sinon, on masque la plupart des éléments
-  this.videoController.setVideoUI(!!this.videoPath)
+
   if (this.videoPath){
     this.videoController.load(this.videoPath)
   } else {

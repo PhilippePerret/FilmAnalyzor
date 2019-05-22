@@ -499,11 +499,7 @@ actualizeALL(){
   log.info('-> Locator.actualizeALL')
   var curt = this.currentTime
   this.actualizeHorloge(curt)
-  if(this.a.options.get('option_banc_timeline')){
-    this.actualiseBancTimeline(curt) // si on est en mode Ban Timeline
-  } else {
-    this.videoController.positionIndicator.positionneAt(curt)
-  }
+  this.actualiseBancTimeline(curt) // si on est en mode Ban Timeline
   this.actualizeReader(curt)
   this.actualizeMarkersStt(curt)
   this.actualizeCurrentScene(curt)
@@ -529,13 +525,8 @@ buildActualizeMainFunction(){
   if (this.a.options.get('video.running.updates.current_scene')){
     codeLines.push("this.actualizeCurrentScene(curt)")
   }
-  if (this.a.options.get('option_banc_timeline')){
-    if(this.a.options.get('video.running.updates.banc_timeline')){
-      codeLines.push("this.actualiseBancTimeline(curt)")
-    }
-  } else {
-    // Mode "normal"
-    codeLines.push("this.videoController.positionIndicator.positionneAt(curt)")
+  if(this.a.options.get('video.running.updates.banc_timeline')){
+    codeLines.push("this.actualiseBancTimeline(curt)")
   }
 
   this.actualizeMainFunction = new Function(codeLines.join(RC))

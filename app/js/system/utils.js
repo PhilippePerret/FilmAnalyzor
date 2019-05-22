@@ -249,8 +249,16 @@ function DLibVal(obj, property, libelle, widths, options){
   }
   return obj[ghostProp]
 }
+
+function zIndex(jqSet, zindex, opts){
+  isDefined(opts) || (opts = {})
+  jqSet.css('z-index', zindex)
+  opts.deep && jqSet.find('*').css('z-index', zindex)
+}
+
+
 function DFormater(str, opts){
-  if(undefined === FATexte._dformater){
+  if(isUndefined(FATexte._dformater)){
     let fatexte =  new FATexte('')
     FATexte._dformater = fatexte.formate.bind(fatexte)
   }

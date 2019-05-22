@@ -218,7 +218,6 @@ const FAWriter = {
     if(this.isOpened) return this.fwindow.hide()
     this.fwindow.show()
   }
-, OTHER_SECTIONS: ['#section-reader']
 , onShow(){
     this.setUI() // préparer l'interface en fonction du type de document
     this.docField.focus()

@@ -3,12 +3,15 @@
 const UIBuilder = {
 
   inited: false
-// Grande méthode de préparation de tout l'interface
+
+/**
+  Grande méthode de préparation de tout l'interface
+**/
 , init(){
     var my = this
     if (isTrue(this.inited)) return F.error(T('ui-init-only-once'))
 
-    this.a = this.analyse = current_analyse
+    this.a = this.analyse = current_analyse // peut-être undefined
 
     // Dorénavant, le mode d'affichage de l'écran est toujours
     // le mode "banc de montage". On pourra supprimer définitivement
@@ -23,6 +26,11 @@ const UIBuilder = {
     // de l'éditeur.
     this.setDimensions()
 
+    // On construit les éléments à l'intérieur de chaque partie
+    this.buildSectionVideo()
+    this.buildSectionReader()
+    this.buildSectionTimeline()
+
     // On observe l'interface
     this.observe_ui()
 
@@ -35,30 +43,43 @@ const UIBuilder = {
   en fonction de ses dimensions
 **/
 , setDimensions(){
-    // const H = ScreenHeight
 
     // Les hauteurs
-    UI.mainContainer.css(STRheight, `${H}px`)
-    UI.leftColumn.css(STRheight, `${H}px`)
-    UI.rightColumn.css(STRheight, `${H}px`)
-    UI.topRow.css(STRheight, this.pct2px(H,60))
-    UI.sectionVideo.css(STRheight, this.pct2px(H,60))
-    UI.sectionReader.css(STRheight, this.pct2px(H,60))
-
-    UI.leftColumn.css(STRwidth, this.pct2px(W, 2))
-    UI.sectionVideo.css(STRwidth, this.pct2px(W, 60))
-    UI.sectionReader.css(STRwidth, this.pct2px(W, 35))
-    UI.rightColumn.css(STRwidth, this.pct2px(W, 2))
-
-    // Pas la peine de régler la hauteur de la bande du bas puisqu'elle
-    // se "flexe"
-    // UI.bottomRow.css('height', `${Math.round(H * 40/100)}px`)
+    // Tout, pratiquement, se règle avec les CSS et les flex, il suffit de
+    // définir la hauteur de la fenêtre, i.e. du contenant principal.
+    // `H` est une constante qui correspond à ScreenHeight
+    UI.wholeUI.css(STRheight, `${H}px`)
 
   }
 
-, pct2px(WorH, pct){
-    return `${(Math.round(WorH * pct / 100))}px`
+
+, buildSectionVideo(){
+    require('./ui_builder/video_controller.js').bind(this)()
+    // La vidéo elle-même
+    // TODO
+    // L'horloge du temps réel
+    // TODO
+    // L'horloge du temps vidéo
+    // TODO
+    // Le span de scène courante si elle existe
+    // TODO
+    // On redéfinit les tailles "humaines" (large, medium, vignette)
+    VideoController.redefineVideoSizes()
   }
+, buildSectionReader(){
+    // Rien à faire pour le moment
+  }
+, buildSectionTimeline(){
+    // Le banc timeline lui-même
+    UI.sectionTimeline.append(DCreate(SECTION,{id:'banctime-ban-timeline', append:[
+        DCreate(DIV,{id:'banctime-scaletape'})   // bande pour positionner le curseur
+      , DCreate(DIV,{id:'banctime-tape'})        // bande pour déposer les éléments
+      , DCreate(DIV,{id:'banctime-cursor'}) // curseur de timeline
+      ]}))
+
+  }
+
+
 /**
   Méthode qui place les observers sur l'interface général
 **/
@@ -71,29 +92,17 @@ const UIBuilder = {
     $('#C1-R1').resizable({
       handles:'s'
     })
-    $('#C2-R1-forms').resizable({
+    UI.sectionForms.resizable({
       handles:'s'
     })
-    $('section#C1-R1-C1-section-video').resizable({
+    UI.sectionVideo.resizable({
       handles:'e'
-    })
-
-
-    // On doit pouvoir redimensionner la rangée du
-    // haut
-    UI.topRow.resizable({
-        alsoResize: '#section-videos, #section-reader, #section-eventers'
-      , resizeWidth: false
-      , autoHide: true
-      , handles: 's'
-      // , classes: {'ui-resizable-s':'ui-icon ui-icon-triangle-2-n-s'}
     })
 
     // On doit pouvoir resizer la section vidéo et la section des autres
     // éléments
     UI.sectionVideo.resizable({
         handles: 'e'
-      , classes: {'ui-resizable-ghost':'ui-icon-arrowthick-2-e-w'}
     })
 
     // Extras
@@ -109,17 +118,19 @@ const UIBuilder = {
 , defineUIComponants(){
 
     // Le container principal de toute la page
-    UI.mainContainer  = $('body > div#main-container')
-    UI.topRow         = $('div#ui-top-row')
-    UI.bottomRow      = $('div#ui-bottom-row')
-    UI.leftColumn     = $('div#ui-left-column')
-    UI.rightColumn    = $('div#ui-right-column')
+    UI.wholeUI  = $('body > div#whole-ui')
 
-    // Vidéo
-    UI.sectionVideo   = $('section#section-videos')
+    // Section Vidéo
+    UI.sectionVideo   = $('section#C1-R1-C1-section-video')
 
-    // Reader
-    UI.sectionReader  = $('section#section-reader')
+    // Section Reader
+    UI.sectionReader  = $('section#C1-R1-C2-section-reader')
+
+    // Section pour mettre les formulaire
+    UI.sectionForms = $('section#C2-R1-forms')
+
+    // Section pour mettre la timeline
+    UI.sectionTimeline = $('section#C1-R2-banc-timeline')
 
     // Pour la boucle d'attente
     UI.msgWaitingLoop = $('span#waiting-loop-message')

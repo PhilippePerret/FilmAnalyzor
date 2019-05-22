@@ -15,7 +15,7 @@ Object.assign(FAnalyse,{
   load(aFolder, fn_afterLoading){
 
     return
-    
+
     // On mémorise le dossier à charger et la méthode pour poursuivre
     isDefined(this.loadingData) || (
       this.loadingData = {folder: aFolder, after: fn_afterLoading}
@@ -101,7 +101,6 @@ Object.assign(FAnalyse,{
       delete current_analyse.reader
       delete current_analyse.stater
     }
-    // $('#section-videos').html()
     log.info("<- [FAnalyse::resetAll] Réinitialisation complète")
   }
 

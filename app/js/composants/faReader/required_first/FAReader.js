@@ -160,6 +160,6 @@ get container(){
   return this._container || defP(this,'_container', DGet('reader'))
 }
 get section(){
-  return this._section || defP(this,'_section', DGet('section-reader'))
+  return this._section || defP(this,'_section', UI.sectionReader)
 }
 }
