@@ -27,7 +27,10 @@ static checkLast(){
   if (!dprefs['last_analyse_folder']) return
   var apath = path.resolve(dprefs['last_analyse_folder'])
   if(fs.existsSync(apath)){
+
+    // === On charge la dernière analyse ===
     this.load(apath)
+
   } else {
     // console.log("Impossible de trouver le dossier :", apath)
     F.error(`Impossible de trouver le dossier de l'analyse à charger :<br>${apath}`)

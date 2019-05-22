@@ -5,8 +5,13 @@ const App = {
   class: 'App'
 , type: 'object'
 , ready: false
+
+  // Quand App est prête
 , onReady(){
-    UI.init()
+
+    const UIBuilder = require('./ui/ui_builder')
+    UIBuilder.init()
+
     log.info("--- APP READY ---")
     if (MODE_TEST) {
       Tests.initAndRun()
@@ -24,27 +29,25 @@ const App = {
   }
 
 , runHandTests(options){
-    if('undefined' === typeof(HandTests)) return this.loadHandTests(this.runHandTests.bind(this))
+    if(NONE === typeof(HandTests)) return this.loadHandTests(this.runHandTests.bind(this))
     HandTests.initAndRun(options)
   }
   /**
     Méthode pour rejouer les tests depuis le dernier
   **/
 , runFromLastHandTest(){
-    if('undefined' === typeof(HandTests)) return this.loadHandTests(this.runFromLastHandTest.bind(this))
+    if(NONE === typeof(HandTests)) return this.loadHandTests(this.runFromLastHandTest.bind(this))
     HandTests.initAndRun({from_last: true})
   }
 
 , loadHandTests(fn_callback){
-    if(undefined === this.nbTriesLoadHandTests) this.nbTriesLoadHandTests = 1
-    else {
-      ++ this.nbTriesLoadHandTests
-      if (this.nbTriesLoadHandTests > 5){
-        F.error("Trop de tentatives pour charger les tests manuels, je renonce.")
-        return false
-      }
+    isDefined(this.nbTriesLoadHandTests) || ( this.nbTriesLoadHandTests = 0 )
+    ++ this.nbTriesLoadHandTests
+    if (this.nbTriesLoadHandTests > 5){
+      F.error("Trop de tentatives pour charger les tests manuels, je renonce.")
+      return false
     }
-    if('undefined' === typeof(HandTests)) return System.loadComponant('HandTests', this.loadHandTests.bind(this, fn_callback))
+    if(NONE === typeof(HandTests)) return System.loadComponant('HandTests', this.loadHandTests.bind(this, fn_callback))
     fn_callback()
   }
 

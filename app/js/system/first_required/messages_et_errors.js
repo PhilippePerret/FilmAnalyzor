@@ -8,6 +8,9 @@ const ERRORS = {
   "--- GÉNÉRAL ---":""
 , "too-much-tries": "Trop de tentatives de chargement. Un composant empêche le chargement. J’interromps la procédure."
 
+, "--- INTERFACE ---":""
+, "ui-init-only-once": "On ne doit initier l'interface qu'une seule fois…"
+
 , "--- ANALYSE ---":""
 , "analyse-locked-no-save": "L'analyse est verrouillée, impossible de la modifier."
 , "invalid-folder": "Le dossier \"%{fpath}\" n’est pas un dossier d’analyse valide."

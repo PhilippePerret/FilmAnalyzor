@@ -1,25 +1,3 @@
-/*
-  Section principale contenant toutes les vidéos
-*/
-/* section#section-videos {
-  position: absolute;
-  top:0;
-  display:block;
-  clear:both;
-  border:1px dashed red;
-  background:black;
-  z-index:10;
-} */
-
-/* Une section complète de vidéo */
-section.section-video {
-  min-width:600px;
-}
-
-section.section-video video {
-  border:1px solid #555555;
-}
-
 /* L'entête, avec l'horloge et les marques */
 section.section-video div.video-header {
   display:grid;

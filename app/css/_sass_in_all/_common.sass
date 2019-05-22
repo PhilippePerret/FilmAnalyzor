@@ -1,3 +1,9 @@
+// On empêche la sélection des éléments de formulaire ainsique toutes
+// les parties marquées .no-user-selection
+.no-user-selection,
+button, select, option, label
+  -webkit-user-select: none
+
 // Un div dans un span doit toujours être inline
 span div
   display: inline

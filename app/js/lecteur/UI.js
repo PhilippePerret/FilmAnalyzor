@@ -5,32 +5,6 @@
 const UI = {
   class: 'UI'
 
-, inited: false
-, init(){
-    if (this.inited === true) return F.error("On ne doit initier l'interface qu'une seule fois…")
-    var my = this
-
-    this.a = this.analyse = current_analyse
-
-    this.setDimensions()
-    this.observe_ui()
-
-    this.divWaitingLoop = $('div#waiting-loop')
-
-    $('#requested_time').on('keypress', ev => {
-      if(this.a){
-        var my = this.a.locator
-        if(ev.keyCode == 13){my.goToTime.bind(my)();$(ev).stop()}
-      }
-    })
-
-    // On construit la boite des boutons de création
-    // d'event
-    BtnEvent.show()
-
-    this.inited = true
-  }
-
 /**
   Méthode appelée au chargement de l'analyse, pour régler le mode d'affichage
   de l'analyse. Pour le moment, programmé pour le mode ban timeline
@@ -61,10 +35,6 @@ const UI = {
     container.find('textarea, input[type="text"]').droppable(dataDrop)
   }
 
-, setDimensions(){
-
-  }
-
 /**
  * Au chargement d'un analyse
 
@@ -77,8 +47,8 @@ const UI = {
 //  Pour les boucles d'attente
 , startWait(message){
     if (this.waiting) return
-    if(undefined !== message) message += ' Merci de patienter…'
-    $('span#waiting-loop-message').html(message || '')
+    isDefined(message) && (message += ' Merci de patienter…')
+    this.msgWaitingLoop.html(message || '')
     this.divWaitingLoop.show()
     this.waiting = true
   }
@@ -92,23 +62,9 @@ const UI = {
 // ---------------------------------------------------------------------
 //  Méthode d'affichage
 , showVideoController(){
-    // console.log("-> UI#showVideoController")
     VideoController.current.navButtons.show()
   }
 
-// ---------------------------------------------------------------------
-//  Méthodes d'évènement
-, observe_ui(){
-    var my = this
-
-    // Extras
-    // ------
-    // Tous les champs input-text, on selectionne tout quand on focusse
-    // dedant
-    $('input[type="text"]').on('focus', function(){$(this).select()})
-
-    my = null
-  }
 
 /**
   Méthode qui règle les inputs champs texte pour définir si les
@@ -119,7 +75,7 @@ const UI = {
     // console.log("-> miniWriterizeTextFields", editInMiniwriter)
     if(!container) container = $(document)
 
-    container.find(STRtextarea)[editInMiniwriter?'on':'off']('focus', function(e){
+    container.find(STRtextarea)[editInMiniwriter?'on':'off'](STRfocus, function(e){
       MiniWriter.new($(this)[0])
     })
   }
@@ -191,6 +147,9 @@ const UI = {
 }
 
 Object.defineProperties(UI,{
+  // Note : la plupart des noms des éléments de l'interface
+  // sont définis dans system/first_required/ui/ui_builder.js
+  
   /**
   La section qui affiche les procédés qui ont besoin de résolution
   lorsqu'elle n'est pas définie.

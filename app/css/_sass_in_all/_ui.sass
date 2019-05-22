@@ -1,0 +1,144 @@
+body
+  // Aspect général
+  font-size: 15.1pt
+  background-color: #BBBBBB
+  margin: 0
+  padding: 0
+
+  &, & *
+  font-family: Avenir
+
+  div#main-container
+    display: flex
+    flex-flow: column nowrap
+
+    div#ui-left-column
+      flex: 1
+      background-color: red
+
+    // La rangée supérieure qui contient tous les éléments principaux, dont
+    // la section vidéo et le reader.
+    div#ui-top-row
+      flex: 0 1 auto
+      display: flex
+      flex-direction: row
+      overflow: hidden
+      height: 60%
+      background-color: #333333
+      // avoid browser level touch actions
+      xtouch-action: none
+
+      section#section-videos
+        display: inline-block
+        flex: 0 0 auto
+        width: 60%
+        background-color: #333377
+
+      section#section-reader
+        display: inline-block
+        flex: 1 1 auto
+        width: 39%
+        background-color: #337733
+
+      section#section-eventers
+        display: none
+
+      section#section-qrd-pp
+        display: none
+
+
+section#section-writer
+  display: none
+
+
+div#contenant
+  display: flex
+  flex-flow: row nowrap
+  border: 2px solid black // red
+  width: 100%
+  > div
+    height: 600px
+
+  // LE DÉCOUPAGE DE L'INTERFACE EST LE SUIVANT
+
+  //    --------------------------------
+  //    | C1                  | C2      |
+  //    |                     |         |
+  //    |                     |         |
+  //    --------------------------------
+  //    --------------------------------
+  //    |---------------------|---------|
+  //    | C1-R1               |  C2-R1  |
+  //    |                     |         |
+  //    |---------------------|         |
+  //    | C1-R2               |---------|
+  //    |                     |  C2-R2  |
+  //    ---------------------------------
+  //
+  //    -----------------------------------
+  //    |-----------------------|---------|
+  //    | C1-R1-C1 | C1-R1-C2   |C2-R1    |
+  //    |   Video  |   Reader   |         |
+  //    |-----------------------|         |
+  //    | C1-R2                 |---------|
+  //    | Banc Timeline         |C2-R2    |
+  //    -----------------------------------
+
+  // C1 = Contient la section vidéo, la section reader et
+  //      le banc timeline
+  div#C1
+    flex: 0 0 1
+    width: 90%
+    background-color: #FCC
+    // Pour ses rangées
+    display: flex
+    flex-flow: column nowrap
+
+    // C1-R1 : contient la section vidéo et la section reader
+    div#C1-R1
+      flex: 0 0 1
+      height: 60%
+      // Ses colonnes, qui contiennent la vidéo et le reader
+      display: flex
+      flex-flow: row nowrap
+
+      // La section vidéo
+      section#C1-R1-C1-section-video
+        flex: 0 0 1
+        width: 70%
+        background-color: #333333
+        border: 2px solid black // red
+
+      // La section reader
+      section#C1-R1-C2-section-reader
+        flex: 1 1 auto
+        background-color: #333366
+        border: 2px solid black // red
+
+    // C1-R2 : contient le banc timeline
+    section#C1-R2-banc-timeline
+      flex: 1 1 auto
+      border: 2px solid black // red
+      background-color: #555555
+
+  // C2 : colonne à droite qui contient deux rangées pour mettre par
+  //      exemple les formulaires d'édition et la liste des QRD ou procédés
+  //      qui attendent résolution.
+  div#C2
+    flex: 1 1 auto
+    background-color: #CFC
+    // Pour ses rangées
+    display: flex
+    flex-flow: column nowrap
+
+    // C2-R1 : contient la cellule pour recevoir les formulaires d'édition fixes
+    section#C2-R1-forms
+      flex: 0 0 1
+      height: 80%
+      border: 4px solid red
+
+    // C2-R2 : contient la cellule tout en bas à droite, pour mettre par
+    //          exemple la liste des QD en attente de RD.
+    div#C2-R2
+      flex: 1 1 auto
+      border: 4px solid green

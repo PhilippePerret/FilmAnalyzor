@@ -15,7 +15,7 @@ class FAReader {
 static get TIME_AROUND(){ return 5*60 }
 
 static reset(){
-  $('section#section-reader').html('')
+  UI.Reader.html('')
 }
 
 // ---------------------------------------------------------------------
@@ -34,10 +34,10 @@ init(){
 show(){this.fwindow.show()}
 hide(){this.fwindow.hide()}
 build(){
-  return DCreate(DIV, {inner: 'LECTEUR', class: 'fw-title'})
+  return DCreate(DIV, {id:'titre-reader-to-remove', inner: 'LECTEUR', class: 'fw-title'})
 }
 afterBuilding(){
-  // Peut-être supprimer le div ci-dessus avec READER dedans
+  $('#titre-reader-to-remove').remove()
 }
 
 /**
@@ -154,7 +154,7 @@ displayAll(){
 // ---------------------------------------------------------------------
 //  DOM ELEMENTS
 get fwindow(){
-  return this._fwindow || defP(this,'_fwindow', new FWindow(this, {id: 'reader', name:ReaderFWindowName, container: this.section, x: ScreenWidth - 650, y: 4}))
+  return this._fwindow || defP(this,'_fwindow', new FWindow(this, {id: 'reader', name:ReaderFWindowName, draggable:false, container: this.section, x: ScreenWidth - 650, y: 4}))
 }
 get container(){
   return this._container || defP(this,'_container', DGet('reader'))

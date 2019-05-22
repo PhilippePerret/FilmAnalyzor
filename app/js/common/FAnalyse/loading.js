@@ -13,6 +13,9 @@ Object.assign(FAnalyse,{
                     le moment.
  */
   load(aFolder, fn_afterLoading){
+
+    return
+    
     // On mémorise le dossier à charger et la méthode pour poursuivre
     isDefined(this.loadingData) || (
       this.loadingData = {folder: aFolder, after: fn_afterLoading}

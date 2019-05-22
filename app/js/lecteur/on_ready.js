@@ -4,11 +4,6 @@ const APPFOLDER = path.resolve('.')
 
 function WhenAllIsReallyReady(){
 
-  $('#section-reader').append(DCreate(SECTION,{id:"try", style:'width:100px;height:100px;background-color:blue;'}))
-  var d = $('#try')
-  d.draggable()
-  d.resizable()
-
   // FAPersonnage.dataEditor.open()
   // FABrin.dataEditor.open()
   // current_analyse.openDocInDataEditor('fondamentales')
@@ -25,15 +20,17 @@ function WhenAllIsReallyReady(){
 }
 
 $(document).ready(() => {
+  // Mais ici on n'est pas encore prêt, des dossiers sont toujours en
+  // chargement
   log.info("--- DOM ready ---")
   // console.clear()
 
   var d = ipc.sendSync('get-screen-dimensions')
-  ScreenWidth   = d.width
-  ScreenHeight  = d.height
+  window.W = ScreenWidth  = d.width
+  window.H = ScreenHeight = d.height
 
-  window.onkeydown  = KeyUpAndDown.commonKeyDown
-  window.onkeyup    = KeyUpAndDown.commonKeyUp
+  // window.onkeydown  = KeyUpAndDown.commonKeyDown
+  // window.onkeyup    = KeyUpAndDown.commonKeyUp
 
   // ATTENTION : QUAND ON PASSE ICI, TOUT N'EST
   // PAS ENCORE CHARGÉ CAR CERTAINS MODULES  SONT
@@ -43,4 +40,5 @@ $(document).ready(() => {
 
   // SI ON VEUT VRAIMENT JOUER DU CODE TOUT À LA FIN, UTILISER
   // LA MÉTHODE `WhenAllIsReallyReady` ci-dessus
+  // ET ENCORE… IL SE PASSE DES CHOSES APRÈS
 })

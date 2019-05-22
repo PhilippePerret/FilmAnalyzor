@@ -14,6 +14,15 @@ Les options sont les suivantes :
 
 ```
 
+      -----------------------------------------
+      |  |                 |               |  |
+      |  |                 |               |  |
+      |  |                 |               |  |
+      |  |---------------------------------|  |
+      |  |                                 |  |
+      -----------------------------------------
+
+
 
 * Documenter la façon de charger un tool complexe (ou même n'importe quel objet) en utilisant la technique de mode_banc_timeline.js : on définit l'objet (const BancTimeline = {...}) puis on requiert tous les éléments du dossier en faisant :
   Object.assign(BancTimeline, require('./dossier/fichier'))

@@ -1,0 +1,160 @@
+button
+  // On entoure jamais les boutons focussés
+  &:focus
+    outline: none
+
+  // On retire tous les aspects par défaut
+  &.unset
+    all: unset
+
+  // Les boutons qui contiennent les boutons close
+  &.btn-close
+    all: unset
+    position: absolute
+    top: 7px
+    left: 9px
+    border: 0
+    background-color: transparent
+    background-image: url('../img/btn-window/b_close.png')
+    width: 16px
+    height: 16px
+
+    &:hover
+      background-image: url('../img/btn-window/b_close_over.png')
+
+
+  // --- Les boutons d'actualisation ---
+  //   Ils utilisent l'image 'img/update-2.png'
+  //
+  &.update
+    vertical-align: baseline
+    padding: 0 8px
+
+    img
+      width: 22px
+      vertical-align: sub
+
+  &.cancel
+  	background-color: #EEEEEE
+  	border: 1px solid black
+  	display: inline-block
+  	cursor: pointer
+  	color: #333333
+  	padding: 0.4em 1em
+    font-size: 1em
+    font-weight: normal
+  	text-decoration: none
+    margin-left: 0.5em
+
+  &.warning
+  	background-color: #eb3a2a
+  	border: 1px solid #d02718
+  	display: inline-block
+  	cursor: pointer
+  	color: #ffffff
+  	padding: 0.4em 1em
+    font-size: 1em
+  	text-decoration: none
+  	text-shadow: 0px 1px 0px #810e05
+
+  &.warning.small,
+  &.cancel.small
+    font-size: 0.85em
+
+  // Un bouton principal de formulaire
+  &.main-button
+    background-color: #008CBA
+    border: none
+    color: white
+    padding: 15px 32px
+    text-align: center
+    text-decoration: none
+    display: inline-block
+    font-size: 16px
+
+    // Un bouton principal de formulaire, petit
+    &.small
+      font-size: 16px
+      padding: 6px 12px
+
+
+input[type="text"],
+textarea
+  font-family: Baskerville, Palatino, Georgia
+  font-size: 18.7pt
+
+
+div#waiting-loop
+  position: fixed
+  top: 300px
+  left: 40%
+  text-align: center
+  background-color: white
+  max-width: 250px
+  padding: 1em
+  z-index: 5000
+
+img#waiting-loop
+  width: 70px
+
+span#waiting-loop-message
+  display: block
+  font-size: 11.5pt
+  text-align: center
+
+
+// TABLE TEMPS COURANT
+
+table.cont-temps-courants
+
+
+table.cont-temps-courants td.field-curtime-film
+  visibility: hidden
+
+
+// Pour des petits boutons controller, par exemple au-dessus des events
+img.small-btn-controller
+  width: 22px
+  vertical-align: middle
+
+
+// TABLE D'ÉTAT D'AVANCEMENT DE L'ANALYSE
+// ATTENTION : ne pas la confondre avec la barre d'état en bas de fenêtre
+div#div-analyse-state
+  position: fixed
+  background-color: white
+  border: 2px solid teal
+  border-radius: 0.5em
+  top: 100px
+  left: 30%
+  width: 30%
+  max-height: 400px
+  overflow: auto
+  padding: 2em 1.2em
+  z-index: 100
+
+div#div-analyse-state > div.info > label
+  display: inline-block
+  width: 300px
+  text-align: right
+  padding-right: 12px
+
+div#div-analyse-state > div.info > span.value
+  font-family: monospace
+  width: 200px
+
+div#div-analyse-state button.close
+  unset: all
+  position: absolute
+  top: 1px
+  left: 4px
+  padding: 0
+  border: 0
+
+
+// Le clone qu'on déplace quand on bouge une horloge (comme sur un vidéo)
+div.dropped-time
+  background-color: red
+  padding: 4px 2px
+  color: white
+  font-family: monospace

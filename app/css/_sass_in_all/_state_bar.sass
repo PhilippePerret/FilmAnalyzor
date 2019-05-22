@@ -1,0 +1,49 @@
+// Style de la barre d'état, en bas de l'écran
+div#analyse-state-bar
+  position: fixed
+  bottom: 0
+  height: 20px
+  left: 0
+  right: 0
+  background-color: #DDDDDD
+  border-top: 1px solid #EEEEEE
+  border-bottom: 1px solid #BBBBBB
+  z-index: 1000
+
+  span#modified-indicator
+    float: left
+    font-size: 28pt
+    line-height: 16pt
+    color: green
+
+    &.on
+      color: red
+
+  label.statebar-label,
+  span.statebar-value
+    vertical-align: top
+    font-size: 10.1pt
+
+  label.statebar-label
+    margin-left: 1em
+
+  span.statebar-value
+    font-weight: bold
+
+  span#statebar-jauger
+    position: relative
+    display: inline-block
+    vertical-align: top
+    background-color: #EEDD99
+    margin-top: 2px
+    height: 15px
+    width: 200px
+
+  span#statebar-jauge
+    position: absolute
+    top: 0
+    left: 0
+    display: inline-block
+    height: 15px
+    width: 2px
+    background-color: #22CC22

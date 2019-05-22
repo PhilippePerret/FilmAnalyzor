@@ -4,14 +4,12 @@
     <meta charset="utf-8">
     <title>Analyse de Films</title>
     <link rel="stylesheet" href="./css/jquery-ui.min.css">
-    <link rel="stylesheet" href="./css/ui.css" />
     <link rel="stylesheet" href="./css/flash.css" />
     <link rel="stylesheet" href="./css/fwindow.css" />
     <link rel="stylesheet" href="./css/video.css" />
     <link rel="stylesheet" href="./css/brins.css" />
     <link rel="stylesheet" href="./css/reader.css" />
     <link rel="stylesheet" href="./css/writer.css" />
-    <link rel="stylesheet" href="./css/eventer.css" />
     <link rel="stylesheet" href="./css/elements_fa.css" />
     <link rel="stylesheet" href="./css/faListing.css" />
     <link rel="stylesheet" href="./css/event.css" />
@@ -27,34 +25,40 @@
   </head>
   <body>
 
-    <!-- Maintenant, une section de vidéo parmi plusieurs possibles -->
-    <section id="section-videos"></section>
-    <!-- /fin section des vidéos -->
+    <div id="contenant">
+      <div id="C1">
+        <div id="C1-R1">
+          <!-- SECTION VIDEO -->
+          <section id="C1-R1-C1-section-video"></section>
+          <!-- SECTION READER -->
+          <section id="C1-R1-C2-section-reader"></section>
+        </div>
+        <section id="C1-R2-banc-timeline"></section>
+      </div>
+      <div id="C2">
+        <section id="C2-R1-forms"></section>
+        <div id="C2-R2">
+          <section id="section-qrd-pp"></section>
+        </div>
+      </div>
 
-    <!-- READER -->
-    <section id="section-reader"></section>
+    </div>
+
+          <!-- EVENTER -->
+          <section id="section-eventers"></section>
+
+        </section>
 
 
-    <!-- EVENTER -->
-    <section id="section-eventers"></section>
+
 
 
     <!-- WRITER -->
     <section id="section-writer">
-      <div id="writer-doc-visualizor" style="display:none;">
+      <div id="writer-doc-visualizor">
         <!-- Pour visualiser le code -->
       </div>
     </section>
-
-
-    <!-- Pour la partie basse, dont le formulaire d'édition des events -->
-    <section id="section-footer">
-      <!-- QRDS et PP -->
-      <section id="section-qrd-pp"></section>
-
-      <div id="message"></div>
-    </section>
-    <!-- /section#section-footer -->
 
     <!-- Section des boutons pour ajouter un nouvel évènement -->
     <div id="analyse-state-bar">

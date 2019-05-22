@@ -18,6 +18,8 @@ Avec <data> qui doit contenir au moins :
   y           Position verticale (en pixels)
   name        Nom de la fenêtre, simplement utilisée pour le débuggage
 
+  draggable   Si false, on ne rend pas la fenêtre draggable (true par défaut)
+
 Au minimum, le propriétaire, un objet, doit définir les méthodes :
   - `build`   doit retourner l'élément DOM à insérer dans la f-window
 
@@ -140,7 +142,7 @@ static checkOverlaps(wf){
   // console.log(`Doit être mise à ${refLeft}px à gauche pour être bien`)
   // Peut-être qu'on l'a déplacée sur une autre
   // => Recommencer jusqu'à ce que ce soit bon
-  if(moveIt === true){
+  if(isTrue(moveIt)){
     var {top: topParent, left: leftParent} = wf.jqObj.parent().offset()
     refLeft -= Math.round(leftParent)
     refTop -=  Math.round(topParent)
@@ -191,8 +193,14 @@ constructor(owner, data){
     data.container || raise('fwindow-required-container')
     data.container = $(data.container)
     data.container.length || raise('fwindow-invalid-container')
-    // owner.FWcontents || data.contents || raise('fwindow-contents-required')
-  } catch (e) { throw(T(e)) }
+  } catch (e) {
+    log.error("owner:", owner)
+    log.error("data:", data)
+    if(isDefined(data)){
+      log.error("data.container", data.container)
+    }
+    throw(T(e))
+  }
 
   this.owner = owner
   for(var k in data){this[`_${k}`] = data[k]}
@@ -214,7 +222,7 @@ show(){
   this.jqObj.show()
   this.visible = true
   FWindow.setCurrent(this)
-  FWindow.checkOverlaps(this)
+  isFalse(this.draggable) || FWindow.checkOverlaps(this)
   isFunction(this.owner.onShow) && this.owner.onShow()
   log.info(`<- ${this.ref}.show() [built:${this.built}, visible:${this.visible}]`)
 }
@@ -273,13 +281,13 @@ bringToBack(){
   log.info(`<- ${this.ref}.bringToBack`)
 }
 
-isCurrent(){return true === this.current}
+isCurrent(){ return isTrue(this.current) }
 
 build(){
   log.info(`-> ${this.ref}.build()`)
   // Si c'est une actualisation de la fenêtre, on a mémorisé sa
   // position dans `this.position`
-  if(undefined === this.position) this.position = {}
+  isDefined(this.position) || ( this.position = {} )
   // console.log("position:", this.position)
   // console.log("Construction de la FWindow ", this.domId)
   var div = DCreate(DIV, {
@@ -313,9 +321,9 @@ onBtnClose(){
 observe(){
   // Une flying window est déplaçable par essence
   // console.log("this.jqObj:", this.jqObj)
-  this.jqObj.draggable({
-    containment: STRdocument
-  })
+
+  isTrue(this.draggable) && this.jqObj.draggable({containment: STRdocument})
+
   // Une flying window est cliquable par essence
   // this.jqObj.find('header, body').on(STRclick, FWindow.setCurrent.bind(FWindow, this))
   this.jqObj.on(STRclick, FWindow.setCurrent.bind(FWindow, this))
@@ -328,6 +336,10 @@ observe(){
 // ---------------------------------------------------------------------
 //  Propriétés
 
+get draggable(){
+  isDefined(this._draggable) || ( this._draggable = true )
+  return this._draggable
+}
 get jqObj(){ return this._jqObj || defP(this,'_jqObj', $(`#${this.domId}`))}
 get domId(){ return this._domId || defP(this,'_domId', `fwindow-${this.id}`)}
 get container(){return this._container}
@@ -338,7 +350,7 @@ get x(){return this._x || 100}
 get y(){return this._y || 100}
 // Référence pour logs
 get ref(){
-  if(undefined === this._ref){this._ref = `<<fwindow ${this.name || '#'+this.id}>>` }
+  if(isUndefined(this._ref)){this._ref = `<<fwindow ${this.name || '#'+this.id}>>` }
   return this._ref
 }
 

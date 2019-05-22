@@ -1,11 +1,6 @@
 /*
   Tout ce qui concerne le reader
 */
-
-section#section-reader {
-  width:      600px;
-  min-height: 800px;
-}
 section#section-reader,
 section#section-reader *
 {
