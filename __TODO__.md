@@ -2,10 +2,27 @@
 
 ### Traiter :
 
+Réflexion sur la nouvelle façon d'afficher les éléments dans le reader :
+- maintenant, tous les events et images sont affichés
+? comment faire pour que 2 secondes avant qu'un event doivent être affiché, il apparaisse dans le reader ?
+
+  - quand on active un event/image, on regarde les suivants qui ont le même temps,
+  - on mémorise ce temps comme 'nextCurrentTime'
+  - quand on arrive sur ce nextCurrentTime
+    - on active les events correspondant (qu'on a mémorisé dans ce nextCurrentTime)
+    - si c'est une scène, un traitement spécial (donc on peut supprimer le traitement précédent)
+    - on cherche le nextCurrentTime
+
+On départ, on est sur un temps
+Quand on utilise Locator.setTime, on actualise nextCurrentTime
+
+
+* Le curseur de timeline doit se déplacer pendant qu'on joue la vidéo
+
 Faire un controleur pour chaque partie de l'interface et notamment pour la colonne de droite qui doit s'ouvrir/se refermer, recevoir un élément à afficher, etc.
 
 Mettre en place des méthodes "une touche" comme :
-  - c => (create) afficher la liste des éléments "créable", la deuxième lettre choisie
+  - n => (new/create) afficher la liste des éléments "créable", la deuxième lettre choisie
   - g => (goto) affiche les endroits où on peut se rendre, la deuxième lettre choisit le lieu
   - f => (focus) affiche les endroits dans lesquels on peut focusser, la deuxième lettre choisit le champ
 

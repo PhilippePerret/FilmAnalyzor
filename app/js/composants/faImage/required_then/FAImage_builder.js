@@ -27,27 +27,10 @@ Object.assign(FAImage.prototype,{
       my.a.reader.append(this)
       my.observe()
     }
-    my.makeAppear() // c'est l'opacité qui masque l'event affiché
 
     // Déplacé dans makeAppear
     // my.domReaderObj.parentNode.scrollTop = this.domReaderObj.offsetTop
     my.shown = true
-  }
-
-, makeAppear(){
-    try {
-      isNotEmpty(this.jqReaderObj) || raise(`Objet Reader de l'image <${this}> non défini. Impossible de le faire apparaitre.`)
-      this.jqReaderObj.animate({opacity:1}, 600)
-      // Trop mou ou trop rapide avec scrollIntoView. Rien de vaut la méthode
-      // old-school
-      this.domReaderObj.parentNode.scrollTop = this.domReaderObj.offsetTop
-    } catch (e) {
-      log.error(e)
-    }
-  }
-, makeDisappear(){
-    this.jqReaderObj.animate({opacity:0}, 600)
-    this.shown = false
   }
 
 , observe(){

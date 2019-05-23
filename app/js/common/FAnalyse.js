@@ -374,7 +374,7 @@ get methodAfterSaving(){return this._methodAfterSaving}
 set methodAfterSaving(v){this._methodAfterSaving = v}
 
 forEachEvent(method, options){
-  if(undefined === options){options = {}}
+  isDefined(options) || ( options = {} )
   var i   = options.from || 0
     , len = options.to || this.events.length
     ;

@@ -204,7 +204,7 @@ constructor(imgid, fname){
   super()
   this.a = this.analyse = current_analyse
   this.id = imgid
-  if(undefined !== fname) this._fname = fname
+  isDefined(fname) && ( this._fname = fname )
   this.type   = STRimage
 }
 
@@ -223,6 +223,16 @@ get affixe(){return this._affixe || defP(this,'_affixe',path.basename(this.fname
 get otime(){return this._otime || defP(this,'_otime',this.getImgTimeFromName())}
 get time(){return this._time || defP(this,'_time', this.otime.vtime)}
 
+// Méthode pratique pour reconnaitre rapidement l'element
+get isAEvent(){return false}
+get isEvent(){return false}
+get isADocument(){return false}
+get isDocument(){return false}
+get isAScene(){return false}
+get isScene(){return false}
+get isAnImage(){return true}
+get isImage(){return true}
+
 getImgTimeFromName(){
   var l = this.affixe.length
     , t = this.affixe.substring(3, l) // tant que le nom est "at-HMMSS.jpeg"
@@ -230,4 +240,14 @@ getImgTimeFromName(){
   // let [hrs, mns, secs] = t.match(/^([0-9])([0-9][0-9])([0-9][0-9])$/).splice(1,4).map(n => parseInt(n,10))
   return new OTime(horloge)
 }
+
+// Pour la consistance avec FAEvent
+hide(){
+  this.jqReaderObj.hide()
+  this.shown = false
+}
+
+
+
+
 }// /class FAImage

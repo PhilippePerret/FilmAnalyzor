@@ -189,8 +189,13 @@ reset(){
 
 // Méthode pratique pour reconnaitre rapidement l'element
 get isAEvent(){return true}
+get isEvent(){return true}
 get isADocument(){return false}
+get isDocument(){return false}
+get isAScene(){return false} // surclassé par FAEscene
 get isScene(){return false} // surclassé par FAEscene
+get isAnImage(){return false}
+get isImage(){return false}
 
 // ---------------------------------------------------------------------
 //  Propriétés temporelles
@@ -315,46 +320,17 @@ show(){
     this.a.reader.append(this)
     this.observe()
   }
-  this.makeAppear() // c'est l'opacité qui masque l'event affiché
-  // Pour se mettre en exergue lorsqu'il est survolé
-  this.startWatchingTime()
-  // Trop mou ou trop rapide avec scrollIntoView. Rien de vaut la méthode
-  // old-school
-  this.domReaderObj.parentNode.scrollTop = this.domReaderObj.offsetTop
+  // SI vraiment on a besoin de montrer cet event,
+  //  on doit appeler la méthode FAReader.reveal(this)
+
   this.shown = true
 }
 
 hide(){
-  this.makeDesappear()
   this.jqReaderObj.hide()
-  this.stopWatchingTime()
   this.shown = false
 }
 
-/**
-  Toutes les secondes, l'event va véfiier si le temps courant le
-  survole. Si c'est le cas, il se met en exergue.
-  Noter que ça ne le fait que lorsqu'il est visible.
-**/
-startWatchingTime(){
-  // console.log("-> startWatchingTime de ", this.id)
-  this.timerWatchingTime = setInterval(this.watchTime.bind(this), 1000)
-  // console.log("<- startWatchingTime de", this.id)
-}
-stopWatchingTime(){
-  // console.log("-> stopWatchingTime")
-  clearInterval(this.timerWatchingTime)
-  delete this.timerWatchingTime
-}
-watchTime(){
-  if(isUndefined(this.a) || isUndefined(this.a.locator)) return
-  var rtime = this.a.locator.currentTime
-  let iscur = rtime >= this.time - 2 && rtime <= this.end + 2
-  if(this.isCurrent != iscur){
-    this.isCurrent = !!iscur
-    this.jqReaderObj[this.isCurrent?'addClass':'removeClass']('current')
-  }
-}
 get end(){
   if(isUndefined(this._end)) this._end = this.time + this.duree
   return this._end
@@ -390,21 +366,11 @@ updateInReader(new_idx){
  * que soit l'élément.
  */
 updateInUI(){
-
   // Le temps se trouve toujours dans une balise contenant data-time, avec
   // le data-id défini
-  $(`*[data-time][data-id="${this.id}"]`).attr('data-time',this.time)
+  $(`*[data-time][data-id="${this.id}"]`).attr(STRdata_time,this.time)
   // TODO Il faut traiter l'horloge aussi
   $(`.horloge-event[data-id="${this.id}"]`).html(this.horloge)
-
-}
-
-
-makeAppear(){
-  this.jqReaderObj.animate({opacity:1}, 600)
-}
-makeDesappear(){
-  this.jqReaderObj.animate({opacity:0}, 600)
 }
 
 // ---------------------------------------------------------------------

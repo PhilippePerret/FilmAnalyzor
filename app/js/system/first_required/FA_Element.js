@@ -90,6 +90,7 @@ static get a(){return this._a || defP(this,'_a', current_analyse)}
 
 // ---------------------------------------------------------------------
 //  INSTANCE
+
 constructor(data){
   for(var prop in data){this[`_${prop}`] = data[prop]}
 }

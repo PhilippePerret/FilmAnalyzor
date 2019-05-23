@@ -5,6 +5,8 @@
  * Pour la gestion d'un locateur vidéo
  */
 
+const NextTime = require('./js/common/NextTime')
+
 class Locator {
 
 constructor(analyse){
@@ -12,6 +14,8 @@ constructor(analyse){
   this.stop_points = [] // pour mettre les OTime(s)
   this.stop_points_times = [] // pour mettre les seconds
 }
+
+get nextTime(){return this._nexttime || defP(this,'_nexttime', new NextTime())}
 
 // Pour savoir si la vidéo est en train de jouer
 get playing(){return this._playing || false}
@@ -27,6 +31,12 @@ init(){
   // L'horloge de la vidéo n'est visible que lorsque son temps est différent
   // du temps réel, donc lorsque le début du film est défini
   this.hasStartTime && UI.videoHorloge.css('visibility', STRhidden)
+
+  // L'instance NextTime qui va permettre de connaitre
+  // le temps suivant et la nature de l'élément portant
+  // ce temps
+  // this.nextTime.initWithTime(OTime.ZERO)
+
 }
 
 // ---------------------------------------------------------------------
@@ -57,18 +67,21 @@ togglePlay(ev){
     // => PLAY
     //
     this.resetAllTimes()
-    // On mémorise le dernier temps d'arrêt pour y revenir avec le bouton
     // stop.
     var curT = this.getTime() // {OTime}
     // Pour gérer l'Autoplay Policy de Chromium
     var videoPromise = UI.video.play()
     if (isDefined(videoPromise)) {
       videoPromise.then( _ => {
+
         // Autoplay started!
+
+        // On mémorise le dernier temps d'arrêt pour y revenir avec le bouton
         this.lastStartTime = curT
         this.addStopPoint(curT)
         $(this.btnPlay).addClass('actived')
         this.playing = true
+        // On déclenche le suivi de l'horloge, curseur, etc.
         this.activateHorlogeAndOthers()
         this.setPlayButton(this.playing)
       }).catch(error => {
@@ -217,6 +230,9 @@ setTime(time, dontPlay){
   // Initialisation de tous les temps. Cf. [1]
   this.resetAllTimes()
 
+  // On instancie le nextTime avec le temps choisi
+  this.nextTime.initWithTime(time)
+
   // Réglage de la vidéo. L'image au temps donné doit apparaitre
   UI.video.currentTime = time.vtime
 
@@ -250,36 +266,22 @@ setPlayButton(running){
 }
 
 /**
- * Méthode qui affiche les évènements qui se trouvent à +time+
- * (avec une marge de plus ou moins 10 secondes)
- * Note : la méthode est appelée toutes les 3 secondes
- */
-showEventsAt(time){
-  this.eventsAt(time).forEach(ev => {if(!ev.shown) ev.showDiffere()})
-}
-
-/**
-  Méthode qui affiche les images autour du temps time
-  @param {OTime} time
-**/
-showImagesAt(time){
-  FAImage.imagesAt(time.vtime).forEach(img => { img.shown || img.showDiffere() })
-}
-
-/**
   Méthode qui arrête la surveillance des events affichés dans
   le reader (quand on arrête la lecture)
 **/
 stopWatchTimerEvent(){
-  this.a.reader.forEachEvent(function(ev){ev.shown && ev.stopWatchingTime()})
+  if (isEmpty(this.a.reader.watchedItems)) return
+  Object.values(this.a.reader.watchedItems).forEach(item => this.a.reader.stopWatchingItem(item))
 }
+
 /**
   Méthode contraire à la méthode précédente, qui relance la
   surveillance des events affichés dans le reader, pour savoir
   si on passe par leur temps.
 **/
 restartWatchTimerEvent(){
-  this.a.reader.forEachEvent(function(ev){ev.shown && ev.startWatchingTime()})
+  if (isEmpty(this.a.reader.watchedItems)) return
+  Object.values(this.a.reader.watchedItems).forEach(item => this.a.reader.restartWatchingItem(item))
 }
 
 /**
@@ -305,6 +307,8 @@ resetAllTimes(){
   delete this.wantedEndTime
   delete this.wantedEndTimeCallback
   delete this.timeNextScene
+
+  delete this.nextTime
 }
 
 
@@ -430,18 +434,6 @@ get currentTime(){
 **/
 getTime(){ return this.currentTime }
 
-// ---------------------------------------------------------------------
-//  Méthode de formatage
-
-// Retourne une horloge sous la forme [-]h:mm:ss:ff
-/**
-  @param {OTime} s  Un Otime
-**/
-getRealTime(s){
-  var negative = s < 0
-  if(negative){s.updateSeconds(-s.seconds)}
-  return `${negative?'-':' '}${s.horloge}`
-}
 
 // ---------------------------------------------------------------------
 
@@ -454,11 +446,9 @@ activateHorlogeAndOthers(){
   if (this.intervalTimer){
     this.desactivateHorlogeAndOthers()
   } else {
-
     // On construit la méthode d'actualisation en fonction des options et du
     // mode d'affichage.
     this.buildActualizeMainFunction()
-
     // === INTERVAL TIMER QUI DEMANDE L'ACTUALISATION DE L'AFFICHAGE ===
     this.intervalTimer = setInterval(my.actualizeMainFunction.bind(my), 1000/40)
   }
@@ -502,6 +492,7 @@ buildActualizeMainFunction(){
   // On actualise toujours les horloges
   codeLines.push("var curt = this.currentTime;")
   codeLines.push("this.actualizeHorloge(curt)")
+
   if (this.a.options.get('video.running.updates.reader')){
     codeLines.push("this.actualizeReader(curt)")
   }
@@ -515,11 +506,15 @@ buildActualizeMainFunction(){
     codeLines.push("this.actualiseBancTimeline(curt)")
   }
 
+  // Arrêter de jouer si un temps de fin est défini et qu'il est
+  // atteint
+  codeLines.push("this.isEndTimeWanted(curt) && this.stopAtEndTimeWanted()")
+
+
   this.actualizeMainFunction = new Function(codeLines.join(RC))
   this.actualizeMainFunction = this.actualizeMainFunction.bind(this)
 
 }
-
 
 actualiseBancTimeline(curt){
   BancTimeline.setCursorByTime(curt)
@@ -532,16 +527,34 @@ actualizeHorloge(curt){
 }
 
 actualizeReader(curt){
-  isDefined(curt) || ( curt = this.currentTime )
-  // Afficher les events autour du temps courant
-  this.showEventsAt(curt)
-  // Afficher les images autour du temps courant
-  this.showImagesAt(curt)
-  // Arrêter de jouer si un temps de fin est défini et qu'il est dépassé
-  if(this.wantedEndTime && this.currentTime > this.wantedEndTime){
-    this.togglePlay()
-    if(isFunction(this.wantedEndTimeCallback)) this.wantedEndTimeCallback()
+  // Note : on passe tous les 40 millième de secondes
+  // par cette méthode, quand on joue la vidéo.
+
+  // Nouveau fonctionnement. On se sert d'une instance
+  // nextTime pour connaitre les prochains temps
+  // d'event, d'image ou de structure
+  // Rappel : nextTime est une instance NextTime dont le
+  // valueOf retourne le prochain temps
+  if (isUndefined(this.nextTime.nextItem) || curt.rtime < this.nextTime){
+    return // rien à faire
   }
+
+  // => Le temps suivant est atteint, on affiche l'élément
+  // qui peut être un event, une image ou un noeud stt
+  this.nextTime.revealNextItemAndFindNext()
+
+}
+
+
+// Retourne true si un temps de fin est voulu et qu'il est atteint
+isEndTimeWanted(curt){
+  return this.wantedEndTime && curt >= this.wantedEndTime
+}
+
+// Fonction à jouer quand le temps de fin est atteint
+stopAtEndTimeWanted(){
+  this.togglePlay()
+  if(isFunction(this.wantedEndTimeCallback)) this.wantedEndTimeCallback()
 }
 
 /*

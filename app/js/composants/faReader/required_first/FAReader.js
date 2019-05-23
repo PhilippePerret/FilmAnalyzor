@@ -18,6 +18,74 @@ static reset(){
   UI.sectionReader.html('')
 }
 
+/**
+  Révèle l'élément +item+ dans le reader
+
+  @param {AnyElement} item  event, image, etc. qui doit répondre à la
+                            propriété `jqReaderObj` qui est l'objet du
+                            reader de l'itme.
+  @param {Object} options   Diverses options
+                            fadeOut: si true, on le fait disparaitre au
+                            bout de quelques secondes.
+**/
+static reveal(item, options){
+  isDefined(options) || ( options = {} )
+  if(isNotEmpty(item.jqReaderObj)){
+    item.jqReaderObj.show()
+    // Un timer qui permet :
+    //  1. de savoir lorsque l'item visible est précisément survolé
+    //  2. lorsque le temps est dépassé et qu'il faut retirer l'élément
+    this.startWatchingItem(item)
+
+    try {
+      item.jqReaderObj[0].parentNode.scrollTop = item.jqReaderObj[0].offsetTop
+    } catch(e){
+      log.error(e)
+    }
+  } else {
+    log.warn(`L'élément ${item} n'a pas d'objet reader défini (jqReaderObj). Impossible de le révéler.`)
+  }
+}
+
+/**
+  Toutes les secondes, on va vérifier si le temps courant survole
+  l'item +item+ (event ou image). Si c'est le cas, on le met en exergue.
+  Si le temps de fin de l'item est dépassé depuis plus de cinq seconde,
+  on le fait disparaitre et on arrête de le surveiller.
+
+  Noter que ça ne le fait que lorsqu'il est visible.
+
+  @param {FAEvent|FAImage} item   Image ou event à surveiller
+**/
+static startWatchingItem(item){
+  isDefined(this.watchedItems) || ( this.watchedItems = {} )
+  this.restartWatchingItem(item)
+  this.watchedItems[`${item.type}:${item.id}`] = item
+}
+static restartWatchingItem(item){
+  item.timerWatchingTime = setInterval(this.watchItem.bind(this, item), 1000)
+}
+static watchItem(item){
+  var rtime = this.a.locator.currentTime
+  let iscur = rtime >= item.time - 2 && rtime <= item.end + 2
+    , isover = item.end < rtime + 5
+  if(item.isCurrent != iscur){
+    item.isCurrent = !!iscur
+    item.jqReaderObj[item.isCurrent?'addClass':'removeClass']('current')
+  }
+  if ( isover ){
+    item.hide() // la méthode appelle aussi stopWatchingItem
+    this.stopWatchingItem(item)
+  }
+}
+static stopWatchingItem(item){
+  clearInterval(item.timerWatchingTime)
+  delete item.timerWatchingTime
+  delete this.watchedItems[`${item.type}:${item.id}`]
+}
+
+static get a(){return current_analyse}
+
 // ---------------------------------------------------------------------
 //  INSTANCE
 
@@ -71,10 +139,12 @@ peuple(){
       nextImage = FAImage.get(hNextImage.id)
       this.reader.append(nextImage.div)
       nextImage.observe()
+      nextImage.jqReaderObj.hide()
       hNextImage = hImages.shift()
     }
     this.reader.append(ev.div)
     ev.observe()
+    ev.jqReaderObj.hide()
     currentTime = ev.otime.vtime
   })
 }
