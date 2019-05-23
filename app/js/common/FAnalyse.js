@@ -496,11 +496,11 @@ indexOfEvent(event_id){
   c'est-à-dire de permettre ou non ses modifications.
 **/
 toggleLock(){
-  if(this.saveTimer) this.stopTimerSave()
+  this.saveTimer && this.stopTimerSave()
   this.locked = !!!this.locked
   this.saveData(true /* pour forcer le verrou, seulement pour enregistrer cette valeur */)
   this.setMarkModified()
-  if(false === this.locked) this.runTimerSave()
+  this.locked || this.runTimerSave()
 }
 
 /**
@@ -510,25 +510,6 @@ toggleLock(){
 **/
 setMarkModified(){
   this.markModified.html(this.locked ? '<img src="img/cadenas.png" style="width:15px;vertical-align:top;margin-left:6px;" />' : '•')
-}
-
-get SAVED_FILES(){
-  if(isUndefined(this._saved_files)){
-    this._saved_files = [
-        this.eventsFilePath
-      , this.dataFilePath
-    ]
-  }
-  return this._saved_files
-}
-
-get PROP_PER_FILE(){
-  if(isUndefined(this._prop_per_path)){
-    this._prop_per_path = {}
-    this._prop_per_path[this.eventsFilePath]  = 'eventsIO'
-    this._prop_per_path[this.dataFilePath]    = 'data'
-  }
-  return this._prop_per_path
 }
 
 /**
@@ -552,6 +533,8 @@ save() {
     // note : il sera remis en route à la toute fin de l'enregistrement
     this.stopTimerSave()
   }
+  // On checke les events avant de les enregistrer
+  this.checkEventsList()
   // En même temps qu'on sauve les fichiers, on enregistre le fichier
   // des modifiés (seuls les events modifiés à cette session sont
   // enregistrés)
@@ -559,10 +542,8 @@ save() {
   // On sauve les options toutes seules, ça se fait de façon synchrone
   this.options.saveIfModified()
   this.savers = 0
-  this.savables_count = this.SAVED_FILES.length
-  for(var fpath of this.SAVED_FILES){
-    this.saveFile(fpath, this.PROP_PER_FILE[fpath])
-  }
+  this.savables_count = this.FILES.count
+  this.DFILES.forEach(dfile => this.saveFile(dfile))
 }
 /**
  * Méthode est appelée à chaque sauvegarde et également à la fermeture de la
@@ -591,21 +572,10 @@ saveData(force_lock){
   * en mettant l'original en backup (s'il n'est pas vide)
   */
 saveFile(fpath, prop){
-  // Pour le moment, c'est une façon un peu lourde de récupérer
-  // la propriété IOFile du fichier, mais on améliorera pas la
-  // suite.
-  var iofile
-  switch (path.basename(fpath)) {
-    case 'events.json':
-      this.checkEventsList()
-      iofile = this.iofileEvent
-      break
-    case 'data.json':
-      iofile = this.iofileData
-      break
-    default:
-      throw("Il faut donner le nom du fichier", fpath)
-  }
+  let iofile = dfile.iofile
+    , fpath  = dfile.path
+    , prop   = dfile.dataMethod
+
   iofile.code = this[prop]
   iofile.save({ after: this.setSaved.bind(this, fpath), no_waiting_msg: true })
   return iofile.saved
@@ -664,7 +634,7 @@ checkEventsList(){
     , traitedIds = {} // pour consigner les ids déjà traités
     , errors = []
   for(var ev of this.events){
-    if(undefined === traitedIds[ev.id]){
+    if ( isUndefined(traitedIds[ev.id]) ) {
       // OK
       arrFinal.push(ev)
       traitedIds[ev.id] = true
@@ -697,11 +667,7 @@ get iofileData()  {return this._iofileData||defP(this,'_iofileData',    new IOFi
   @return {Object} Les données de tous les events de l'analyse courante.
 
  */
-get eventsIO(){
-  var eSaveds = []
-  for(var e of this.events){eSaveds.push(e.data)}
-  return eSaveds
-}
+get eventsIO(){ return this.events.map(e => e.data) }
 
 // Prend les données dans le fichier events.json et les dispatche dans
 // l'instance d'analyse (au début du travail, en général)
@@ -713,21 +679,18 @@ get eventsIO(){
 set eventsIO(eventsData){
   log.info("-> FAnalyse#[set]eventsIO")
   var my = this
-    , last_id = -1
-    , eventData
-  this.events = []
-  this.ids    = {}
-  for(eventData of eventsData){
-    var eClass = eval(`FAE${eventData.type}`)
-    var ev = new eClass(my, eventData)
-    this.events.push(ev)
-    this.ids[ev.id] = ev
+    , ev
+  EventForm.lastId = -1
+  my.ids    = {}
+  my.events = eventsData.map(eventData => {
+    ev = FAEvent.instanceOf(eventData)
+    my.ids[ev.id] = ev
     // Pour récupérer le dernier ID unitilisé
-    if(ev.id > last_id){last_id = parseInt(ev.id,10)}
-  }
+    if(ev.id > EventForm.lastId){EventForm.lastId = parseInt(ev.id,10)}
+    return ev
+  })
   // On peut définir le dernier ID dans EventForm (pour le formulaire)
-  log.info('   Définition du lastId de EventForm', last_id)
-  EventForm.lastId = last_id
+  log.info('   Définition du lastId de EventForm', EventForm.lastId)
   eventsData = null
   my = null
   log.info("<- FAnalyse#[set]eventsIO")

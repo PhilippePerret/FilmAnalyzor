@@ -261,7 +261,7 @@ observe(){
 
 // Span contenant tous les boutons contrôleur
 get spanVCtrl(){
-  return this._spanvideoctrl || defP(this,'_spanvideoctrl', UI.sectionVideo.find(`#video-controller-${this.id}`))
+  return this._spanvctrl || defP(this,'_spanvctrl', UI.sectionVideo.find(`#video-controller-${this.id}`))
 }
 
 get btnPlay(){return this._btnPlay||defP(this,'_btnPlay', this.spanVCtrl.find('.btn-play')[0])}

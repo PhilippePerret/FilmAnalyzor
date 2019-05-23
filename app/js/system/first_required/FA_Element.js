@@ -19,36 +19,36 @@ static set modified(v){
 }
 
 static load(){
-  log.info("-> FAElement::load")
+  log.info(`-> FAElement::load [Class ${this.name}]`)
   this.loading = true
   this.iofile.loadIfExists({after: this.afterLoad.bind(this)})
-  log.info("<- FAElement::load")
+  log.info(`<- FAElement::load [Class ${this.name}]`)
 }
 
 static afterLoad(data){
-  log.info("-> FAElement::afterLoad")
+  log.info(`-> FAElement::afterLoad [Class ${this.name}]`)
   this.reset()
   this.data     = data // une Array d'objet contenant les données
   this.loading  = false
   this.loaded   = true
-  log.info("<- FAElement::afterLoad")
+  log.info(`<- FAElement::afterLoad [Class ${this.name}]`)
 }
 
 static save(){
-  log.info("-> FAElement::save")
+  log.info(`-> FAElement::save [Class ${this.name}]`)
   // Ne rien faire si l'analyse est verrouillée
   if(this.saving || this.a.locked) return
   this.saving = true
   this.contents = this.getData() // À DÉFINIR DANS LA CLASSE HÉRITIÈRE
   this.iofile.save({after:this.afterSave.bind(this)})
-  log.info("<- FAElement::save")
+  log.info(`<- FAElement::save [Class ${this.name}]`)
 }
 static afterSave(){
-  log.info("-> FAElement::afterSave")
+  log.info(`-> FAElement::afterSave [Class ${this.name}]`)
   this.saving = false
   this.modified = false
   isFunction(this.methodAfterSaving) && this.methodAfterSaving()
-  log.info("<- FAElement::afterSave")
+  log.info(`<- FAElement::afterSave [Class ${this.name}]`)
 }
 
 // Le type, c'est le nom de la classe, en minuscule, sans le "fa"

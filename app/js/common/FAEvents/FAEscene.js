@@ -274,11 +274,11 @@ static atAndNext(otime){
     , last_scene
 
   this.forEachSortedScene(function(scene){
-    log.info(`   Comparaison de scene.time (${scene.time}) > ${otime.rtime} ? (si oui, c'est la scène qu'on cherche)`)
+    log.info(`   [atAndNext] scene.time ${scene.time} > ${otime.rtime} ?`)
     if(scene.time > otime) {
       founded     = last_scene
       next_scene  = scene
-      log.info(`   Next scène trouvée : #${scene.id}, numéro ${scene.numero}`)
+      log.info(`   OUI => Next scène trouvée : #${scene.id}, numéro ${scene.numero}`)
       return false // pour interrompre
     }
     last_scene = scene

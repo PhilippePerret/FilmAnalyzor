@@ -27,7 +27,7 @@ const CURRENT_THING_MENUS = [
   'display-timeline', 'display-analyse-state', 'display-last-report',
   'display-protocole', 'option-locked', 'new-version', 'display-brins',
   'goto-last-scene', 'display-decors', 'check-data-validity',
-  'display-personnages', 'display-images', 'open-in-finder', 'mode-ban-timeline'
+  'display-personnages', 'display-images', 'open-in-finder'
 ]
 // Note : les ID des menus de documents seront ajoutés "à la volée"
 

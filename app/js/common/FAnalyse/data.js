@@ -22,10 +22,6 @@ Object.defineProperties(FAnalyse.prototype,{
         spoints = (this.locator.stop_points||[]).map(sp => sp.seconds)
       } else { spoints = []}
       delete this._lastCurT // pour actualiser le dernier temps
-      // if(isDefined(this.locator)){
-      //   console.log("this.lastCurrentTime: ", this.lastCurrentTime)
-      //   console.log("this.locator.currentTime:", this.locator.currentTime)
-      // }
       return {
           folder:             this.folder
         , title:              this.title
@@ -39,6 +35,10 @@ Object.defineProperties(FAnalyse.prototype,{
         , stopPoints:         spoints
       }
     }
+  /**
+    Méthode appelée au chargement de l'analyse, pour dispatcher
+    ses données.
+  **/
   , set(v){
       this.title                = v.title
       this.version              = v.version
@@ -51,6 +51,16 @@ Object.defineProperties(FAnalyse.prototype,{
       this.stopPoints           = (v.stopPoints || []).map(st => new OTime(st))
     }
   }
+
+, DFILES:{get(){
+    isDefined(this._dfiles) || (
+      this._dfiles = [
+          {type: 'events', path: this.eventsFilePath, dataMethod: 'eventsIO', iofile:this.iofileEvent}
+        , {type: 'data',   path: this.dataFilePath,   dataMethod: 'data', iofile: this.iofileData}
+      ]
+    )
+    return this._dfiles
+  }}
 
 , modified:{
     get(){ return this._modified }

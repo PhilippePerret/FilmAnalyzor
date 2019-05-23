@@ -27,6 +27,18 @@ static get(event_id){
 }
 
 /**
+  Méthode qui reçoit les données (enregistrées) d'un event et le
+  retourne comme classe de son type.
+  La méthode sert lors de la lecture du fichier events.json
+**/
+static instanceOf(edata){
+  // var eClass = eval(`FAE${eventData.type}`)
+  // var ev = new eClass(current_analyse, edata)
+
+  return new (eval(`FAE${edata.type}`))(current_analyse, edata)
+}
+
+/**
   Pour mettre l'event +event_id+ en édition
 
   Se souvenir aussi que cette méthode est appelée par le "+" dans les

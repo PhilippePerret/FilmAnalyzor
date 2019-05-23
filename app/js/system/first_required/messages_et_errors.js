@@ -7,6 +7,7 @@ const ERRORS = {
 
   "--- GÉNÉRAL ---":""
 , "too-much-tries": "Trop de tentatives de chargement. Un composant empêche le chargement. J’interromps la procédure."
+, "all-componants-required": "Erreur Fatale : tous les composants sont requis, pour charger l'application."
 
 , "--- INTERFACE ---":""
 , "ui-init-only-once": "On ne doit initier l'interface qu'une seule fois…"
