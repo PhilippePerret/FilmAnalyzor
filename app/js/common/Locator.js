@@ -58,7 +58,7 @@ togglePlay(ev){
     $(this.btnPlay).removeClass('actived')
     this.playing = false
     this.actualizeALL() // à l'arrêt, on actualise tout
-    this.desactivateHorlogeAndOthers()
+    this.desactivateFollowers()
     this.setPlayButton(this.playing)
     this.stopWatchTimerEvent()
     this.a.modified = true // pour le temps courant
@@ -82,7 +82,7 @@ togglePlay(ev){
         $(this.btnPlay).addClass('actived')
         this.playing = true
         // On déclenche le suivi de l'horloge, curseur, etc.
-        this.activateHorlogeAndOthers()
+        this.activateFollowers()
         this.setPlayButton(this.playing)
       }).catch(error => {
         // Autoplay was prevented.
@@ -441,10 +441,10 @@ getTime(){ return this.currentTime }
  * Méthode pour activer l'horloge qui dépend du début défini pour le
  * film (ou le début en cas d'erreur). Elle marche au frame près
  */
-activateHorlogeAndOthers(){
+activateFollowers(){
   var my = this
   if (this.intervalTimer){
-    this.desactivateHorlogeAndOthers()
+    this.desactivateFollowers()
   } else {
     // On construit la méthode d'actualisation en fonction des options et du
     // mode d'affichage.
@@ -455,7 +455,7 @@ activateHorlogeAndOthers(){
   my = null
 }
 
-desactivateHorlogeAndOthers(){
+desactivateFollowers(){
   if(this.intervalTimer){
     clearInterval(this.intervalTimer)
     this.intervalTimer = null
@@ -499,9 +499,6 @@ buildActualizeMainFunction(){
   if (this.a.options.get('video.running.updates.stt')){
     codeLines.push("this.actualizeMarkersStt(curt)")
   }
-  if (this.a.options.get('video.running.updates.current_scene')){
-    codeLines.push("this.actualizeCurrentScene(curt)")
-  }
   if(this.a.options.get('video.running.updates.banc_timeline')){
     codeLines.push("this.actualiseBancTimeline(curt)")
   }
@@ -541,6 +538,8 @@ actualizeReader(curt){
 
   // => Le temps suivant est atteint, on affiche l'élément
   // qui peut être un event, une image ou un noeud stt
+  // Noter que ça va aussi actualiser la scène, si c'en est une
+  // et où les noeuds structurels
   this.nextTime.revealNextItemAndFindNext()
 
 }
@@ -612,22 +611,17 @@ actualizeMarkersStt(curt){
 /**
   On renseigne la scène courante.
 
-  Cette méthode cherche la scène courante et la scène
-  suivante. Elle met la scène courante en affichage (et
-  dans current_analyse) et elle mémorise le temps suivant
-  pour ne pas avoir à chercher toujours le temps.
+  Maintenant, cette méthode ne sert plus que lorsqu'on est à l'arrêt.
+  Si on est en lecture, l'objet NextTime gère les scènes qui arrivent.
 
   @param {Float} curt  Le temps vidéo courant (donc pas le temps "réel")
 
  */
 actualizeCurrentScene(curt){
   log.info("-> actualizeCurrentScene")
-  if((this.timeNextScene && curt < this.timeNextScene) || FAEscene.count === 0) return
-  var resat = FAEscene.atAndNext(curt)
-  if(resat){
-    FAEscene.current = resat.current
-    this.timeNextScene  = resat.next ? resat.next.time : resat.next_time
-  }
+  // Rien à faire s'il n'y a pas de scène
+  if(FAEscene.count === 0) return
+  FAEscene.current = FAEscene.at(curt)
 }
 
 // ---------------------------------------------------------------------

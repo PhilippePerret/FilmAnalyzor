@@ -51,7 +51,7 @@ static get current(){return this._current||defP(this,'_current',this.getCurrent(
 static set current(s){
   if(s instanceof(FAEscene)) log.info(`Scène courante de FAEscene mise à ${s} (${s.numero})`)
   this._current = s
-  this.a.videoController.markCurrentScene.html(s ? s.asPitch().innerHTML : '...')
+  UI.markCurrentScene.html(s ? s.asPitch().innerHTML : '...')
 }
 static getCurrent(){
   if(this.count === 0) return
@@ -217,75 +217,24 @@ static forEachSortedScene(fn){
                                   du film
  */
 static at(otime){
-  return (this.atAndNext(otime)||{}).current
-}
-/**
-  Retourne la scène se trouvant au temps +time+ et la scène suivante
-
-  Note : la scène suivante sert par exemple à connaitre le temps du
-  prochain changement de scène.
-
-  @param   {OTime}  otime  Le temps considéré
-
-  @returns {Object} {current: scène courante, next: scène suivante, next_time: temps suivant}
-                    Noter que `next_time` est toujours défini, même lorsqu'au-
-                    cune scène n'a été trouvée après. C'est alors le temps de
-                    fin de la vidéo. Cela permet de ne pas rechercher la scène
-                    jusqu'à la fin.
-**/
-static atAndNext(otime){
-  log.info('-> FAEscene#atAndNext(otime=)', otime.toString())
-
-  if(otime == this.lastTimeSearched) {
-    // On ne doit jamais rechercher deux fois le même temps
-    return
-  }
-  // log.info(`this.a.filmEndTime:${this.a.filmEndTime}, this.a.locator.video.duration:${this.a.locator.video.duration}, otime:${otime.vtime}`)
-
-  // Si le temps courant est inférieur au temps du début du film, on
-  // retour undefined
-  if (otime.vtime < this.a.filmStartTime){
-    log.info(`   [atAndNext] Temps inférieur au start-time défini.`)
-    return
-  }
-
-  // Si le temps de fin existe et que ce temps est supérieur, on doit retourner
-  // null
-  if((this.a.filmEndTime && this.a.filmEndTime <= otime.vtime) || otime.vtime === UI.video.duration ){
-    log.info(`   [atAndNext] Temps supérieur ou égal au temps de fin`)
-    return
-  }
-
-  // Si la première scène existe et que ce temps est inférieur à la première
-  // scène, on doit retourner une table contenant cette première scène.
-  if (this.firstScene && otime < this.firstScene.time){
-    log.info(`   [atAndNext] Temps inférieur à temps de première scène`)
-    return {current_time:otime.rtime, current:null, next:this.firstScene, next_time:this.firstScene.time}
-  }
-
-
-  // pour le moment
-  // return
-
-
-  // Sinon, il faut chercher dans quelle scène on peut se trouver.
-  var founded
-    , next_scene
-    , last_scene
-
-  this.forEachSortedScene(function(scene){
-    log.info(`   [atAndNext] scene.time ${scene.time} > ${otime.rtime} ?`)
-    if(scene.time > otime) {
-      founded     = last_scene
-      next_scene  = scene
-      log.info(`   OUI => Next scène trouvée : #${scene.id}, numéro ${scene.numero}`)
-      return false // pour interrompre
-    }
-    last_scene = scene
+  if ( this.count === 0 ) return
+  // Même temps cherché que dernier => retourner la dernière scène trouvée
+  if ( otime.vtime == this.lastTimeSearched ) return this.lastSceneFound
+  // Pas de scène si on est avant le début du film
+  if ( otime.vtime < this.a.filmStartTime ) return
+  // Pas de scène si on se trouve après le temps de fin
+  if ( otime.vtime > this.a.filmEndTime ) return
+  // Pas de scène si le temps dépasse le temps de fin de la dernière scène
+  if ( otime > this.lastScene.endAt ) return
+  // Sinon, on cherche la scène
+  var prevSceneNumero
+  this.forEachSortedScene(scene => {
+    if ( scene.time > otime ) return false // pour interrompre
+    prevSceneNumero = scene.numero
   })
-  this.lastTimeSearched = otime
-  if(isUndefined(founded)) return
-  return {current_time: otime.seconds, current:founded || this.lastScene, next:next_scene, next_time:(next_scene?next_scene.time:this.a.duree)}
+  this.lastSceneFound   = this.get(prevSceneNumero)
+  this.lastTimeSearched = otime.vtime
+  return this.lastSceneFound
 }
 
 /**
@@ -326,7 +275,7 @@ get description(){
 //  MÉTHODES D'ÉTAT
 
 get isScene(){return true} // surclasse la méthode de FAEvent
-
+get isAScene(){return true}
 /**
  * Méthode qui retourne true si l'évènement est valide (en fonction de son
  * type) et false dans le cas contraire.

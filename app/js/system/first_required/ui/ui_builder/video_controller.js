@@ -18,7 +18,7 @@ build(){
 , buildHeader(){
     return DCreate(DIV, {id:'section-video-header', class:'no-user-selection', append:[
         // Horloge principale
-        DCreate(HORLOGE, {class: 'main-horloge horloge horlogeable', inner: '0:00:00.0'})
+        DCreate(HORLOGE, {id:'main-horloge', class: 'main-horloge horloge horlogeable', inner: '0:00:00.0'})
         // Espace pour indiquer la scène courante
       , DCreate(SPAN, {id:'mark-current-scene', inner:'...'})
     ]})

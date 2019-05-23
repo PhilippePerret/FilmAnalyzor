@@ -15,7 +15,7 @@ initWithTime(curt){
   let my = this
   var nextEvent, nextImage
 
-  console.log(`[NextTime] Initialisation avec ${curt}`)
+  // console.log(`[NextTime] Initialisation avec ${curt}`)
 
   // On cherche l'event situé après ce temps
   var idx = 0, ev, len = this.a.events.length, img
@@ -26,12 +26,12 @@ initWithTime(curt){
     my.event_idx = parseInt(idx,10)
     break
   }
-  if(nextEvent){
-    console.log(`[NextTime] Event trouvé: ${nextEvent} à ${nextEvent.time}`)
-  } else {
-    console.log("[NextTime] Aucun event trouvé.")
-  }
-  console.log(`[NextTime] event_idx: ${my.event_idx}`)
+  // if(nextEvent){
+  //   console.log(`[NextTime] Event trouvé: ${nextEvent} à ${nextEvent.time}`)
+  // } else {
+  //   console.log("[NextTime] Aucun event trouvé.")
+  // }
+  // console.log(`[NextTime] event_idx: ${my.event_idx}`)
 
   // On cherche l'image située après ce temps
   len = FAImage.byTimes.length
@@ -45,16 +45,16 @@ initWithTime(curt){
     break
   }
 
-  if(nextImage){
-    console.log(`[NextTime] Image trouvée: ${nextImage}`)
-  } else {
-    console.log("[NextTime] Aucune image trouvée.")
-  }
-  console.log(`[NextTime] image_idx: ${my.image_idx}`)
+  // if(nextImage){
+  //   console.log(`[NextTime] Image trouvée: ${nextImage}`)
+  // } else {
+  //   console.log("[NextTime] Aucune image trouvée.")
+  // }
+  // console.log(`[NextTime] image_idx: ${my.image_idx}`)
 
 
   this.nextItem = my.nextEventOrNextImage(nextEvent, nextImage)
-  console.log(`[NextTime] nextItem: ${my.nextItem}`)
+  // console.log(`[NextTime] nextItem: ${my.nextItem}`)
 
   this.inited = true
 }
@@ -77,8 +77,8 @@ revealNextItemAndFindNext(){
 revealNextItem(){
   // console.log("-> revealNextItem", this.nextItem)
   FAReader.reveal(this.nextItem, {fadeOut:true}) // image ou event
-  if(this.nextItem.isScene){
-    console.log("Le nextItem est une scène")
+  if(this.nextItem.isAScene) {
+    FAEscene.current = this.nextItem
   } else if (this.nextItem.type == STRstt) {
     console.log("Le nextItem est un noeud structurel")
   } else {
@@ -93,11 +93,6 @@ revealNextItem(){
 **/
 findNext(){
   let nextImage, nextEvent
-  // console.log("-> findNext", {
-  //   'this.nextItem.isEvent': this.nextItem.isEvent
-  //   , 'event_idx': this.event_idx
-  //   , 'image_idx': this.image_idx
-  // })
   // Si le next item courant était un
   if ( this.nextItem.isEvent) ++ this.event_idx
   else ++ this.image_idx

@@ -133,12 +133,11 @@ Object.assign(FAnalyse.prototype, {
   }
 
 , calcFilmEndTime(){
-    var endt = null
+    delete this._filmEndTime
     if(this.videoPath){
       this._filmEndTime = this.videoController.video.duration
-      endt = this._filmEndTime
     }
-    return endt
+    return this._filmEndTime
   }
 
 })

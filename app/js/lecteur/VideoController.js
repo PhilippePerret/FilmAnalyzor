@@ -247,7 +247,7 @@ observe(){
 
   // Pour afficher les scènes, le div est sensible au clic et permet
   // d'éditer la scène
-  this.markCurrentScene.on(STRclick, () => {
+  UI.markCurrentScene.on(STRclick, () => {
     if (this.locator.currentScene){
       EventForm.editEvent.bind(EventForm)(this.locator.currentScene)
     }
@@ -270,7 +270,6 @@ get markMainPartAbs(){return this._markMainPartAbs || defP(this,'_markMainPartAb
 get markSubPartAbs(){return this._markSubPartAbs || defP(this,'_markSubPartAbs',    this.section.find('.sub-part-abs'))}
 get markMainPartRel(){return this._markMainPartRel || defP(this,'_markMainPartRel', this.section.find('.main-part-rel'))}
 get markSubPartRel(){return this._markSubPartRel || defP(this,'_markSubPartRel',    this.section.find('.sub-part-rel'))}
-get markCurrentScene(){return this._markCurrentScene||defP(this,'_markCurrentScene',this.section.find('.mark-current-scene'))}
 
 static get CTRL_BUTTONS(){
   return {

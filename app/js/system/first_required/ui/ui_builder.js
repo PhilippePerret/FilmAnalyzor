@@ -140,8 +140,9 @@ const UIBuilder = {
     UI.video = UI.sectionVideo.find('video#section-video-body-video-1')[0]
 
     // L'horloge principal
-    UI.mainHorloge = UI.sectionVideo.find('div#section-video-header horloge.main-horloge')
+    UI.mainHorloge = UI.sectionVideo.find('div#section-video-header horloge#main-horloge')
     UI.videoHorloge = UI.sectionVideo.find('div#section-video-footer span.video-horloge')
+    UI.markCurrentScene = UI.sectionVideo.find('div#section-video-header span#mark-current-scene')
 
     // Pour la boucle d'attente
     UI.msgWaitingLoop = $('span#waiting-loop-message')

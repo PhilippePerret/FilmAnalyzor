@@ -28,7 +28,7 @@ static get DEFAULT_DATA(){
     , 'video.running.updates.reader':         true
     , 'video.running.updates.stt':            false
     , 'video.running.updates.current_scene':  false
-    , 'video.running.updates.banc_timeline':  false
+    , 'video.running.updates.banc_timeline':  true
 
   }
 }
