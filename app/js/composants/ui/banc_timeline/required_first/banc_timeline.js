@@ -5,18 +5,12 @@
 
 const BancTimeline = {
 
-toggle(){
+init(){
   let my = this
-
-  // NOTE : pour le moment, on passe en mode ban timeline
-  // TODO : pouvoir repasser dans le mode normal
-
   // --- ÉCRITURE DE L'ANALYSE ---
   this.dispatchElementOnTape()
-
   // Observation de l'interface
   this.observeBancTimeline()
-
 }
 
 // ---------------------------------------------------------------------
@@ -104,9 +98,9 @@ Object.defineProperties(BancTimeline, {
 // ---------------------------------------------------------------------
 //  OBJETS DOM
 
-, cursor:{get(){return $('section#banctime-ban-timeline div#banctime-cursor')}}
+, cursor:{get(){return $('section#banctime-banc-timeline div#banctime-cursor')}}
   // Bande sur laquelle on dépose les éléments.
-, timelineTape:{get(){return $('section#banctime-ban-timeline div#banctime-tape')}}
-, scaleTape:{get(){return $('section#banctime-ban-timeline div#banctime-scaletape')}}
-, BancTimeline:{get(){return $('section#banctime-ban-timeline')}}
+, timelineTape:{get(){return $('section#banctime-banc-timeline div#banctime-tape')}}
+, scaleTape:{get(){return $('section#banctime-banc-timeline div#banctime-scaletape')}}
+, BancTimeline:{get(){return $('section#banctime-banc-timeline')}}
 })

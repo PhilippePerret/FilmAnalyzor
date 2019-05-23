@@ -7,6 +7,8 @@ function FReqGet(name){
   return require(`./js/system/first_required/${name}.js`)
 }
 
+const WindowController = FReqGet('ui/WindowController')
+
 // Doit être défini avant FA_associates qui l'utilise
 const FADrop = FReqGet('FADrop')
 

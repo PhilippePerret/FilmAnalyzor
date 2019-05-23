@@ -42,7 +42,7 @@ reg = /:([^ ])/
 code = code.gsub(reg, ': \1')
 
 # Rectifier certaine correction
-reg = /: (nth|hover|active|not|focus)/
+reg = /: (nth|hover|active|not|focus|before|after)/
 code = code.gsub(reg, ':\1')
 
 # Points virgules à la fin
@@ -55,5 +55,5 @@ if ARGV[1] == '--write'
 else
   puts code
   puts "Pour enregistrer vraiment ce code dans le dossier '_sass_in_all' ajouter --write à la fin de la commande"
-  
+
 end

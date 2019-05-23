@@ -542,7 +542,7 @@ save() {
   // On sauve les options toutes seules, ça se fait de façon synchrone
   this.options.saveIfModified()
   this.savers = 0
-  this.savables_count = this.FILES.count
+  this.savables_count = this.DFILES.length
   this.DFILES.forEach(dfile => this.saveFile(dfile))
 }
 /**
@@ -571,17 +571,13 @@ saveData(force_lock){
   * fichier sur le disque, sous un autre nom, puis on change son nom
   * en mettant l'original en backup (s'il n'est pas vide)
   */
-saveFile(fpath, prop){
-  let iofile = dfile.iofile
-    , fpath  = dfile.path
-    , prop   = dfile.dataMethod
-
-  iofile.code = this[prop]
-  iofile.save({ after: this.setSaved.bind(this, fpath), no_waiting_msg: true })
-  return iofile.saved
+saveFile(dfile){
+  dfile.iofile.code = this[dfile.dataMethod]
+  dfile.iofile.save({ after: this.setSaved.bind(this, dfile), no_waiting_msg: true })
+  return dfile.iofile.saved
 }
 
-setSaved(fpath){
+setSaved(dfile){
   this.savers += 1
   if(this.savers === this.savables_count){
     this.modified = false

@@ -29,10 +29,10 @@ constructor(analyse){
  * Initialisation de l'instance FAReader
  */
 init(){
-  // Rien pour le moment
+  this.show().hide()
 }
-show(){this.fwindow.show()}
-hide(){this.fwindow.hide()}
+show(){this.fwindow.show(); return this}
+hide(){this.fwindow.hide(); return this}
 build(){
   return DCreate(DIV, {id:'titre-reader-to-remove', inner: 'LECTEUR', class: 'fw-title'})
 }
@@ -52,6 +52,32 @@ remove(){ this.fwindow.remove() }
   Ne pas la confondre avec la méthode `resetBeyond` suivante
  */
 reset(){ this.reader.html('')}
+
+/**
+  Lorsqu'une analyse est chargée, on appelle cette méthode pour mettre
+  tous les events dans le reader
+
+  Note : on n'utilise pas la méthode this.append qui vérifierait chaque
+  fois l'emplacement. Ici, on peut les mettre les uns après les autres
+**/
+peuple(){
+  let hImages = [...FAImage.byTimes]
+  var hNextImage = hImages.shift(), nextImage
+    , currentTime = 0
+  this.a.forEachEvent(ev => {
+    // Si la prochaine image est inférieure au temps courant, on doit
+    // l'insérer à cet endroit.
+    while ( hNextImage && hNextImage.time < currentTime ) {
+      nextImage = FAImage.get(hNextImage.id)
+      this.reader.append(nextImage.div)
+      nextImage.observe()
+      hNextImage = hImages.shift()
+    }
+    this.reader.append(ev.div)
+    ev.observe()
+    currentTime = ev.otime.vtime
+  })
+}
 
 /**
  * Vide le reader, mais seulement en supprimant les évènements qui se trouvent
@@ -154,7 +180,7 @@ displayAll(){
 // ---------------------------------------------------------------------
 //  DOM ELEMENTS
 get fwindow(){
-  return this._fwindow || defP(this,'_fwindow', new FWindow(this, {id:'reader', name:ReaderFWindowName, draggable:false, container:UI.sectionReader, x: ScreenWidth - 650, y: 4}))
+  return this._fwindow || defP(this,'_fwindow', new FWindow(this, {id:'reader', name:ReaderFWindowName, draggable:false, container:UI.sectionReader, x:0, y:0}))
 }
 get reader(){return this._reader || defP(this,'_reader', this.fwindow.jqObj)}
 

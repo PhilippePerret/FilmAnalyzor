@@ -31,9 +31,8 @@ defineTopDiv(element){
       break
     }
   }
-  if(isUndefined(element.row)){
-    element.row = 1
-  }
+  isDefined(element.row) || ( element.row = 1 )
+
   return this.FIRST_TOP_ELEMENT + element.row * this.HEIGHT_ELEMENT
 }// /defineTopDiv
 

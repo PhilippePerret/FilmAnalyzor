@@ -334,6 +334,7 @@ hide(){
 /**
   Toutes les secondes, l'event va véfiier si le temps courant le
   survole. Si c'est le cas, il se met en exergue.
+  Noter que ça ne le fait que lorsqu'il est visible.
 **/
 startWatchingTime(){
   // console.log("-> startWatchingTime de ", this.id)

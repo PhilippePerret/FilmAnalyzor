@@ -42,6 +42,11 @@ Ces deux méthodes propriétaires sont appelées à la fin de `show` et
 de `hide` si elles existent. Elles permettent de faire un traitement particulier
 après la fermeture ou l'ouverture de la flying-window.
 
+`onEndMove`
+-----------
+Méthode appelée, si elle existe, à la fin d'un déplacement de la fenêtre
+Par exemple pour mémoriser la dernière position.
+
 **/
 
 class FWindow {
@@ -318,11 +323,18 @@ onBtnClose(){
   }
 }
 
+onEndMove(e){
+  isFunction(this.owner.onEndMove) && this.owner.onEndMove(e)
+}
+
 observe(){
   // Une flying window est déplaçable par essence
   // console.log("this.jqObj:", this.jqObj)
 
-  isTrue(this.draggable) && this.jqObj.draggable({containment: STRdocument})
+  isTrue(this.draggable) && this.jqObj.draggable({
+      containment: STRdocument
+    , stop: this.onEndMove.bind(this)
+  })
 
   // Une flying window est cliquable par essence
   // this.jqObj.find('header, body').on(STRclick, FWindow.setCurrent.bind(FWindow, this))

@@ -3,7 +3,6 @@
 const APPFOLDER = path.resolve('.')
 
 function WhenAllIsReallyReady(){
-
   // FAPersonnage.dataEditor.open()
   // FABrin.dataEditor.open()
   // current_analyse.openDocInDataEditor('fondamentales')
@@ -28,7 +27,7 @@ $(document).ready(() => {
   var d = ipc.sendSync('get-screen-dimensions')
   window.W = ScreenWidth  = d.width
   window.H = ScreenHeight = d.height
-  
+
   // ATTENTION : QUAND ON PASSE ICI, TOUT N'EST
   // PAS ENCORE CHARGÉ CAR CERTAINS MODULES  SONT
   // CHARGÉS DE FAÇON DYNAMIQUE. C'EST LA MÉTHODE

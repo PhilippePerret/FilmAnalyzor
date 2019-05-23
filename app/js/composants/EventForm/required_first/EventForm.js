@@ -124,6 +124,13 @@ static optionsTypes(typ){
   return this._optionsTypes[typ]
 }
 
+/**
+  On mémorise toujours la dernière position de la fenêtre d'édition pour
+  la remettre au même endoit.
+**/
+static get lastLeft(){ return this._lastLeft || 200 }
+static set lastLeft(v){ this._lastLeft = v }
+
 // ---------------------------------------------------------------------
 //  INSTANCE
 
@@ -780,6 +787,15 @@ onKeyDownOnTextFields(e){
   return true
 }
 
+/**
+  Méthode appelée par FWindow à la fin d'un drag de la fenêtre
+  On mémorise la position left de façon globale pour l'appliquer à la
+  prochaine fenêtre
+**/
+onEndMove(e){
+    this.constructor.lastLeft = this.fwindow.jqObj.position().left
+  }
+
 // ---------------------------------------------------------------------
 // Méthodes de DOM
 
@@ -794,13 +810,7 @@ get fwindow(){
 // Position left de la fenêtre du formulaire, pour qu'elle soit bien placée
 // à côté de la boite de bouton => Il suffit de déplacer la boite de bouton
 // pour déplacer la création des boites
-get left(){
-  if(isUndefined(this._left)){
-    let o = $('#buttons-new-event')
-    this._left = o.offset().left + o.width() + 44
-  }
-  return this._left
-}
+get left(){ return this.constructor.lastLeft }
 // Le formulaire lui-même
 get form(){return this._form || defP(this,'_form', DGet(`form-edit-event-${this.id}`))}
 // Idem, normalement, le formulaire

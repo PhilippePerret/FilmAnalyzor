@@ -123,13 +123,13 @@ load(){
  */
 , onReady(){
     log.info('-> FAnalyse.onReady')
-    this.videoController = new VideoController(this)
-    this.locator = new Locator(this)
-    this.reader  = new FAReader(this)
-    this.init()
-    this.locator.init()
-    this.locator.stop_points = this.stopPoints
-    this.reader.show()
+    let my = this
+    my.videoController = new VideoController(this)
+    my.locator = new Locator(my)
+    my.reader  = new FAReader(my)
+    my.init()
+    my.locator.init()
+    my.locator.stop_points = my.stopPoints
     FAProcede.reset().init()
     FABrin.reset().init()
     EventForm.init()
@@ -137,19 +137,42 @@ load(){
     FAImage.init()
     FAEqrd.reset().init()
     FAPersonnage.reset().init()
-    this.options.setInMenus()
-    this.videoController.init()
+    my.options.setInMenus()
+    my.videoController.init()
     // Les raccourcis clavier
     UI.toggleKeyUpAndDown(/* out texte field */ true)
     // On met en route le timer de sauvegarder
-    this.runTimerSave()
+    my.runTimerSave()
+    try {
+      // On peuple le reader avec les events et les images
+      my.reader.init() // notamment : construction du reader
+      my.reader.show()
+      my.reader.peuple()
+    } catch (e) {
+      log.error("Impossible de peupler le reader (voir l'erreur ci-dessous)")
+      log.error(e)
+    }
+    try {
+      // On peuple la timeline avec les events
+      BancTimeline.init()
+    } catch (e) {
+      log.error("Impossible de peupler la timeline (voir l'erreur ci-dessous)")
+      log.error(e)
+    }
+
     // Si une méthode après le chargement est requise, on
     // l'invoque.
     // Pour le moment, la méthode est surtout utilisée pour les
     // tests (même seulement pour les tests)
-    if(isFunction(this.methodAfterLoadingAnalyse)){
-      this.methodAfterLoadingAnalyse()
+    if(isFunction(my.methodAfterLoadingAnalyse)){
+      my.methodAfterLoadingAnalyse()
     }
+
+    // Si un dernier temps était mémorisé, on replace le curseur à
+    // cet endroit (dans la timeline)
+    var lastCurTime = new OTime(my.lastCurrentTime)
+    lastCurTime && my.locator.setTime(lastCurTime, true)
+
     // On appelle la méthode `window.WhenAllIsReallyReady` qui permet de
     // jouer du code pour essai à la toute fin
     WhenAllIsReallyReady()

@@ -48,7 +48,7 @@ togglePlay(ev){
     $(this.btnPlay).removeClass('actived')
     this.playing = false
     this.actualizeALL() // à l'arrêt, on actualise tout
-    this.desactivateHorloge()
+    this.desactivateHorlogeAndOthers()
     this.setPlayButton(this.playing)
     this.stopWatchTimerEvent()
     this.a.modified = true // pour le temps courant
@@ -69,7 +69,7 @@ togglePlay(ev){
         this.addStopPoint(curT)
         $(this.btnPlay).addClass('actived')
         this.playing = true
-        this.activateHorloge()
+        this.activateHorlogeAndOthers()
         this.setPlayButton(this.playing)
       }).catch(error => {
         // Autoplay was prevented.
@@ -205,6 +205,12 @@ stopForward(){
   @param {Boolean} dontPlay   Si true, on ne met pas la vidéo en route.
  */
 setTime(time, dontPlay){
+  // try {
+  //   doujeviens
+  // } catch (e) {
+  //   throw(e)
+  // } finally {
+  // }
   log.info('-> Locator#setTime(time=, dontPlay=)', time.toString(), dontPlay)
   time instanceof(OTime) || raise(T('otime-arg-required'))
 
@@ -257,7 +263,7 @@ showEventsAt(time){
   @param {OTime} time
 **/
 showImagesAt(time){
-  FAImage.imagesAt(time.vtime).forEach(img => {if(!img.shown) img.showDiffere()})
+  FAImage.imagesAt(time.vtime).forEach(img => { img.shown || img.showDiffere() })
 }
 
 /**
@@ -265,7 +271,7 @@ showImagesAt(time){
   le reader (quand on arrête la lecture)
 **/
 stopWatchTimerEvent(){
-  this.a.reader.forEachEvent(function(ev){if(ev.shown)ev.stopWatchingTime()})
+  this.a.reader.forEachEvent(function(ev){ev.shown && ev.stopWatchingTime()})
 }
 /**
   Méthode contraire à la méthode précédente, qui relance la
@@ -273,7 +279,7 @@ stopWatchTimerEvent(){
   si on passe par leur temps.
 **/
 restartWatchTimerEvent(){
-  this.a.reader.forEachEvent(function(ev){if(ev.shown)ev.startWatchingTime()})
+  this.a.reader.forEachEvent(function(ev){ev.shown && ev.startWatchingTime()})
 }
 
 /**
@@ -443,10 +449,10 @@ getRealTime(s){
  * Méthode pour activer l'horloge qui dépend du début défini pour le
  * film (ou le début en cas d'erreur). Elle marche au frame près
  */
-activateHorloge(){
+activateHorlogeAndOthers(){
   var my = this
   if (this.intervalTimer){
-    this.desactivateHorloge()
+    this.desactivateHorlogeAndOthers()
   } else {
 
     // On construit la méthode d'actualisation en fonction des options et du
@@ -459,7 +465,7 @@ activateHorloge(){
   my = null
 }
 
-desactivateHorloge(){
+desactivateHorlogeAndOthers(){
   if(this.intervalTimer){
     clearInterval(this.intervalTimer)
     this.intervalTimer = null

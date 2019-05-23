@@ -147,9 +147,9 @@ editLink(opts){
 get domReaderId(){return this._domreaderid||defP(this,'_domreaderid',`reader-${this.domId}`)}
 get domReaderObj(){return this._domreaderobj||defP(this,'_domreaderobj',this.jqReaderObj?this.jqReaderObj[0]:undefined)}
 get jqReaderObj(){
-  if(undefined === this._jqreaderobj){
+  if(isUndefined(this._jqreaderobj)){
     this._jqreaderobj = $(`#${this.domReaderId}`)
-    if(this._jqreaderobj.length == 0) delete this._jqreaderobj
+    isEmpty(this._jqreaderobj) && ( delete this._jqreaderobj )
   }
   return this._jqreaderobj
 }

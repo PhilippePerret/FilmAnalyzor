@@ -68,7 +68,7 @@ const UIBuilder = {
   }
 , buildSectionTimeline(){
     // Le banc timeline lui-même
-    UI.sectionTimeline.append(DCreate(SECTION,{id:'banctime-ban-timeline', append:[
+    UI.sectionTimeline.append(DCreate(SECTION,{id:'banctime-banc-timeline', append:[
         DCreate(DIV,{id:'banctime-scaletape'})   // bande pour positionner le curseur
       , DCreate(DIV,{id:'banctime-tape'})        // bande pour déposer les éléments
       , DCreate(DIV,{id:'banctime-cursor'}) // curseur de timeline

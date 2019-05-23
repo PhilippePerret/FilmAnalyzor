@@ -652,9 +652,9 @@ Au lancement de la vidéo avec :
 
 * `Locator.togglePlay`, la vidéo est mise en route avec :
 * `video.play()`, ce qui génère une `Promise` qui
-* active les horloges avec `Locator.activateHorloge`
+* active les horloges avec `Locator.activateHorlogeAndOthers`
 
-La méthode `Locator.activateHorloge` génère un timer d'intervalle qui appelle la méthode `Locator.actualizeAll` tous les 1000/40e de seconde.
+La méthode `Locator.activateHorlogeAndOthers` génère un timer d'intervalle qui appelle la méthode `Locator.actualizeAll` tous les 1000/40e de seconde.
 
 La méthode `Locator.actualizeAll` :
 
