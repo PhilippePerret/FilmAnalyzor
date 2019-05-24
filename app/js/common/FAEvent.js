@@ -327,7 +327,7 @@ show(){
 }
 
 hide(){
-  this.jqReaderObj.hide()
+  this.jqReaderObj && this.jqReaderObj.hide()
   this.shown = false
 }
 

@@ -41,12 +41,16 @@ onKeyUpInTextField(e){
         console.log("touche modifiée: ", touche)
       case STRk: // k
       case STRj: // j
+      case STRJ: // J
       case STRl: // l
         let loc = this.a.locator
           , vid = this.a.videoController
-        if (touche === STRj) { // meta + j => rewind or accelerate
+        if ( touche === STRj ) { // meta + j => rewind
           loc.playing && loc.togglePlay()
           loc.rewind(1.0)
+        } else if(touche === STRJ){ // maj + j => rewind plus fort
+          loc.playing && loc.togglePlay()
+          loc.rewind(10)
         } else if(touche === STRk){ // meta + k => stop
           loc.playing && loc.stop()
           vid.setSpeed(1.0)
