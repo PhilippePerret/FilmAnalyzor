@@ -19,6 +19,13 @@ Avec <data> qui doit contenir au moins :
   name        Nom de la fenêtre, simplement utilisée pour le débuggage
 
   draggable   Si false, on ne rend pas la fenêtre draggable (true par défaut)
+              Si 'x' ou 'y', draggable seulement sur l'axe défini
+              Défaut : true
+
+  swiping     Si défini, un drag rapide permet de repousser la fenêtre dans
+              un bord.
+              TODO Plus tard, on pourra transmettre un objet qui indiquera
+              comment gérer précisément le swip rapide.
 
 Au minimum, le propriétaire, un objet, doit définir les méthodes :
   - `build`   doit retourner l'élément DOM à insérer dans la f-window
@@ -48,6 +55,37 @@ Méthode appelée, si elle existe, à la fin d'un déplacement de la fenêtre
 Par exemple pour mémoriser la dernière position.
 
 **/
+
+
+class SwipController {
+constructor(owner){
+  this.owner = owner
+}
+checkSwip(){
+  // console.log("this.startData:", this.startData)
+  // console.log("this.endData:", this.endData)
+  let laps = this.endData.time - this.startData.time
+    , deltaX = Math.abs(this.endData.x - this.startData.x)
+    , deltaY = Math.abs(this.endData.y - this.startData.y)
+    , sensX  = this.endData.x > this.startData.x ? 'lr' : 'rl'
+    , sensY  = this.endData.y > this.startData.y ? 'tb' : 'bt'
+
+  // console.log(`${deltaX}/x et ${deltaY}/y ont été parcourus en ${laps} millisecondes`)
+  if ( laps < 400 ) {
+    if ( deltaX > 200 && deltaX > deltaY ) {
+      // Swipe horizontal
+      // console.log("Swipe horizontal de sens ", sensX)
+      this.owner.swip.bind(this.owner)(sensX)
+    }
+    if ( deltaY > 200 && deltaY > deltaX ) {
+      // Swipe vertical
+      // console.log("Swipe vertical de sens", sensY)
+      this.owner.swip.bind(this.owner)(sensY)
+    }
+  }
+}
+}
+
 
 class FWindow {
 
@@ -227,7 +265,7 @@ show(){
   this.jqObj.show()
   this.visible = true
   FWindow.setCurrent(this)
-  isFalse(this.draggable) || FWindow.checkOverlaps(this)
+  isTrue(this.draggable) && FWindow.checkOverlaps(this)
   isFunction(this.owner.onShow) && this.owner.onShow()
   log.info(`<- ${this.ref}.show() [built:${this.built}, visible:${this.visible}]`)
 }
@@ -327,14 +365,66 @@ onEndMove(e){
   isFunction(this.owner.onEndMove) && this.owner.onEndMove(e)
 }
 
+/**
+  Pour procéder au swiping
+
+  Pour le moment, on applique la même chose pour tout le monde
+  en fonction du sens
+**/
+get HANDLE_SIZE(){ return 30}
+swip(sens){
+  var dAnim = ((sens) => {
+    switch (sens) {
+      case 'lr':
+        if (this.draggable == 'y') return
+        return {left: (W - this.HANDLE_SIZE) + 'px'}
+      case 'rl':
+        if (this.draggable == 'y') return
+        return {left: (0 - this.jqObj.outerWidth() + this.HANDLE_SIZE) + 'px'}
+      case 'tb':
+        if (this.draggable == 'x') return
+        return {top: (H - this.HANDLE_SIZE) + 'px'}
+      case 'bt':
+        if (this.draggable == 'x') return
+        return {top: (0 - this.jqObj.outerHeight() + this.HANDLE_SIZE) + 'px'}
+    }
+  })(sens)
+  dAnim && this.jqObj.animate(dAnim)
+}
+get swipController(){return this._swipcontroller || defP(this,'_swipcontroller', new SwipController(this))}
+
 observe(){
+  let my = this
   // Une flying window est déplaçable par essence
   // console.log("this.jqObj:", this.jqObj)
-
-  isTrue(this.draggable) && this.jqObj.draggable({
-      containment: STRdocument
-    , stop: this.onEndMove.bind(this)
-  })
+  if (isNotFalse(this.draggable)) {
+    let dataDrag = { stop: this.onEndMove.bind(this) }
+    this.containment && (dataDrag.containment = this.containment)
+    switch (this.draggable) {
+      case 'y':
+      case 'x':
+        dataDrag['axis'] = this.draggable
+        break
+    }
+    this.swiping && Object.assign(dataDrag, {
+        start:(e) => {
+          my.swipController.startData = {
+              time: e.timeStamp
+            , x: e.clientX
+            , y: e.clientY
+          }
+        }
+      , stop:(e) => {
+          my.swipController.endData = {
+              time: e.timeStamp
+            , x: e.clientX
+            , y: e.clientY
+          }
+          my.swipController.checkSwip.bind(my.swipController)()
+        }
+    })
+    this.jqObj.draggable(dataDrag)
+  }
 
   // Une flying window est cliquable par essence
   // this.jqObj.find('header, body').on(STRclick, FWindow.setCurrent.bind(FWindow, this))
@@ -349,9 +439,12 @@ observe(){
 //  Propriétés
 
 get draggable(){
-  isDefined(this._draggable) || ( this._draggable = true )
-  return this._draggable
+  return defaultize(this, '_draggable', true)
 }
+get containment(){
+  return defaultize(this, '_containment', STRdocument)
+}
+get swiping(){return defaultize(this,'_swiping', false)}
 get jqObj(){ return this._jqObj || defP(this,'_jqObj', $(`#${this.domId}`))}
 get domId(){ return this._domId || defP(this,'_domId', `fwindow-${this.id}`)}
 get container(){return this._container}

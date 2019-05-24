@@ -140,6 +140,9 @@ const UIBuilder = {
     // La barre d'état en bas de la fenêtre
     UI.stateBar = $('#analyse-state-bar')
 
+    // Le div qui contiendra les writer
+    UI.sectionWriter = $('#section-writer')
+
   }
 
 , defineOtherUIComponants(){

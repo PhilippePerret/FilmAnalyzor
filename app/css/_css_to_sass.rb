@@ -51,7 +51,7 @@ code = code.gsub(reg,'')
 
 if ARGV[1] == '--write'
   File.open(FINAL_DEST,'wb'){|f| f.write code}
-  puts "Il faut penser à ajouter '_sass_in_all/#{FILE_AFFIXE}' au fichier 'a_index.sass"
+  puts "Il faut penser à ajouter << @import \"_sass_in_all/#{FILE_AFFIXE}\" >> au fichier 'a_index.sass"
 else
   puts code
   puts "Pour enregistrer vraiment ce code dans le dossier '_sass_in_all' ajouter --write à la fin de la commande"

@@ -8,6 +8,7 @@ function WhenAllIsReallyReady(){
   // current_analyse.openDocInDataEditor('fondamentales')
   // current_analyse.openDocInDataEditor('infos')
   // current_analyse.openDocInWriter('building_script')
+  current_analyse.openDocInWriter()
   // current_analyse.togglePanneauDecors()
   // current_analyse.togglePanneauBrins()
   // setTimeout(current_analyse.togglePanneauBrins.bind(current_analyse),1000)

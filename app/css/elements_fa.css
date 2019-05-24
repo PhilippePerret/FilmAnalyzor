@@ -107,5 +107,12 @@ img.image-overview {
 
 /* --------------------------------------------------------------------- */
 
-input[type="checkbox"]+label:after{all:unset;}
-input[type="checkbox"]+label{all:inherit;vertical-align:middle;}
+input[type="checkbox"]+label:after{
+  all:unset;
+}
+input[type="checkbox"]+label{
+  font-size:inherit;
+  font-family:inherit;
+  font-style: inherit;
+  vertical-align:middle;
+}

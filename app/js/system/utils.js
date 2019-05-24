@@ -11,19 +11,18 @@ function isNullish(foo){ return isNull(foo) || isUndefined(foo) }
 function isNotNullish(foo){ return false === isNullish(foo) }
 
 function isFalse(foo){ return false === foo }
+function isNotFalse(foo) { return isFalse(isFalse(foo))}
 function not(foo){ return false == foo }
 
-function isTrue(foo){
-  return true === foo
-}
-function isNotTrue(foo){return false === isTrue(foo)}
+function isTrue(foo){ return true === foo }
+function isNotTrue(foo){return isFalse(isTrue(foo))}
 
 function isDefined(foo){
   return false === isUndefined(foo)
 }
 function isEmpty(foo){
   if(!foo) return true
-  if(isDefined(foo.length)){
+  if(isDefined(foo.length) /* string ou array */){
     return 0 == foo.length
   } else if (isObject(foo)){
     return 0 == Object.keys(foo).length
@@ -114,6 +113,15 @@ function defP(obj, prop, val){
   return val
 }
 
+/**
+  Remplace la tournure :
+    if (undefined === objet.property) objet.property = default_value
+  Et retourne la valeur de la propriété
+**/
+function defaultize(objet, property, default_value){
+ isDefined(objet[property]) || ( objet[property] = default_value)
+ return objet[property]
+}
 
 /**
  *

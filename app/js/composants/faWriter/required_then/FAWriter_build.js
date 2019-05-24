@@ -23,19 +23,19 @@ Object.assign(FAWriter, {
     , attrs: attrs
     , inner: ' ⎆'
     })
-    var doctitle = DCreate('DIV',{
+    var doctitle = DCreate(DIV,{
       id: 'writer-doc-title'
     , append: [
-      DCreate('SELECT', {id: 'document-type', class: 'main'})
+      DCreate(SELECT, {id: 'document-type', class: 'main'})
       , spa
     ]
     })
 
-    var divmodeles = DCreate('DIV', {
+    var divmodeles = DCreate(DIV, {
       class: 'div-modeles right'
     , append: [
         DCreate(LABEL, {class: 'small', inner: 'MODÈLES '})
-      , DCreate('SELECT', {id: 'modeles-doc'})]
+      , DCreate(SELECT, {id: 'modeles-doc'})]
     })
 
     var btnNew = DCreate(BUTTON, {
@@ -44,37 +44,37 @@ Object.assign(FAWriter, {
     , type: STRbutton
     })
 
-    var header = DCreate('DIV',{
+    var header = DCreate(DIV,{
       class: STRheader
     , append: [btnClose, doctitle, divmodeles, btnNew]
     })
 
-    var body = DCreate('DIV', {
+    var body = DCreate(DIV, {
       class: STRbody
-    , append: [DCreate('TEXTAREA', {id: 'document-contents', attrs:{autofocus: true}})]
+    , append: [DCreate(TEXTAREA, {id: 'document-contents', attrs:{autofocus: true}})]
     })
 
     var opts = []
     var themes = {'': 'Thème…', 'real-theme': 'Normal', 'data-theme':'Données', 'musical-theme':'Musical'}
     for(var theme in themes){ opts.push(DCreate(OPTION, {value: theme, inner: themes[theme]}))}
-    var selThemes = DCreate('SELECT', {
+    var selThemes = DCreate(SELECT, {
       id: 'writer-theme'
-    , class: 'fleft'
     , append: opts
     })
 
-    var footer = DCreate('DIV', {
+    var footer = DCreate(DIV, {
       class: STRfooter,
       append: [
-        DCreate(LABEL, {id: 'writer-message', inner: '...'})
+        DCreate(BUTTON, {id: 'btn-save-doc', class:'fright small main-button', inner: 'Enregistrer', type: STRbutton})
+      , DCreate('SPACE') // juste pour éviter le BUTTON + SPAN
+      , DCreate(SPAN, {id: 'writer-message', inner: '...'})
       , selThemes
-      , DCreate(LABEL, {class:'fleft', inner: 'Taille du texte : '})
-      , DCreate(SPAN, {id: 'text-size', class:'fleft', inner: '...'})
+      , DCreate(LABEL, {inner: 'Taille du texte'})
+      , DCreate(SPAN,  {id: 'text-size', inner: '...'})
       , DCreate(LABEL, {inner: 'Visualiser', attrs:{for: 'cb-auto-visualize'}})
       , DCreate(INPUT, {id: 'cb-auto-visualize', attrs: {type: STRcheckbox}})
       , DCreate(LABEL, {inner: 'Auto-save', attrs:{for: 'cb-save-auto-doc'}})
       , DCreate(INPUT, {id: 'cb-save-auto-doc', attrs: {type: STRcheckbox}})
-      , DCreate(BUTTON, {id: 'btn-save-doc', inner: 'Enregistrer', type: STRbutton})
       ]
     })
 
@@ -102,19 +102,19 @@ Object.assign(FAWriter, {
 , observe(){
     var my = this
     // On observe le menu de choix d'un document
-    my.menuTypeDoc.on('change', my.onChooseTypeDoc.bind(my))
+    my.menuTypeDoc.on(STRchange, my.onChooseTypeDoc.bind(my))
     // On observe le menu de choix d'un modèle de document
-    my.menuModeles.on('change', my.onChooseModeleDoc.bind(my))
+    my.menuModeles.on(STRchange,  my.onChooseModeleDoc.bind(my))
     // On observe le menu qui choisit le thème
-    my.menuThemes.on('change', my.onChooseTheme.bind(my))
+    my.menuThemes.on(STRchange,   my.onChooseTheme.bind(my))
 
     // On observe le champ de texte
     my.docField
-      .on('change',    my.onContentsChange.bind(my))
-      .on('focus',     my.onFocusContents.bind(my))
-      .on('blur',      my.onBlurContents.bind(my))
-      .on('keydown',   my.onKeyDown.bind(my))
-      .on('keyup',     my.onKeyUp.bind(my))
+      .on(STRchange,  my.onContentsChange.bind(my))
+      .on(STRfocus,   my.onFocusContents.bind(my))
+      .on(STRblur,    my.onBlurContents.bind(my))
+      .on(STRkeydown, my.onKeyDown.bind(my))
+      .on(STRkeyup,   my.onKeyUp.bind(my))
 
     // Méthode communes d'extension
     this.setTextFieldsAssociableIn(my.section)
@@ -125,7 +125,7 @@ Object.assign(FAWriter, {
     // le document
     $('input#cb-save-auto-doc').on(STRclick, my.setAutoSave.bind(my))
     // // On observe la case à cocher pour visualiser régulièrement le document
-    $('input#cb-auto-visualize').on('change', my.setAutoVisualize.bind(my))
+    $('input#cb-auto-visualize').on(STRchange, my.setAutoVisualize.bind(my))
 
     // On observe le bouton pour créer un nouveau document
     $('button#writer-btn-new-doc').on(STRclick, FADocument.new.bind(FADocument))
