@@ -21,12 +21,14 @@ function WhenAllIsReallyReady(){
 $(document).ready(() => {
   // Mais ici on n'est pas encore prêt, des dossiers sont toujours en
   // chargement
+  // Par exemple, ici, UI n'est pas défini, encore
+
   log.info("--- DOM ready ---")
   // console.clear()
 
-  var d = ipc.sendSync('get-screen-dimensions')
-  window.W = ScreenWidth  = d.width
-  window.H = ScreenHeight = d.height
+  // var d = ipc.sendSync('get-screen-dimensions')
+  // window.W = ScreenWidth  = d.width
+  // window.H = ScreenHeight = d.height
 
   // ATTENTION : QUAND ON PASSE ICI, TOUT N'EST
   // PAS ENCORE CHARGÉ CAR CERTAINS MODULES  SONT

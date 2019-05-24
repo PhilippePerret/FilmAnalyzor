@@ -23,7 +23,8 @@ const UIBuilder = {
     this.defineFirstUIComponants()
 
     // On règle les dimensions en fonction de la taille actuelle
-    // de l'éditeur.
+    // de l'éditeur. Elles seront ensuite rectifiées en fonction
+    // de l'analyse.
     this.setDimensions()
 
     // On construit les éléments à l'intérieur de chaque partie
@@ -47,13 +48,17 @@ const UIBuilder = {
 **/
 , setDimensions(){
 
+    UI.updateUIConstants()
+
     // Les hauteurs
     // Tout, pratiquement, se règle avec les CSS et les flex, il suffit de
     // définir la hauteur de la fenêtre, i.e. du contenant principal.
-    // `H` est une constante qui correspond à ScreenHeight
-    UI.wholeUI.css(STRheight, `${H}px`)
+    // `H` est une constante qui correspond à l'espace réel libre dans la
+    // fenêtre, au-dessus de la barre d'état. Il est recalculé à chaque
+    // changement de dimension de la fenêtre
+    UI.wholeUI.height(H)
 
-    UI.sectionTimeline.css(STRheight, '200px')
+    UI.sectionTimeline.height(200)
 
   }
 
@@ -132,6 +137,9 @@ const UIBuilder = {
     // Section pour mettre la timeline
     UI.sectionTimeline = $('section#C1-R2-banc-timeline')
 
+    // La barre d'état en bas de la fenêtre
+    UI.stateBar = $('#analyse-state-bar')
+
   }
 
 , defineOtherUIComponants(){
@@ -150,6 +158,7 @@ const UIBuilder = {
 
     // La marque des raccourcs courants
     UI.markShortcuts = UI.sectionVideo.find('#banctime-mode-shortcuts')
+
   }
 }// /UIBuilder
 

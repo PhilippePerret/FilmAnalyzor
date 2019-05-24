@@ -2,9 +2,31 @@
 /**
  * Gestion de l'interface
  */
+
+window.H = undefined
+window.W = undefined
+
 const UI = {
   class: 'UI'
 
+, updateUIConstants(){
+    // La hauteur absolue de l'espace libre, au-dessus de la barre
+    // d'état
+    H = window.innerHeight - UI.stateBar.outerHeight()
+    log.info(`H (hauteur espace travail) : ${H}`)
+    W = window.innerWidth
+    log.info(`W (largeur espace travail) : ${W}`)
+  }
+
+/**
+  Retourne la vraie hauteur de l'élément, border et padding compris
+**/
+, realHeight(o){
+    return $(o).outerHeight()
+  }
+, realWidth(o){
+    return $(o).outerWidth()
+  }
 /**
   Méthode qui fait basculer la captation des touches du mode "out" champs de
   texte au mode "in" (dans un champ de texte)
