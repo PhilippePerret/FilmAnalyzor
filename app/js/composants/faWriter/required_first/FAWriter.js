@@ -205,6 +205,7 @@ const FAWriter = {
 , onFocusContents(){
     this.message('')
   }
+
 , onBlurContents(){
   }
 
@@ -213,7 +214,7 @@ const FAWriter = {
   }
 
   /**
-   * Ouverture du FAWriter. Cela correspond à masquer le Reader.
+   * Ouverture du FAWriter.
    *
    * Noter que ce seront les «FAEventers» qui afficheront les events
    */
@@ -226,6 +227,7 @@ const FAWriter = {
       this.fwindow.show()
     }
   }
+
 , onShow(){
     this.setUI() // préparer l'interface en fonction du type de document
     this.docField.focus()
@@ -259,11 +261,14 @@ const FAWriter = {
 , hide(){
     this.fwindow.hide()
   }
+
 , onHide(){
     this.stopTimers()
     this.isOpened = false
     delete this.currentDoc
-}
+    this.setAutoVisualize()
+    this.visualizor.hide() // au cas où
+  }
 
   /**
    * Sauvegarde du document courant
@@ -310,8 +315,6 @@ const FAWriter = {
     $('#btn-save-doc').css('opacity',this.autoSave ? '0.3' : '1')
   }
 
-// TODO voir pourquoi ça n'est pas simple…
-// Est-ce à cause du draggable ???
 , setAutoVisualize(e){
     this.visualizeDoc = DGet('cb-auto-visualize').checked
     if (this.visualizeDoc){
@@ -336,6 +339,7 @@ const FAWriter = {
   }
 
 , setModified(mod){
+    if (this.autoSave) return
     this.jqObj[mod?'addClass':'removeClass']('modified')
   }
 

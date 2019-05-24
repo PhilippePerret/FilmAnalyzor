@@ -209,7 +209,15 @@ static unsetCurrent(wf){
 **/
 static closeCurrent(){
   if(this.isReaderOrEventBtns(this.current)) return false
-  isDefined(this.current) && this.current.hide()
+  if ( isDefined(this.current) ) {
+    // S'il existe une fonction de fermeture propre, on
+    // l'utilise.
+    if (isDefined(this.current.owner) && isFunction(this.current.owner.hide)) {
+      this.current.owner.hide()
+    } else {
+      this.current.hide()
+    }
+  }
   return true
 }
 

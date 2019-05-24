@@ -24,20 +24,24 @@ onKeyUpInTextField(e){
     var touche = e.key
 
     switch (touche) {
-      case STRm:
+      case STREscape: // Escape
+        if (FWindow.closeCurrent()){
+          return stopEvent(e)
+        } else return true
+      case STRm: // m
         log.info('m:go to next marker')
         F.notify("TODO: Je dois aller au marqueur suivant.")
         break
-      case STRM:
+      case STRM: // M
         log.info('M:show markers list')
         F.notify("TODO: Je dois afficher la liste des marqueurs.")
         break
       case ' ':
         touche = this.a.locator.playing ? STRk : STRl
         console.log("touche modifiée: ", touche)
-      case STRk:
-      case STRj:
-      case STRl:
+      case STRk: // k
+      case STRj: // j
+      case STRl: // l
         let loc = this.a.locator
           , vid = this.a.videoController
         if (touche === STRj) { // meta + j => rewind or accelerate
