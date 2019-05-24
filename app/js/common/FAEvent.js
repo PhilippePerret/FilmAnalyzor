@@ -541,11 +541,12 @@ observe(container){
   var my = this
     , o = this.jqReaderObj
 
-  if(this.jqReaderObj.attr(STRobserved) == STROBSERVED) return
-
-  if(isUndefined(this.jqReaderObj)){
-    log.warn(`BIZARREMENT, le jqReaderObj de l'event #${this.id} est introuvable dans le reader. recherché avec domReaderId:${domReaderId}`)
+  if(isUndefined(o)){
+    log.warn(`BIZARREMENT, le jqReaderObj de l'event #${this.id} est introuvable dans le reader. recherché avec domReaderId:${this.domReaderId}`)
   } else {
+
+    if(o.attr(STRobserved) == STROBSERVED) return
+
     // On rend actif les boutons d'édition
     o.find('.e-tools button.btn-edit').on(STRclick, EventForm.editEvent.bind(EventForm, this))
 
@@ -560,7 +561,7 @@ observe(container){
       .droppable(DATA_ASSOCIATES_DROPPABLE)
       .draggable(DATA_ASSOCIATES_DRAGGABLE)
 
-    this.jqReaderObj.attr(STRobserved, STROBSERVED)
+    o.attr(STRobserved, STROBSERVED)
   }
 }
 
