@@ -9,8 +9,14 @@ init(){
   let my = this
   // --- ÉCRITURE DE L'ANALYSE ---
   this.dispatchElementOnTape()
-  // Observation de l'interface
-  this.observeBancTimeline()
+
+  // La tape d'échelle (bande métrée) est sensible au clic pour se
+  // déplacer dans le film
+  this.scaleTape.on(STRclick, this.onClickScaleTape.bind(this))
+
+  // On rend tous les éléments sensible au clic pour les éditer
+  this.timelineTape.find('.banctime-element').on(STRclick, this.onClickElement.bind(this))
+
 }
 
 // ---------------------------------------------------------------------

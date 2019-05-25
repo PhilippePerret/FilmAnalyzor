@@ -110,6 +110,9 @@ const UIBuilder = {
     // On enclenche la captation de touches pressées
     UI.toggleKeyUpAndDown(/* vers out-text-field = */ true)
 
+    // On observe les mutations du DOM
+    UI.observeMutations()
+
     // Extras
     // ------
     // Tous les champs input-text, on selectionne tout quand on focusse

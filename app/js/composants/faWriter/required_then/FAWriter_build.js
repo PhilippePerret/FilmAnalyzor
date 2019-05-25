@@ -111,10 +111,6 @@ Object.assign(FAWriter, {
     // On observe le champ de texte
     my.docField
       .on(STRchange,  my.onContentsChange.bind(my))
-      .on(STRfocus,   my.onFocusContents.bind(my))
-      .on(STRblur,    my.onBlurContents.bind(my))
-      .on(STRkeydown, my.onKeyDown.bind(my))
-      .on(STRkeyup,   my.onKeyUp.bind(my))
 
     // Méthode communes d'extension
     this.setTextFieldsAssociableIn(my.section)

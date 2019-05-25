@@ -198,17 +198,6 @@ const FAWriter = {
     this.currentDoc.contents = this.docField.val()
   }
 
-// Cf. require_then/FAWriter_keyUp_keyDown.js
-// , onKeyDown(e){}
-// , onKeyUp(e){}
-
-, onFocusContents(){
-    this.message('')
-  }
-
-, onBlurContents(){
-  }
-
 , reset(){
     this.docField.val('')
   }

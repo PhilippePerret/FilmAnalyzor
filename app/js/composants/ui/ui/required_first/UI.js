@@ -9,6 +9,57 @@ window.W = undefined
 const UI = {
   class: 'UI'
 
+/**
+  Méthode, appelée à l'initialisation, permettant de surveiller
+  les mutations du DOM et, notamment, observer les champs de
+  texte qui sont ajoutés.
+**/
+, observeMutations(){
+    // On place un observer qui
+    let domObserver = new MutationObserver((mutations, observer)=>{
+      for(var mutation of mutations){
+        if(mutation.type === STRchildList){
+          // Un élément ajouté
+          console.log("Élément ajouté : ", mutation)
+          mutation.addedNodes.forEach( node => {
+            $(node).find(TEXT_TAGNAMES)
+              .on(STRfocus, UI.onFocusTextField.bind(UI))
+              .on(STRblur,  UI.onBlurTextField.bind(UI))
+          })
+        }
+      }
+    })
+    let domObserverConfig = {
+      // On ne prend pas les changements d'attributs
+      attributes: false,
+      // On veut la liste des éléments ajoutés et supprimés
+      childList: true,
+      // Seulement les éléments ajoutés au body
+      subtree: false
+    };
+
+    // Toutes les touches forment des combinaisons
+    // clavier, tant qu'on n'est pas dans un champ de texte.
+    // Pour activer les observers « hors champ », on simule le
+    // blur d'un champ de texte
+    this.onBlurTextField()
+
+    // On commence à observer le DOM
+    domObserver.observe(document.body, domObserverConfig)
+    // domObserver.observe(document.querySelector('#section-writer'), domObserverConfig)
+
+  }
+/**
+  Les deux méthodes `onFocusTextField` et `onBlurTextField` sont
+  appelées par les méthodes implémentées
+**/
+, onFocusTextField(e){
+    UI.toggleKeyUpAndDown(/* out-text-field = */ false)
+  }
+, onBlurTextField(e){
+    UI.toggleKeyUpAndDown(/* out-text-field = */ true)
+  }
+
 , updateUIConstants(){
     // La hauteur absolue de l'espace libre, au-dessus de la barre
     // d'état
@@ -29,7 +80,10 @@ const UI = {
   }
 /**
   Méthode qui fait basculer la captation des touches du mode "out" champs de
-  texte au mode "in" (dans un champ de texte)
+  texte au mode "in" (dans un champ de texte).
+
+  C'est la méthode principale de gestion des raccourcis, il ne
+  faut plus utiliser qu'elle.
 **/
 , toggleKeyUpAndDown(versOut){
     log.info("-> UI.toggleKeyUpAndDown")
@@ -98,10 +152,10 @@ const UI = {
  * des input-text dont on peut régler le temps à la souris
  */
 , setHorlogeable(container, options){
-    var my = this
-    if(undefined === options) options = {}
-    var hrs = container.querySelectorAll('horloge')
+    let my = this
+      , hrs = container.querySelectorAll('horloge')
     var horloges = {}
+    options = options || {}
     // console.log("horloges trouvées : ", hrs)
     for(var i = 0, len=hrs.length; i<len; ++i){
       var h = new DOMHorloge(hrs[i])
