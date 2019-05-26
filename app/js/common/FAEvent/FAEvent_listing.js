@@ -34,7 +34,7 @@ Object.assign(FAEvent,{
 
 Object.defineProperty(FAEvent,'DataFAListing',{
 get(){
-  if(undefined === this._datafalisting){
+  if(isUndefined(this._datafalisting)){
     this._datafalisting = {
       // FAEvent.DataFAListing = { // on ne peut pas utiliser 'this'
         items: []//doit être défini par la méthode générale listEvents(type)

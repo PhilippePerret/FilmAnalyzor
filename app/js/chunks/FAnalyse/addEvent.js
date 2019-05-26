@@ -7,7 +7,7 @@
   l'analyse (depuis la version 0.5.2).
 **/
 let addEvent = function(nev){
-  if(undefined === this.ids){
+  if(isUndefined(this.ids)){
     this.events = []
     this.ids    = {}
   }

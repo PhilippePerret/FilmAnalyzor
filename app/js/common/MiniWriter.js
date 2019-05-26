@@ -24,7 +24,6 @@ class MiniWriter {
 * l'aide de `MiniWriter.new(<field>)`
 **/
 static new(field /* DOMElement non jQuery */){
-  if(NONE === typeof(Snippets)) return FAnalyse.loadSnippets(this.new.bind(this, field))
   // if($(`#${field.id}`).length === 0) throw("Il faut transmettre un champ valide.")
   if(isEmpty($(field))) throw("Il faut transmettre un champ valide (existant).")
   // console.log("field:",field)

@@ -54,6 +54,16 @@ après la fermeture ou l'ouverture de la flying-window.
 Méthode appelée, si elle existe, à la fin d'un déplacement de la fenêtre
 Par exemple pour mémoriser la dernière position.
 
+`onFocus`
+---------
+Méthode appelée, si elle existe, quand la fenêtre devient la
+fenêtre principale.
+
+`onBlur`
+---------
+Méthode appelée, si elle existe, quand la fenêtre était la fenêtre courante
+et qu'elle ne l'est plus.
+
 **/
 
 
@@ -164,6 +174,10 @@ static isReaderOrEventBtns(fwindow){
 * sur une autre.
 **/
 static checkOverlaps(wf){
+  if(isEmpty(wf.jqObj)){
+    log.warn(T('fwindow-can-check-overlap', {id: wf.id}))
+    return
+  }
   var {top: refTop, left: refLeft} = wf.jqObj.offset()
   refTop  = Math.round(refTop)
   refLeft = Math.round(refLeft)
@@ -171,7 +185,7 @@ static checkOverlaps(wf){
   var moveIt = false
   $('.fwindow').each(function(i,w){
     if(w.id == wf.domId) return // c'est la fenêtre qu'on checke
-    if(moveIt === true) return  // On sait qu'on doit la bouger
+    if(isTrue(moveIt)) return  // On sait qu'on doit la bouger
     var {top, left} = $(w).offset()
     top   = Math.round(top)
     left  = Math.round(left)
@@ -322,6 +336,7 @@ bringToFront(){
   log.info(`-> ${this.ref}.bringToFront`)
   this.jqObj.css('z-index', 100)
   this.current = true
+  isFunction(this.owner.onFocus) && this.owner.onFocus.bind(this.owner)()
   log.info(`<- ${this.ref}.bringToFront`)
 }
 // Pour remettre la Flying window en arrière plan
@@ -329,6 +344,7 @@ bringToBack(){
   log.info(`-> ${this.ref}.bringToBack`)
   this.jqObj.css('z-index', 50)
   this.current = false
+  isFunction(this.owner.onBlur) && this.owner.onBlur.bind(this.owner)()
   log.info(`<- ${this.ref}.bringToBack`)
 }
 

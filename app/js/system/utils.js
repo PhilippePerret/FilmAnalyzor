@@ -1,5 +1,6 @@
 'use strict'
 
+
 function isUndefined(foo){
   return STRundefined === typeof(foo)
 }

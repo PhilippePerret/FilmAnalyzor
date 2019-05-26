@@ -59,7 +59,7 @@ static notConfirmNewScene(){
       alert(T('scene-too-close'))
       return true
     } else {
-      if(!confirm(T('confirm-scene-close',{ecart: ecart}))){
+      if( ! confirm(T('confirm-scene-close',{ecart: ecart})) ){
         return true
       }
     }

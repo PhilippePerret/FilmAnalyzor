@@ -62,13 +62,6 @@ Object.assign(FAnalyse,{
     log.info("<- [FAnalyse::resetAll] Réinitialisation complète")
   }
 
-/**
-  Chargement des snippets
-**/
-, loadSnippets(fn_callback){
-  return System.loadComponant('Snippets', fn_callback)
-}
-
 })
 
 // ---------------------------------------------------------------------

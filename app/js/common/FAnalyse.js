@@ -313,7 +313,6 @@ newVersionRequired(){
  * Méthode qui ouvre le writer
  */
 openDocInWriter(dtype){
-  if(NONE === typeof(Snippets)) return FAnalyse.loadSnippets(this.openDocInWriter.bind(this, dtype))
   if(dtype){
     if(dtype.startsWith('fondamentales') && NONE === typeof(Fondamentales)){
       return this.loadFondamentales(this.openDocInWriter.bind(this, dtype))

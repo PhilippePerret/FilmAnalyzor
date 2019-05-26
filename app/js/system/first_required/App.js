@@ -137,8 +137,9 @@ const AppLoader = {
 , loadAllComponants(){
     log.info("-> AppLoader::loadAllComponants")
     App.allComponantsLoaded = false
-    // return 
+    // return
     if(NONE === typeof UI)            return this.loadComponant('ui/ui')
+    if(NONE === typeof Helper)        return this.loadComponant('Helper')
     if(NONE === typeof BancTimeline)  return this.loadComponant('ui/banc_timeline')
     if(NONE === typeof DataEditor)    return this.loadComponant('DataEditor')
     if(NONE === typeof EventForm)     return this.loadComponant('EventForm')
@@ -152,6 +153,7 @@ const AppLoader = {
     if(NONE === typeof FAReader)      return this.loadComponant('faReader')
     if(NONE === typeof FAStats)       return this.loadComponant('faStats')
     if(NONE === typeof FAImage)       return this.loadComponant('faImage')
+    if(NONE === typeof Snippets)      return this.loadComponant('Snippets')
 
     // Si tout est OK, on peut rappeler la méthode Fanalyse.load
     log.info("   Tous les composants sont chargés.")

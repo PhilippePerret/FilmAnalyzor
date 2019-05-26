@@ -58,7 +58,7 @@ static defineType(){
 }
 
 static edit(item_id, e){
-  if(e) stopEvent(e) // cf. note N0001
+  e && stopEvent(e) // cf. note N0001
   if(NONE === typeof(DataEditor)) return this.a.loadDataEditor(this.edit.bind(this,item_id))
   DataEditor.open(this, item_id)
 }

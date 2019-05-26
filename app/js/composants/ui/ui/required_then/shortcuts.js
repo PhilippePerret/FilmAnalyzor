@@ -10,13 +10,21 @@ Object.assign(UI, {
   de saisie.
 **/
   onKeyUpInTextField(e){
+    let target = $(e.target)
     console.log("-> KeyUp dans un TEXT FIELD")
     // Comment trouver le sélection (selector), maintenant
     // que toutes les méthodes sont communes ?
+    // Plus, j'ai utilisé (sel = new Selector($(e.target))) mais ce n'est
+    // pas vivable si la méthode est appelée à répitition à chaque touche
+    // pressée
     var sel
     if(e.keyCode === KESCAPE){
-      this.cancel.bind(this)()
-      return stopEvent(e)
+      /**
+        // TODO Il faut traiter l annulation quand on est dans un champ
+        // de texte.
+      **/
+      // this.cancel.bind(this)()
+      // return stopEvent(e)
     } else if(isTrue(e.metaKey)){
       // MÉTA
       console.log("-> Touche META")
@@ -43,7 +51,7 @@ Object.assign(UI, {
 
       return UI.inTextField.insertChevrons(e, this.selector)
 
-    } else if (e.keyCode === KERASE && (sel.beforeUpTo(RC,false)||'').match(/^ +$/)){
+    } else if (e.keyCode === KERASE && ((sel && sel.beforeUpTo(RC,false))||'').match(/^ +$/)){
 
       // TODO TROUVER COMMENT SAVOIR QUE LE PROPRIÉTAIRE EST LE FAWRITER
       if ( e.target.data('owner-id') === 'writer') {
@@ -60,7 +68,7 @@ Object.assign(UI, {
 
     } else if(e.keyCode === KTAB){
 
-      if(e.target.data('owner-id') === 'writer'){
+      if(target.data('owner-id') === 'writer'){
         if(FAWriter.selector.before() == RC){
           // Si on est en début de ligne, on insert un élément de liste
           return UI.inTextField.replaceTab(e, this.selector, '* ')
@@ -72,6 +80,7 @@ Object.assign(UI, {
   }
 
 , onKeyDownInTextField(e){
+    let target = $(e.target)
     if(e.keyCode === KESCAPE){
       // TODO
       F.notify("Il faudrait fermer la fenêtre.")
@@ -98,7 +107,7 @@ Object.assign(UI, {
           // console.log("[DOWN] which, KeyCode, charCode, metaKey, altKey ctrlKey shiftKey", e.which, e.keyCode, e.charCode, e.metaKey, e.altKey, e.ctrlKey, e. shiftKey)
           if(e.which === 191){
             // === EXCOMMENTER OU DÉCOMMENTER UNE LIGNE ===
-            if(e.target.data('owner-id') === 'writer'){
+            if(target.data('owner-id') === 'writer'){
               return this.inTextField.toggleComments(e, FAWriter.selector, {before: '<!-- ', after: ' -->'})
             }
           }
@@ -152,6 +161,8 @@ Object.assign(UI, {
   de saisie
 **/
 , onKeyUpOutTextField(e){
+    let target = $(e.target)
+    console.log("-> onKeyUpOutTextField")
     console.log("Touche pressée en dehors d'un champ de saisie :", e.key)
     // On met la touche pressée dans une variable pour pouvoir la
     // modifier plus tard.
@@ -179,6 +190,8 @@ Object.assign(UI, {
         log.info('M:show markers list')
         F.notify("TODO: Je dois afficher la liste des marqueurs.")
         break
+      case STRn: // n
+        return stopEvent(e)
       case ' ':
         touche = this.a.locator.playing ? STRk : STRl
         console.log("touche modifiée: ", touche)
@@ -225,6 +238,8 @@ Object.assign(UI, {
   }
 
 , onKeyDownOutTextField(e){
+    console.log("-> onKeyDownOutTextField")
+    let target = $(e.target)
     if(this.currentKeyDown){
       // <= Une touche est pressée
       switch(this.currentKeyDown){
@@ -240,7 +255,63 @@ Object.assign(UI, {
           break;
       }
     } else {
+
+      /**
+        ---------------------------------------------------------------------
+          Traitement de toutes les touches seules en dehors d'un champ de
+          saisie.
+
+        ---------------------------------------------------------------------
+      **/
       this.currentKeyDown = e.key
+      // On met la touche pressée dans une variable pour pouvoir la
+      // modifier plus tard.
+      var touche = e.key
+      switch (touche) {
+        case STRm:
+          if(e.metaKey){
+            log.info('CMD-m:create new marker')
+            F.notify("TODO: Je dois créer un nouveau marqueur.")
+            return stopEvent(e)
+          } else if (e.altKey){
+            log.info('ALT-M:go to previous marker')
+            F.notify("TODO: Je dois passer en revue les marqueurs en sens inverse.")
+          }
+          break
+        case STRn:
+          stopEvent(e)
+          Helper.open('new-element')
+          return false
+        case STRArrowLeft:
+          if(e.metaKey && e.shiftKey){
+            // `META SHIFT <-` => === DÉBUT DU FILM ===
+            log.info('Meta+Maj+<-:go to start of the film or zero')
+            this.a.locator.goToFilmStartOrZero()
+            return stopEvent(e)
+          } else if (e.metaKey) {
+            // META+FLECHE-GAUCHE ===> SCÈNE PRÉCÉDENTE <===
+            log.info('Meta+<-:go to previous scene')
+            this.a.locator.goToPrevScene()
+            return stopEvent(e)
+          }
+          break
+        case STRArrowRight:
+          if(e.metaKey && e.shiftKey){
+            // `META SHFT ->` => FIN DU FILM
+            log.info('Meta+Maj+->:go to end of the film or video')
+            this.a.locator.goToFilmEndOrEnd()
+            return stopEvent(e)
+          } else if (e.metaKey) {
+            // META+FLÈCHE-DROITE ===> SCÈNE SUIVANTE <===
+            log.info('Meta+->:go to next scene')
+            this.a.locator.goToNextScene()
+            return stopEvent(e)
+          }
+          break
+        default:
+
+      }
+
     }
   }
 
@@ -255,32 +326,40 @@ Object.assign(UI, {
   }
 
 , inTextField:{
-  // Méthode appelé quand on joue la touche TAB
+    // Méthode appelé quand on joue la touche TAB
     stopTab(e, sel){
+      // Mais pour un input text, il faut returner true
+      if (e.target.tagName === 'INPUT') return true
       return stopEvent(e)
     }
     // Remplace la touche tabulation, dans le selector +sel+,
     // par le texte +remp+
   , replaceTab(e, sel, remp){
+      isDefined(sel) || (sel = new Selector($(e.target)))
       sel.insert(remp)
       return stopEvent(e)
     }
   , replaceSnippet(e, sel){
+      isDefined(sel) || (sel = new Selector($(e.target)))
       var snip = sel.beforeUpTo(' ', false, {endRC: true})
       isNull(snip) || Snippets.checkAndReplace(sel, snip)
       // return stopEvent(e)
     }
     // Méthode appelée pour déplacer un paragraphe dans le texte
   , moveParagraph(e, sel, toUp){
+      isDefined(sel) || (sel = new Selector($(e.target)))
       return UI.doMoveParagraph(e, sel, toUp)
     }
   , toggleComments(e, sel, args){
+      isDefined(sel) || (sel = new Selector($(e.target)))
       return this.doToggleComments(e, sel, args)
     }
   , insertCrochet(e, sel){
+      isDefined(sel) || (sel = new Selector($(e.target)))
       return this.doInsertCrochet(e, sel)
     }
   , insertChevrons(e, sel){
+      isDefined(sel) || (sel = new Selector($(e.target)))
       return this.doInsertChevrons(e, sel)
     }
   }

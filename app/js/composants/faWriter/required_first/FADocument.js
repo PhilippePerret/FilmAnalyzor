@@ -30,6 +30,14 @@ static new(){
   FAWriter.message(T('new-custom-document-created'))
 }
 
+/**
+  For consistency with others elements
+**/
+static edit(doc_id){
+  if(isUndefined(doc_id)) this.new()
+  else this.get(doc_id).display()
+}
+
 static newId(){
   isDefined(this.lastID) || ( this.lastID = 0 )
   return ++ this.lastID
@@ -42,7 +50,7 @@ static newId(){
  d'un document personnalisé.
 **/
 static get(doc_id){
-  isDefined(this.documents) || ( this.documents = {} )
+  defaultize(this,'documents', {})
   if( isUndefined(this.documents[doc_id])){
     let [dtype, realid] = doc_id.split('-')
     if(dtype === 'custom') realid = parseInt(realid,10)
@@ -156,7 +164,7 @@ static get count(){
 **/
 constructor(dtype, id, docPath){
   // console.log("dtype, id, docPath", dtype, id, docPath)
-  undefined !== dtype || raise("Impossible d'instancier un document sans type ou ID.")
+  isDefined(dtype) || raise("Impossible d'instancier un document sans type ou ID.")
   ['regular','custom','any'].indexOf(dtype) > -1 || raise(`Le doc-type (dtype) "${dtype}" est inconnu.`)
   this.dtype = dtype
   if(dtype === 'any'){

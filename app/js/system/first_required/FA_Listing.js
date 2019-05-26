@@ -291,14 +291,14 @@ get collapsed(){
 }
 // False si les associés ne doivent pas être affichés (true par défaut)
 get displayAssociates(){
-  if(undefined === this._displayassos){
-    if(undefined === this.data.associates) this.data.associates = true
+  if(isUndefined(this._displayassos)){
+    isDefined(this.data.associates) || ( this.data.associates = true )
     this._displayassos = !!this.data.associates
   }
   return this._displayassos
 }
 get displayStatistiques(){
-  if(undefined === this._displaystats)this._displaystats = !!this.data.statistiques
+  defaultize(this, '_displaystats', !!this.data.statistiques)
   return this._displaystats
 }
 asListItem(it,ops){return this.data.asListItem(it,ops)}
@@ -321,32 +321,33 @@ Object.assign(FAListing,{
   classIsValid(classe){
     var res
     try {
-      undefined !== classe.DataFAListing || raise('falist-data-required')
+      isDefined(classe.DataFAListing) || raise('falist-data-required')
       let data = classe.DataFAListing
-      undefined !== data.items || raise('falist-items-required')
-      undefined !== data.asListItem || raise('falist-aslistitem-required')
-      'function'== typeof(data.asListItem) || raise('falist-aslistitem-must-be-function')
+      isDefined(data.items) || raise('falist-items-required')
+      isDefined(data.asListItem) || raise('falist-aslistitem-required')
+      isFunction(data.asListItem) || raise('falist-aslistitem-must-be-function')
       // On essaie de voir si l'instance répond bien à `asListItem`. S'il y a
       // des items, on utilise le premier, sinon, on essaie de créer une
       // instance et en cas d'échec, on ne teste pas.
       let it = data.items[0]
       if(it){
-        try{res = data.asListItem(it)}
-        catch(e){console.error("Erreur en essayant de construire le premier élément :",res)}
+        try { res = data.asListItem(it) }
+        catch(e){console.error("Erreur en essayant de construire le premier élément :",res, e)}
+        console.log("res:", res)
         res || raise('falist-aslistitem-bad-return')
-        'string' === typeof(res.outerHTML) || raise('falist-aslistitem-bad-return')
+        isString(res.outerHTML) || raise('falist-aslistitem-bad-return')
         res.tagName === LI || raise('falist-aslistitem-required')
       }
       it = null
 
       // La classe doit répondre à la méthode save()
       if(data.editable||data.creatable||data.removable){
-        'function'===typeof(classe.save) || raise('faliste-owner-save-required')
+        isFunction(classe.save) || raise('faliste-owner-save-required')
       }
 
-      data.editable === true && 'function'!==typeof(classe.edit) && raise('faliste-edit-function-required')
+      isTrue(data.editable) && isNotFunction(classe.edit) && raise('faliste-edit-function-required')
 
-      data.removable === true && 'function'!==typeof(classe.destroy) && raise('faliste-destroy-fct-require')
+      isTrue(data.removable) && isNotFunction(classe.destroy) && raise('faliste-destroy-fct-require')
 
 
 

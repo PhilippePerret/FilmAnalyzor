@@ -18,7 +18,7 @@ Object.assign(FAPersonnage,{
   Méthode utilisée par DataEditor pour créer un item
 **/
 , DECreateItem(dperso){
-    if(undefined === this._data) this._data = {}
+    defaultize(this, '_data', {})
     this._data[dperso.id] = dperso
     this.reset()
     this.DESave()

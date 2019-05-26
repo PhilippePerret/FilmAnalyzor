@@ -66,6 +66,7 @@ const ERRORS = {
 , "fwindow-invalid-container": "Le container pour placer la flying-window est invalide (introuvable)"
 , "fwindow-contents-required": "Pour instancier une flying-window, il faut fournir le contenu HTML (noeud principal). On peut le faire soit par les data (propriété `contents`) soit en définissant `FWcontents` dans le propriétaire."
 , "fwindow-owner-has-build-function": "Le propriétaire d'une flying-window doit définir la méthode `build` qui doit construire le contenu de la fenêtre volante."
+, "fwindow-can-check-overlap": "Bizarrement, la flying-window %{id} est introuvable dans le DOM. Impossible de checker le chevauchement avec une autre fenêtre."
 
 , "--- TEXTES ---": ""
 , "notify-missed-variable": "La variable “{{%{var}}}” est inconnue. Il faut la définir dans le documents “Documents > Informations/variables” en ajoutant la ligne `%{var}: Valeur` (code YAML)."
@@ -119,7 +120,7 @@ const MESSAGES = {
 , "--- messages VIDÉO ---":""
 , "no-stop-point": "Aucun point d'arrêt n'est encore défini. Déplacez-vous dans la vidéo pour les définir (à chaque lancement de la vidéo)."
 , "--- messages SCÈNES ---":""
-, "confirm-scene-close": "Une scène se trouve à %{ecart} secondes. Voulez-vous vraiment créer cette scène ?"
+, "confirm-scene-close": "Une scène se trouve à %{ecart} secondes. Voulez-vous vraiment créer cette scène ?\n\n(ne pas utiliser la touche ESCAPE pour annuler)"
 , "--- messages EVENTS ---":""
 , "confirm-destroy-event": "Êtes-vous certain de vouloir détruire à tout jamais cet event ?…"
 , "---- DOCUMENT ----":""

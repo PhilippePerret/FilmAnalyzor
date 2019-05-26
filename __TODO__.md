@@ -1,8 +1,12 @@
 # SUR LE GRILL
 
 ### Traiter :
-
-* Il faut que la vidéo change de taille quand on réduit la fenêtre
+* Comment généraliser l'affichage facile de tout un tas de panneau :
+  class Helper, utilisant FWindow pour se construire
+  La classe doit être capable de comprendre les touches pressées (elle a
+  d'ailleurs sans doute son propre usage, qui désactive les touches universelles)
+  
+* N => Nouveau => afficher une fenêtre avec les nouveaux possibles, document, brin et personnages possible.
 * Traiter les observeurs de keyup/keydown différemment en fonction du propriétaire (rappel : l'observer de mutations met dans la propriété "data-owner-id" l'identifiant du DOMElement qui contient le champ de saisie. C'est 'writer' lorsque c'est le writer)
 * Faire une fenêtre avec tous les raccourcis, qu'on peut ouvrir avec… un raccourci ("s" comme "shortcuts" en mode hors-champ)
 * Implémenter tous les raccourcis qui doivent permettre de naviguer dans la vidéo :
