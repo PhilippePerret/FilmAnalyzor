@@ -92,19 +92,15 @@ const UIBuilder = {
       handles:'e'
     })
     $('#C1-R1').resizable({
-      handles:'s'
+        handles:'s'
+      , alsoResize: '#section-video-body, #section-video-body-video-1'
     })
+
     UI.sectionForms.resizable({
       handles:'s'
     })
     UI.sectionVideo.resizable({
       handles:'e'
-    })
-
-    // On doit pouvoir resizer la section vidéo et la section des autres
-    // éléments
-    UI.sectionVideo.resizable({
-        handles: 'e'
     })
 
     // On enclenche la captation de touches pressées

@@ -3,9 +3,19 @@
 ### Traiter :
 
 * Il faut que la vidéo change de taille quand on réduit la fenêtre
+* Traiter les observeurs de keyup/keydown différemment en fonction du propriétaire (rappel : l'observer de mutations met dans la propriété "data-owner-id" l'identifiant du DOMElement qui contient le champ de saisie. C'est 'writer' lorsque c'est le writer)
+* Faire une fenêtre avec tous les raccourcis, qu'on peut ouvrir avec… un raccourci ("s" comme "shortcuts" en mode hors-champ)
+* Implémenter tous les raccourcis qui doivent permettre de naviguer dans la vidéo :
+  - de scène en scène (déjà implémenté)
+  - image par image
+  - seconde par seconde
+  - 10 secondes par 10 secondes
+  - de marqueur en marqueur
+  - de stop point en stop point
+  - de noeud structurel en noeud structurel
+  + Les ajouter au title des boutons et réactiver les buttons.
 
-Rationaliser l'utilisation des `window.onkeyup` et `window.onkeydown` (note : il y a un bug enregistré pour ça).
-  - TODO rechercher KeyUpAndDown pour voir qui l'appelle
+
 
 Faire un controleur pour chaque partie de l'interface et notamment pour la colonne de droite qui doit s'ouvrir/se refermer, recevoir un élément à afficher, etc.
   - FAIT Il faut maintenant l'utiliser.

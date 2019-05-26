@@ -16,15 +16,18 @@ const UI = {
 **/
 , observeMutations(){
     // On place un observer qui
-    let domObserver = new MutationObserver((mutations, observer)=>{
+    let domObserver = new MutationObserver((mutations, observer) => {
       for(var mutation of mutations){
         if(mutation.type === STRchildList){
           // Un élément ajouté
-          console.log("Élément ajouté : ", mutation)
+          console.log("Éléments ajoutés : ", mutation.addedNodes)
           mutation.addedNodes.forEach( node => {
+            console.log("Observers focus/blur posés sur :", node)
+            console.log("Champs de saisie trouvés : ",$(node).find(TEXT_TAGNAMES))
             $(node).find(TEXT_TAGNAMES)
               .on(STRfocus, UI.onFocusTextField.bind(UI))
               .on(STRblur,  UI.onBlurTextField.bind(UI))
+              .data('owner-id', node.id)
           })
         }
       }
@@ -34,7 +37,7 @@ const UI = {
       attributes: false,
       // On veut la liste des éléments ajoutés et supprimés
       childList: true,
-      // Seulement les éléments ajoutés au body
+      // Seulement les éléments ajoutés à l'élément surveillé
       subtree: false
     };
 
@@ -44,9 +47,12 @@ const UI = {
     // blur d'un champ de texte
     this.onBlurTextField()
 
-    // On commence à observer le DOM
+    // On commence à observer le DOM, seulement les sections
+    // dans lesquelles ont peut ajouter des éléments (car
+    // subtree est false dans les configurations de mutation)
     domObserver.observe(document.body, domObserverConfig)
-    // domObserver.observe(document.querySelector('#section-writer'), domObserverConfig)
+    domObserver.observe(DGet('section-writer'), domObserverConfig)
+    domObserver.observe(DGet('section-eventers'), domObserverConfig)
 
   }
 /**

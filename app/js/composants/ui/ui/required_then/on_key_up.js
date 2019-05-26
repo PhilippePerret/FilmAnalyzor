@@ -13,7 +13,7 @@ Object.assign(UI, {
     console.log("-> KeyUp dans un TEXT FIELD")
     // Comment trouver le sélection (selector), maintenant
     // que toutes les méthodes sont communes ?
-    // let sel = this.selector
+    var sel
     if(e.keyCode === KESCAPE){
       this.cancel.bind(this)()
       return stopEvent(e)
@@ -46,9 +46,10 @@ Object.assign(UI, {
     } else if (e.keyCode === KERASE && (sel.beforeUpTo(RC,false)||'').match(/^ +$/)){
 
       // TODO TROUVER COMMENT SAVOIR QUE LE PROPRIÉTAIRE EST LE FAWRITER
-      if ( this.currentOwner === 'fawriter') {
-        if(this.currentDoc.isData){
+      if ( e.target.data('owner-id') === 'writer') {
+        if(FAWriter.currentDoc.isData){
           // On doit effacer deux espaces
+          sel = FAWriter.selector
           let st = 0 + sel.startOffset
           sel.startOffset= st - 1
           sel.remplace('')
@@ -59,89 +60,92 @@ Object.assign(UI, {
 
     } else if(e.keyCode === KTAB){
 
-      if(this.selector.before() == RC){
-        // Si on est en début de ligne, on insert un élément de liste
-        return UI.inTextField.replaceTab(e, this.selector, '* ')
-      } else {
-        // Si on n'est pas en début de ligne, on regarde si ça n'est
-        // un snippet
-        return UI.inTextField.replaceSnippet(e, this.selector)
+      if(e.target.data('owner-id') === 'writer'){
+        if(FAWriter.selector.before() == RC){
+          // Si on est en début de ligne, on insert un élément de liste
+          return UI.inTextField.replaceTab(e, this.selector, '* ')
+        }
       }
+      return UI.inTextField.replaceSnippet(e, this.selector)
     }
     return true
   }
 
 , onKeyDownInTextField(e){
-  if(e.keyCode === KESCAPE){
-    // TODO
-    F.notify("Il faudrait fermer la fenêtre.")
-  } else if(e.keyCode === KRETURN){
-    if(e.metaKey){
-      // META + RETURN => FINIR
-      this.finir.bind(this)()
-      return stopEvent(e)
-    }
-  } else if(e.keyCode === KTAB){
-    return this.inTextField.stopTab(e, this.sel)
-  } else if(e.metaKey){
-      if ( e.ctrlKey ) {
-        // MÉTA + CTRL
-        if ( e.which === ARROW_UP || e.which === ARROW_DOWN){
-          return this.inTextField.moveParagraph(e, sel, e.which === ARROW_UP)
-        }
-      } else if (e.altKey ){
-        // META + ALT
-      } else if (e.shiftKey) {
-        // META + SHIFT
-        // console.log("[DOWN] which, KeyCode, charCode, metaKey, altKey ctrlKey shiftKey", e.which, e.keyCode, e.charCode, e.metaKey, e.altKey, e.ctrlKey, e. shiftKey)
-        if(e.which === 191){
-          // === EXCOMMENTER OU DÉCOMMENTER UNE LIGNE ===
-          return this.inTextField.toggleComments(e, this.selector, {before: '<!-- ', after: ' -->'})
-        }
-      } else {
-        // MÉTA seule
+    if(e.keyCode === KESCAPE){
+      // TODO
+      F.notify("Il faudrait fermer la fenêtre.")
+    } else if(e.keyCode === KRETURN){
+      if(e.metaKey){
+        // META + RETURN => FINIR
+        this.finir.bind(this)() // on aura une erreur ici
+        return stopEvent(e)
+      }
+    } else if(e.keyCode === KTAB){
+      return this.inTextField.stopTab(e, this.sel)
+    } else if(e.metaKey){
+        if ( e.ctrlKey ) {
+          // MÉTA + CTRL
+          if ( e.which === ARROW_UP || e.which === ARROW_DOWN){
+            // UNE ERREUR CI DESSOUS: sel EST NON DÉFINI
+            // IL FAUT PRENDRE LE selector du propriétaire
+            return this.inTextField.moveParagraph(e, sel, e.which === ARROW_UP)
+          }
+        } else if (e.altKey ){
+          // META + ALT
+        } else if (e.shiftKey) {
+          // META + SHIFT
+          // console.log("[DOWN] which, KeyCode, charCode, metaKey, altKey ctrlKey shiftKey", e.which, e.keyCode, e.charCode, e.metaKey, e.altKey, e.ctrlKey, e. shiftKey)
+          if(e.which === 191){
+            // === EXCOMMENTER OU DÉCOMMENTER UNE LIGNE ===
+            if(e.target.data('owner-id') === 'writer'){
+              return this.inTextField.toggleComments(e, FAWriter.selector, {before: '<!-- ', after: ' -->'})
+            }
+          }
+        } else {
+          // MÉTA seule
 
-        switch (e.key) {
-          case STRS: // MÉTA + S
-            // Ici, le fonctionnement est différent en fonction de la
-            // cible. Si la cible est le fawrite, on enregistre le
-            // document. Si c'est le formulaire d'event, on enregistre
-            // les données et on sort (mais j'ai le sentiment que c'est
-            // déjà traité ailleurs).
-            F.notify("Il faut définir la cible courants pour savoir quoi faire de ce CMD+S")
-            if (e.target === 'le fawriter'){
-              this.currentDoc.getContents()
-              if (this.currentDoc.isModified()){
-                this.currentDoc.save()
+          switch (e.key) {
+            case STRS: // MÉTA + S
+              // Ici, le fonctionnement est différent en fonction de la
+              // cible. Si la cible est le fawrite, on enregistre le
+              // document. Si c'est le formulaire d'event, on enregistre
+              // les données et on sort (mais j'ai le sentiment que c'est
+              // déjà traité ailleurs).
+              F.notify("Il faut définir la cible courants pour savoir quoi faire de ce CMD+S")
+              if (e.target.data('owner-id') === 'writer'){
+                FAWriter.currentDoc.getContents()
+                if (FAWriter.currentDoc.isModified()){
+                  FAWriter.currentDoc.save()
+                }
+                return stopEvent(e)
               }
-              return stopEvent(e)
-            }
-            break
-          case STRj:
-          case STRk:
-          case STRl:
-            let a   = current_analyse
-              , loc = a.locator
-              , vid = a.videoController
-            if (e.key === STRj) { // meta + j => rewind or accelerate
-              loc.playing && loc.togglePlay()
-              loc.rewind(1.0)
-              return stopEvent(e)
-            } else if(e.key === STRk){ // meta + k => stop
-              loc.playing && loc.stop()
-              vid.setSpeed(1.0)
-              return stopEvent(e)
-            } else if(e.key === STRl){ // meta + l => start or accelerate
-              // Si la vidéo est déjà en train de jouer, on l'accélère
-              // Si la vidéo n'est pas en train de jouer, on la démarre
-              loc.playing ? vid.setSpeed(vid.getSpeed() + 0.5) : loc.togglePlay()
-              return stopEvent(e)
-            }
-            break
+              break
+            case STRj:
+            case STRk:
+            case STRl:
+              let a   = current_analyse
+                , loc = a.locator
+                , vid = a.videoController
+              if (e.key === STRj) { // meta + j => rewind or accelerate
+                loc.playing && loc.togglePlay()
+                loc.rewind(1.0)
+                return stopEvent(e)
+              } else if(e.key === STRk){ // meta + k => stop
+                loc.playing && loc.stop()
+                vid.setSpeed(1.0)
+                return stopEvent(e)
+              } else if(e.key === STRl){ // meta + l => start or accelerate
+                // Si la vidéo est déjà en train de jouer, on l'accélère
+                // Si la vidéo n'est pas en train de jouer, on la démarre
+                loc.playing ? vid.setSpeed(vid.getSpeed() + 0.5) : loc.togglePlay()
+                return stopEvent(e)
+              }
+              break
+          }
         }
       }
     }
-  }
 
 /**
   Méthode principale qui reçoit les touches quand on est hors d'un champ
@@ -212,6 +216,7 @@ Object.assign(UI, {
       case 'Escape':
         /**
           // TODO Close current fwindow
+          // Attention j ai l impression que plusieurs parties le font
         **/
         break
       default:
