@@ -8,6 +8,7 @@ function FReqGet(name){
 }
 
 const WindowController = FReqGet('ui/WindowController')
+const MessageBox = FReqGet('MessageBox')
 
 // Doit être défini avant FA_associates qui l'utilise
 const FADrop = FReqGet('FADrop')

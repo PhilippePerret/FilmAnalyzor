@@ -81,11 +81,20 @@ finir(){
   le cas échéant
 **/
 cancel(){
-  if (this.jqOwner.val() != this.textField.val()){
-    if(!confirm(T('confirm-abandon-modif-text'))) return false
+  if ( this.contenuHasChanged() ){
+    let dataConf = {
+        message: T('confirm-abandon-modif-text')
+      , buttons: ['Annuler', 'Abandonner les modifications']
+      , defaultButtonIndex: 0
+      , cancelButtonIndex: 0
+      , okButtonIndex:1
+      , methodOnOK: this.hide()
+    }
+    confirm(dataConf)
   }
-  this.hide()
-  return true
+}
+contenuHasChanged(){
+  return this.jqOwner.val() != this.textField.val()
 }
 /**
   On synchronize les contenus, c'est-à-dire qu'on met dans le

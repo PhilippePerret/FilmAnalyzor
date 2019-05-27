@@ -13,7 +13,19 @@ Object.assign(DataEditor.prototype,{
 , removeCurrentItem(){
     if(isUndefined(this.currentItem)) return
     if(this.isNotCurrentWindow()) return
-    if(!confirm(`Es-tu certain de vouloir détruire à tout jamais l'élément ${this.currentItemRef}?`)) return
+    confirm({
+        message: `Es-tu certain de vouloir détruire à tout jamais l'élément ${this.currentItemRef}?`
+      , buttons: ['Renoncer', 'Détruire']
+      , defaultButtonIndex:0
+      , cancelButtonIndex:0
+      , okButtonIndex:1
+      , methodOnOK: this.execRemovingCurrentItem.bind(this)
+    })
+  }
+/**
+  Méthode appelée après confirmation de la suppression de l'item
+**/
+, execRemovingCurrentItem(){
     if(this.mainClass.DERemoveItem(this.currentItem)){
       // Supprimer dans les items
       this.data.items.splice(this.currentItemIndex,1)

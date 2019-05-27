@@ -2,6 +2,8 @@
 types:
   n/d:
     hname: Non défini
+  coherence:
+    hname: Sur la cohérence
   musique:
     hname: Sur la musique
   importante:

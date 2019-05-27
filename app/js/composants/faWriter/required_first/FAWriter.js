@@ -73,9 +73,6 @@ const FAWriter = {
     }
     if(isFalse(this.checkCurrentDocModified())) return
     defaultize(this, 'writerDocs', {})
-    console.log("this.writerDocs:", this.writerDocs)
-    console.log("kdoc:", kdoc)
-    console.log("this.writerDocs[kdoc]:", this.writerDocs[kdoc])
     isDefined(this.writerDocs[kdoc]) || ( this.writerDocs[kdoc] = new FADocument(dtype, docid) )
     this.currentDoc = this.writerDocs[kdoc]
     if(!this.isOpened) this.open()

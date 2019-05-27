@@ -2,7 +2,20 @@
 
 const APPFOLDER = path.resolve('.')
 
+window.onCancelMe = function(){
+  F.notify("Je cancel le truc")
+}
+window.onOKMe = function(){F.notify("OK ? Tu as fait OK ?…")}
+
 function WhenAllIsReallyReady(){
+
+  // confirm("Voulez-vous vraiment tout casser ?", {type: 'confirm',
+  //     defaultButtonIndex:1
+  //   , okButtonIndex:1
+  //   , cancelButtonIndex:0
+  //   , methodOnCancel: window.onCancelMe.bind(window)
+  //   , methodOnOK: window.onOKMe.bind(window)
+  // })
   // FAPersonnage.dataEditor.open()
   // FABrin.dataEditor.open()
   // current_analyse.openDocInDataEditor('fondamentales')

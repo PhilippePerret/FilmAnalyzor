@@ -1,6 +1,17 @@
 'use strict'
 
 
+function confirm(msg, options){
+  var args
+  if ( isString(msg) ) {
+    Object.assign(options, {message: msg})
+  } else {
+    options = msg
+  }
+  msg = new MessageBox(options)
+  msg.show()
+}
+
 function isUndefined(foo){
   return STRundefined === typeof(foo)
 }
@@ -8,6 +19,7 @@ function isNumber(foo){return STRnumber === typeof(foo)}
 function isNotNumber(foo){return false === isNumber(foo)}
 
 function isNull(foo){ return null === foo }
+function isNotNull(foo){ return isFalse(isNull(foo)) }
 function isNullish(foo){ return isNull(foo) || isUndefined(foo) }
 function isNotNullish(foo){ return false === isNullish(foo) }
 

@@ -62,7 +62,17 @@ static add(image_fname){
 }
 
 static destroy(image_id){
-  if(false == confirm(`Veux-tu vraiment détruire DÉFINITIVEMENT l'image « ${image_id} » (donnée + fichier image) ?`)) return
+  if(false == confirm()) return
+  confirm({
+      message:`Veux-tu vraiment détruire DÉFINITIVEMENT l'image « ${image_id} » (donnée + fichier image) ?`
+    , buttons:['Renoncer','Détruire l’image']
+    , defaultButtonIndex:0
+    , cancelButtonIndex:0
+    , okButtonIndex:1
+    , methodOnOK:this.execDestroyImage.bind(this, image_id)
+  })
+}
+static execDestroyImage(image_id){
   let img = this.get(image_id)
   if(fs.existsSync(img.path)) fs.unlinkSync(img.path)
   delete this.images[image_id]
