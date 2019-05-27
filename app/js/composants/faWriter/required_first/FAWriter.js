@@ -73,11 +73,10 @@ const FAWriter = {
     }
     if(isFalse(this.checkCurrentDocModified())) return
     defaultize(this, 'writerDocs', {})
-    // if(undefined === this.writerDocs) this.writerDocs = {}
-    defaultize(this.writerDocs, kdoc, new FADocument(dtype, docid))
-    // if(undefined === this.writerDocs[kdoc]){
-    //   this.writerDocs[kdoc] = new FADocument(dtype, docid)
-    // }
+    console.log("this.writerDocs:", this.writerDocs)
+    console.log("kdoc:", kdoc)
+    console.log("this.writerDocs[kdoc]:", this.writerDocs[kdoc])
+    isDefined(this.writerDocs[kdoc]) || ( this.writerDocs[kdoc] = new FADocument(dtype, docid) )
     this.currentDoc = this.writerDocs[kdoc]
     if(!this.isOpened) this.open()
     this.currentDoc.display()
@@ -329,7 +328,7 @@ const FAWriter = {
 
 , setModified(mod){
     if (this.autoSave) return
-    this.jqObj[mod?'addClass':'removeClass']('modified')
+    this.jqObj[mod?'addClass':'removeClass'](STRmodified)
   }
 
 /**

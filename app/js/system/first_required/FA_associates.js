@@ -103,9 +103,22 @@ let ASSOCIATES_COMMON_METHODS = {
       let flag = LABELLED
       if(!options.forBook) flag = flag | DISSOCIABLE
       for(var assoType in this.associates){
-        this.associates[assoType].map(assid => {
-          divs.push(this.a.instanceOfElement({type:assoType,id:assid}).as(STRassociate, flag, assOpts))
-        })
+          this.associates[assoType].map(assid => {
+            try {
+              divs.push(this.a.instanceOfElement({type:assoType,id:assid}).as(STRassociate, flag, assOpts))
+            } catch (e) {
+              log.error(`ERREUR AVEC ${this}
+                Méthode : divsAssociates
+                Arguments : ${options}
+                Propriétaire : ${this}
+                Type d'associé : ${assoType}
+                ID associé : ${assid}
+                ERROR:
+                `)
+              log.error(e)
+              log.error("Donnée complète des associés : ", this.associates)
+            }
+          })
       }
     } else {
       divs.push(DCreate(DIV,{class:'italic small indent2', inner:'(Aucun élément associé)'}))
@@ -381,7 +394,7 @@ const TEXTFIELD_ASSOCIATES_METHS = {
     if (this.droppedAndReceiverAreSameElement(target, helper)) return
 
     let isHorloge = eltype == 'time' && target.hasClass('horloge')
-    
+
     var balise, textAdded
 
     if(isHorloge){

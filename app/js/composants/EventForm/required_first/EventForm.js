@@ -505,17 +505,17 @@ get menuSousDecors(){return this._menuSousDecors||defP(this,'_menuSousDecors', t
 
 /**
   Méthode pour éditer les types +typ+ en ouvrant leur fichier
-  (dans le writer ?)
+  dans le writer
 
   Note : le nom 'data_<typ>' correspond au nom du fichier
 **/
 modifyDataTypes(e, typ){
-  if(undefined === typ) typ = this.type
-  FAWriter.openDoc(`data_${typ}`)
+  typ = typ || this.type
+  FAWriter.openAnyDoc(path.join(APPFOLDER,'app','js','data',`data_${typ}.yaml`))
 }
 
 updateTypes(e, typ){
-  if(undefined === typ) typ = this.type
+  typ = typ || this.type
   if(EventForm._optionsTypes && EventForm._optionsTypes[typ]){
     delete EventForm._optionsTypes[typ]
   }
@@ -523,7 +523,7 @@ updateTypes(e, typ){
   F.notify(`Liste des types « ${typ} » actualisée.`)
 }
 peupleTypes(typ){
-  if(undefined === typ) typ = this.type
+  typ = typ || this.type
   this.menuTypes(typ).html(EventForm.optionsTypes(typ))
 }
 menuTypes(typ){

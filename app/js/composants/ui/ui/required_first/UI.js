@@ -20,10 +20,10 @@ const UI = {
       for(var mutation of mutations){
         if(mutation.type === STRchildList){
           // Un élément ajouté
-          console.log("Éléments ajoutés : ", mutation.addedNodes)
+          // console.log("Éléments ajoutés : ", mutation.addedNodes)
           mutation.addedNodes.forEach( node => {
-            console.log("Observers focus/blur posés sur :", node)
-            console.log("Champs de saisie trouvés : ",$(node).find(TEXT_TAGNAMES))
+            // console.log("Observers focus/blur posés sur :", node)
+            // console.log("Champs de saisie trouvés : ",$(node).find(TEXT_TAGNAMES))
             $(node).find(TEXT_TAGNAMES)
               .on(STRfocus, UI.onFocusTextField.bind(UI))
               .on(STRblur,  UI.onBlurTextField.bind(UI))

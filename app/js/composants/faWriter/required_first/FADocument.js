@@ -163,11 +163,11 @@ static get count(){
                           de dtype 'anydoc'. Un fichier quelconque
 **/
 constructor(dtype, id, docPath){
-  // console.log("dtype, id, docPath", dtype, id, docPath)
+  console.log("dtype, id, docPath", dtype, id, docPath)
   isDefined(dtype) || raise("Impossible d'instancier un document sans type ou ID.")
   ['regular','custom','any'].indexOf(dtype) > -1 || raise(`Le doc-type (dtype) "${dtype}" est inconnu.`)
   this.dtype = dtype
-  if(dtype === 'any'){
+  if(dtype === STRany){
     isDefined(docPath) || ( docPath = id )
     docPath || raise("Il faut absolument fournir le path en troisième argument.")
     fs.existsSync(docPath) || raise(`Le path "${docPath}" est introuvable. Je ne peux pas éditer ce document.`)

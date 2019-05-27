@@ -1,28 +1,29 @@
 'use strict'
 
 module.exports = {
-  onKeyUp:(e) => {
+  onKeyUp: function(e){// NE PAS UTILISER () => {...} (scope)
     let type = this.shortcut2type[e.key]
     switch (type) {
       case undefined:
         return stopEvent(e)
-      case 'document':
+      case STRdocument:
         FADocument.edit(/* pas d'id => nouveau ?*/)
         break
-      case 'brin':
+      case STRbrin:
         FABrin.edit(/* pas d'id => nouveau */)
         break
-      case 'personnage':
+      case STRpersonnage:
         FAPersonnage.edit(/* pas d'id => nouveau */)
         break
       default:
         EventForm.onClickNewEvent.bind(EventForm)(e, type)
     }
+    console.log("this:", this)
     this.close() // on referme la fenêtre après avoir choisi
     return stopEvent(e)
   }
 , title: 'Créer un nouveau…'
-, body: () => {
+, body: function(){
     var divs = [], dev
     this.shortcut2type = {}
     for(var eid in EVENTS_TYPES_DATA){

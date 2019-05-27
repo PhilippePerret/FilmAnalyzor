@@ -11,7 +11,7 @@ Object.assign(UI, {
 **/
   onKeyUpInTextField(e){
     let target = $(e.target)
-    console.log("-> KeyUp dans un TEXT FIELD")
+    // log.info("-> KeyUp dans un TEXT FIELD")
     // Comment trouver le sélection (selector), maintenant
     // que toutes les méthodes sont communes ?
     // Plus, j'ai utilisé (sel = new Selector($(e.target))) mais ce n'est
@@ -27,7 +27,7 @@ Object.assign(UI, {
       // return stopEvent(e)
     } else if(isTrue(e.metaKey)){
       // MÉTA
-      console.log("-> Touche META")
+      // console.log("-> Touche META")
       if(e.shiftKey){
         // MÉTA + SHIFT
         // console.log("[UP] which, KeyCode, charCode, metaKey, altKey ctrlKey", e.which, e.keyCode, e.charCode, e.metaKey, e.altKey, e.ctrlKey)
@@ -162,8 +162,8 @@ Object.assign(UI, {
 **/
 , onKeyUpOutTextField(e){
     let target = $(e.target)
-    console.log("-> onKeyUpOutTextField")
-    console.log("Touche pressée en dehors d'un champ de saisie :", e.key)
+    log.info("-> onKeyUpOutTextField")
+    // console.log("Touche pressée en dehors d'un champ de saisie :", e.key)
     // On met la touche pressée dans une variable pour pouvoir la
     // modifier plus tard.
     var touche = e.key
@@ -194,7 +194,6 @@ Object.assign(UI, {
         return stopEvent(e)
       case ' ':
         touche = this.a.locator.playing ? STRk : STRl
-        console.log("touche modifiée: ", touche)
       case STRk: // k
       case STRj: // j
       case STRJ: // J
@@ -238,7 +237,7 @@ Object.assign(UI, {
   }
 
 , onKeyDownOutTextField(e){
-    console.log("-> onKeyDownOutTextField")
+    // log.info("-> onKeyDownOutTextField")
     let target = $(e.target)
     if(this.currentKeyDown){
       // <= Une touche est pressée
@@ -329,7 +328,7 @@ Object.assign(UI, {
     // Méthode appelé quand on joue la touche TAB
     stopTab(e, sel){
       // Mais pour un input text, il faut returner true
-      if (e.target.tagName === 'INPUT') return true
+      if (e.target.tagName === INPUT) return true
       return stopEvent(e)
     }
     // Remplace la touche tabulation, dans le selector +sel+,

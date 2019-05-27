@@ -7,6 +7,7 @@ class Helper {
 
 constructor(type){
   this.id = type // p.e. 'new-element'
+  this.requiredOwnData()
 }
 open(){
   this.ready = false
@@ -17,27 +18,27 @@ close(){
   UI.toggleKeyUpAndDown(/* hors champ */ true)
 }
 
-onKeyDown(e){
+onExecKeyDown(e){
   if(isFalse(this.ready)) return stopEvent(e)
-  isFunction(this.data.onKeyDown) && this.data.onKeyDown(e)
+  isFunction(this.onKeyDown) && this.onKeyDown.bind(this)(e)
   return stopEvent(e)
 }
-onKeyUp(e){
+onExecKeyUp(e){
   if(isFalse(this.ready)) return stopEvent(e)
   if(e.key === 'Escape' || e.key === 'Return'){
     stopEvent(e)
     return this.close()
   }
-  isFunction(this.data.onKeyUp) && this.data.onKeyUp(e)
+  isFunction(this.onKeyUp) && this.onKeyUp.bind(this)(e)
   return stopEvent(e)
 }
 
 build(){
   return [
     DCreate(DIV, {class:STRheader, append: [
-      DCreate(H3, {inner:this.data.title})
+      DCreate(H3, {inner:this.title})
     ]})
-  , DCreate(DIV, {class:STRbody, append: this.data.body()})
+  , DCreate(DIV, {class:STRbody, append: this.body()})
   , DCreate(DIV, {class:STRfooter, append:[
       DCreate(SPAN, {class:'small', inner:"Fermer : Escape ou Entrée"})
     ]})
@@ -54,8 +55,8 @@ onFocus(){
   // dessus
   setTimeout(() => {
     // console.log("Pose des observers de touches.")
-    window.onkeyup    = this.onKeyUp.bind(this)
-    window.onkeydown  = this.onKeyDown.bind(this)
+    window.onkeyup    = this.onExecKeyUp.bind(this)
+    window.onkeydown  = this.onExecKeyDown.bind(this)
     this.ready = true
   }, 300)
 }
@@ -74,11 +75,13 @@ observe(){
 /**
   Pour requérir les données contenus dans le fichier Helper/helpers/<id>.js
 **/
-requiredData(){
-  return require(`./js/composants/Helper/Helpers/${this.id}.js`)
+requiredOwnData(){
+  let my = this
+  Object.assign(my, require(`./js/composants/Helper/Helpers/${my.id}.js`))
+  isFunction(my.onKeyUp) && ( my.onKeyUp  = my.onKeyUp.bind(my) )
+  isFunction(my.onKeyDown) && ( my.onKeyDown  = my.onKeyDown.bind(my) )
+  isFunction(my.body) && ( my.body = my.body.bind(my) )
 }
-
-get data(){ return this._data || defP(this,'_data', this.requiredData()) }
 
 get jqObj(){ return this.fwindow.jqObj }
 get fwindow(){return this._window || defP(this,'_window', new FWindow(this, {class:'helper-window', id:`helper-window-${this.id}`, draggable:false, x:400, y:40}))}

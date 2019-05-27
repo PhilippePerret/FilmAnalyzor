@@ -197,7 +197,7 @@ form.form-edit-event button.modify img {
 }
 
 form.form-edit-event div.div-proc-types select {
-  max-width:300px;
+  max-width:260px;
 }
 form.form-edit-event div.div-proc-types select.menu-procedes,
 form.form-edit-event div.div-proc-types select.menu-procedes *
