@@ -162,14 +162,14 @@ Object.assign(UI, {
 **/
 , onKeyUpOutTextField(e){
     let target = $(e.target)
-    log.info("-> onKeyUpOutTextField")
+    log.info(`-> onKeyUpOutTextField (e.key: "${e.key}")`)
     // console.log("Touche pressée en dehors d'un champ de saisie :", e.key)
     // On met la touche pressée dans une variable pour pouvoir la
     // modifier plus tard.
     var touche = e.key
 
     // console.log(e)
-    if(e.key === this.currentKeyDown){
+    if(touche === this.currentKeyDown){
       // console.log("J'ai retiré la touche", e.key)
       delete this.currentKeyDown
       // S'il y a une fonction à appeler quand on relève la
@@ -182,6 +182,11 @@ Object.assign(UI, {
         if (FWindow.closeCurrent()){
           return stopEvent(e)
         } else return true
+      case TABULATION:
+        // TODO Si une fwindow est courante, il faut focusser dans son
+        // premier champ de texte (en s'assurer qu'on bascule bien dans l'autre
+        // mode de raccourcis)
+        break
       case STRm: // m
         log.info('m:go to next marker')
         F.notify("TODO: Je dois aller au marqueur suivant.")
@@ -237,7 +242,7 @@ Object.assign(UI, {
   }
 
 , onKeyDownOutTextField(e){
-    // log.info("-> onKeyDownOutTextField")
+    log.info(`-> onKeyUpOutTextField (e.key: "${e.key}")`)
     let target = $(e.target)
     if(this.currentKeyDown){
       // <= Une touche est pressée

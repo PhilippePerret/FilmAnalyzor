@@ -163,7 +163,7 @@ static get count(){
                           de dtype 'anydoc'. Un fichier quelconque
 **/
 constructor(dtype, id, docPath){
-  console.log("dtype, id, docPath", dtype, id, docPath)
+  // console.log("dtype, id, docPath", dtype, id, docPath)
   isDefined(dtype) || raise("Impossible d'instancier un document sans type ou ID.")
   ['regular','custom','any'].indexOf(dtype) > -1 || raise(`Le doc-type (dtype) "${dtype}" est inconnu.`)
   this.dtype = dtype

@@ -96,10 +96,12 @@ const ERRORS = {
 , "faliste-owner-save-required": "REQUIS : %{classe}::save(item_id)\n\nLa méthode `save` doit exister, qui permettra de sauver les associations, notamment."
 , "faliste-destroy-fct-require": "REQUIS : %{classe}::destroy(item_id)\n\nPour être destructible, la classe de l'item doit répondre à la méthode `destroy` qui recevra en premier et seul argument l'identifiant de l'item."
 , "confirm-destroy-brin": "Voulez-vous vraiment détruire à tout jamais le %{ref} ?"
+
 , "--- IMAGES ---":""
 , "explication-images-listing": "Pour ajouter des images, se placer à l'endroit voulu dans le film et utiliser le menu « Vidéo > Prendre l'image courante »."
 , "confirm-current-image":"L'image courante a été figée avec succès ! Pour l'insérer, glisser son icône depuis le reader."
 , "unfound-current-image":"Bizarrement, l'image courante n'a pas été créée. Consulter la console pour en trouver la raison."
+
 , "--- DIVERS ---":""
 , "otime-arg-required": "Cette méthode requiert un argument temps de type OTime"
 }
@@ -119,10 +121,13 @@ const MESSAGES = {
 , "confirm-start-time": "Le temps %{time} correspond au début réel du film."
 , "--- messages VIDÉO ---":""
 , "no-stop-point": "Aucun point d'arrêt n'est encore défini. Déplacez-vous dans la vidéo pour les définir (à chaque lancement de la vidéo)."
+
 , "--- messages SCÈNES ---":""
-, "confirm-scene-close": "Une scène se trouve à %{ecart} secondes. Voulez-vous vraiment créer cette scène ?\n\n(ne pas utiliser la touche ESCAPE pour annuler)"
+, "confirm-scene-close": "Une scène se trouve à %{ecart} secondes. Voulez-vous vraiment créer cette scène ?"
+
 , "--- messages EVENTS ---":""
 , "confirm-destroy-event": "Êtes-vous certain de vouloir détruire à tout jamais cet event ?…"
+
 , "---- DOCUMENT ----":""
 , "no-association-between-docs": "Pour le moment, l'association entre documents n'est pas possible. Glisser le document dans le texte pour créer cette association efficacement."
 , "confirm-content-much-shorter": "Le document \"%{doc_name}\" est plus de 20% plus court que sa version précédente… Confirmez-vous quand même cet enregistrement ?"

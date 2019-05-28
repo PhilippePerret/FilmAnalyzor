@@ -116,7 +116,7 @@ const BUILDING_SCRIPT_DATA = {
 
 , documents: {
       hname: null
-    , items_method: () => {return FABuildingScript.customDocumentsAsSteps.bind(FABuildingScript)}
+    , items_method: () => {return FABuildingScript.customDocumentsAsSteps.bind(FABuildingScript)() }
   }
 
 , annexes: {

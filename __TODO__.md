@@ -2,11 +2,14 @@
 
 ### Traiter :
 
-* Comment généraliser l'affichage facile de tout un tas de panneau :
-  class Helper, utilisant FWindow pour se construire
-  d'ailleurs sans doute son propre usage, qui désactive les touches universelles)
+* Pour se déplacer : "g" pour "goto" qui ouvre une fenêtre où on choisit, avec les flèches up/down, ce qui sera affecté aux touches :
+  <- / ->
+  ALT <- / ALT ->
+  CTRL <- / CTRL ->
+  MAJ <- / MAJ ->
+  - Ces préférences sont enregistrées dans les préférences générales (pas dans les préférences de l'analyse)
 
-* Referme la méthode de confirmation avec le message box
+* Généraliser l'affichage facile de tout un tas de panneaux avec la classe `Helper`.
 
 * Dans un champ d'édition, la touche escape doit permettre d'annuler l'édition après confirmation.
 

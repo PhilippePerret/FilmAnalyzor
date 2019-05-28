@@ -34,37 +34,32 @@ static onClickNewEvent(e, eventType){
   if(this.a.locator.playing) this.a.locator.togglePlay()
   if(e && e.metaKey){
     FAEvent.FAlistingEvents(eventType)
+  } else if ( eventType == STRscene && this.filmHasSceneNearCurrentPos() ) {
+      // L'analyste veut créer une nouvelle scène, mais il en existe
+      // une tout proche. Il faut demander confirmation.
+      let [iScene, ecart] = this.filmHasSceneNearCurrentPos()
+      if (ecart < 2) return alert(T('scene-too-close'))
+      else this.confirmCreationSceneClose(ecart)
   } else {
-    if (eventType == STRscene && this.notConfirmNewScene() ) return false
-    this.currentForm = new EventForm(eventType)
-    this.currentForm.toggleForm()
+    this.initNewEventOfType(eventType)
   }
 }
+static initNewEventOfType(eventType){
+  this.currentForm = new EventForm(eventType)
+  this.currentForm.toggleForm()
+}
 
-/**
- * Méthode appelée à la création d'une nouvelle scène, pour s'assurer
- * qu'il n'en existe pas déjà une.
- * @return  true si la scène est trop proche, false si la scène peut être
- *          créée.
- *
- * Plus précisément, la fonction interdit de créer une scène à moins de
- * 2 secondes. Mais si l'autre scène est entre 2 et 10 secondes, elle demande
- * confirmation.
- */
-static notConfirmNewScene(){
-  var sceneFound = this.filmHasSceneNearCurrentPos()
-  if (sceneFound){
-    let [iScene, ecart] = sceneFound
-    if (ecart < 2) {
-      alert(T('scene-too-close'))
-      return true
-    } else {
-      if( ! confirm(T('confirm-scene-close',{ecart: ecart})) ){
-        return true
-      }
-    }
-  }
-  return false
+static confirmCreationSceneClose(ecart){
+  let my = this
+  confirm({
+      message:T('confirm-scene-close',{ecart: ecart})
+    , buttons:['Renoncer', 'La créer quand même']
+    , width:'30%'
+    , defaultButtonIndex:1
+    , cancelButtonIndex:0
+    , okButtonIndex:1
+    , methodOnOK:my.initNewEventOfType.bind(my, STRscene)
+  })
 }
 
 /**

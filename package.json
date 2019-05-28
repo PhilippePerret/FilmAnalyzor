@@ -6,7 +6,7 @@
     "main": "main.js",
     "scripts": {
         "start": "electron ."
-      , "watch-sass":"node-sass -w app/css/a_index.sass app/css/all.css --output-style=compressed"
+      , "watch-sass":"node-sass -w --recursive --incluce-path=app/css/_sass_in_all/ app/css/a_index.sass app/css/all.css --output-style=compressed"
       , "test": "MODE_TEST=true npm start"
       , "pack:osx": "electron-packager . $npm_package_productName --overwrite --out=dist/osx --platform=darwin --arch=x64 --prune=true --icon=dist/icons/macos/icon.icns"
     },

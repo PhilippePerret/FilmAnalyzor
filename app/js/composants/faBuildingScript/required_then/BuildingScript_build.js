@@ -46,7 +46,7 @@ Object.assign(FABuildingScript,{
       } else {
         // C'est une liste dynamique d'étape, comme par exemple pour les
         // documents propres à l'analyse
-        (dAstep.items_method)().map(ds => {
+        dAstep.items_method().map(ds => {
           if (isDefined(elemsDyn[ds.id])) return
           stepsOut.push(this.divStepFor(ds))
         })

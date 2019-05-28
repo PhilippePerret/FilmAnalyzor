@@ -2,14 +2,8 @@
 
 
 function confirm(msg, options){
-  var args
-  if ( isString(msg) ) {
-    Object.assign(options, {message: msg})
-  } else {
-    options = msg
-  }
-  msg = new MessageBox(options)
-  msg.show()
+  let mbox = new MessageBox(isString(msg) ? Object.assign(options, {message: msg}) : msg)
+  mbox.show()
 }
 
 function isUndefined(foo){
