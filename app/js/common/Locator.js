@@ -638,7 +638,7 @@ createNewMarker(){
     , okButtonIndex:1
     , methodOnOK: (title, indexButtonClicked) => {
         let m = new Marker(my.a, {time: my.currentTime.vtime, title:title})
-        m.build()
+        m.create()
       }
   })
 }

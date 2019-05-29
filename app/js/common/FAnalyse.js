@@ -148,6 +148,8 @@ get FondsAlt(){return this._fondsalt||defP(this,'_fondsalt',new Fondamentales(th
 
 get decors(){ return FADecor }
 
+get markers(){return this._markers || defP(this,'_markers', new Markers(this))}
+
 // {FAProtocole} Le protocole de l'analyse courante
 get protocole(){return this._protocole||defP(this,'_protocole',new FAProtocole(this))}
 

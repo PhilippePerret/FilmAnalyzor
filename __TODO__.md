@@ -2,6 +2,20 @@
 
 ### Traiter :
 
+
+* Bien travailler les calculs de position pour que tout soit bien positionné au niveau du curseur de timeline :
+  AVANT : affichage du temps au survol de la timeline (dans l'horloge principale)
+  + L'horloge avant le début du film affiche n'importe quoi
+    + Quand le début du film est défini (≠ 0), il faut afficher l'horloge vidéo.
+  - le début de la vidéo
+  - la fin de la vidéo
+  - le début du film (marque dans la timeRuler : crochet ouvrant rouge, draggable en suivant la vidéo)
+  - fin du film (marque dans la timeRuler : crochet fermant, draggable, en suivant la vidéo)
+  - le curseur quand il passe sur un marker (mauvais temps pour le moment)
+  - quand on veut se rendre à un temps précis
+  - quand on clique sur un temps dans la timeline
+
+
 * Poser un nouveau marqueur : utiliser la messagebox comme 'prompt'
 * Liste des marqueurs : utiliser une Helper, pas une liste normale d'éléments
 

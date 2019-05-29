@@ -12,7 +12,7 @@ init(){
 
   // La tape d'échelle (bande métrée) est sensible au clic pour se
   // déplacer dans le film
-  this.scaleTape.on(STRclick, this.onClickScaleTape.bind(this))
+  UI.timeRuler.on(STRclick, this.onClicktimeRuler.bind(this))
 
   // On rend tous les éléments sensible au clic pour les éditer
   this.timelineTape.find('.banctime-element').on(STRclick, this.onClickElement.bind(this))
@@ -49,7 +49,7 @@ init(){
 /**
   Méthode appelée quand on clique sur la tape d'échelle/temps
 **/
-, onClickScaleTape(e){
+, onClicktimeRuler(e){
     stopEvent(e)
     this.setCurrentPosition(e.offsetX)
   }
@@ -107,6 +107,6 @@ Object.defineProperties(BancTimeline, {
 , cursor:{get(){return $('section#banctime-banc-timeline div#banctime-cursor')}}
   // Bande sur laquelle on dépose les éléments.
 , timelineTape:{get(){return $('section#banctime-banc-timeline div#banctime-tape')}}
-, scaleTape:{get(){return $('section#banctime-banc-timeline div#banctime-scaletape')}}
+, timeRuler:{get(){return $('section#banctime-banc-timeline div#banctime-timeRuler')}}
 , BancTimeline:{get(){return $('section#banctime-banc-timeline')}}
 })

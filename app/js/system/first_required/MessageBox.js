@@ -13,13 +13,18 @@
       :message      Le message principal à afficher
   OPTIONNEL
       :buttons      Liste Array des boutons, dans le même ordre qu'à l'écran
+                    Par défaut : ['Annuler', 'OK']
       :title        Le titre de la fenêtre
+                    Par défaut : vide
       :defaultButtonIndex   L'index du bouton (dans :buttons) sélectionné par
                             défaut. C'est lui qui réagira à la touche Return
+                            Par défaut : 1
       :cancelButtonIndex    Index (dans :buttons) du bouton pour annuler. C'est
                             lui qui réagira à la touche Escape.
+                            Par défaut : 0
       :okButtonIndex        Index (dans :buttons) du bouton pour confirmer. C'est
                             lui qui réagira (aussi) à la touche Return.
+                            Par défaut : 1
       :methodOnOK           Méthode qui sera appelée si OK est cliqué (ou Return)
       :methodOnCancel       Méthode à appeler si le bouton Cancel est cliqué (ou
                             la touche Escape)
@@ -31,6 +36,7 @@
                             réponse à donner dans un champ de texte.
       :width                Largeur précise (ou en pourcentage) à donner à la
                             fenêtre.
+                            Par défaut : 20%
 
 **/
 class MessageBox {
@@ -40,7 +46,7 @@ class MessageBox {
     this.type       = data.type || 'alert' // 'alert', 'confirm' // inusité
     this.width      = data.width
     this.message    = data.message
-    this.defaultButtonIndex = data.defaultButtonIndex || 0
+    this.defaultButtonIndex = data.defaultButtonIndex || 1
     this.cancelButtonIndex  = data.cancelButtonIndex  || 0
     this.okButtonIndex      = data.okButtonIndex      || 1
     this.defaultAnswer      = data.defaultAnswer
@@ -48,11 +54,7 @@ class MessageBox {
     this.methodOnCancel = data.methodOnCancel
     this.methodOnOK     = data.methodOnOK || data.methodOnOk
 
-    this.buttons    = data.buttons
-    if ( isUndefined(this.buttons) ) {
-      this.buttons = ['OK']
-      isDefined(this.methodOnCancel) && this.buttons.unshift('Renoncer')
-    }
+    this.buttons    = data.buttons || ['Annuler', 'OK']
 
   }
   show(){

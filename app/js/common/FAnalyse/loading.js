@@ -132,6 +132,9 @@ load(){
     FAPersonnage.reset().init()
     my.options.setInMenus()
     my.videoController.init()
+    // Les marqueurs
+    Markers.reset()
+    this.markers.load().build()
     // Les raccourcis clavier "universels"
     UI.toggleKeyUpAndDown(/* out texte field */ true)
     // On met en route le timer de sauvegarder

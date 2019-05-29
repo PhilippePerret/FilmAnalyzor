@@ -14,7 +14,7 @@ section#banctime-banc-timeline
     height: calc(100%)
 
 
-  div#banctime-scaletape
+  div#banctime-timeRuler
     height: 14px
     background-color: #505050
     background-image: url('../img/graduations.png')
@@ -24,6 +24,17 @@ section#banctime-banc-timeline
     top: 0
     width: 100%
     z-index: 1
+
+    // Les marqueurs
+    span.marker
+      position: absolute
+      width: 8px
+      height: 18px
+      border-radius: 0 0 6px 6px
+      &:not(.selected)
+        background-color: tomato
+      &.selected
+        background-color: red
 
 
   div#banctime-tape

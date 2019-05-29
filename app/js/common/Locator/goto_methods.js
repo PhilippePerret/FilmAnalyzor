@@ -92,10 +92,10 @@ module.exports = {
   }
 
 , goToNextMarker(){
-    F.notify("Aller au marker suivant")
+    this.a.markers.selectMarkerAfter(this.currentTime)
   }
 , goToPrevMarker(){
-    F.notify("Aller au marker précédent")
+    this.a.markers.selectMarkerBefore(this.currentTime)
   }
 
 , goToNextStoppoint(){

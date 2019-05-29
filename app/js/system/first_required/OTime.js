@@ -62,6 +62,15 @@ constructor(v){
   }
 }
 
+reset(){
+  delete this._toString
+  delete this._vtime
+  delete this._vhorloge
+  delete this._horloge
+  delete this._horloge_simple
+  delete this._vhorloge_simple
+}
+
 valueOf(){return this.seconds}
 toString(){return this._toString || defP(this,'_toString', `le temps ${this.horloge_simple}`)}
 
@@ -70,24 +79,28 @@ between(av,ap){
   return this.seconds.between(av,ap)
 }
 get rtime(){ return this.seconds}
-set rtime(s){ this.updateSeconds(s.round(2))}
-get vtime(){ return this.seconds + current_analyse.filmStartTime}
-set vtime(s){ this.updateSeconds((s - current_analyse.filmStartTime).round(2))}
+set rtime(s){ this.updateSeconds(s.round(2))
+}
+get vtime(){ return this._vtime || defP(this, '_vtime', this.seconds + current_analyse.filmStartTime)}
+set vtime(s){
+  this.updateSeconds((s - current_analyse.filmStartTime).round(2))
+  this._vtime = s
+}
 
 
 set horloge(v)  { this._horloge = v }
 get horloge()   {return this._horloge  || defP(this,'_horloge', this.s2h())}
 get vhorloge()  {return this._vhorloge || defP(this,'_vhorloge', this.s2h(this.vtime))}
 get horloge_simple(){
-  if(undefined === this._horloge_simple){
+  isDefined(this._horloge_simple) || (
     this._horloge_simple = this.s2h(this.rtime, {no_frames: true})
-  }
+  )
   return this._horloge_simple
 }
 get vhorloge_simple(){
-  if(undefined === this._vhorloge_simple){
+  isDefined(this._vhorloge_simple) || (
     this._vhorloge_simple = this.s2h(this.vtime, {no_frames: true})
-  }
+  )
   return this._vhorloge_simple
 }
 
@@ -95,7 +108,7 @@ get horloge_as_duree(){return this.hduree}
 get hduree(){return this.s2h(this.seconds,{as_duree: true, no_frames: true})}
 get duree_sec(){ return Math.round(this.seconds) }
 
-get id(){return this.seconds} // pour les associations
+get id(){ return this.seconds } // pour les associations
 /**
   Méthode qui permet de traiter les temps comme des events dans
   les associations. Pour afficher le temps courant et aussi pouvoir
@@ -105,7 +118,7 @@ get id(){return this.seconds} // pour les associations
 
 */
 asAssociate(opts){
-  if(undefined === opts) opts = {}
+  opts = opts || {}
   var dvs = []
   dvs.push(DCreate(A, {class:'lktime', inner: this.horloge_simple, attrs:{onclick:`showTime(${this.seconds})`}}))
   if(opts.owner){
@@ -113,7 +126,7 @@ asAssociate(opts){
     // dissocier le temps de son possesseur
     dvs.push(this.dissociateLink({owner: opts.owner}))
   }
-  return DCreate('SPAN', {class:'lktime', append: dvs})
+  return DCreate(SPAN, {class:'lktime', append: dvs})
 }
 
 set duree(v) { this.duree = v }
@@ -167,10 +180,7 @@ s2h(s, format){
  * pour ne pas créer intensivement des instances à chaque millisecondes
  */
 updateSeconds(s){
-  delete this._toString
-  delete this._vhorloge
-  delete this._horloge
-  delete this._horloge_simple
+  this.reset()
   this.seconds = s
 }
 

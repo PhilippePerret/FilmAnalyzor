@@ -74,7 +74,7 @@ const UIBuilder = {
 , buildSectionTimeline(){
     // Le banc timeline lui-même
     UI.sectionTimeline.append(DCreate(SECTION,{id:'banctime-banc-timeline', append:[
-        DCreate(DIV,{id:'banctime-scaletape'})   // bande pour positionner le curseur
+        DCreate(DIV,{id:'banctime-timeRuler'})   // bande pour positionner le curseur
       , DCreate(DIV,{id:'banctime-tape'})        // bande pour déposer les éléments
       , DCreate(DIV,{id:'banctime-cursor'}) // curseur de timeline
       ]}))
@@ -160,6 +160,10 @@ const UIBuilder = {
 
     // La marque des raccourcs courants
     UI.markShortcuts = UI.sectionVideo.find('#banctime-mode-shortcuts')
+
+    // La réglette des temps dans le banc timeline (là où l'on
+    // clique pour placer le curseur)
+    UI.timeRuler = UI.sectionTimeline.find('div#banctime-timeRuler')
 
   }
 }// /UIBuilder
