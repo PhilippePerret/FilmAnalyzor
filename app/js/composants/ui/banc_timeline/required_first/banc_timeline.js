@@ -7,15 +7,36 @@ const BancTimeline = {
 
 init(){
   let my = this
+
   // --- ÉCRITURE DE L'ANALYSE ---
   this.dispatchElementOnTape()
 
-  // La tape d'échelle (bande métrée) est sensible au clic pour se
+  // La bande métrée est sensible au clic pour permettre de se
   // déplacer dans le film
   UI.timeRuler.on(STRclick, this.onClicktimeRuler.bind(this))
 
+  // On place les marques amovibles de début et de fin de film
+  UI.timeRuler.append(
+    DCreate(SPAN,{class:'mark-film mark-film-start', style:`left:${my.t2p(my.a.filmStartTime)}px;`})
+  , DCreate(SPAN,{class:'mark-film mark-film-end', style:`left:${my.t2p(my.a.filmEndTime)}px;`})
+  )
+  UI.timeRuler.find('.mark-film').draggable({
+      axis:'x'
+    , drag: (e) => {
+        // console.log("Je draggue", e.target)
+        my.a.locator.setTime(OTime.vVary(my.p2t($(e.target).position().left)), {updateOnlyVideo: true})
+      }
+    , stop: (e) => {
+        let lastOTime = OTime.vVary(my.p2t($(e.target).position().left))
+        my.a.locator.setTime(lastOTime)
+        // On règle le temps de fin ou de début
+        var isFilmStart = $(e.target).hasClass('mark-film-start')
+        this.a.runTimeFunction(`Film${isFilmStart?'Start':'End'}Time`, lastOTime.vtime)
+      }
+  })
   // On rend tous les éléments sensible au clic pour les éditer
   this.timelineTape.find('.banctime-element').on(STRclick, this.onClickElement.bind(this))
+
 
 }
 

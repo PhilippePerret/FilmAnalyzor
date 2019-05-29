@@ -25,6 +25,21 @@ section#banctime-banc-timeline
     width: 100%
     z-index: 1
 
+    // Les marques de début et de fin de film/vidéo
+    span.mark-film
+      position: absolute
+      color: red
+      border-style: solid
+      border-color: red
+      top: -2px
+      height: 120%
+      width: 4px
+    span.mark-film-start
+      border-width: 2px 0 2px 4px
+    span.mark-film-end
+      border-width: 2px 4px 2px 0
+
+
     // Les marqueurs
     span.marker
       position: absolute

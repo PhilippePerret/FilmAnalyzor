@@ -22,6 +22,17 @@ static get(time){
 // Retourne une instance dont le temps est 0:00:00
 static get ZERO(){return this._zero||defP(this,'_zero',new OTime(0))}
 
+// Une instance
+static vary(time){
+  isDefined(this._otimevar) || ( this._otimevar = new OTime(0) )
+  this._otimevar.updateSeconds(time)
+  return this._otimevar
+}
+static vVary(vtime){
+  isDefined(this._otimevar) || ( this._otimevar = new OTime(0) )
+  this._otimevar.vtime = vtime
+  return this._otimevar
+}
 // ---------------------------------------------------------------------
 // INSTANCE
 

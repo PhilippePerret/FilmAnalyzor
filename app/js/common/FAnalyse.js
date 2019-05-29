@@ -697,12 +697,12 @@ set eventsIO(eventsData){
    * Méthode qui définit le départ réel du film. Permettra de prendre un
    * bon départ
    */
-  runTimeFunction(fct_id){
+  runTimeFunction(fct_id, vtime){
     var underf = `_set${fct_id}At`
-    this.requireTimeFunctions(underf)()
+    this.requireTimeFunctions(underf).bind(this, vtime).call()
   }
   requireTimeFunctions(whichOne){
-    return require('./js/tools/timesFunctions')[whichOne].bind(this)
+    return require('./js/tools/timesFunctions')[whichOne]
   }
 
   /**

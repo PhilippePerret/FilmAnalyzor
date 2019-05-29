@@ -216,31 +216,40 @@ stopForward(){
           défini du film.
   @param {OTime} time Instance de temps qui permet, grâce à sa propriété vtime
                       de régler la vidéo.
-  @param {Boolean} dontPlay   Si true, on ne met pas la vidéo en route.
+  @param {Object|Boolean} options | dontPlay
+    dontPlay   Si true, on ne met pas la vidéo en route.
+    update_only_video   Si true, on n'actualise que la vidéo et l'horloge
  */
-setTime(time, dontPlay){
+setTime(time, options){
   // try {
   //   doujeviens
   // } catch (e) {
   //   throw(e)
   // } finally {
   // }
-  log.info('-> Locator#setTime(time=, dontPlay=)', time.toString(), dontPlay)
+  if ( 'boolean' === typeof options ){
+    options = {dontPlay: options}
+  } else if ( isUndefined(options) ){
+    options = {}
+  }
+
+  log.info('-> Locator#setTime(time=, dontPlay=)', time.toString(), options.dontPlay)
   time instanceof(OTime) || raise(T('otime-arg-required'))
 
-  // Initialisation de tous les temps. Cf. [1]
-  this.resetAllTimes()
+  if ( isFalse(options.updateOnlyVideo) ) {
+    // Initialisation de tous les temps. Cf. [1]
+    this.resetAllTimes()
+    // On instancie le nextTime avec le temps choisi
+    this.nextTime.initWithTime(time)
 
-  // On instancie le nextTime avec le temps choisi
-  this.nextTime.initWithTime(time)
+  }
 
   // Réglage de la vidéo. L'image au temps donné doit apparaitre
   UI.video.currentTime = time.vtime
-
   // Réglage de l'horloge principale.
   UI.mainHorloge.html(time.vhorloge)
 
-  if(!dontPlay){
+  if( isFalse(options.dontPlay) && isFalse(options.updateOnlyVideo) ) {
     // Si l'on n'a pas précisé explicitement qu'on ne voulait
     // pas démarrer la vidéo, on doit voir si on doit le
     // faire.
@@ -254,7 +263,11 @@ setTime(time, dontPlay){
 
   // Si la vidéo ne joue pas, on force l'actualisation de tous
   // les éléments, reader, horloge, markers de structure, etc.
-  UI.video.paused && this.actualizeALL()
+  // Sauf si les options demandent de n'actualiser que la
+  // vidéo et l'horloge.
+  if ( isFalse(options.updateOnlyVideo) ) {
+    UI.video.paused && this.actualizeALL()
+  }
 
 }
 
