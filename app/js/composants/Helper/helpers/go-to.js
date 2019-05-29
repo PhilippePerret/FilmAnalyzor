@@ -1,10 +1,11 @@
 'use strict'
 
-// const GOTODATA = App.require('system/prefs/gotodata')
-// Normalement, cette constante est chargée par shortcuts.js
-
 module.exports = {
-  observeSup: function(){
+  init: function(){
+    log.info('g:Define goto shortcuts')
+    this.prepareCurrentCombinaisons()
+  }
+, observeSup: function(){
     this.jqObj.find('INPUT[data-goto]')
       .on(STRkeydown, this.onKeyDownOnUShortcut.bind(this))
 
@@ -89,7 +90,7 @@ module.exports = {
         this.a.locator[`goTo${sens.titleize()}Scene`].bind(this.a.locator).call()
         break
       case 'image':
-      this.a.locator[`goTo${sens.titleize()}Image`].bind(this.a.locator).call()
+        this.a.locator[`goTo${sens.titleize()}Image`].bind(this.a.locator).call()
         break
       case 'second':
         this.a.locator[`goTo${sens.titleize()}Second`].bind(this.a.locator).call()
@@ -113,8 +114,7 @@ module.exports = {
         this.a.locator[`goTo${sens.titleize()}Marker`].bind(this.a.locator).call()
         break
     }
-    // TODO: REMETTRE :
-    // this.close() // on referme la fenêtre après avoir choisi
+    this.close() // on referme la fenêtre après avoir choisi
     return stopEvent(e)
   }
 , title: 'Aller à…'
@@ -148,7 +148,6 @@ module.exports = {
       , dev
       , tabindex = 1
 
-    this.prepareCurrentCombinaisons()
     this.shortcut2type = {}
     for(var dgo of GOTODATA){
       dgo.defaultArrowComb = dgo.arrowComb // pour pouvoir les remettre

@@ -652,10 +652,36 @@ const DATA_MENUS = [
       , {
             label: 'Manuel d’utilisation Développement'
           , enabled: true
-          , click: () => {execJS('App.openManuelDeveloppement()')}
+          , click: _ => {execJS('App.openManuelDeveloppement()')}
         }
       ]
-  }
+    }
+  , {
+        label: 'Raccourcis'
+      , submenu: [
+          {
+              label: 'Raccourcis « Go-To »…'
+            , accelerator: 'g'
+            , click: _ => {execJS('Helper.open("go-to")')}
+          }
+        , {
+              label: 'Nouvel élément…'
+            , accelerator: 'n'
+            , click: _ => {execJS('Helper.open("new-element")')}
+          }
+        , {type:'separator'}
+        , {
+              label: 'Nouveau marqueur…'
+            , accelerator: 'm'
+            , click: _ => {execJS('current_analyse && current_analyse.locator.newMarker()')}
+          }
+        , {
+              label: 'Liste des marqueurs'
+            , accelerator: 'Shift+m'
+            , click: _ => {execJS('current_analyse && Marker.displayListing()')}
+          }
+        ]
+    }
 ]
 
 var dataMenuPreferences = {

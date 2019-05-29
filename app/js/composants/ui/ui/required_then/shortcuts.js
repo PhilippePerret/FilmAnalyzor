@@ -201,17 +201,20 @@ Object.assign(UI, {
         }
         break
       case STRg: // g => fenêtre "goto"
-        Helper.open('go-to') ; return stopEvent(e)
+        // Helper.open('go-to') // PAR LE MENU
+        return stopEvent(e)
       case STRm: // m
-        log.info('m:go to next marker')
-        F.notify("TODO: Je dois poser un nouveau marqueur.")
-        break
+        log.info('m:New marker')
+        this.a.locator.newMarker()
+        return stopEvent(e)
       case STRM: // M
         log.info('M:show markers list')
-        F.notify("TODO: Je dois afficher la liste des marqueurs.")
-        break
+        // Marker.displayListing() // PAR LE MENU
+        return stopEvent(e)
       case STRn: // n => pour choisir un nouvel élément à créer
-        Helper.open('new-element') ; return stopEvent(e)
+        log.info('n:New element')
+        // Helper.open('new-element') // PAR LE MENU
+        return stopEvent(e)
       case ' ':
         touche = this.a.locator.playing ? STRk : STRl
       case STRk: // k

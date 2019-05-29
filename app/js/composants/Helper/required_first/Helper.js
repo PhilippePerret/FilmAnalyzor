@@ -6,11 +6,12 @@
 class Helper {
 
 constructor(type){
-  this.id = type // p.e. 'new-element'
+  this.id = type // p.e. 'new-element', 'go-to'
   this.requiredOwnData()
 }
 open(){
   this.ready = false
+  isFunction(this.init) && this.init.bind(this).call()
   this.fwindow.show()
 }
 close(){

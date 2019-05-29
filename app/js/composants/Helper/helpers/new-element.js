@@ -1,7 +1,10 @@
 'use strict'
 
 module.exports = {
-  onKeyUp: function(e){// NE PAS UTILISER () => {...} (scope)
+  init(): function(){
+    log.info('n:New element')
+  }
+, onKeyUp: function(e){// NE PAS UTILISER () => {...} (scope)
     let type = this.shortcut2type[e.key]
     switch (type) {
       case undefined:
