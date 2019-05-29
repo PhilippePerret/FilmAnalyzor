@@ -12,9 +12,15 @@ img.update, img.open
   margin-left: 8px
   vertical-align: middle
 
-input[type="text"][readonly="readonly"]
-  opacity: 0.5
-  font-style: italic
+input[type="text"]
+  &[readonly="readonly"]
+    opacity: 0.5
+    font-style: italic
+
+  &.short
+    width: 40px
+    height: 18px
+    font-size: 15.1pt
 
 // ---------------------------------------------------------------------
 //  MENUS

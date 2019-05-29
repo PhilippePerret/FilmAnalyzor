@@ -18,7 +18,6 @@ module.exports = {
       default:
         EventForm.onClickNewEvent.bind(EventForm)(e, type)
     }
-    console.log("this:", this)
     this.close() // on referme la fenêtre après avoir choisi
     return stopEvent(e)
   }

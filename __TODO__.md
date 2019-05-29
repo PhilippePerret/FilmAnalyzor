@@ -2,6 +2,14 @@
 
 ### Traiter :
 
+* Poser un nouveau marqueur : utiliser la messagebox comme 'prompt'
+* Liste des marqueurs : utiliser une Helper, pas une liste normale d'éléments
+
+* Fenêtre indiquant les raccourcis de base :
+  n: créer un [n]ouvel élément
+  g: Aller ([go] to) quelque part avec les flèches (définition des raccourcis)
+
+
 * Pour se déplacer : "g" pour "goto" qui ouvre une fenêtre où on choisit, avec les flèches up/down, ce qui sera affecté aux touches :
   <- / ->
   ALT <- / ALT ->
@@ -16,13 +24,6 @@
 * Traiter les observeurs de keyup/keydown différemment en fonction du propriétaire (rappel : l'observer de mutations met dans la propriété "data-owner-id" l'identifiant du DOMElement qui contient le champ de saisie. C'est 'writer' lorsque c'est le writer)
 * Faire une fenêtre avec tous les raccourcis, qu'on peut ouvrir avec… un raccourci ("s" comme "shortcuts" en mode hors-champ)
 * Implémenter tous les raccourcis qui doivent permettre de naviguer dans la vidéo :
-  - de scène en scène (déjà implémenté)
-  - image par image
-  - seconde par seconde
-  - 10 secondes par 10 secondes
-  - de marqueur en marqueur
-  - de stop point en stop point
-  - de noeud structurel en noeud structurel
   + Les ajouter au title des boutons et réactiver les buttons.
 
 

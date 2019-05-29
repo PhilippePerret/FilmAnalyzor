@@ -34,14 +34,21 @@ onExecKeyUp(e){
 }
 
 build(){
+  var divsFooter = []
+  // Si une méthode footer est définie, elle renvoie des DOMElements
+  // à ajouter
+  if ( isFunction(this.footer) ){
+    divsFooter.push(...this.footer.bind(this).call())
+  } else {
+    divsFooter.push(DCreate(SPAN, {class:'small', inner:"Fermer : Escape ou Entrée"}))
+  }
+
   return [
     DCreate(DIV, {class:STRheader, append: [
       DCreate(H3, {inner:this.title})
     ]})
   , DCreate(DIV, {class:STRbody, append: this.body()})
-  , DCreate(DIV, {class:STRfooter, append:[
-      DCreate(SPAN, {class:'small', inner:"Fermer : Escape ou Entrée"})
-    ]})
+  , DCreate(DIV, {class:STRfooter, append:divsFooter})
   ]
 }
 
@@ -54,9 +61,9 @@ onFocus(){
   // Pour les remettre chaque fois qu'on ouvre la fenêtre ou qu'on focusse
   // dessus
   setTimeout(() => {
-    // console.log("Pose des observers de touches.")
     window.onkeyup    = this.onExecKeyUp.bind(this)
     window.onkeydown  = this.onExecKeyDown.bind(this)
+    UI.markShortcuts.html('MODAL WINDOW')
     this.ready = true
   }, 300)
 }
@@ -69,7 +76,7 @@ observe(){
   // Note : ce n'est pas ici qu'il faut affecter les obersers de touche
   // pressées car il faut les remettre chaque fois qu'on ouvre la fenêtre.
   // Cf. ci-dessus `onShow`
-
+  isFunction(this.observeSup) && this.observeSup.bind(this).call()
 }
 
 /**
@@ -85,5 +92,5 @@ requiredOwnData(){
 
 get jqObj(){ return this.fwindow.jqObj }
 get fwindow(){return this._window || defP(this,'_window', new FWindow(this, {class:'helper-window', id:`helper-window-${this.id}`, draggable:false, x:400, y:40}))}
-
+get a(){return current_analyse}
 }

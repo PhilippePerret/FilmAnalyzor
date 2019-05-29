@@ -101,6 +101,23 @@
     .body
       height: 500px
 
+      label
+        &:before
+          all: unset
+        &:after
+          all: unset
+        &.shortcut
+          display: inline-block
+          width: 40px
+
+      INPUT[type="text"]
+        // Le span qui peut contenir un autre shortcut, par exemple,
+        // pour go-to, on a les lettres qui sont les raccourcis "normaux" de
+        // helper, mais on a aussi, à droite, les raccourcis avec les flèches
+        // qui sont dans ces span.shortuct
+        &.shortcut
+          cursor: pointer
+
       div.separator
         border-bottom: 1px solid #CCCCCC
         margin-bottom: 0.5em

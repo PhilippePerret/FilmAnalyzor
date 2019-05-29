@@ -22,6 +22,13 @@ const App = {
   }
 
 /**
+  Pour requérir un module dans le dossier ./app/js/ (ne pas mettre ./app/js/)
+**/
+, require(rpath){
+    return require(path.join(APPFOLDER,'app','js',rpath))
+  }
+
+/**
   Pour charger un module se trouvant dans le dossier app/js/tools
 **/
 , loadTool(affixe){

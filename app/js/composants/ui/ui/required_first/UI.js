@@ -93,9 +93,18 @@ const UI = {
 **/
 , toggleKeyUpAndDown(versOut){
     log.info("-> UI.toggleKeyUpAndDown")
-    window.onkeyup    = this[`onKeyUp${versOut?'Out':'In'}TextField`].bind(this)
-    window.onkeydown  = this[`onKeyDown${versOut?'Out':'In'}TextField`].bind(this)
-    this.markShortcuts.html(versOut?'INTERFACE':'CHAMP SAISIE')
+    // Je pourrais utiliser des variables pour définir les noms des variables,
+    // comme : `onKey_UP_${versOut?'OUT':'IN'}TextField`, mais je préfère pouvoir
+    // les retrouver explicitement par leur nom.
+    if ( versOut ) {
+      window.onkeyup    = this.onKey_UP_OUT_TextField.bind(this)
+      window.onkeydown  = this.onKey_DOWN_OUT_TextField.bind(this)
+    } else {
+      window.onkeyup    = this.onKey_UP_IN_TextField.bind(this)
+      window.onkeydown  = this.onKey_DOWN_IN_TextField.bind(this)
+    }
+    // La marque du type de shortcut
+    this.markShortcuts.html(versOut?'INTERFACE':'TEXT FIELD')
   }
 
 

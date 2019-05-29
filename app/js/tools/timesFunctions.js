@@ -22,8 +22,8 @@ const setFilmStartTimeAt = function(){
       , defaultButtonIndex:1
       , cancelButtonIndex:0
       , okButtonIndex:1
-      , methodOnOK: execSetFilmStartTimeAt
-      , methodOnCancel: notExecSetFilmStartTimeAt
+      , methodOnOK: this.execSetFilmStartTimeAt.bind(this,diff)
+      , methodOnCancel: this.notExecSetFilmStartTimeAt
     })
   } else {
     endSetFilmStartTimeAt()
@@ -33,7 +33,7 @@ const setFilmStartTimeAt = function(){
 /**
   Après confirmation, on procède vraiment au changement
 **/
-function execSetFilmStartTimeAt(){
+function execSetFilmStartTimeAt(diff){
   current_analyse.forEachEvent(ev => ev.time += diff)
   // Corriger toutes les balises {{time:...}} qu'on
   // peut trouver dans les documents.

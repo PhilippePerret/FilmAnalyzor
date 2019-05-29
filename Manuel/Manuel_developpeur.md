@@ -1,7 +1,7 @@
 # Film-Analyzer
 # Manuel de développement
 
-<!-- Dernier numéro de note N0001 -->
+<!-- Dernier numéro de note N0003 -->
 
 * [Point d'entrée](#point_dentree)
 * [Principes généraux](#principes_generaux)
@@ -83,7 +83,7 @@ Cette instance `FAnalyse` construit un « controleur vidéo » (instance `Video
 
 Permet de régler des choses en tenant une touche appuyée. Par exemple, quand on tient la touche « v » appuyée, on peut régler des choses concernant la vidéo. Avec les flèches haut/bas, on peut régler sa taille (OBSOLÈTE avec la nouvelle interface Banc Timeline).
 
-Cette fonctionnalité est principalement définies dans le fichier `app/js/composants/ui/ui/require_then/shortcuts.js` (le nom est unique pour une recherche rapide : « app shortcuts »). La touche pressée est captée dans `onKeyDownOutTextField` et mise dans la propriété `currentKeyDown` de l'objet. Si on la relève tout de suite, `currentKeyDown` est effacée dans `onKeyUpOutTextField`. Si, en revanche, d'autres touches sont pressées avant que la touche ne soit relevée, on peut offrir des traitements.
+Cette fonctionnalité est principalement définies dans le fichier `app/js/composants/ui/ui/require_then/shortcuts.js` (le nom est unique pour une recherche rapide : « app shortcuts »). La touche pressée est captée dans `onKey_DOWN_OUT_TextField` et mise dans la propriété `currentKeyDown` de l'objet. Si on la relève tout de suite, `currentKeyDown` est effacée dans `onKey_UP_OUT_TextField`. Si, en revanche, d'autres touches sont pressées avant que la touche ne soit relevée, on peut offrir des traitements.
 
 On peut définir dans la propriété `methodOnKeyPressedUp` de l'objet `UI` la méthode qui doit être appelée quand on relève la touche. Cela permet de ne pas multiplier un traitement coûteux à répétition. Par exemple, sans cette méthode, avec la touche « v » appuyée, on changerait la taille de la vidéo **et on l'enregistrerait dans le fichier `options.json`** chaque fois que la touche flèche haut ou bas serait appuyée. Puisque c'est une touche « à répétition » (i.e. qu'on peut maintenir pour répéter la touche), l'enregistrement serait appelé de façon intensive. Au lieu de ça, la taille de la vidéo n'est enregistrée que lorsqu'on relève la touche.
 
@@ -669,9 +669,13 @@ Note : à l'avenir, il faudrait pouvoir décider ce que l'on actualise pour all�
 
 ---------------------------------------------------------------------
 
-## Ajout de préférences globales (appelées aussi "options globales") {#add_global_prefs}
+## Ajout de préférences globales {#add_global_prefs}
 
-Ces préférences sont définies dans le menu « Options » jusqu'à définition contraire.
+On distingue les « Préférences », qui sont globales, c'est-à-dire propre à toutes les analyses, et les « Options » qui sont propres à une analyse en particulier et n'affecte pas les autres.
+
+Ces préférences sont définies dans le menu « Options » jusqu'à définition contraire, bien que ce menu soit confusionnant.
+
+Pour définir une nouvelle préférences (donc une options globale) :
 
 1. Définir la valeur par défaut et le nom de l'option dans le fichier `./js/system/Options.js:14`, dans la constante `DEFAULT_DATA`. S'inspirer des autres options.
 
@@ -690,7 +694,7 @@ Ces préférences sont définies dans le menu « Options » jusqu'à définiti
   }
 ```
 
-3. Demander le réglage de l'option, au chargement de l'application, dans le fichier `.../main-process/Prefs.js:170` :
+3. Si nécessaire, demander le réglage de la préférence, au chargement de l'application, dans le fichier `.../main-process/Prefs.js:170` :
 
 ```javascript
 
@@ -706,26 +710,14 @@ Ces préférences sont définies dans le menu « Options » jusqu'à définiti
 
 ```
 
-Si la valeur par défaut doit être false, il n'y a rien d'autres à faire. Sinon, il faut définir sa valeur par défaut dans `Prefs` (fichier `.../main-process/Prefs.js:140` comme ci-dessus) :
+Si la valeur par défaut doit être false, il n'y a rien d'autres à faire. Sinon, il faut définir sa valeur par défaut dans `Prefs` (fichier `.../main-process/Prefs.js:26` comme ci-dessous), dans la constante `USER_PREFS_DEFAULT`.
 
-```javascript
+Noter que les préférences générales, lorsqu'elles sont modifiées, sont enregistrées dans le fichier `$LIBRARY/Application\ Support/Film-Analyzer/user-preferences.json` quand on quitte l'application.
 
-  // dans .../js/main-process/Prefs.js
-  loadUserPrefs:function(){
-    //...
-    } else {
-      this.userPrefs = {
-        //...
-        '<id_indispensable_et_universel>': true
-      }
-    }
-  }
-
-```
 
 ### Utilisation des préférences globales {#use_global_prefs}
 
-Pour connaitre la valeur d'une option globale, on utilise la même méthode que pour les options de l'analyse :
+Pour connaitre la valeur d'une option globale — donc d'une préférence —, on utilise la même méthode que pour les options de l'analyse :
 
 ```javascript
 
@@ -1377,3 +1369,20 @@ Ne surtout pas tester les overlaps dans la méthode `FWindow::setCurrent` (avec 
 => Le check du chevauchement doit être invoqué au show de la fenêtre volante.
 
 Ne surtout pas utiliser `e && stopEvent(e)` car, alors, lorsque l'on cliquerait sur un checkbox, rien ne se produirait.
+
+#### N0003
+
+Les « flags » des combinaison fléchées (arrows-combinaison) permettent de savoir comment traiter tous les raccourcis clavier qui permettent de se déplacer dans le film à l'aide des combinaisons fonctionnant avec flèche gauche/flèche droite.
+
+Ces combinaisons étant définissables (avec la touche « g ») il faut les calculer.
+
+Principe :
+
+* Une combinaison correspond à un flag unique (un nombre) déterminé à partir de :
+  * la touche flèche gauche ou flèche droite
+  * l'utilisation ou non de la touche MÉTA,
+  * l'utilisation ou non de la touche ALT,
+  * l'utilisation ou non de la touche CTRL,
+  * l'utilisation ou non de la touche SHIFT,
+* Le type `GOTODATA` détermine le nom de l'option, simplement en ajoutant 'goto-' devant : `next-scene` correspond à la préférence globale `goto-next-scene`.
+* Le type dans `GOTODATA` détermine le nom de la méthode de déplacement à utiliser, en ajoutant `goTo` et en titleisant le type. Par exemple, `next-scene` correspond à la méthode `goToNextScene`, `start-film` correspond à la méthode `goToStartFilm`.

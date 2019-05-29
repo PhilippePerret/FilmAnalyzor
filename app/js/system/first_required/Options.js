@@ -25,6 +25,8 @@ static get DEFAULT_DATA(){
     , 'option_duree_scene_auto':              true
     , 'option_banc_timeline':                 false
     // TODO : IMPLÉMENTER CES OPTIONS
+    // Elles déterminent ce qu'il faut updater en direct quand la vidéo
+    // joue.
     , 'video.running.updates.reader':         true
     , 'video.running.updates.stt':            false
     , 'video.running.updates.current_scene':  false

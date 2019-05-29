@@ -3,22 +3,31 @@
   Gestion des combinaisons de touches dans le mode Ban Timeline
 **/
 
+const GOTODATA = App.require('system/prefs/gotodata')
+const TBL_GOTO_FLAG2METHOD = {}
+
+
 Object.assign(UI, {
 
 /**
   Méthode principale qui reçoit les touches quand on est dans un champ
   de saisie.
 **/
-  onKeyUpInTextField(e){
+  onKey_UP_IN_TextField(e){
     let target = $(e.target)
+      , touche = e.key
     // log.info("-> KeyUp dans un TEXT FIELD")
     // Comment trouver le sélection (selector), maintenant
     // que toutes les méthodes sont communes ?
     // Plus, j'ai utilisé (sel = new Selector($(e.target))) mais ce n'est
-    // pas vivable si la méthode est appelée à répitition à chaque touche
+    // pas viable si la méthode est appelée à répitition à chaque touche
     // pressée
     var sel
-    if(e.keyCode === KESCAPE){
+    if ( touche === STRArrowLeft || touche === STRArrowRight ) {
+      // Quand une des flèches gauche ou droit est pressée, il faut
+      // regarder où il faut se rendre en fonction des préférences 'goto-...'
+      // Mais ça doit être traité par DOWN_IN
+    } else if(e.keyCode === KESCAPE){
       /**
         // TODO Il faut traiter l annulation quand on est dans un champ
         // de texte.
@@ -79,8 +88,9 @@ Object.assign(UI, {
     return true
   }
 
-, onKeyDownInTextField(e){
+, onKey_DOWN_IN_TextField(e){
     let target = $(e.target)
+      , touche = e.key
     if(e.keyCode === KESCAPE){
       // TODO
       F.notify("Il faudrait fermer la fenêtre.")
@@ -160,9 +170,9 @@ Object.assign(UI, {
   Méthode principale qui reçoit les touches quand on est hors d'un champ
   de saisie
 **/
-, onKeyUpOutTextField(e){
+, onKey_UP_OUT_TextField(e){
     let target = $(e.target)
-    log.info(`-> onKeyUpOutTextField (e.key: "${e.key}")`)
+    log.info(`-> onKey_UP_OUT_TextField (e.key: "${e.key}")`)
     // console.log("Touche pressée en dehors d'un champ de saisie :", e.key)
     // On met la touche pressée dans une variable pour pouvoir la
     // modifier plus tard.
@@ -179,24 +189,29 @@ Object.assign(UI, {
 
     switch (touche) {
       case STREscape: // Escape
-        if (FWindow.closeCurrent()){
-          return stopEvent(e)
-        } else return true
-      case TABULATION:
-        // TODO Si une fwindow est courante, il faut focusser dans son
+        if ( FWindow.closeCurrent() ) return stopEvent(e)
+        else return true
+      case STRTab:
+        // Si une fwindow est courante, il faut focusser dans son
         // premier champ de texte (en s'assurer qu'on bascule bien dans l'autre
         // mode de raccourcis)
+        if(FWindow.current){
+          FWindow.current.jqObj.find(TEXT_TAGNAMES).focus()
+          return stopEvent(e)
+        }
         break
+      case STRg: // g => fenêtre "goto"
+        Helper.open('go-to') ; return stopEvent(e)
       case STRm: // m
         log.info('m:go to next marker')
-        F.notify("TODO: Je dois aller au marqueur suivant.")
+        F.notify("TODO: Je dois poser un nouveau marqueur.")
         break
       case STRM: // M
         log.info('M:show markers list')
         F.notify("TODO: Je dois afficher la liste des marqueurs.")
         break
-      case STRn: // n
-        return stopEvent(e)
+      case STRn: // n => pour choisir un nouvel élément à créer
+        Helper.open('new-element') ; return stopEvent(e)
       case ' ':
         touche = this.a.locator.playing ? STRk : STRl
       case STRk: // k
@@ -241,10 +256,23 @@ Object.assign(UI, {
     }
   }
 
-, onKeyDownOutTextField(e){
-    log.info(`-> onKeyUpOutTextField (e.key: "${e.key}")`)
+, onKey_DOWN_OUT_TextField(e){
+    // log.info(`-> onKey_UP_OUT_TextField (e.key: "${e.key}")`)
     let target = $(e.target)
-    if(this.currentKeyDown){
+      , touche = e.key
+
+    if ( touche === STRArrowLeft || touche === STRArrowRight ) {
+      // cf. N0003
+      var flag = this.keyComb2flag(e)
+      console.log("Où dois-je aller avec le flag ", flag)
+      if ( isFunction(this.a.locator[TBL_GOTO_FLAG2METHOD[flag]]) ) {
+        this.a.locator[TBL_GOTO_FLAG2METHOD[flag]].bind(this.a.locator).call()
+        // TODO
+        // Transformer goToFilmStartOrZero en goToStartFilm
+        // Transformer goToFilmEndOrEnd en goToEndFilm
+      }
+      return stopEvent(e)
+    } else if(this.currentKeyDown){
       // <= Une touche est pressée
       switch(this.currentKeyDown){
         case STRv:
@@ -270,7 +298,6 @@ Object.assign(UI, {
       this.currentKeyDown = e.key
       // On met la touche pressée dans une variable pour pouvoir la
       // modifier plus tard.
-      var touche = e.key
       switch (touche) {
         case STRm:
           if(e.metaKey){
@@ -283,35 +310,7 @@ Object.assign(UI, {
           }
           break
         case STRn:
-          stopEvent(e)
-          Helper.open('new-element')
-          return false
-        case STRArrowLeft:
-          if(e.metaKey && e.shiftKey){
-            // `META SHIFT <-` => === DÉBUT DU FILM ===
-            log.info('Meta+Maj+<-:go to start of the film or zero')
-            this.a.locator.goToFilmStartOrZero()
-            return stopEvent(e)
-          } else if (e.metaKey) {
-            // META+FLECHE-GAUCHE ===> SCÈNE PRÉCÉDENTE <===
-            log.info('Meta+<-:go to previous scene')
-            this.a.locator.goToPrevScene()
-            return stopEvent(e)
-          }
-          break
-        case STRArrowRight:
-          if(e.metaKey && e.shiftKey){
-            // `META SHFT ->` => FIN DU FILM
-            log.info('Meta+Maj+->:go to end of the film or video')
-            this.a.locator.goToFilmEndOrEnd()
-            return stopEvent(e)
-          } else if (e.metaKey) {
-            // META+FLÈCHE-DROITE ===> SCÈNE SUIVANTE <===
-            log.info('Meta+->:go to next scene')
-            this.a.locator.goToNextScene()
-            return stopEvent(e)
-          }
-          break
+          return stopEvent(e)
         default:
 
       }
@@ -327,6 +326,10 @@ Object.assign(UI, {
     this.inTextField.toggleComments = this.doToggleComments.bind(this)
     this.inTextField.insertCrochet  = this.doInsertCrochet.bind(this)
     this.inTextField.insertChevrons = this.doInsertChevrons.bind(this)
+
+    // On prépare les flags des combinaisons arrows
+    // cf. N0003
+    this.prepareArrowsCombs()
   }
 
 , inTextField:{
@@ -484,6 +487,38 @@ Object.assign(UI, {
     return stopEvent(e)
   }
 
+/**
+
+  Prépare le tableau TBL_GOTO_FLAG2METHOD qui va permettre d'obtenir,
+  à partir d'une combinaison clavier avec les flèches left/right, de
+  déterminer la méthode à appeler.
+
+**/
+, keyComb2flag(e){
+    var flag = e.key === STRArrowLeft ? 32 : 64 ;
+    if (e.metaKey  || e.meta )  flag = flag | 2
+    if (e.altKey   || e.alt )   flag = flag | 4
+    if (e.ctrlKey  || e.ctrl )  flag = flag | 8
+    if (e.shiftKey || e.shift ) flag = flag | 16
+    return flag
+  }
+, prepareArrowsCombs() {
+    // On commence par relever les préférences
+    var listePrefs = GOTODATA.map(dsc => `goto-${dsc.type}`)
+    var prefs = Prefs.get(listePrefs)
+    if ( isUndefined(prefs['goto-next-scene']) ) {
+      prefs = {}
+      GOTODATA.map(dsc => prefs[`goto-${dsc.type}`] = dsc.dataArrowComb)
+    }
+    for ( var pref in prefs ) {
+      // On transforme "goto-next-scene" en goToNextScene
+      var method = pref.split('-').map(t => t.titleize())
+      method[0] = 'goTo'
+      method = method.join('')
+      TBL_GOTO_FLAG2METHOD[this.keyComb2flag(prefs[pref])] = method
+    }
+    // console.log("TBL_GOTO_FLAG2METHOD:", TBL_GOTO_FLAG2METHOD)
+  }
 }) // /Object.assign(UI)
 
 UI.initKeysObservers()

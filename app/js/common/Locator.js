@@ -6,6 +6,7 @@
  */
 
 const NextTime = require('./js/common/NextTime')
+const LocatorGotoMethods = require('./js/common/Locator/goto_methods')
 
 class Locator {
 
@@ -312,25 +313,6 @@ resetAllTimes(){
 }
 
 
-/**
- * Méthode permettant de rejoindre le début du film (ou le 0)
- */
-goToFilmStart(){
-
-  if(isDefined(this.a.filmStartTime)) this.setTime(this.startTime)
-  else F.error("Le début du film n'est pas défini. Cliquer sur le bouton adéquat pour le définir.")
-}
-
-goToFilmStartOrZero(){
-  this.setTime(this.a.filmStartTime ? this.startTime : OTime.ZERO)
-}
-
-// Méthode permettant de rejoindre la fin du film (avant le générique, s'il
-// est défini.)
-goToFilmEndOrEnd(){
-  if(isDefined(this.a.filmEndTime)) this.setTime(this.endTime)
-  else UI.video.currentTime = UI.video.duration
-}
 
 // ---------------------------------------------------------------------
 //  MÉTHODES SUR LES SCÈNES
@@ -352,60 +334,6 @@ get nextScene(){
   else return FAEscene.getByNumero(this.currentScene.numero + 1)
 }
 
-goToPrevScene(){
-  let method = () => {
-    let pScene = this.prevScene
-    if (pScene){
-      this.setTime(pScene.otime)
-    } else if (FAEscene.current){
-      F.notify(`La scène ${FAEscene.current.numero} n'a pas de scène précédente.`)
-    } else {
-      F.notify('Pas de scène courante.')
-    }
-  }
-  this.timerPrevScene = setTimeout(method, 1000)
-  method()
-}
-stopGoToPrevScene(){
-  clearTimeout(this.timerPrevScene)
-  delete this.timerPrevScene
-}
-
-goToNextScene(){
-  log.info("-> Locator#goToNextScene", (!FAEscene.current ? 'pas de scène courante' : `Passer à la scène suivante de la ${FAEscene.current.numero}`))
-  let method = () => {
-    let nScene = this.nextScene
-    if (nScene){
-      this.setTime(nScene.otime)
-      if(this.currentScene) log.info(`   Après setTime, numéro scène courant = ${this.currentScene.numero}`)
-      log.info(`   [goToNextScene] Après setTime, numéro scène suivante = ${nScene.numero}`)
-    } else if (FAEscene.current) {
-      F.notify(`   [goToNextScene] La scène ${FAEscene.current.numero} n'a pas de scène suivante.`)
-    } else {
-      F.notify(`   [goToNextScene] Pas de scène suivante.`)
-    }
-  }
-  this.timerNextScene = setTimeout(method, 500)
-  method()
-  log.info('<- Locator#goToNextScene')
-}
-stopGoToNextScene(){
-  clearTimeout(this.timerNextScene)
-  delete this.timerNextScene
-}
-// ---------------------------------------------------------------------
-//  Gestion des points d'arrêt
-
-goToNextStopPoint(){
-  ifDefined(his._i_stop_point) || ( this._i_stop_point = -1 )
-  ++ this._i_stop_point
-  if(this._i_stop_point > this.stop_points.length - 1) this._i_stop_point = 0
-  if(isUndefined(this.stop_points[this._i_stop_point])){
-    F.notify(T('no-stop-point'))
-  } else {
-    this.setTime(this.stop_points[this._i_stop_point])
-  }
-}
 addStopPoint(otime){
   if(this.a.options.get('option_lock_stop_points')) return
   otime instanceof(OTime) || raise(T('otime-arg-required'))
@@ -749,3 +677,5 @@ get imgPauser(){return '<img src="./img/btns-controller/btn-pause.png" />'}
 get imgPlay(){return '<img src="./img/btns-controller/btn-play.png" />'}
 
 }
+
+Object.assign(Locator.prototype, LocatorGotoMethods)
