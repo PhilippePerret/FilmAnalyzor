@@ -5,6 +5,10 @@ function confirm(msg, options){
   let mbox = new MessageBox(isString(msg) ? Object.assign(options, {message: msg}) : msg)
   mbox.show()
 }
+// Demande une réponse
+// On utilise `confirm` parce que la seule différence, c'est que `args`
+// définit `defaultAnswer` qui permet de savoir que c'est un prompt
+function prompt(msg, args){ return confirm(msg, args) }
 
 function isUndefined(foo){
   return STRundefined === typeof(foo)

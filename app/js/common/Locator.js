@@ -626,6 +626,24 @@ addEvent(ev){
 }
 
 // ---------------------------------------------------------------------
+//  MÉTHODES MARKERS
+
+createNewMarker(){
+  let my = this
+  prompt("Nom du nouveau marqueur :", {
+      defaultAnswer: ''
+    , buttons:['Renoncer','Créer le marqeur']
+    , defaultButtonIndex:1
+    , cancelButtonIndex:0
+    , okButtonIndex:1
+    , methodOnOK: (title, indexButtonClicked) => {
+        let m = new Marker(my.a, {time: my.currentTime.vtime, title:title})
+        m.build()
+      }
+  })
+}
+
+// ---------------------------------------------------------------------
 // Méthodes DOM
 
 /**

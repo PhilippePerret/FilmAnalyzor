@@ -26,7 +26,7 @@ onExecKeyDown(e){
 }
 onExecKeyUp(e){
   if(isFalse(this.ready)) return stopEvent(e)
-  if(e.key === 'Escape' || e.key === 'Return'){
+  if(e.key === STREscape || e.key === STRReturn){
     stopEvent(e)
     return this.close()
   }

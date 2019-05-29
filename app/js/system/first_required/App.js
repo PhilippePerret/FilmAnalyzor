@@ -161,6 +161,7 @@ const AppLoader = {
     if(NONE === typeof FAStats)       return this.loadComponant('faStats')
     if(NONE === typeof FAImage)       return this.loadComponant('faImage')
     if(NONE === typeof Snippets)      return this.loadComponant('Snippets')
+    if(NONE === typeof Markers)       return this.loadComponant('Markers')
 
     // Si tout est OK, on peut rappeler la méthode Fanalyse.load
     log.info("   Tous les composants sont chargés.")

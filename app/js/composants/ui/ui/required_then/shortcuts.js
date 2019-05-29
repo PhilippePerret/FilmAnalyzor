@@ -23,6 +23,7 @@ Object.assign(UI, {
     // pas viable si la méthode est appelée à répitition à chaque touche
     // pressée
     var sel
+
     if ( touche === STRArrowLeft || touche === STRArrowRight ) {
       // Quand une des flèches gauche ou droit est pressée, il faut
       // regarder où il faut se rendre en fonction des préférences 'goto-...'
@@ -201,19 +202,18 @@ Object.assign(UI, {
         }
         break
       case STRg: // g => fenêtre "goto"
-        // Helper.open('go-to') // PAR LE MENU
-        return stopEvent(e)
+        Helper.open('go-to')
+        return stopEvent(e) // pas par le menu cf. N0004
       case STRm: // m
         log.info('m:New marker')
-        this.a.locator.newMarker()
+        this.a.locator.createNewMarker() // pas par le menu cf. N0004
         return stopEvent(e)
       case STRM: // M
         log.info('M:show markers list')
-        // Marker.displayListing() // PAR LE MENU
+        Markers.displayListing() // pas par le menu cf. N0004
         return stopEvent(e)
       case STRn: // n => pour choisir un nouvel élément à créer
-        log.info('n:New element')
-        // Helper.open('new-element') // PAR LE MENU
+        Helper.open('new-element') // pas par le menu cf. N0004
         return stopEvent(e)
       case ' ':
         touche = this.a.locator.playing ? STRk : STRl

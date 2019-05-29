@@ -658,31 +658,58 @@ const DATA_MENUS = [
     }
   , {
         label: 'Raccourcis'
-      , submenu: [
+      , submenu: fakeShortcutsIn([
           {
               label: 'Raccourcis « Go-To »…'
-            , accelerator: 'g'
+            , shortcut: 'G'
             , click: _ => {execJS('Helper.open("go-to")')}
           }
         , {
               label: 'Nouvel élément…'
-            , accelerator: 'n'
+            , shortcut: 'N'
             , click: _ => {execJS('Helper.open("new-element")')}
           }
         , {type:'separator'}
         , {
               label: 'Nouveau marqueur…'
-            , accelerator: 'm'
-            , click: _ => {execJS('current_analyse && current_analyse.locator.newMarker()')}
+            , shortcut: 'M'
+            , click: _ => {execJS('current_analyse && current_analyse.locator.createNewMarker()')}
           }
         , {
               label: 'Liste des marqueurs'
-            , accelerator: 'Shift+m'
-            , click: _ => {execJS('current_analyse && Marker.displayListing()')}
+            , shortcut: 'Shift M'
+            , click: _ => {execJS('current_analyse && Markers.displayListing()')}
           }
-        ]
+        ])
     }
 ]
+
+/**
+  Pour simuler les marques de raccourcis dans les menus
+  Cf. N0004
+  @param {Array of Hash} items Définition des items de menus qui vont ensemble
+    Noter qu'il faut tous les labels, pour pouvoir estimer la taille du plus
+    grand et copier les autres par rapport.
+    Chaque élément est un `object` contenant {,:label, :shortcut}
+**/
+function fakeShortcutsIn(items){
+  var maxLen = 0
+  items.forEach(o => {
+    if ( o.type === 'separator' ) return
+    var len = o.label.length + (o.shortcut||'').length + 1
+    len < maxLen || ( maxLen = len )
+  })
+
+  maxLen += 5
+
+  items.forEach(o => {
+    if (o.type === 'separator') return
+    var scLen = (o.shortcut||'').length + 1
+    o.label = o.label.padEnd(maxLen - scLen) + (o.shortcut || '')
+  })
+
+  return items
+}
 
 var dataMenuPreferences = {
       role:   'preferences'

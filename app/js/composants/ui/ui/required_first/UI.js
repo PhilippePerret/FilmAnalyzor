@@ -58,6 +58,10 @@ const UI = {
 /**
   Les deux méthodes `onFocusTextField` et `onBlurTextField` sont
   appelées par les méthodes implémentées
+
+  ATTENTION : `e` peut ne pas être défini, quand la méthode
+  est appelée pour forcer le focus, comme par exemple avec les
+  messageBox en mode prompt.
 **/
 , onFocusTextField(e){
     UI.toggleKeyUpAndDown(/* out-text-field = */ false)

@@ -1,7 +1,7 @@
 # Film-Analyzer
 # Manuel de développement
 
-<!-- Dernier numéro de note N0003 -->
+<!-- Dernier numéro de note N0004 -->
 
 * [Point d'entrée](#point_dentree)
 * [Principes généraux](#principes_generaux)
@@ -1386,3 +1386,9 @@ Principe :
   * l'utilisation ou non de la touche SHIFT,
 * Le type `GOTODATA` détermine le nom de l'option, simplement en ajoutant 'goto-' devant : `next-scene` correspond à la préférence globale `goto-next-scene`.
 * Le type dans `GOTODATA` détermine le nom de la méthode de déplacement à utiliser, en ajoutant `goTo` et en titleisant le type. Par exemple, `next-scene` correspond à la méthode `goToNextScene`, `start-film` correspond à la méthode `goToStartFilm`.
+
+#### N0004
+
+Au départ, j'avais pensé utiliser les raccourcis des menus. Mais ils sont globaux, et ne peuvent être facilement désactivés (il faudrait utiliser, côté main-process, la méthode `globalShortcut.register` et ce serait lourd et confusionnant).
+
+Donc, les raccourcis sont marqués dans les menus, mais dans le label, pas en `accelerator`, et c'est la gestion normale des shortcuts qui les traite.
