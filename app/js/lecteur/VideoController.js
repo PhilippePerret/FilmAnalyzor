@@ -42,9 +42,9 @@ set inited(v){this._inited = v}
  * identifiant soient uniques
  */
 init(){
-  log.info("-> VideoController#init()")
+  log.info('-> VideoController#init()')
   var my = this
-  if (this.inited){throw("Le vidéocontroller ne devrait pas être initié deux fois…")}
+  if (this.inited){throw('Le vidéocontroller ne devrait pas être initié deux fois…')}
 
   this.locator = this.analyse.locator
 
@@ -56,7 +56,7 @@ init(){
   this.observe()
 
   this.inited = true
-  log.info("<- VideoController#init()")
+  log.info('<- VideoController#init()')
 
 }
 // /fin init
@@ -272,33 +272,15 @@ get markMainPartRel(){return this._markMainPartRel || defP(this,'_markMainPartRe
 get markSubPartRel(){return this._markSubPartRel || defP(this,'_markSubPartRel',    this.section.find('.sub-part-rel'))}
 
 static get CTRL_BUTTONS(){
-  return {
-  tiny_buttons:['prev-scene:CMD+<-','rewind-3', 'rewind-2', 'rewind-1', 'forward-1', 'forward-2', 'forward-3', 'next-scene:CMD+->']
-, main_buttons: {
-    'go-to-film-start': {title:"Pour retourner au début du film (si défini) (CMD+MAJ+<-)"}
-  , 'stop-points': {title:"Passe en revue les 3 derniers points d'arrêt"}
-  , 'stop': {title:"1/ dernier point d'arrêt, 2/ début du film, 3/ début de la vidéo"}
-  , 'play': {title:"Lancer/pauser/relancer la vidéo (SPACE ou l)"}
+    return {
+    tiny_buttons:['prev-scene:CMD+<-','rewind-3', 'rewind-2', 'rewind-1', 'forward-1', 'forward-2', 'forward-3', 'next-scene:CMD+->']
+  , main_buttons: {
+      'go-to-film-start': {title:"Pour retourner au début du film (si défini) (CMD+MAJ+<-)"}
+    , 'stop-points': {title:"Passe en revue les 3 derniers points d'arrêt"}
+    , 'stop': {title:"1/ dernier point d'arrêt, 2/ début du film, 3/ début de la vidéo"}
+    , 'play': {title:"Lancer/pauser/relancer la vidéo (SPACE ou l)"}
+    }
   }
 }
-}
-
-// build(){
-//
-//   // console.log('-> VideoController#build')
-//   // La section principale
-//   let sectionVideo = DCreate(SECTION, {class: 'section-video', id: `section-video-${this.id}`, append:[
-//       // ENTÊTE
-//       DCreate(DIV, {class:'video-header no-user-selection', append:[
-//
-//           , DCreate(DIV, {class: 'main-part part-abs main-part-abs', inner: '...'})
-//           , DCreate(DIV, {class: 'sub-part part-abs sub-part-abs', inner: '...'})
-//           , DCreate(DIV, {class: 'main-part part-rel main-part-rel', inner: '...'})
-//           , DCreate(DIV, {class: 'sub-part part-rel sub-part-rel', inner: '...'})
-//       ]})
-//       // VIDÉO
-//     ,
-//   ]})
-// }
 
 }

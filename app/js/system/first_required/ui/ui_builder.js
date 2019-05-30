@@ -44,13 +44,13 @@ const UIBuilder = {
 , defineFirstUIComponants(){
 
     // Le container principal de toute la page
-    UI.wholeUI  = $('body > div#whole-ui')
+    UI.wholeUI = $('body > div#whole-ui')
 
     // Section Vidéo
-    UI.sectionVideo   = $('section#C1-R1-C1-section-video')
+    UI.sectionVideo = $('section#C1-R1-C1-section-video')
 
     // Section Reader
-    UI.sectionReader  = $('section#C1-R1-C2-section-reader')
+    UI.sectionReader = $('section#C1-R1-C2-section-reader')
 
     // Section pour mettre les formulaire
     UI.sectionForms = $('section#C2-R1-forms')
@@ -126,7 +126,7 @@ const UIBuilder = {
 
     // L'horloge principal
     UI.mainHorloge = UI.sectionVideo.find('div#section-video-header horloge#main-horloge')
-    UI.videoHorloge = UI.sectionVideo.find('div#section-video-footer span.video-horloge')
+    UI.videoHorloge = UI.sectionVideo.find('div#bt-video-toolbox span.video-horloge')
     UI.markCurrentScene = UI.sectionVideo.find('div#section-video-header span#mark-current-scene')
 
     // Pour la boucle d'attente

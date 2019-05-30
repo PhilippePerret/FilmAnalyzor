@@ -28,10 +28,11 @@ build(){
   Le corps même de la section vidéo
 **/
 , buildBody(){
+
     return DCreate(DIV, {id:'section-video-body', append:[
         DCreate('VIDEO', {id:'section-video-body-video-1', class:'video no-user-selection time', append:[
           DCreate('SOURCE', {id: `video-1-src`, type: 'video/mp4', attrs:{src:'./img/novideo.mp4'}})
-      ]})
+        ]})
     ]})
   }
 
@@ -46,7 +47,8 @@ build(){
 
 , buildToolBox(){
     return DCreate(DIV,{id:'bt-video-toolbox', append:[
-        DCreate(SPAN,{id:'mode-shortcuts-span', append:[
+        DCreate(SPAN, {class:'video-horloge horloge tiny fleft discret block', inner: '0:00:00.0'})
+      , DCreate(SPAN,{id:'mode-shortcuts-span', append:[
           DCreate(LABEL,{inner:'Mode raccourcis'})
         , DCreate(SPAN,{id:'banctime-mode-shortcuts',inner:'INTERFACE'})
         ]})
@@ -56,8 +58,6 @@ build(){
 
 , buildControllerBox(){
     let btns = [], suf, dbtn, rac, attrs
-
-    let spanHorlogeReal = DCreate(SPAN, {class:'video-horloge horloge tiny fleft discret', inner: '0:00:00.0'})
 
     // Les boutons rewind et forward, etc.
     for(suf of VideoController.CTRL_BUTTONS.tiny_buttons){
@@ -85,7 +85,7 @@ build(){
     let divMainBtns = DCreate(SPAN, {class: 'vcontroller-main-btns no-user-selection', append:btns})
 
     let divControlBox = DCreate(SPAN, {class:'video-controller no-user-selection', id: `video-controller-1`, append:[
-      spanHorlogeReal, divTinyBtns, divMainBtns
+      divTinyBtns, divMainBtns
     ]})
 
     return divControlBox

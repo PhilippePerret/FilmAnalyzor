@@ -14,8 +14,7 @@ static get TEXT_PROPERTIES(){return this._tprops||defP(this,'_tprops',FAEvent.tP
  * d'analyse sans recharger l'application
  */
 static init(analyse){
-  if(undefined === analyse) analyse = current_analyse
-  this.analyse = this.a = analyse
+  this.analyse = this.a = analyse || current_analyse
   this.reset()
 }
 
@@ -248,7 +247,7 @@ static before(otime){
     //   , 'this.sortedByTime[i]': this.sortedByTime[i]
     //   , 'startAt': this.sortedByTime[i].startAt
     // })
-    if (this.sortedByTime[i].startAt >= otime.rtime) return this.sortedByTime[i - 1]
+    if (this.sortedByTime[i].startAt >= otime.vtime) return this.sortedByTime[i - 1]
   }
   // Cas où le curseur se trouve après la dernière scène définie
   return this.lastScene
@@ -257,7 +256,7 @@ static before(otime){
 // Retourne la scène qui commence après le temps otime (ou rien)
 static after(otime){
   for(var i = 0; i < this.count; ++i){
-    if (this.sortedByTime[i].startAt > otime.rtime) return this.sortedByTime[i]
+    if (this.sortedByTime[i].startAt > otime.vtime) return this.sortedByTime[i]
   }
 }
 

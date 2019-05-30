@@ -2,25 +2,16 @@
 
 ### Traiter :
 
-* Calculer la largeur de la réglette de temps (timeRuler) pour qu'elle occupe toute la surface du film, scroll compris
-  - D'ailleurs, voir pourquoi le film ne tient pas, par défaut, dans la largueur de la timeline est seulement la largeur.
-
 * Garder toujours le curseur visible (faire l'essai en zoomant et en passant du début à la fin du film)
 * Ré-étudier le survol de la timeline pour que ça ne court-circuite pas le déplacement des marqueurs, marqueurs de début et fin, etc.
 
-* Bien travailler les calculs de position pour que tout soit bien positionné au niveau du curseur de timeline :
-  AVANT : affichage du temps au survol de la timeline (dans l'horloge principale)
-  + Quand le début du film est défini (≠ 0), il faut afficher l'horloge vidéo.
-  - le début de la vidéo
-  - la fin de la vidéo
-    On ne doit pas pouvoir dépasser la fin de la vidéo (setTime doit contrôler)
-  - le curseur quand il passe sur un marker (mauvais temps pour le moment)
+* Bien travailler les calculs de position pour que tout soit bien
+  - On ne doit pas pouvoir dépasser la fin de la vidéo (setTime doit contrôler)
   - quand on veut se rendre à un temps précis
-  - quand on clique sur un temps dans la timeline
 
 * Liste des marqueurs : utiliser une Helper, pas une liste normale d'éléments
 
-* Pour les fenêtres indiquant les raccourcis de base :
+* Fenêtres (Helpers) indiquant les raccourcis de base :
   Les ajouter au menu "Raccourcis". S'inspirer des éléments présents
 
 * Généraliser l'affichage facile de tout un tas de panneaux avec la classe `Helper`.

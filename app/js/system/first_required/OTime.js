@@ -101,7 +101,7 @@ set vtime(s){ this.updateSeconds(s) }
  * pour ne pas créer intensivement des instances à chaque millisecondes
  */
 updateSeconds(s){
-  console.log("s dans updateSeconds :",s)
+  // console.log("s dans updateSeconds :",s)
   this.reset()
   this.seconds = s.round(2)
 }

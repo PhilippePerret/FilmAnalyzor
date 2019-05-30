@@ -13,12 +13,12 @@ Object.assign(BancTimeline,{
     return (x * this.coefP2T()).round(2)
   }
 , t2p(t){
-    console.log({
-      operation: 't2p'
-    , 'temps donné': t
-    , 'coefficiant T2P': this.coefT2P()
-    , return: Math.round(t * this.coefT2P())
-    })
+    // console.log({
+    //   operation: 't2p'
+    // , 'temps donné': t
+    // , 'coefficiant T2P': this.coefT2P()
+    // , return: Math.round(t * this.coefT2P())
+    // })
     return Math.round(t * this.coefT2P())
   }
 // ---------------------------------------------------------------------
@@ -30,13 +30,13 @@ Object.assign(BancTimeline,{
 , calcCoefP2T(){
     let duree = UI.video.duration
       , coef  = ( duree / this.width ) / this.zoom
-    console.log({
-      operation:'Calcul coef P2T (pixels -> temps)'
-    , width: this.width
-    , zoom: this.zoom
-    , duree: duree
-    , coefficiant: coef
-    })
+    // console.log({
+    //   operation:'Calcul coef P2T (pixels -> temps)'
+    // , width: this.width
+    // , zoom: this.zoom
+    // , duree: duree
+    // , coefficiant: coef
+    // })
     return coef
   }
 , calcCoefT2P(){
@@ -51,13 +51,13 @@ Object.assign(BancTimeline,{
     } catch (e) {
       raise(`Impossible de calculer le coefficiant BancTimeline time2pixels : ${e}`)
     }
-    console.log({
-      operation:'Calcul coef T2P (temps -> pixels)'
-    , width: this.width
-    , zoom: this.zoom
-    , duree: duree
-    , coefficiant: this._coeft2p
-    })
+    // console.log({
+    //   operation:'Calcul coef T2P (temps -> pixels)'
+    // , width: this.width
+    // , zoom: this.zoom
+    // , duree: duree
+    // , coefficiant: this._coeft2p
+    // })
     return this._coeft2p
   }
 , coefT2P(){ return this._coeft2p || defP(this,'_coeft2p', this.calcCoefT2P())}
