@@ -22,15 +22,15 @@ static get(time){
 // Retourne une instance dont le temps est 0:00:00
 static get ZERO(){return this._zero||defP(this,'_zero',new OTime(0))}
 
-// Une instance
-static vary(time){
+// Pour utiliser une instance OTime sans instancier un nouvel objet.
+static vVary(time){
   isDefined(this._otimevar) || ( this._otimevar = new OTime(0) )
   this._otimevar.updateSeconds(time)
   return this._otimevar
 }
-static vVary(vtime){
+static rVary(vtime){
   isDefined(this._otimevar) || ( this._otimevar = new OTime(0) )
-  this._otimevar.vtime = vtime
+  this._otimevar.rtime = vtime
   return this._otimevar
 }
 // ---------------------------------------------------------------------
@@ -75,39 +75,49 @@ constructor(v){
 
 reset(){
   delete this._toString
-  delete this._vtime
-  delete this._vhorloge
+  delete this._rtime
+  delete this._rhorloge
   delete this._horloge
+  delete this._vhorloge
   delete this._horloge_simple
+  delete this._rhorloge_simple
   delete this._vhorloge_simple
 }
 
 valueOf(){return this.seconds}
-toString(){return this._toString || defP(this,'_toString', `le temps ${this.horloge_simple}`)}
+toString(){return this._toString || defP(this,'_toString', `le temps ${this.rhorloge_simple}`)}
 
 // @return TRUE si le temps est entre les seconds +av+ et +ap+
 between(av,ap){
   return this.seconds.between(av,ap)
 }
-get rtime(){ return this.seconds}
-set rtime(s){ this.updateSeconds(s.round(2))
+get rtime(){ return this._rtime || defP(this, '_rtime', this.seconds - current_analyse.filmStartTime) }
+set rtime(s){
+  this.reset()
+  this.updateSeconds(s + current_analyse.filmStartTime)
+  this._rtime = s.round(2)
 }
-get vtime(){ return this._vtime || defP(this, '_vtime', this.seconds + current_analyse.filmStartTime)}
+get vtime(){ return this.seconds }
 set vtime(s){
-  this.updateSeconds((s - current_analyse.filmStartTime).round(2))
-  this._vtime = s
+  this.updateSeconds(s)
+  this.reset()
 }
 
 
 set horloge(v)  { this._horloge = v }
-get horloge()   {return this._horloge  || defP(this,'_horloge', this.s2h())}
-get vhorloge()  {return this._vhorloge || defP(this,'_vhorloge', this.s2h(this.vtime))}
+// horloge renvoie l'horloge relative, par rapport au début du film
+get horloge()   {return this._horloge  || defP(this,'_horloge', this.s2h(this.vtime))}
+get rhorloge()  {return this._rhorloge || defP(this,'_rhorloge', this.s2h(this.rtime))}
+get vhorloge()  {return this._vhorloge || defP(this,'_vhorloge', this.horloge)}
+// Par défaut, l'horloge simple retourne l'horloge simple relative
+// Pour avoir l'horloge de la vidéo, utiliser vhorloge_simple
 get horloge_simple(){
   isDefined(this._horloge_simple) || (
     this._horloge_simple = this.s2h(this.rtime, {no_frames: true})
   )
   return this._horloge_simple
 }
+get rhorloge_simple(){ return this.horloge_simple }
 get vhorloge_simple(){
   isDefined(this._vhorloge_simple) || (
     this._vhorloge_simple = this.s2h(this.vtime, {no_frames: true})
@@ -159,8 +169,8 @@ h2s(h){
 }
 s2h(s, format){
   var r, hrs, mns, scs, frm ;
-  format = format || {}
   s = s || this.seconds
+  format = format || {}
   let isNegative = s < 0
   isNegative && ( s = -s )
   hrs = Math.floor(s / 3600)
@@ -194,8 +204,9 @@ s2h(s, format){
  * pour ne pas créer intensivement des instances à chaque millisecondes
  */
 updateSeconds(s){
+  console.log("s dans updateSeconds :",s)
   this.reset()
-  this.seconds = s
+  this.seconds = s.round(2)
 }
 
 }

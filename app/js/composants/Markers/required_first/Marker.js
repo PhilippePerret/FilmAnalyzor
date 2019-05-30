@@ -93,13 +93,15 @@ buildDiv(){
   return this.jqObj
 }
 get style(){
-  return `left:${BancTimeline.t2p(this.time)}px;`
+  return `left:${BancTimeline.t2p(this.time) - 2/* largeur marker / 2*/}px;`
 }
 
 get HTMLTitle(){
   isDefined(this._htmltitle) || (
-    this._htmltitle = `${DFormater(this.title)} (${this.a.markers.otime(this.time).horloge})`
+    this._htmltitle = `${DFormater(this.title)} (${OTime.vVary(this.time).horloge})`
   )
+  console.log("this.time = ", this.time)
+  console.log("this.horloge = ", OTime.vVary(this.time).horloge)
   return this._htmltitle
 }
 

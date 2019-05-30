@@ -15,7 +15,11 @@ FAnalyse.classMethod = function(){
 //  INSTANCE
 
 Object.defineProperties(FAnalyse.prototype,{
-  data:{
+  reader:{get(){return this._reader || defP(this,'_reader', new FAReader(this))}}
+, locator:{get(){return this._locator || defP(this,'_locator', new Locator(this))}}
+, videoController:{get(){return this._videoctrl || defP(this,'_videoctrl', new VideoController(this))}}
+  // LES DONNÉES (I/O)
+, data:{
     get(){
       var spoints
       if(this.locator){
@@ -106,12 +110,6 @@ Object.defineProperties(FAnalyse.prototype,{
   , set(v){
       this._filmStTi = v
       delete this._duree
-      // On ne doit appeler cette fonction que lorsque l'analyse
-      // est déjà chargée, pour connaitre la fin du film. Sinon,
-      // au chargement de l'analyse, lorsque la durée n'est pas
-      // encore définie, on ne pourrait pas calculer les coeficients
-      // time2pixels
-      this.duree && BancTimeline.positionneMarkFilmStartEnd()
     }
   }
 
@@ -120,8 +118,6 @@ Object.defineProperties(FAnalyse.prototype,{
   , set(v){
       this._filmEndTime = v
       delete this._duree
-      // Cf. note ci-dessous à propos de filmStartTime
-      this.duree && BancTimeline.positionneMarkFilmStartEnd()
     }
 }
 

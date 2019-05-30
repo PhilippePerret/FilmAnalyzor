@@ -47,7 +47,7 @@ static instanceOf(edata){
 **/
 static edit(event_id){
   var typeOrInstance = isDefined(event_id) ? this.get(event_id) : this.type
-  console.log("typeOrInstance:",typeOrInstance)
+  // console.log("typeOrInstance:",typeOrInstance)
   return EventForm.editEvent.bind(EventForm, typeOrInstance)()
 }
 
@@ -87,7 +87,7 @@ static tProps(own_text_properties){
   contiendra donc une sorte d'historique des modifications.
 **/
 static addModified(evt){
-  if(isUndefined(this.modifieds)) this.modifieds = []
+  defaultize(this,'modifieds',[])
   this.modifieds.push(evt.id)
   this.a.modified = true
 }
@@ -211,7 +211,7 @@ set time(v){ this._time = v ; delete this._horl ; delete this._otime }
 get scene(){return this._scene||defP(this,'_scene',FAEscene.at(this.time))}
 
 get otime(){return this._otime || defP(this,'_otime',new OTime(this.time))}
-get horloge(){return this._horl||defP(this,'_horl',this.otime.horloge)}
+get horloge(){return this._horl||defP(this,'_horl',this.otime.rhorloge)}
 
 /**
  * Définition de la durée

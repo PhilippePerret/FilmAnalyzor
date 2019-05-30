@@ -95,10 +95,10 @@ module.exports = {
   }
 
 , goToStartFilm() {
-    this.setTime(this.varOTime(0))
+    this.setTime(this.varOTime(this.a.filmStartTime))
   }
 , goToEndFilm() {
-    this.setTime(this.varOTime(this.a.filmEndTime - this.a.filmStartTime))
+    this.setTime(this.varOTime(this.a.filmEndTime))
   }
 
 

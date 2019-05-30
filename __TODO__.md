@@ -5,6 +5,7 @@
 * Calculer la largeur de la réglette de temps (timeRuler) pour qu'elle occupe toute la surface du film, scroll compris
   - D'ailleurs, voir pourquoi le film ne tient pas, par défaut, dans la largueur de la timeline est seulement la largeur.
 
+* Garder toujours le curseur visible (faire l'essai en zoomant et en passant du début à la fin du film)
 * Ré-étudier le survol de la timeline pour que ça ne court-circuite pas le déplacement des marqueurs, marqueurs de début et fin, etc.
 
 * Bien travailler les calculs de position pour que tout soit bien positionné au niveau du curseur de timeline :

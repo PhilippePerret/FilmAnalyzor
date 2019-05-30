@@ -31,7 +31,7 @@ init(){
 
   // L'horloge de la vidéo n'est visible que lorsque son temps est différent
   // du temps réel, donc lorsque le début du film est défini
-  this.hasStartTime && UI.videoHorloge.css('visibility', STRhidden)
+  UI.videoHorloge.css('visibility', this.a.filmStartTime?STRvisible:STRhidden)
 
   // L'instance NextTime qui va permettre de connaitre
   // le temps suivant et la nature de l'élément portant
@@ -136,7 +136,6 @@ stopAndRewind(){
     newOTime.vtime = 0
   }
   this.setTime(newOTime)
-  this.actualizeHorloge()
 }
 
 /**
@@ -255,7 +254,7 @@ setTime(time, options){
   updateVideo && this.setVideoAt(time)
 
   // Réglage de l'horloge principale (toujours)
-  UI.mainHorloge.html(time.vhorloge)
+  this.actualizeHorloge(time)
 
   if ( playVideo ) {
     // Si l'on n'a pas précisé explicitement qu'on ne voulait
@@ -376,11 +375,7 @@ addStopPoint(otime){
 
 get startTime(){return this._startTime||defP(this,'_startTime', OTime.ZERO)}
 get endTime(){return this._endtime||defP(this,'_endtime', new OTime(UI.video.duration))}
-get currentTime(){
-  isDefined(this._currentTime) || ( this._currentTime = OTime.ZERO )
-  this._currentTime.vtime = UI.video.currentTime.round(2)
-  return this._currentTime
-}
+get currentTime(){ return OTime.vVary(UI.video.currentTime) }
 
 /**
 * Alias de this.currentTime pour retourner le temps vidéo courant
@@ -465,9 +460,9 @@ actualiseBancTimeline(curt){
 }
 
 actualizeHorloge(curt){
-  isDefined(curt) || (curt = this.currentTime)
-  UI.mainHorloge.html(curt.horloge)
-  UI.videoHorloge.html(curt.vhorloge)
+  // console.log("[actualizeHorloge] curt:", curt)
+  UI.mainHorloge.html(curt.rhorloge)
+  UI.videoHorloge.html(curt.horloge)
 }
 
 actualizeReader(curt){

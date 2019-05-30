@@ -117,9 +117,6 @@ load(){
 , onReady(){
     log.info('-> FAnalyse.onReady')
     let my = this
-    my.videoController = new VideoController(this)
-    my.locator = new Locator(my)
-    my.reader  = new FAReader(my)
     my.init()
     my.locator.init()
     my.locator.stop_points = my.stopPoints
@@ -134,10 +131,9 @@ load(){
     my.videoController.init()
     // Les marqueurs
     Markers.reset()
-    this.markers.load().build()
     // Les raccourcis clavier "universels"
     UI.toggleKeyUpAndDown(/* out texte field */ true)
-    // On met en route le timer de sauvegarder
+    // On met en route le timer de sauvegarde
     my.runTimerSave()
     try {
       // On peuple le reader avec les events et les images
@@ -146,13 +142,6 @@ load(){
       my.reader.peuple()
     } catch (e) {
       log.error("Impossible de peupler le reader (voir l'erreur ci-dessous)")
-      log.error(e)
-    }
-    try {
-      // On peuple la timeline avec les events
-      BancTimeline.init()
-    } catch (e) {
-      log.error("Impossible de peupler la timeline (voir l'erreur ci-dessous)")
       log.error(e)
     }
 
@@ -164,17 +153,39 @@ load(){
       my.methodAfterLoadingAnalyse()
     }
 
+
+    log.info('<- FAnalyse.onReady')
+  }
+
+, onVideoReady(){
+    let my = this
+    log.info('-> FAnalyse.onVideoReady')
+    try {
+      // On peuple la timeline avec les events
+      BancTimeline.init()
+    } catch (e) {
+      log.error("Impossible de peupler la timeline (voir l'erreur ci-dessous)")
+      log.error(e)
+    }
+    log.info('<- FAnalyse.onVideoReady')
+
+    BancTimeline.positionneMarkFilmStartEnd()
+    this.markers.load().build()
+
     // Si un dernier temps était mémorisé, on replace le curseur à
     // cet endroit (dans la timeline)
     var lastCurTime = new OTime(my.lastCurrentTime)
     lastCurTime && my.locator.setTime(lastCurTime, true)
 
+    // Au cours du dispatch des données, la méthode modified a été invoquée
+    // de nombreuses fois. Il faut revenir à l'état normal.
+    this.modified = false
+    UI.stopWait()// toujours, au cas où
+
     // On appelle la méthode `window.WhenAllIsReallyReady` qui permet de
     // jouer du code pour essai à la toute fin
     WhenAllIsReallyReady()
-    log.info('<- FAnalyse.onReady')
   }
-
 
 // Charger le fichier +path+ pour la propriété +prop+ de façon
 // asynchrone.

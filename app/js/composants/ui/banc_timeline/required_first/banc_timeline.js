@@ -14,18 +14,14 @@ init(){
   // On rend tous les éléments sensible au clic pour les éditer
   this.timelineTape.find('.banctime-element').on(STRclick, this.onClickElement.bind(this))
 
-  // On place correctement les marques de début et de fin du
-  // film, soit au début et à la fin de la vidéo, soit aux positions
-  // start et end du film
-  // positionneMarkFilmStartEnd()
 }
 
 , positionneMarkFilmStartEnd(){
     log.info('-> BancTimeline::positionneMarkFilmStartEnd()')
     log.info(`      Left start:${this.t2p(this.a.filmStartTime)}`)
     log.info(`      Left end:${this.t2p(this.a.filmEndTime)}`)
-    UI.markFilmStart.css(STRleft,`${this.t2p(this.a.filmStartTime)-3}px`)
-    UI.markFilmEnd.css(STRleft,`${this.t2p(this.a.filmEndTime)+3}px`)
+    UI.markFilmStart.css(STRleft,`${this.t2p(this.a.filmStartTime)-8}px`)
+    UI.markFilmEnd.css(STRleft,`${this.t2p(this.a.filmEndTime)}px`)
     log.info('<- BancTimeline::positionneMarkFilmStartEnd()')
   }
 
@@ -38,6 +34,7 @@ init(){
   fait que passer sur la réglette
 **/
 , onMouseOverTimeRuler(e){
+  // TODO : REMETTRE CI-DESSOUS, MAIS SANS GÊNER LE DÉPLACEMENT DES MARQUEURS
     // console.log("-> entrée dans la timeRuler")
     // this.timerOnTimeRuler = setTimeout(this.observeTimeRuler.bind(this), 750)
     // return stopEvent(e)
@@ -96,13 +93,15 @@ init(){
   Méthode appelée quand on clique sur la tape d'échelle/temps
 **/
 , onClicktimeRuler(e){
-    stopEvent(e)
     this.setCurrentPosition(e.offsetX)
+    return stopEvent(e)
   }
 
-, setCurrentPosition(x){
-    this.cursor.css('left',`${x - 4}px`)
-    this.currentTime = this.p2t(x)
+, setCurrentPosition(left){
+    console.log("left dans setCurrentPosition :", left)
+    // this.cursor.css('left',`${left}px`)
+    this.currentTime = this.p2t(left)
+    console.log("currentTime envoyé à setTime:", this.currentTime)
     this.a.locator.setTime(this.currentTime)
   }
 /**
@@ -110,7 +109,7 @@ init(){
 **/
 , setCursorByTime(t){
     this.currentTime = t
-    this.cursor.css('left',`${(this.t2p(t.vtime)) + 4}px`)
+    this.cursor.css('left',`${(this.t2p(t.vtime))}px`)
   }
 
 
@@ -122,8 +121,11 @@ Object.defineProperties(BancTimeline, {
 , currentTime:{
     get(){return this._currenttime || new OTime(0)}
   , set(v){
+      console.log("v dans currentTime:", v)
       isDefined(this._currenttime) || (this._currenttime = new OTime(0))
-      this._currenttime.vtime = v
+      isDefined(v.vtime) && ( v = v.vtime )
+      console.log("v avant updateSeconds", v)
+      this._currenttime.updateSeconds(v)
 
     }
   }
@@ -142,9 +144,8 @@ Object.defineProperties(BancTimeline, {
 // ---------------------------------------------------------------------
 //  PROPRIÉTÉS DOM
 
-//
 , width:{get(){
-    return this._width || defP(this,'_width', this.BancTimeline.width())
+    return this._width || defP(this,'_width', this.timelineTape.innerWidth())
   }}
 
 // ---------------------------------------------------------------------

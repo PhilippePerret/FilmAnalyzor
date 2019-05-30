@@ -10,6 +10,7 @@ const setFilmStartTimeAt = function(vtime){
   // On prend le nouveau temps
   vtime = vtime || my.locator.getTime().round(2)
   my.filmStartTime = vtime
+  BancTimeline.positionneMarkFilmStartEnd()
 
   // Différence, le temps qui sera AJOUTÉ aux temps déjà définis.
   let diff = initStartTime - my.filmStartTime

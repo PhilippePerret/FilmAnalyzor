@@ -165,25 +165,21 @@ onVideoLoaded(){
   // On peut marquer l'état d'avancement de l'analyse
   this.setupState()
 
-  // Au cours du dispatch des données, la méthode modified a été invoquée
-  // de nombreuses fois. Il faut revenir à l'état normal.
-  this.modified = false
-  UI.stopWait()// toujours, au cas où
   // On peut indiquer aux menus qu'il y a une analyse chargée
   ipc.send('current-analyse-exist', true)
   // Si une fonction a été définie pour la fin du chargement, on
   // peut l'appeler maintenant.
-  if ('function' == typeof this.methodeAfterLoading){
-    this.methodeAfterLoading()
-  }
+  isFunction(this.methodeAfterLoading) && this.methodeAfterLoading()
   // On appelle la méthode de sandbox
-  if(!MODE_TEST)Sandbox.run()
+  if(!MODE_TEST) Sandbox.run()
+
+  this.onVideoReady()
 }
 
 // Méthode pour régler l'état de l'analyse
 setupState(){
-  if(undefined === this.setupStateTries) this.setupStateTries = 1
-  else ++ this.setupStateTries
+  defaultize(this,'setupStateTries',0)
+  ++ this.setupStateTries
   if (this.setupStateTries > 10){
     console.error("Trop de tentatives pour charger FAStater. J'abandonne.")
     return
