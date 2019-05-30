@@ -16,7 +16,7 @@ Object.assign(BancTimeline,{
     return (x * this.coefP2T()).round(2)
   }
 , t2p(t){
-    return (t * this.coefT2P()).round(2) - this.scrollX
+    return (t * this.coefT2P()).round(2) // - this.scrollX
   }
 // ---------------------------------------------------------------------
 //  MÉTHODES DE CALCUL
@@ -26,7 +26,18 @@ Object.assign(BancTimeline,{
   }
 
 , coefT2P(){
-    return this._coeft2p || defP(this,'_coeft2p', (this.width / this.a.duree) * this.zoom)
+    if ( isUndefined(this._coeft2p) ) {
+      try {
+        this.width    || raise('la largeur du banc est nulle.')
+        this.a.duree  || raise('La durée du film est nulle.')
+        this.zoom     || raise('Le zoom du banc est nul.')
+        // Le calcul
+        this._coeft2p = (this.width / this.a.duree) * this.zoom
+      } catch (e) {
+        raise(`Impossible de calculer le coefficiant BancTimeline time2pixels : ${e}`)
+      }
+    }
+    return this._coeft2p
 }
 
 

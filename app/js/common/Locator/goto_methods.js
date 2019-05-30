@@ -23,36 +23,25 @@ module.exports = {
   }
 
 , goToNextScene(){
-    log.info("-> Locator#goToNextScene", (!FAEscene.current ? 'pas de scène courante' : `Passer à la scène suivante de la ${FAEscene.current.numero}`))
+    this.stopGoToNextScene() // un appel précédent
+    log.info('-> Locator#goToNextScene')
     let method = () => {
       let nScene = this.nextScene
-      if (nScene){
-        this.setTime(nScene.otime)
-        if(this.currentScene) log.info(`   Après setTime, numéro scène courant = ${this.currentScene.numero}`)
-        log.info(`   [goToNextScene] Après setTime, numéro scène suivante = ${nScene.numero}`)
-      } else if (FAEscene.current) {
-        F.notify(`   [goToNextScene] La scène ${FAEscene.current.numero} n'a pas de scène suivante.`)
-      } else {
-        F.notify(`   [goToNextScene] Pas de scène suivante.`)
-      }
+      if (nScene) this.setTime(nScene.otime)
+      else F.notify('Pas de scène suivante.')
     }
-    this.timerNextScene = setTimeout(method, 500)
-    method()
+    this.timerNextScene = setTimeout(method, 300)
     log.info('<- Locator#goToNextScene')
   }
 , goToPrevScene(){
+    this.stopGoToPrevScene() // un appel précédent
+    log.info('-> Locator#goToPrevScene')
     let method = () => {
       let pScene = this.prevScene
-      if (pScene){
-        this.setTime(pScene.otime)
-      } else if (FAEscene.current){
-        F.notify(`La scène ${FAEscene.current.numero} n'a pas de scène précédente.`)
-      } else {
-        F.notify('Pas de scène courante.')
-      }
+      if (pScene) this.setTime(pScene.otime)
+      else F.notify('Pas de scène précédente.')
     }
-    this.timerPrevScene = setTimeout(method, 1000)
-    method()
+    this.timerPrevScene = setTimeout(method, 300)
   }
 
 , goToNextImage(){
@@ -106,10 +95,10 @@ module.exports = {
   }
 
 , goToStartFilm() {
-    this.setTime(this.varOTime(this.a.filmStartTime))
+    this.setTime(this.varOTime(0))
   }
 , goToEndFilm() {
-    this.setTime(this.varOTime(this.a.filmEndTime))
+    this.setTime(this.varOTime(this.a.filmEndTime - this.a.filmStartTime))
   }
 
 
@@ -135,8 +124,10 @@ module.exports = {
   }
 
 , stopGoToPrevScene(){
-    clearTimeout(this.timerPrevScene)
-    delete this.timerPrevScene
+    if ( isDefined(this.timerPrevScene) ) {
+      clearTimeout(this.timerPrevScene)
+      delete this.timerPrevScene
+    }
   }
 
 , stopGoToNextScene(){

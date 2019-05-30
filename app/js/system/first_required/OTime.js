@@ -158,9 +158,11 @@ h2s(h){
   return tps / 1000
 }
 s2h(s, format){
-  if(undefined===format) format = {}
   var r, hrs, mns, scs, frm ;
-  if(undefined==s){s = this.seconds}
+  format = format || {}
+  s = s || this.seconds
+  let isNegative = s < 0
+  isNegative && ( s = -s )
   hrs = Math.floor(s / 3600)
   r = s - (hrs * 3600)
   mns = Math.floor(r / 60)
@@ -182,6 +184,7 @@ s2h(s, format){
   if(!format.as_duree){
     hstr = `${hrs}:${hstr}`
   }
+  isNegative && ( hstr = `-${hstr}` )
   return hstr
 }
 

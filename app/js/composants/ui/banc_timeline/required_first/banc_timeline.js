@@ -11,34 +11,58 @@ init(){
   // --- ÉCRITURE DE L'ANALYSE ---
   this.dispatchElementOnTape()
 
-  // La bande métrée est sensible au clic pour permettre de se
-  // déplacer dans le film
-  UI.timeRuler.on(STRclick, this.onClicktimeRuler.bind(this))
-
-  // On place les marques amovibles de début et de fin de film
-  UI.timeRuler.append(
-    DCreate(SPAN,{class:'mark-film mark-film-start', style:`left:${my.t2p(my.a.filmStartTime)}px;`})
-  , DCreate(SPAN,{class:'mark-film mark-film-end', style:`left:${my.t2p(my.a.filmEndTime)}px;`})
-  )
-  UI.timeRuler.find('.mark-film').draggable({
-      axis:'x'
-    , drag: (e) => {
-        // console.log("Je draggue", e.target)
-        my.a.locator.setTime(OTime.vVary(my.p2t($(e.target).position().left)), {updateOnlyVideo: true})
-      }
-    , stop: (e) => {
-        let lastOTime = OTime.vVary(my.p2t($(e.target).position().left))
-        my.a.locator.setTime(lastOTime)
-        // On règle le temps de fin ou de début
-        var isFilmStart = $(e.target).hasClass('mark-film-start')
-        this.a.runTimeFunction(`Film${isFilmStart?'Start':'End'}Time`, lastOTime.vtime)
-      }
-  })
   // On rend tous les éléments sensible au clic pour les éditer
   this.timelineTape.find('.banctime-element').on(STRclick, this.onClickElement.bind(this))
 
-
+  // On place correctement les marques de début et de fin du
+  // film, soit au début et à la fin de la vidéo, soit aux positions
+  // start et end du film
+  // positionneMarkFilmStartEnd()
 }
+
+, positionneMarkFilmStartEnd(){
+    log.info('-> BancTimeline::positionneMarkFilmStartEnd()')
+    log.info(`      Left start:${this.t2p(this.a.filmStartTime)}`)
+    log.info(`      Left end:${this.t2p(this.a.filmEndTime)}`)
+    UI.markFilmStart.css(STRleft,`${this.t2p(this.a.filmStartTime)-3}px`)
+    UI.markFilmEnd.css(STRleft,`${this.t2p(this.a.filmEndTime)+3}px`)
+    log.info('<- BancTimeline::positionneMarkFilmStartEnd()')
+  }
+
+/**
+  Quand on passe la souris sur la réglette de temps, on déclenche
+  un setTimeout qui doit déclencher l'observer de déplacement de la
+  souris sur cette réglette (rapide).
+
+  Note : ce setTimeout sert à ne pas déclencher les choses si on ne
+  fait que passer sur la réglette
+**/
+, onMouseOverTimeRuler(e){
+    // console.log("-> entrée dans la timeRuler")
+    // this.timerOnTimeRuler = setTimeout(this.observeTimeRuler.bind(this), 750)
+    // return stopEvent(e)
+  }
+, observeTimeRuler(){
+    UI.timeRuler
+      .on(STRmousemove, this.onMouseMoveTimeRuler.bind(this))
+      .on(STRmouseout,  this.onMouseOutTimeRuler.bind(this))
+  }
+// Quand la souris quitte la réglette de temps, on doit arrêter et
+// détruire le timer qui n'a peut-être pas été mis en route
+, onMouseOutTimeRuler(e){
+    if (isDefined(this.timerOnTimeRuler) ) {
+      clearTimeout(this.timerOnTimeRuler)
+      delete this.timerOnTimeRuler
+    }
+    return stopEvent(e)
+  }
+
+, onMouseMoveTimeRuler(e) {
+    var vtime = this.p2t(e.clientX)
+    var otime = OTime.vVary(vtime)
+    this.a.locator.setTime(otime, {updateOnlyHorloge: true})
+    return stopEvent(e)
+  }
 
 // ---------------------------------------------------------------------
 //  MÉTHODES GÉNÉRALES DE PRÉPARATION
@@ -54,6 +78,7 @@ init(){
        BancTimeline.items.push(bte)
        bte.place()
      })
+   log.info("<- BancTimeline::dispatchElementOnTape()")
   }
 
 // ---------------------------------------------------------------------

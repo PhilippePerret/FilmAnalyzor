@@ -103,12 +103,26 @@ Object.defineProperties(FAnalyse.prototype,{
 
 , filmStartTime:{
     get() {return this._filmStTi || defP(this,'_filmStTi', 0)}
-  , set(v){ this._filmStTi = v ; this.duree = undefined }
+  , set(v){
+      this._filmStTi = v
+      delete this._duree
+      // On ne doit appeler cette fonction que lorsque l'analyse
+      // est déjà chargée, pour connaitre la fin du film. Sinon,
+      // au chargement de l'analyse, lorsque la durée n'est pas
+      // encore définie, on ne pourrait pas calculer les coeficients
+      // time2pixels
+      this.duree && BancTimeline.positionneMarkFilmStartEnd()
+    }
   }
 
 , filmEndTime:{
     get(){return this._filmEndTime || defP(this,'_filmEndTime',this.calcFilmEndTime())}
-  , set(v){ this._filmEndTime = v ; this.duree = undefined }
+  , set(v){
+      this._filmEndTime = v
+      delete this._duree
+      // Cf. note ci-dessous à propos de filmStartTime
+      this.duree && BancTimeline.positionneMarkFilmStartEnd()
+    }
 }
 
 , filmEndGenericFin:{
@@ -123,20 +137,19 @@ Object.defineProperties(FAnalyse.prototype,{
 
 })
 
-
-
 Object.assign(FAnalyse.prototype, {
 
   calcDuration(){
+    // Note : filmEndTime essaie déjà d'être défini en prenant
+    // la fin de la vidéo. Mais si la vidéo n'est pas définie,
+    // filmEndTime ne l'est pas non plus.
     if(!this.filmEndTime) return null
     return this.filmEndTime - this.filmStartTime
   }
 
 , calcFilmEndTime(){
     delete this._filmEndTime
-    if(this.videoPath){
-      this._filmEndTime = this.videoController.video.duration
-    }
+    this.videoPath && (this._filmEndTime = this.videoController.video.duration)
     return this._filmEndTime
   }
 

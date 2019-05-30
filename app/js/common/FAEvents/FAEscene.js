@@ -54,7 +54,7 @@ static set current(s){
   UI.markCurrentScene.html(s ? s.asPitch().innerHTML : '...')
 }
 static getCurrent(){
-  if(this.count === 0) return
+  if (this.count === 0) return
   return this.at(this.a.locator.currentTime)
 }
 
@@ -237,10 +237,33 @@ static at(otime){
   return this.lastSceneFound
 }
 
+// Retourne la scène qui commence avant le temps otime (ou rien)
+static before(otime){
+  if ( this.count === 0) return
+  for(var i = 0 ; i < this.count ; ++i){
+    // console.log({
+    //     operation: "Recherche scène before"
+    //   , rtime: otime.rtime
+    //   , i: i
+    //   , 'this.sortedByTime[i]': this.sortedByTime[i]
+    //   , 'startAt': this.sortedByTime[i].startAt
+    // })
+    if (this.sortedByTime[i].startAt >= otime.rtime) return this.sortedByTime[i - 1]
+  }
+  // Cas où le curseur se trouve après la dernière scène définie
+  return this.lastScene
+}
+
+// Retourne la scène qui commence après le temps otime (ou rien)
+static after(otime){
+  for(var i = 0; i < this.count; ++i){
+    if (this.sortedByTime[i].startAt > otime.rtime) return this.sortedByTime[i]
+  }
+}
+
 /**
   @returns {FAEscene} La dernière scène (ou undefined si inexistante)
 **/
-
 static get firstScene(){
   return this.sortedByTime[0]
 }
@@ -315,7 +338,7 @@ onModify(){
 // Pour vérifier si c'est un nouveau décor
 checkForDecor(){
   if(this.decor){
-    if(undefined === FADecor.data[this.decor]){
+    if ( isUndefined(FADecor.data[this.decor]) ) {
       FADecor.resetAll()
     } else if (this.sous_decor && undefined === FADecor.data[this.decor].sousDecor(this.sous_decor)){
       FADecor.data[this.decor].reset()
@@ -334,7 +357,7 @@ updateNumero(){
   $(`.numero-scene[data-id="${this.id}"]`).html(this.numero)
 }
 
-get isRealScene(){return this.sceneType !== 'generic'}
-get isGenerique(){return this.sceneType === 'generic'}
+get isRealScene(){return this.sceneType !== STRgeneric}
+get isGenerique(){return this.sceneType === STRgeneric}
 
 } // Fin de FAEscene

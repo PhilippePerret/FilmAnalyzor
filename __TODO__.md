@@ -2,73 +2,38 @@
 
 ### Traiter :
 
+* Calculer la largeur de la réglette de temps (timeRuler) pour qu'elle occupe toute la surface du film, scroll compris
+  - D'ailleurs, voir pourquoi le film ne tient pas, par défaut, dans la largueur de la timeline est seulement la largeur.
+
+* Ré-étudier le survol de la timeline pour que ça ne court-circuite pas le déplacement des marqueurs, marqueurs de début et fin, etc.
 
 * Bien travailler les calculs de position pour que tout soit bien positionné au niveau du curseur de timeline :
   AVANT : affichage du temps au survol de la timeline (dans l'horloge principale)
-  + L'horloge avant le début du film affiche n'importe quoi
-    + Quand le début du film est défini (≠ 0), il faut afficher l'horloge vidéo.
+  + Quand le début du film est défini (≠ 0), il faut afficher l'horloge vidéo.
   - le début de la vidéo
   - la fin de la vidéo
-  - le début du film (marque dans la timeRuler : crochet ouvrant rouge, draggable en suivant la vidéo)
-  - fin du film (marque dans la timeRuler : crochet fermant, draggable, en suivant la vidéo)
+    On ne doit pas pouvoir dépasser la fin de la vidéo (setTime doit contrôler)
   - le curseur quand il passe sur un marker (mauvais temps pour le moment)
   - quand on veut se rendre à un temps précis
   - quand on clique sur un temps dans la timeline
 
-
-* Poser un nouveau marqueur : utiliser la messagebox comme 'prompt'
 * Liste des marqueurs : utiliser une Helper, pas une liste normale d'éléments
 
-* Fenêtre indiquant les raccourcis de base :
-  n: créer un [n]ouvel élément
-  g: Aller ([go] to) quelque part avec les flèches (définition des raccourcis)
-
-
-* Pour se déplacer : "g" pour "goto" qui ouvre une fenêtre où on choisit, avec les flèches up/down, ce qui sera affecté aux touches :
-  <- / ->
-  ALT <- / ALT ->
-  CTRL <- / CTRL ->
-  MAJ <- / MAJ ->
-  - Ces préférences sont enregistrées dans les préférences générales (pas dans les préférences de l'analyse)
+* Pour les fenêtres indiquant les raccourcis de base :
+  Les ajouter au menu "Raccourcis". S'inspirer des éléments présents
 
 * Généraliser l'affichage facile de tout un tas de panneaux avec la classe `Helper`.
 
 * Dans un champ d'édition, la touche escape doit permettre d'annuler l'édition après confirmation.
 
 * Traiter les observeurs de keyup/keydown différemment en fonction du propriétaire (rappel : l'observer de mutations met dans la propriété "data-owner-id" l'identifiant du DOMElement qui contient le champ de saisie. C'est 'writer' lorsque c'est le writer)
-* Faire une fenêtre avec tous les raccourcis, qu'on peut ouvrir avec… un raccourci ("s" comme "shortcuts" en mode hors-champ)
-* Implémenter tous les raccourcis qui doivent permettre de naviguer dans la vidéo :
-  + Les ajouter au title des boutons et réactiver les buttons.
 
+* Supprimer les boutons de commande de la vidéo (prendre l'option "tout clavier" pour l'application, pour forcer l'utilisateur à les utiliser)
 
+* Traiter la sélection courante de l'interface, qui peut être n'importe quoi, un marqueur, une fiche, un document, etc. Pouvoir agir dessus (supprimer, éditer, déplacer)
 
 Faire un controleur pour chaque partie de l'interface et notamment pour la colonne de droite qui doit s'ouvrir/se refermer, recevoir un élément à afficher, etc.
   - FAIT Il faut maintenant l'utiliser.
-
-Mettre en place des méthodes "une touche" comme :
-  - n => (new/create) afficher la liste des éléments "créable", la deuxième lettre choisie
-  - g => (goto) affiche les endroits où on peut se rendre, la deuxième lettre choisit le lieu
-  - f => (focus) affiche les endroits dans lesquels on peut focusser, la deuxième lettre choisit le champ
-
-Comment créer une méthode `Locator.actualizeALL` qui soit dynamique, en fonction des choix (options)
-Les options sont les suivantes :
-
-* suivre les marques de structure
-* suivre la scène courante
-* suivre les events dans le Reader
-  (en sachant que maintenant, il faut tout écrire dans le Reader)
-
-```javascript
-
-```
-
-      -----------------------------------------
-      |  |                 |               |  |
-      |  |                 |               |  |
-      |  |                 |               |  |
-      |  |---------------------------------|  |
-      |  |                                 |  |
-      -----------------------------------------
 
 
 

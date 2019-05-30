@@ -218,7 +218,8 @@ stopForward(){
                       de régler la vidéo.
   @param {Object|Boolean} options | dontPlay
     dontPlay   Si true, on ne met pas la vidéo en route.
-    update_only_video   Si true, on n'actualise que la vidéo et l'horloge
+    updateOnlyVideo   Si true, on n'actualise que la vidéo et l'horloge
+    updateOnlyHorloge Si true, on actualise que l'horloge principale
  */
 setTime(time, options){
   // try {
@@ -232,11 +233,16 @@ setTime(time, options){
   } else if ( isUndefined(options) ){
     options = {}
   }
+  log.info(`-> Locator#setTime(time=${time}, options=${JSON.stringify(options)})`)
 
-  log.info('-> Locator#setTime(time=, dontPlay=)', time.toString(), options.dontPlay)
+  // Les choix
+  let updateTimes = isNotTrue(options.updateOnlyVideo) && isNotTrue(options.updateOnlyHorloge)
+    , updateVideo = isNotTrue(options.updateOnlyHorloge)
+    , playVideo   = isNotTrue(options.dontPlay) && updateTimes && updateVideo
+
   time instanceof(OTime) || raise(T('otime-arg-required'))
 
-  if ( isFalse(options.updateOnlyVideo) ) {
+  if ( updateTimes ) {
     // Initialisation de tous les temps. Cf. [1]
     this.resetAllTimes()
     // On instancie le nextTime avec le temps choisi
@@ -245,11 +251,13 @@ setTime(time, options){
   }
 
   // Réglage de la vidéo. L'image au temps donné doit apparaitre
-  UI.video.currentTime = time.vtime
-  // Réglage de l'horloge principale.
+  // + réglage des curseurs
+  updateVideo && this.setVideoAt(time)
+
+  // Réglage de l'horloge principale (toujours)
   UI.mainHorloge.html(time.vhorloge)
 
-  if( isFalse(options.dontPlay) && isFalse(options.updateOnlyVideo) ) {
+  if ( playVideo ) {
     // Si l'on n'a pas précisé explicitement qu'on ne voulait
     // pas démarrer la vidéo, on doit voir si on doit le
     // faire.
@@ -269,6 +277,14 @@ setTime(time, options){
     UI.video.paused && this.actualizeALL()
   }
 
+}
+
+setVideoAt(curt){
+  UI.video.currentTime = curt.vtime
+  this.actualiseBancTimeline(curt) // notamment le curseur
+  // TODO
+  // Plus tard, il faudra actualiser tous les curseurs
+  // présents à l'affichage
 }
 
 // ---------------------------------------------------------------------
@@ -331,20 +347,16 @@ resetAllTimes(){
 //  MÉTHODES SUR LES SCÈNES
 
 get currentScene(){ return FAEscene.current}
-set currentScene(v){
-  log.info(`Current scène de Locator mise à ${v} (${v.numero})`)
-  FAEscene.current = v
+set currentScene(s){
+  log.info(`Current scène de Locator mise à ${s} (${s.numero})`)
+  FAEscene.current = s
 }
-
-// Retourne la scène précédente de la scène courante
-get prevScene(){
-  if (!this.currentScene || this.currentScene.numero == 1) return
-  else return FAEscene.getByNumero(this.currentScene.numero - 1)
+// Retourne la scène précédente de la position courante
+get prevScene() {
+  return FAEscene.before(this.currentTime)
 }
 get nextScene(){
-  // console.log("-> nextScene")
-  if(!this.currentScene) return FAEscene.getByNumero(1)
-  else return FAEscene.getByNumero(this.currentScene.numero + 1)
+  return FAEscene.after(this.currentTime) // cf. [3] ci-dessus
 }
 
 addStopPoint(otime){
@@ -416,7 +428,6 @@ actualizeALL(){
   log.info('-> Locator.actualizeALL')
   var curt = this.currentTime
   this.actualizeHorloge(curt)
-  this.actualiseBancTimeline(curt) // si on est en mode Ban Timeline
   this.actualizeReader(curt)
   this.actualizeMarkersStt(curt)
   this.actualizeCurrentScene(curt)
@@ -440,14 +451,9 @@ buildActualizeMainFunction(){
   if (this.a.options.get('video.running.updates.stt')){
     codeLines.push("this.actualizeMarkersStt(curt)")
   }
-  if(this.a.options.get('video.running.updates.banc_timeline')){
-    codeLines.push("this.actualiseBancTimeline(curt)")
-  }
-
   // Arrêter de jouer si un temps de fin est défini et qu'il est
   // atteint
   codeLines.push("this.isEndTimeWanted(curt) && this.stopAtEndTimeWanted()")
-
 
   this.actualizeMainFunction = new Function(codeLines.join(RC))
   this.actualizeMainFunction = this.actualizeMainFunction.bind(this)

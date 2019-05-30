@@ -28,7 +28,7 @@ const setFilmStartTimeAt = function(vtime){
       , methodOnCancel: my.notExecSetFilmStartTimeAt.bind(my)
     })
   } else {
-    endSetFilmStartTimeAt()
+    this.endSetFilmStartTimeAt()
   }
 }
 
@@ -49,7 +49,7 @@ FAnalyse.prototype.execSetFilmStartTimeAt = function(diff){
     })
     doc.save() // asynchrone
   })
-  endSetFilmStartTimeAt()
+  this.endSetFilmStartTimeAt()
 }
 /**
   Quand l'utilisateur décide de ne pas procéder au changement de temps
@@ -62,7 +62,7 @@ FAnalyse.prototype.notExecSetFilmStartTimeAt = function(){
 FAnalyse.prototype.endSetFilmStartTimeAt = function(){
   this.modified = true
   this.setButtonGoToStart()
-  F.notify(t('confirm-start-time', {time: new OTime(this.filmStartTime).horloge}))
+  F.notify(T('confirm-start-time', {time: new OTime(this.filmStartTime).horloge}))
 }
 
 // Pour définir le début du film

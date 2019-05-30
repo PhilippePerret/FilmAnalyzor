@@ -1,0 +1,21 @@
+horloge, duree
+  display: inline-block
+  padding: 0.2em 0.5em
+  text-align: center
+  font-family: Courier
+  color: white
+  background-color: #333333
+  -webkit-user-select: none
+
+  &:hover
+    cursor: ew-resize
+
+  &:not(.small)
+    width: 130px
+
+  &.small
+    width: 100px
+    font-size: 0.8em
+
+  &.modified
+    background-color: #770022

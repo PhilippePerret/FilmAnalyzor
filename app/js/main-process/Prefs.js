@@ -189,8 +189,6 @@ const Prefs = {
  * Pour les préférences
  */
 ipc.on('get-pref', (ev, data) => {
-  console.log("Dans ipc on get-pref, je reçois :", data)
-  console.log("La valeur retournée est :", Prefs.get(data))
   ev.returnValue = Prefs.get(data)
 })
 ipc.on('set-pref', (ev, data) => {
