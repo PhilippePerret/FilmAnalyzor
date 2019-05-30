@@ -75,7 +75,7 @@ static reset(){
 **/
 static get diminutifs(){
   if(!this.exists()) return {}
-  if(undefined === this._diminutifs){
+  if(isUndefined(this._diminutifs)){
     this._diminutifs = {}
     for(var pseudo in this.data){
       if(this.data[pseudo].dim){
@@ -95,7 +95,7 @@ static get(pseudo){
 }
 
 static get personnages(){
-  if(undefined === this._personnages){
+  if(isUndefined(this._personnages)){
     var ipersonnage
     this._personnages = []
     this._hpersonnages = {}

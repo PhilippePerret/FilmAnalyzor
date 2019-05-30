@@ -1,0 +1,116 @@
+// NOTE : voir à la fin les styles non utilisés
+
+section#C1-R1-C1-section-video
+
+  // Entête, contenant entre autres chose l'horloge et la scène courante
+  div#section-video-header
+    background-color: #121212
+
+    // Horloge principale
+    horloge#main-horloge
+      color: #BBBBBB !important
+      height: 22px
+      padding: 6px 10px 2px 10px
+      background-color: inherit
+
+    // Marque de scène courante
+    span#mark-current-scene
+      display:  inline-block
+      width: 360px
+      font-size: 10.5pt
+      padding: 3px 8px 0px 10px
+      overflow: hidden
+      background-color: #121212
+      color:    #BBBBBB
+      height: 21px
+
+  div#section-video-body
+    text-align: center
+    padding:    0
+    width:  calc(100%)
+    height: inherit
+    background-color: inherit
+
+    // La vidéo principale
+    video#section-video-body-video-1
+      width: 90%
+
+  div#section-video-footer
+    text-align: right
+    background-color: inherit
+    height: 10%
+
+    .video-controller
+      &, & *
+        background: #222222
+        vertical-align: middle
+
+      div.vcontroller-tiny-btns
+        padding-top: 8px
+
+      div.vcontroller-main-btns
+        padding-bottom: 8px
+
+      button
+        border: 0
+        border-bottom: 3px solid inherit
+        padding: 0
+
+        &.controller
+          vertical-align: middle
+          text-align: center
+          margin: 0 0.1em
+          img
+            width: 30px
+
+        &.main
+          padding-bottom: 2px
+          background-color: #CCFFCC
+          margin: 0 0.25em
+          img
+            width: 40px
+
+        &:active
+          background-color: #31d300
+
+        &.actived
+          // background-color: green
+          background-color: #31d300
+
+  // Autres éléments
+  // La boite ajoutée à la portion vidéo en mode banc timeline
+  div#bt-video-toolbox
+    border-style: solid
+    border-color: #777777
+    border-width: 1px 0
+    height: 60px
+    position: relative
+    background-color: inherit
+
+    span#mode-shortcuts-span
+      position: absolute
+      bottom: 0
+
+      span#banctime-mode-shortcuts
+        font-size: 9pt
+        color: white
+
+
+
+section.section-video div.video-header
+  div.main-part
+    color: palevioletred
+
+  div.part-abs
+    background-color: #222222
+
+  div.sub-part
+    color: darkseagreen
+
+  div.part-rel
+    background-color: #112211
+
+  div.mark-current-scene
+    text-align: left
+    padding: 2px 2px 2px 12px
+    overflow: hidden

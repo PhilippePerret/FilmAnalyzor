@@ -27,12 +27,14 @@ constructor(analyse){
 }
 
 /**
- * Pour afficher l'analyse construite
+  Pour afficher l'analyse construite (ou forcer sa reconstruction
+  si `options.force_update: true`)
  */
 show(options){
   log.info(`-> FABuilder.show(${options})`)
-  if(undefined === options) options = {}
-  if(false == this.isUpToDate || options.force_update) this.build(options, this.showReally.bind(this))
+  isDefined(options) || ( options = {} )
+  this.options = options
+  if(isFalse(this.isUpToDate) || options.force_update) this.build(options, this.showReally.bind(this))
   log.info('<- FABuilder.show')
 }
 
@@ -55,14 +57,15 @@ build(options, fn_callback){
 
   // On s'assure que tous les composants soient bien chargés
   this.buildLoopTries = 0
-  if(!this.componantsLoaded){
+  if(not(this.componantsLoaded)){
     return this.loadAllComponants(this.build.bind(this, options, fn_callback))
   } else {
     delete this.buildLoopTries
   }
 
   my.options = options
-  my.traitedFiles = {} // tous les fichiers traités
+  my.traitedFiles = {} // tous les fichiers traités OBSOLÈTE (cf. treatedSteps)
+  my.treatedSteps = {}
   my.rebuildBaseFiles(fn_callback)
   my.verifyCompletude()
   my.report.show()
@@ -73,22 +76,48 @@ build(options, fn_callback){
 
 
 /**
+  Pour pouvoir ajouter des fichiers traités au cours de la construction
+  C'est l'intance BuildingStep qui appelle cette méthode.
+  @param {BuildingStep} step    Étape à prendre en compte
+**/
+addStep(step){
+  this.treatedSteps[step.UUID] = step
+}
+
+/**
   Reconstruction des fichiers de base (HTML)
 **/
 rebuildBaseFiles(fn_callback){
   log.info('-> FABuilder.rebuildBaseFiles')
   var my = this
   my.building = true
-  my.log('*** Construction de l’analyse…')
+  my.finalCode = ''
   my.report.add('Début de la construction de l’analyse', 'title')
   this.destroyBaseFiles()
+
+  // ==== CONSTRUCTION PROPREMENT DITE ====
   this.buildChunks()
+
   this.exportAs('html', this.options, fn_callback)
-  my.log('=== Fin de la construction de l’analyse')
   my.report.add('Fin de la construction de l’analyse', 'title')
   my.building = false
   my = null
   log.info('<- FABuilder.rebuildBaseFiles')
+}
+
+/**
+  Ajoute +str+ au code final
+**/
+add2finalCode(str){
+  isDefined(this.finalCode) || ( this.finalCode = '' )
+  this.finalCode = this.finalCode.concat(str)
+}
+
+exportBunchOfFinalCode(){
+  let my = this
+  my.exporter.append(my.wholeHtmlPath, this.finalCode)
+  my.report.add(`= Ajout de ${this.finalCode.length} car. dans le fichier wholeHTML.html`, null, 2)
+  this.finalCode = ''
 }
 
 /**
@@ -112,7 +141,7 @@ verifyCompletude(fn_callback){
     // console.log(file)
     var fname  = path.basename(file)
     var affixe = path.basename(file, path.extname(file))
-    if(undefined === my.traitedFiles[affixe]){
+    if(isUndefined(my.traitedFiles[affixe])){
       // => un fichier non traité
       unTreated.push(fname)
       error_list.push(`NON TRAITÉ : "${fname}"`)
@@ -124,14 +153,13 @@ verifyCompletude(fn_callback){
 
   if(unTreated.length){
     error_list = '- ' + error_list.join(',<br>- ')
-    my.report.add(`Cet export de l'analyse est incomplet. Les fichiers suivants n'ont pas été traités :`, 'error bold')
+    my.report.add(`Cet export de l'analyse est incomplet. Les fichiers suivants n'ont pas été traités :`, 'error')
     my.report.add(error_list, 'error')
   } else {
     my.report.add('Tous les fichiers de l’analyse ont été traités.', 'notice')
   }
   my = false
 }
-
 
 destroyBaseFiles(){
   if(fs.existsSync(this.a.html_path)) fs.unlinkSync(this.a.html_path)
@@ -142,7 +170,7 @@ destroyBaseFiles(){
   assembler le fichier HTML final.
 **/
 buildChunks(){
-  var method = require(`./js/composants/faBuilder/builders/build-chunks.js`).bind(this)
+  var method = this.requireBuilder('build-chunks').bind(this)
   method(this.options)
 }
 
@@ -151,7 +179,7 @@ buildAs(format, options){
   var my = this
   my.log(`* buildAs "${format}". Options:`, options)
   if(!this.building && !this.isUpToDate) this.build()
-  var method = require(`./js/composants/faBuilder/builders/as-${format}.js`).bind(this)
+  var method = this.requireBuilder(`as-${format}.js`).bind(this)
   method(options)
 }
 
@@ -198,8 +226,8 @@ get isUpToDate(){
 //  Méthodes de fichier
 
 /**
-* Méthode qui retourne la date la plus récente dans le dossier +folder+
-* de l'analyse du builder courant
+  Méthode qui retourne la date la plus récente dans le dossier +folder+
+  de l'analyse du builder courant
 */
 getLastChangeDateIn(folder, lastDate){
   var my = this
@@ -233,7 +261,7 @@ getLastChangeDateIn(folder, lastDate){
   du chapitre, s'il doit être exporté.
 **/
 generalDescriptionOf(chapitre){
-  return fs.readFileSync(`./app/js/composants/faBuilder/assets/general_descriptions/${chapitre}.html`)
+  return fs.readFileSync(path.join('.','app','js','composants','faBuilder','assets','general_descriptions',`${chapitre}.html`))
 }
 
 /**
@@ -241,10 +269,15 @@ generalDescriptionOf(chapitre){
  */
 log(msg, args){ this.constructor.log(msg, args) }
   static log(msg, args){
-    if(undefined === this.logs) this.logs = []
+    isDefined(this.logs) || ( this.logs = [] )
     this.logs.push({msg: msg, args: args})
     if (args) console.log(msg, args)
     else console.log('%c'+msg,'color:blue;margin-left:4em;font-family:Arial;')
+}
+
+// Pour requérir un fichier (builder) dans le dossier des builders
+requireBuilder(name){
+  return require(path.join(this.builderFolder,`${name}.js`))
 }
 
 // ---------------------------------------------------------------------
@@ -252,13 +285,20 @@ log(msg, args){ this.constructor.log(msg, args) }
 
 get wholeHtmlPath(){return this._wholeHtmlPath||defP(this,'_wholeHtmlPath', path.join(this.folderChunks,'wholeHTML.html'))}
 get folderChunks(){
-  if(undefined === this._folderChunks){
+  if(isUndefined(this._folderChunks)){
     this._folderChunks = path.join(this.a.folderExport, '.chunks')
     if(!fs.existsSync(this._folderChunks)){
       fs.mkdirSync(this._folderChunks)
     }
   }
   return this._folderChunks
+}
+
+get builderFolder(){
+  isDefined(this._builderfolder) || (
+    this._builderfolder = path.resolve(path.join('.','app','js','composants','faBuilder','builders'))
+  )
+  return this._builderfolder
 }
 get md_path()   { return this.a.md_path }
 get html_path() { return this.a.html_path }

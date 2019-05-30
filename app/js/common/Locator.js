@@ -5,23 +5,25 @@
  * Pour la gestion d'un locateur vidéo
  */
 
+const NextTime = require('./js/common/NextTime')
+const LocatorGotoMethods = require('./js/common/Locator/goto_methods')
+
 class Locator {
 
 constructor(analyse){
-  this.analyse = this.a = analyse
+  this.a = analyse
   this.stop_points = [] // pour mettre les OTime(s)
   this.stop_points_times = [] // pour mettre les seconds
 }
+
+get nextTime(){return this._nexttime || defP(this,'_nexttime', new NextTime())}
 
 // Pour savoir si la vidéo est en train de jouer
 get playing(){return this._playing || false}
 set playing(v){ this._playing = v}
 
 init(){
-  var my = this
-
   this.videoController = this.a.videoController
-  this.video = this.a.videoController.video
 
   // Le bouton pour rejoindre le début du film. Il n'est défini que si
   // ce temps est défini pour l'analyse courante
@@ -29,22 +31,8 @@ init(){
 
   // L'horloge de la vidéo n'est visible que lorsque son temps est différent
   // du temps réel, donc lorsque le début du film est défini
-  if (!this.hasStartTime){
-    this.realHorloge.style.visibility = STRhidden
-  }
+  UI.videoHorloge.css('visibility', this.a.filmStartTime?STRvisible:STRhidden)
 
-  my = null
-}
-
-// L'instance DOMHorloge de l'horloge principale
-get oMainHorloge(){return this._oMainHorloge||defP(this,'_oMainHorloge', this.videoController.mainHorloge)}
-set oMainHorloge(v){
-  v.dispatch({
-      time: this.getTime().seconds // {OTime}
-    , synchroVideo: true
-    , unmodifiable: true // pour ne pas la marquer modifiée
-  })
-  this._oMainHorloge = v
 }
 
 // ---------------------------------------------------------------------
@@ -62,30 +50,35 @@ togglePlay(ev){
     //
     // => PAUSE
     //
-    this.video.pause()
+    UI.video.pause()
     $(this.btnPlay).removeClass('actived')
     this.playing = false
-    this.desactivateHorloge()
+    this.actualizeALL() // à l'arrêt, on actualise tout
+    this.desactivateFollowers()
     this.setPlayButton(this.playing)
     this.stopWatchTimerEvent()
+    this.a.modified = true // pour le temps courant
   } else {
     //
     // => PLAY
     //
     this.resetAllTimes()
-    // On mémorise le dernier temps d'arrêt pour y revenir avec le bouton
     // stop.
     var curT = this.getTime() // {OTime}
     // Pour gérer l'Autoplay Policy de Chromium
-    var videoPromise = this.video.play()
-    if (videoPromise !== undefined) {
+    var videoPromise = UI.video.play()
+    if (isDefined(videoPromise)) {
       videoPromise.then( _ => {
+
         // Autoplay started!
+
+        // On mémorise le dernier temps d'arrêt pour y revenir avec le bouton
         this.lastStartTime = curT
         this.addStopPoint(curT)
         $(this.btnPlay).addClass('actived')
         this.playing = true
-        this.activateHorloge()
+        // On déclenche le suivi de l'horloge, curseur, etc.
+        this.activateFollowers()
         this.setPlayButton(this.playing)
       }).catch(error => {
         // Autoplay was prevented.
@@ -129,7 +122,7 @@ stopAndRewind(){
     // <= Le temps courant est supérieur au dernier temps de départ
     // => on revient au dernier temps de départ
     newOTime.rtime = this.lastStartTime.seconds
-  } else if (this.hasStartTime && curOTime > (this.analyse.filmStartTime + 5)){
+  } else if (this.hasStartTime && curOTime > (this.a.filmStartTime + 5)){
     // <= le temps courant est au-delà des 5 secondes après le début du film
     // => On revient au début du film
     newOTime.rtime = 0
@@ -138,7 +131,6 @@ stopAndRewind(){
     newOTime.vtime = 0
   }
   this.setTime(newOTime)
-  this.actualizeHorloge()
 }
 
 /**
@@ -159,7 +151,7 @@ startForward(sec){
  */
 rewind(secs){
   // console.log("-> rewind")
-  var newtime = this.video.currentTime - secs
+  var newtime = UI.video.currentTime - secs
   if(newtime < 0){
     newtime = 0
     if(this.timerRewind) this.stopRewind()
@@ -171,8 +163,8 @@ rewind(secs){
 
 forward(secs){
   // console.log("-> forward")
-  var newtime = this.video.currentTime + secs
-  if(newtime > this.video.duration){
+  var newtime = UI.video.currentTime + secs
+  if(newtime > UI.video.duration){
     if(this.timerForward) this.stopForward()
     return
   }
@@ -218,22 +210,48 @@ stopForward(){
           défini du film.
   @param {OTime} time Instance de temps qui permet, grâce à sa propriété vtime
                       de régler la vidéo.
-  @param {Boolean} dontPlay   Si true, on ne met pas la vidéo en route.
+  @param {Object|Boolean} options | dontPlay
+    dontPlay   Si true, on ne met pas la vidéo en route.
+    updateOnlyVideo   Si true, on n'actualise que la vidéo et l'horloge
+    updateOnlyHorloge Si true, on actualise que l'horloge principale
  */
-setTime(time, dontPlay){
-  log.info('-> Locator#setTime(time=, dontPlay=)', time.toString(), dontPlay)
+setTime(time, options){
+  // try {
+  //   doujeviens
+  // } catch (e) {
+  //   throw(e)
+  // } finally {
+  // }
+  if ( 'boolean' === typeof options ){
+    options = {dontPlay: options}
+  } else if ( isUndefined(options) ){
+    options = {}
+  }
+  log.info(`-> Locator#setTime(time=${time}, options=${JSON.stringify(options)})`)
+
+  // Les choix
+  let updateTimes = isNotTrue(options.updateOnlyVideo) && isNotTrue(options.updateOnlyHorloge)
+    , updateVideo = isNotTrue(options.updateOnlyHorloge)
+    , playVideo   = isNotTrue(options.dontPlay) && updateTimes && updateVideo
+
   time instanceof(OTime) || raise(T('otime-arg-required'))
 
-  // Initialisation de tous les temps. Cf. [1]
-  this.resetAllTimes()
+  if ( updateTimes ) {
+    // Initialisation de tous les temps. Cf. [1]
+    this.resetAllTimes()
+    // On instancie le nextTime avec le temps choisi
+    this.nextTime.initWithTime(time)
+
+  }
 
   // Réglage de la vidéo. L'image au temps donné doit apparaitre
-  this.video.currentTime = time.vtime
+  // + réglage des curseurs
+  updateVideo && this.setVideoAt(time)
 
-  // Réglage de l'horloge principale.
-  this.oMainHorloge.time = time
+  // Réglage de l'horloge principale (toujours)
+  this.actualizeHorloge(time)
 
-  if(!dontPlay){
+  if ( playVideo ) {
     // Si l'on n'a pas précisé explicitement qu'on ne voulait
     // pas démarrer la vidéo, on doit voir si on doit le
     // faire.
@@ -241,21 +259,26 @@ setTime(time, dontPlay){
     //  - elle n'est pas déjà en train de jouer
     //  - l'option de démarrer après le choix d'un temps est
     //    activée.
-    if(this.playAfterSettingTime === true && !this.playing){
-      this.togglePlay()
-    }
-    if(this.currentScene){
-      log.info(`   À la fin de setTime, scène courante numéro est ${this.currentScene.numero} (${FAEscene.current.numero})`)
-    } else {
-      log.info(`   Pas de scène courante à la fin de Locator#setTime`)
-    }
+    isTrue(this.playAfterSettingTime) && isFalse(this.playing) && this.togglePlay()
     log.info('<- Locator#setTime')
   }
 
   // Si la vidéo ne joue pas, on force l'actualisation de tous
   // les éléments, reader, horloge, markers de structure, etc.
-  this.video.paused && this.actualizeALL()
+  // Sauf si les options demandent de n'actualiser que la
+  // vidéo et l'horloge.
+  if ( isFalse(options.updateOnlyVideo) ) {
+    UI.video.paused && this.actualizeALL()
+  }
 
+}
+
+setVideoAt(curt){
+  UI.video.currentTime = curt.vtime
+  this.actualiseBancTimeline(curt) // notamment le curseur
+  // TODO
+  // Plus tard, il faudra actualiser tous les curseurs
+  // présents à l'affichage
 }
 
 // ---------------------------------------------------------------------
@@ -267,36 +290,22 @@ setPlayButton(running){
 }
 
 /**
- * Méthode qui affiche les évènements qui se trouvent à +time+
- * (avec une marge de plus ou moins 10 secondes)
- * Note : la méthode est appelée toutes les 3 secondes
- */
-showEventsAt(time){
-  this.eventsAt(time).forEach(ev => {if(!ev.shown) ev.showDiffere()})
-}
-
-/**
-  Méthode qui affiche les images autour du temps time
-  @param {OTime} time
-**/
-showImagesAt(time){
-  FAImage.imagesAt(time.vtime).forEach(img => {if(!img.shown) img.showDiffere()})
-}
-
-/**
   Méthode qui arrête la surveillance des events affichés dans
   le reader (quand on arrête la lecture)
 **/
 stopWatchTimerEvent(){
-  this.a.reader.forEachEvent(function(ev){if(ev.shown)ev.stopWatchingTime()})
+  if (isEmpty(this.a.reader.watchedItems)) return
+  Object.values(this.a.reader.watchedItems).forEach(item => this.a.reader.stopWatchingItem(item))
 }
+
 /**
   Méthode contraire à la méthode précédente, qui relance la
   surveillance des events affichés dans le reader, pour savoir
   si on passe par leur temps.
 **/
 restartWatchTimerEvent(){
-  this.a.reader.forEachEvent(function(ev){if(ev.shown)ev.startWatchingTime()})
+  if (isEmpty(this.a.reader.watchedItems)) return
+  Object.values(this.a.reader.watchedItems).forEach(item => this.a.reader.restartWatchingItem(item))
 }
 
 /**
@@ -322,96 +331,30 @@ resetAllTimes(){
   delete this.wantedEndTime
   delete this.wantedEndTimeCallback
   delete this.timeNextScene
+
+  delete this.nextTime
 }
 
 
-/**
- * Méthode permettant de rejoindre le début du film
- */
-goToFilmStart(){
-  if(undefined === this.analyse.filmStartTime){
-    F.error("Le début du film n'est pas défini. Cliquer sur le bouton adéquat pour le définir.")
-  }else{
-    this.setTime(this.startTime)
-  }
-}
 
 // ---------------------------------------------------------------------
 //  MÉTHODES SUR LES SCÈNES
 
 get currentScene(){ return FAEscene.current}
-set currentScene(v){
-  log.info(`Current scène de Locator mise à ${v} (${v.numero})`)
-  FAEscene.current = v
+set currentScene(s){
+  log.info(`Current scène de Locator mise à ${s} (${s.numero})`)
+  FAEscene.current = s
 }
-
-// Retourne la scène précédente de la scène courante
-get prevScene(){
-  if (!this.currentScene || this.currentScene.numero == 1) return
-  else return FAEscene.getByNumero(this.currentScene.numero - 1)
+// Retourne la scène précédente de la position courante
+get prevScene() {
+  return FAEscene.before(this.currentTime)
 }
 get nextScene(){
-  // console.log("-> nextScene")
-  if(!this.currentScene) return FAEscene.getByNumero(1)
-  else return FAEscene.getByNumero(this.currentScene.numero + 1)
+  return FAEscene.after(this.currentTime) // cf. [3] ci-dessus
 }
 
-goToPrevScene(){
-  let method = () => {
-    let pScene = this.prevScene
-    if (pScene){
-      this.setTime(pScene.otime)
-    } else if (FAEscene.current){
-      F.notify(`La scène ${FAEscene.current.numero} n'a pas de scène précédente.`)
-    } else {
-      F.notify('Pas de scène courante.')
-    }
-  }
-  this.timerPrevScene = setTimeout(method, 1000)
-  method()
-}
-stopGoToPrevScene(){
-  clearTimeout(this.timerPrevScene)
-  delete this.timerPrevScene
-}
-
-goToNextScene(){
-  log.info("-> Locator#goToNextScene", (!FAEscene.current ? 'pas de scène courante' : `Numéro courante : ${FAEscene.current.numero}`))
-  let method = () => {
-    let nScene = this.nextScene
-    if (nScene){
-      this.setTime(nScene.otime)
-      if(this.currentScene) log.info(`   Après setTime, numéro scène courant = ${this.currentScene.numero}`)
-      log.info(`   Après setTime, numéro scène suivante = ${nScene.numero}`)
-    } else if (FAEscene.current) {
-      F.notify(`   La scène ${FAEscene.current.numero} n'a pas de scène suivante.`)
-    } else {
-      F.notify(`   Pas de scène suivante.`)
-    }
-  }
-  this.timerNextScene = setTimeout(method, 500)
-  method()
-  log.info('<- Locator#goToNextScene')
-}
-stopGoToNextScene(){
-  clearTimeout(this.timerNextScene)
-  delete this.timerNextScene
-}
-// ---------------------------------------------------------------------
-//  Gestion des points d'arrêt
-
-goToNextStopPoint(){
-  if(undefined === this._i_stop_point) this._i_stop_point = -1
-  ++ this._i_stop_point
-  if(this._i_stop_point > this.stop_points.length - 1) this._i_stop_point = 0
-  if(undefined === this.stop_points[this._i_stop_point]){
-    F.notify(T('no-stop-point'))
-  } else {
-    this.setTime(this.stop_points[this._i_stop_point])
-  }
-}
 addStopPoint(otime){
-  if(current_analyse.options.get('option_lock_stop_points')) return
+  if(this.a.options.get('option_lock_stop_points')) return
   otime instanceof(OTime) || raise(T('otime-arg-required'))
   if (this.stop_points_times.indexOf(otime.seconds) > -1) return
   if (this.stop_points_times.length > 2) {
@@ -425,30 +368,15 @@ addStopPoint(otime){
 // ---------------------------------------------------------------------
 // Méthodes de données
 
-get startTime(){return this._startTime||defP(this,'_startTime', new OTime(0))}
-get currentTime(){
-  if(undefined === this._currentTime) this._currentTime = new OTime(0)
-  this._currentTime.vtime = this.video.currentTime.round(2)
-  return this._currentTime
-}
+get startTime(){return this._startTime||defP(this,'_startTime', OTime.ZERO)}
+get endTime(){return this._endtime||defP(this,'_endtime', new OTime(UI.video.duration))}
+get currentTime(){ return OTime.vVary(UI.video.currentTime) }
 
 /**
 * Alias de this.currentTime pour retourner le temps vidéo courant
 **/
 getTime(){ return this.currentTime }
 
-// ---------------------------------------------------------------------
-//  Méthode de formatage
-
-// Retourne une horloge sous la forme [-]h:mm:ss:ff
-/**
-  @param {OTime} s  Un Otime
-**/
-getRealTime(s){
-  var negative = s < 0
-  if(negative){s.updateSeconds(-s.seconds)}
-  return `${negative?'-':' '}${s.horloge}`
-}
 
 // ---------------------------------------------------------------------
 
@@ -456,17 +384,21 @@ getRealTime(s){
  * Méthode pour activer l'horloge qui dépend du début défini pour le
  * film (ou le début en cas d'erreur). Elle marche au frame près
  */
-activateHorloge(){
+activateFollowers(){
   var my = this
   if (this.intervalTimer){
-    this.desactivateHorloge()
+    this.desactivateFollowers()
   } else {
-    this.intervalTimer = setInterval(my.actualizeALL.bind(my), 1000/40)
+    // On construit la méthode d'actualisation en fonction des options et du
+    // mode d'affichage.
+    this.buildActualizeMainFunction()
+    // === INTERVAL TIMER QUI DEMANDE L'ACTUALISATION DE L'AFFICHAGE ===
+    this.intervalTimer = setInterval(my.actualizeMainFunction.bind(my), 1000/40)
   }
   my = null
 }
 
-desactivateHorloge(){
+desactivateFollowers(){
   if(this.intervalTimer){
     clearInterval(this.intervalTimer)
     this.intervalTimer = null
@@ -474,38 +406,91 @@ desactivateHorloge(){
 }
 
 /**
-  Méthode principale qui va se charger de tout actualiser,
+  Méthode qui se charge de tout actualiser,
   c'est-à-dire l'horloge, le reader (events proches) et le
   indicateur de structure.
+
+  Note : avant, c'était la méthode appelée tous les 40 millièmes de seconde
+  pour actualiser l'affichage. Maintenant, elle ne sert que lorsqu'on est à
+  l'arrêt.
 **/
 actualizeALL(){
+  log.info('-> Locator.actualizeALL')
   var curt = this.currentTime
   this.actualizeHorloge(curt)
-  this.videoController.positionIndicator.positionneAt(curt)
   this.actualizeReader(curt)
   this.actualizeMarkersStt(curt)
   this.actualizeCurrentScene(curt)
   curt = null
+  log.info('<- Locator.actualizeALL')
+}
+
+/**
+  Méthode qui construit la fonction d'actualisation en fonction des options
+  choisies.
+**/
+buildActualizeMainFunction(){
+  var codeLines = [] // on mettra les lignes de code dedans
+  // On actualise toujours les horloges
+  codeLines.push("var curt = this.currentTime;")
+  codeLines.push("this.actualizeHorloge(curt)")
+
+  if (this.a.options.get('video.running.updates.reader')){
+    codeLines.push("this.actualizeReader(curt)")
+  }
+  if (this.a.options.get('video.running.updates.stt')){
+    codeLines.push("this.actualizeMarkersStt(curt)")
+  }
+  // Arrêter de jouer si un temps de fin est défini et qu'il est
+  // atteint
+  codeLines.push("this.isEndTimeWanted(curt) && this.stopAtEndTimeWanted()")
+
+  this.actualizeMainFunction = new Function(codeLines.join(RC))
+  this.actualizeMainFunction = this.actualizeMainFunction.bind(this)
+
+}
+
+actualiseBancTimeline(curt){
+  BancTimeline.setCursorByTime(curt)
 }
 
 actualizeHorloge(curt){
-  if(undefined === curt) curt = this.currentTime
-  this.horloge.innerHTML = this.getRealTime(curt)
-  this.realHorloge.innerHTML = curt.vhorloge
-  this.oMainHorloge.time = curt
+  // console.log("[actualizeHorloge] curt:", curt)
+  UI.mainHorloge.html(curt.horloge)
+  UI.videoHorloge.html(curt.vhorloge)
 }
 
 actualizeReader(curt){
-  if(undefined === curt) curt = this.currentTime
-  // Afficher les events autour du temps courant
-  this.showEventsAt(curt)
-  // Afficher les images autour du temps courant
-  this.showImagesAt(curt)
-  // Arrêter de jouer si un temps de fin est défini et qu'il est dépassé
-  if(this.wantedEndTime && this.currentTime > this.wantedEndTime){
-    this.togglePlay()
-    if('function'===typeof this.wantedEndTimeCallback) this.wantedEndTimeCallback()
+  // Note : on passe tous les 40 millième de secondes
+  // par cette méthode, quand on joue la vidéo.
+
+  // Nouveau fonctionnement. On se sert d'une instance
+  // nextTime pour connaitre les prochains temps
+  // d'event, d'image ou de structure
+  // Rappel : nextTime est une instance NextTime dont le
+  // valueOf retourne le prochain temps
+  if (isUndefined(this.nextTime.nextItem) || curt.rtime < this.nextTime){
+    return // rien à faire
   }
+
+  // => Le temps suivant est atteint, on affiche l'élément
+  // qui peut être un event, une image ou un noeud stt
+  // Noter que ça va aussi actualiser la scène, si c'en est une
+  // et où les noeuds structurels
+  this.nextTime.revealNextItemAndFindNext()
+
+}
+
+
+// Retourne true si un temps de fin est voulu et qu'il est atteint
+isEndTimeWanted(curt){
+  return this.wantedEndTime && curt >= this.wantedEndTime
+}
+
+// Fonction à jouer quand le temps de fin est atteint
+stopAtEndTimeWanted(){
+  this.togglePlay()
+  if(isFunction(this.wantedEndTimeCallback)) this.wantedEndTimeCallback()
 }
 
 /*
@@ -524,11 +509,11 @@ actualizeReader(curt){
 actualizeMarkersStt(curt){
   // console.log("-> actualizeMarkersStt", curt)
   var vid = this.videoController
-  if(undefined === curt) curt = this.currentTime
-  if(undefined === this.a.PFA.TimesTables) this.a.PFA.setTimesTables()
-  if(undefined === this.nextTimes) {
+  isDefined(curt) || ( curt = this.currentTime )
+  isDefined(this.a.PFA.TimesTables) || this.a.PFA.setTimesTables()
+  isDefined(this.nextTimes) || (
     this.nextTimes = {'Main-Abs': null, 'Main-Rel': null, 'Sub-Abs':null, 'Sub-Rel': null}
-  }
+  )
   // On doit répéter pour les quatre tables, heureusement petites,
   // pour trouver :
   //  - la partie absolue
@@ -563,31 +548,17 @@ actualizeMarkersStt(curt){
 /**
   On renseigne la scène courante.
 
-  Cette méthode cherche la scène courante et la scène
-  suivante. Elle met la scène courante en affichage (et
-  dans current_analyse) et elle mémorise le temps suivant
-  pour ne pas avoir à chercher toujours le temps.
+  Maintenant, cette méthode ne sert plus que lorsqu'on est à l'arrêt.
+  Si on est en lecture, l'objet NextTime gère les scènes qui arrivent.
 
   @param {Float} curt  Le temps vidéo courant (donc pas le temps "réel")
 
  */
 actualizeCurrentScene(curt){
-  // log.info("-> actualizeCurrentScene(curt=)", curt)
-  log.info(`-> actualizeCurrentScene(curt=${curt})`)
-  if((this.timeNextScene && curt < this.timeNextScene) || FAEscene.count === 0) return
-  var resat = FAEscene.atAndNext(curt)
-  if(resat){
-    // console.log("resat:", resat)
-    if (resat.current){
-      log.info(`   Donnée de scène courante : {current: <<Scène ${resat.current.id} numéro=${resat.current.numero}>>}`)
-    }
-    FAEscene.current = resat.current
-    if (resat.next){
-      log.info(`   Donnée de scène suivante : {next: <<Scène ${resat.next.id} numéro=${resat.next.numero}>>, next_time: ${resat.next_time}}`)
-    }
-    this.timeNextScene  = resat.next ? resat.next.time : resat.next_time
-  }
-  log.info("<- actualizeCurrentScene")
+  log.info("-> actualizeCurrentScene")
+  // Rien à faire s'il n'y a pas de scène
+  if(FAEscene.count === 0) return
+  FAEscene.current = FAEscene.at(curt)
 }
 
 // ---------------------------------------------------------------------
@@ -628,9 +599,9 @@ eventsAt(time) {
   var evsBT = this.eventsByTrancheTime
   for(var tranche = fromTranche; tranche <= toTranche; tranche+=5){
     // console.log("Recherche dans la tranche : ", tranche)
-    if(undefined === evsBT[tranche]) continue
+    if(isUndefined(evsBT[tranche])) continue
     for(var i=0, len=evsBT[tranche].length;i<len;++i){
-      evs.push(this.analyse.ids[evsBT[tranche][i]])
+      evs.push(this.a.ids[evsBT[tranche][i]])
     }
   }
   return evs
@@ -641,7 +612,7 @@ eventsAt(time) {
  */
 addEvent(ev){
   var tranche = parseInt(ev.time - (ev.time % 5),10)
-  if(undefined === this.eventsByTrancheTime[tranche]){
+  if(isUndefined(this.eventsByTrancheTime[tranche])){
     // <= La tranche n'existe pas encore
     // => On la crée et on ajoute l'identifiant de l'event
     this._events_by_tranche_time[tranche] = [ev.id]
@@ -664,17 +635,34 @@ addEvent(ev){
 }
 
 // ---------------------------------------------------------------------
+//  MÉTHODES MARKERS
+
+createNewMarker(){
+  let my = this
+  prompt("Nom du nouveau marqueur :", {
+      defaultAnswer: ''
+    , buttons:['Renoncer','Créer le marqeur']
+    , defaultButtonIndex:1
+    , cancelButtonIndex:0
+    , okButtonIndex:1
+    , methodOnOK: (title, indexButtonClicked) => {
+        let m = new Marker(my.a, {time: my.currentTime.vtime, title:title})
+        m.create()
+      }
+  })
+}
+
+// ---------------------------------------------------------------------
 // Méthodes DOM
 
 /**
   Méthode appelée pour se rendre au temps voulu.
-
  */
 goToTime(ev){
   this.setTime(new OTime(VideoController.current.section.find('.requested_time').val()))
   // En pause, il faut forcer l'affichage du temps, ça ne se fait pas
   // tout seul.
-  if(this.video.paused) this.actualizeALL()
+  if(UI.video.paused) this.actualizeALL()
 }
 
 // ---------------------------------------------------------------------
@@ -683,13 +671,13 @@ goToTime(ev){
  * temps de 5 secondes.
  */
 get eventsByTrancheTime(){
-  if(undefined === this._events_by_tranche_time){
+  if(isUndefined(this._events_by_tranche_time)){
     this._events_by_tranche_time = {}
-    var i = 0, len = this.analyse.events.length, e, t
+    var i = 0, len = this.a.events.length, e, t
     for(i;i<len;++i){
-      e = this.analyse.events[i]
+      e = this.a.events[i]
       var t = parseInt(e.time - (e.time % 5),10)
-      if(undefined === this._events_by_tranche_time[t]){
+      if(isUndefined(this._events_by_tranche_time[t])){
         this._events_by_tranche_time[t] = []
       }
       this._events_by_tranche_time[t].push(e.id)
@@ -702,19 +690,19 @@ get eventsByTrancheTime(){
 // ---------------------------------------------------------------------
 // Méthodes d'état
 get hasStartTime(){
-  return this.analyse && this.analyse.filmStartTime > 0
+  return this.a && this.a.filmStartTime > 0
 }
 
 get playAfterSettingTime(){
-  return this.analyse.options.get('option_start_when_time_choosed')
+  return this.a.options.get('option_start_when_time_choosed')
 }
 
 // --- DOM ÉLÉMENTS ---
-get horloge(){return this.videoController.mainHorloge}
-get realHorloge(){return this.videoController.realHorloge}
 get btnPlay(){return this.videoController.btnPlay}
 get btnRewindStart(){return this.videoController._btnRwdSt}
 get imgPauser(){return '<img src="./img/btns-controller/btn-pause.png" />'}
 get imgPlay(){return '<img src="./img/btns-controller/btn-play.png" />'}
 
 }
+
+Object.assign(Locator.prototype, LocatorGotoMethods)

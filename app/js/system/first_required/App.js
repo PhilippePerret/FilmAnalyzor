@@ -4,15 +4,28 @@
 const App = {
   class: 'App'
 , type: 'object'
+, allComponantsLoaded: false
 , ready: false
+
+  // Quand App est prête
 , onReady(){
-    UI.init()
+
+    const UIBuilder = require('./ui/ui_builder')
+    UIBuilder.init()
+
     log.info("--- APP READY ---")
     if (MODE_TEST) {
       Tests.initAndRun()
     } else {
       FAnalyse.checkLast()
     }
+  }
+
+/**
+  Pour requérir un module dans le dossier ./app/js/ (ne pas mettre ./app/js/)
+**/
+, require(rpath){
+    return require(path.join(APPFOLDER,'app','js',rpath))
   }
 
 /**
@@ -24,27 +37,25 @@ const App = {
   }
 
 , runHandTests(options){
-    if('undefined' === typeof(HandTests)) return this.loadHandTests(this.runHandTests.bind(this))
+    if(NONE === typeof(HandTests)) return this.loadHandTests(this.runHandTests.bind(this))
     HandTests.initAndRun(options)
   }
   /**
     Méthode pour rejouer les tests depuis le dernier
   **/
 , runFromLastHandTest(){
-    if('undefined' === typeof(HandTests)) return this.loadHandTests(this.runFromLastHandTest.bind(this))
+    if(NONE === typeof(HandTests)) return this.loadHandTests(this.runFromLastHandTest.bind(this))
     HandTests.initAndRun({from_last: true})
   }
 
 , loadHandTests(fn_callback){
-    if(undefined === this.nbTriesLoadHandTests) this.nbTriesLoadHandTests = 1
-    else {
-      ++ this.nbTriesLoadHandTests
-      if (this.nbTriesLoadHandTests > 5){
-        F.error("Trop de tentatives pour charger les tests manuels, je renonce.")
-        return false
-      }
+    isDefined(this.nbTriesLoadHandTests) || ( this.nbTriesLoadHandTests = 0 )
+    ++ this.nbTriesLoadHandTests
+    if (this.nbTriesLoadHandTests > 5){
+      F.error("Trop de tentatives pour charger les tests manuels, je renonce.")
+      return false
     }
-    if('undefined' === typeof(HandTests)) return System.loadComponant('HandTests', this.loadHandTests.bind(this, fn_callback))
+    if(NONE === typeof(HandTests)) return System.loadComponant('HandTests', this.loadHandTests.bind(this, fn_callback))
     fn_callback()
   }
 
@@ -63,8 +74,8 @@ const App = {
   }
 // Pour ouvrir le manuel de développement
 , openManuelDeveloppement(){
-    let pref  = path.join(APPFOLDER,'Manuel','Manuel_developpement.md')
-      , pdest = path.join(APPFOLDER,'Manuel','Manuel_developpement.html')
+    let pref  = path.join(APPFOLDER,'Manuel','Manuel_developpeur.md')
+      , pdest = path.join(APPFOLDER,'Manuel','Manuel_developpeur.html')
     if (this.isOutOfDate(pref, pdest)){
       this.updateManual(true, pdest)
     } else {
@@ -81,7 +92,7 @@ const App = {
 , updateManual(isDev, fpath){
     log.info('-> App::updateManual')
     let my  = this
-      , cmd = `cd "${path.join(APPFOLDER,'Manuel')}";pandoc -s Manuel${isDev?'_developpement':''}.md --css="manuel.css" --metadata pagetitle="Manuel" --from=markdown --output=Manuel${isDev?'_developpement':''}.html`
+      , cmd = `cd "${path.join(APPFOLDER,'Manuel')}";pandoc -s Manuel${isDev?'_developpeur':''}.md --css="manuel.css" --metadata pagetitle="Manuel" --from=markdown --output=Manuel${isDev?'_developpeur':''}.html`
     exec(cmd, err => {
       if(err) throw err
       my.openInBrowser(fpath)
@@ -121,9 +132,51 @@ const AppLoader = {
       System.loadJSFolders(`./app/js/${folder}`, [subfolder], this.requireNext.bind(this))
     } else {
       // <= Il n'y a plus de modules à charger
-      // => On est prêt
-      this.onReady()
+      // => On est prêt à charger tous les composants
+      this.loadAllComponants()
     }
+  }
+
+  /**
+    Méthode qui s'assure, avant de charger l'analyse choisie, que tous les
+    composants sont bien chargés. Et les charge au besoin.
+  **/
+, loadAllComponants(){
+    log.info("-> AppLoader::loadAllComponants")
+    App.allComponantsLoaded = false
+    // return
+    if(NONE === typeof UI)            return this.loadComponant('ui/ui')
+    if(NONE === typeof Helper)        return this.loadComponant('Helper')
+    if(NONE === typeof BancTimeline)  return this.loadComponant('ui/banc_timeline')
+    if(NONE === typeof DataEditor)    return this.loadComponant('DataEditor')
+    if(NONE === typeof EventForm)     return this.loadComponant('EventForm')
+    if(NONE === typeof FAWriter)      return this.loadComponant('faWriter')
+    if(NONE === typeof FAProtocole)   return this.loadComponant('faProtocole')
+    if(NONE === typeof FAStater)      return this.loadComponant('faStater')
+    if(NONE === typeof FAEventer)     return this.loadComponant('faEventer')
+    if(NONE === typeof FABrin)        return this.loadComponant('faBrin')
+    if(NONE === typeof FAPersonnage)  return this.loadComponant('faPersonnage')
+    if(NONE === typeof FAProcede)     return this.loadComponant('faProcede')
+    if(NONE === typeof FAReader)      return this.loadComponant('faReader')
+    if(NONE === typeof FAStats)       return this.loadComponant('faStats')
+    if(NONE === typeof FAImage)       return this.loadComponant('faImage')
+    if(NONE === typeof Snippets)      return this.loadComponant('Snippets')
+    if(NONE === typeof Markers)       return this.loadComponant('Markers')
+
+    // Si tout est OK, on peut rappeler la méthode Fanalyse.load
+    log.info("   Tous les composants sont chargés.")
+    App.allComponantsLoaded = true
+    this.onReady()
+    log.info("<- AppLoader::loadAllComponants")
+  }
+
+/**
+  Méthodes de chargement des composants (au load principal)
+**/
+, loadComponant(componant, fn_callback){
+    fn_callback || (fn_callback = this.loadAllComponants.bind(this))
+    log.info(`  Loading componant <${componant}>`)
+    return System.loadComponant(componant, fn_callback)
   }
 
 , onReady(){

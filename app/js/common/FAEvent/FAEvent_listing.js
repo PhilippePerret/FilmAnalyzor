@@ -1,6 +1,13 @@
 'use strict'
 
 Object.assign(FAEvent,{
+
+/**
+  Méthode qui affiche dans les fenêtres FAListing les events du type
+  particulier +etype+
+
+  @param {String} etype Le type de l'event (p.e. 'note' ou 'stt')
+**/
   FAlistingEvents(etype){
     // console.log("Je dois afficher les events de type", etype)
     let FAClasse = eval(`FAE${etype}`)
@@ -27,7 +34,7 @@ Object.assign(FAEvent,{
 
 Object.defineProperty(FAEvent,'DataFAListing',{
 get(){
-  if(undefined === this._datafalisting){
+  if(isUndefined(this._datafalisting)){
     this._datafalisting = {
       // FAEvent.DataFAListing = { // on ne peut pas utiliser 'this'
         items: []//doit être défini par la méthode générale listEvents(type)

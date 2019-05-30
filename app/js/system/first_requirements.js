@@ -7,6 +7,9 @@ function FReqGet(name){
   return require(`./js/system/first_required/${name}.js`)
 }
 
+const WindowController = FReqGet('ui/WindowController')
+const MessageBox = FReqGet('MessageBox')
+
 // Doit être défini avant FA_associates qui l'utilise
 const FADrop = FReqGet('FADrop')
 
@@ -49,3 +52,7 @@ const {
 , ERRORS
 , MESSAGES
 } = FReqGet('messages_et_errors')
+
+const {
+  UnknownStepError
+} = FReqGet('errors_classes')

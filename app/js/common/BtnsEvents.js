@@ -9,6 +9,9 @@
   instances.
 
 **/
+
+window.EVENTS_TYPES_DATA = require('./js/common/FAEvents_data.js')
+
 class BtnEvent {
 // ---------------------------------------------------------------------
 //  CLASSE
@@ -19,7 +22,7 @@ static hide(){this.fwindow.hide()}
 
 static build(){
   var btns = []
-  for(var etype in EVENTS_DATA){
+  for(var etype in EVENTS_TYPES_DATA){
     btns.push(this.button(etype).as_button)
   }
   return btns
@@ -37,13 +40,13 @@ static observe(){
 static button(btn_id){
   if(isUndefined(this.buttons)) this.buttons = {}
   if(isUndefined(this.buttons[btn_id])) {
-    this.buttons[btn_id] = new BtnEvent(EVENTS_DATA[btn_id])
+    this.buttons[btn_id] = new BtnEvent(EVENTS_TYPES_DATA[btn_id])
   }
   return this.buttons[btn_id]
 }
 
 // La fenêtre volante affichant tous les boutons
-static get fwindow(){return this._fwindow||defP(this,'_fwindow', new FWindow(this,{id: 'buttons-new-event', name:BtnsEventFWindowName, container: $('#section-footer'), y: -50, x: 40, class: 'no-user-selection'}))}
+static get fwindow(){return this._fwindow||defP(this,'_fwindow', new FWindow(this,{id: 'buttons-new-event', name:BtnsEventFWindowName, container: $('#section-footer'), y: -50, x: 386, class: 'no-user-selection'}))}
 
 // ---------------------------------------------------------------------
 //  INSTANCES
@@ -54,11 +57,11 @@ constructor(data){
 get as_button(){
   let attrs =  {title: `Pour créer un event de type « ${this.data.hname} »` }
   attrs[STRdata_type] = this.type
-  if(undefined === this._as_button){
+  if(isUndefined(this._as_button)){
     this._as_button = DCreate(BUTTON,{
       id:     `btn-new-${this.type}`
     , type:   STRbutton
-    , class:  'small'
+    , class:  STRsmall
     , inner:  this.data.btn_name
     , attrs: attrs
     })

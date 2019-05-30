@@ -18,6 +18,15 @@ Avec <data> qui doit contenir au moins :
   y           Position verticale (en pixels)
   name        Nom de la fenêtre, simplement utilisée pour le débuggage
 
+  draggable   Si false, on ne rend pas la fenêtre draggable (true par défaut)
+              Si 'x' ou 'y', draggable seulement sur l'axe défini
+              Défaut : true
+
+  swiping     Si défini, un drag rapide permet de repousser la fenêtre dans
+              un bord.
+              TODO Plus tard, on pourra transmettre un objet qui indiquera
+              comment gérer précisément le swip rapide.
+
 Au minimum, le propriétaire, un objet, doit définir les méthodes :
   - `build`   doit retourner l'élément DOM à insérer dans la f-window
 
@@ -40,7 +49,53 @@ Ces deux méthodes propriétaires sont appelées à la fin de `show` et
 de `hide` si elles existent. Elles permettent de faire un traitement particulier
 après la fermeture ou l'ouverture de la flying-window.
 
+`onEndMove`
+-----------
+Méthode appelée, si elle existe, à la fin d'un déplacement de la fenêtre
+Par exemple pour mémoriser la dernière position.
+
+`onFocus`
+---------
+Méthode appelée, si elle existe, quand la fenêtre devient la
+fenêtre principale.
+
+`onBlur`
+---------
+Méthode appelée, si elle existe, quand la fenêtre était la fenêtre courante
+et qu'elle ne l'est plus.
+
 **/
+
+
+class SwipController {
+constructor(owner){
+  this.owner = owner
+}
+checkSwip(){
+  // console.log("this.startData:", this.startData)
+  // console.log("this.endData:", this.endData)
+  let laps = this.endData.time - this.startData.time
+    , deltaX = Math.abs(this.endData.x - this.startData.x)
+    , deltaY = Math.abs(this.endData.y - this.startData.y)
+    , sensX  = this.endData.x > this.startData.x ? 'lr' : 'rl'
+    , sensY  = this.endData.y > this.startData.y ? 'tb' : 'bt'
+
+  // console.log(`${deltaX}/x et ${deltaY}/y ont été parcourus en ${laps} millisecondes`)
+  if ( laps < 400 ) {
+    if ( deltaX > 200 && deltaX > deltaY ) {
+      // Swipe horizontal
+      // console.log("Swipe horizontal de sens ", sensX)
+      this.owner.swip.bind(this.owner)(sensX)
+    }
+    if ( deltaY > 200 && deltaY > deltaX ) {
+      // Swipe vertical
+      // console.log("Swipe vertical de sens", sensY)
+      this.owner.swip.bind(this.owner)(sensY)
+    }
+  }
+}
+}
+
 
 class FWindow {
 
@@ -119,6 +174,10 @@ static isReaderOrEventBtns(fwindow){
 * sur une autre.
 **/
 static checkOverlaps(wf){
+  if(isEmpty(wf.jqObj)){
+    log.warn(T('fwindow-can-check-overlap', {id: wf.id}))
+    return
+  }
   var {top: refTop, left: refLeft} = wf.jqObj.offset()
   refTop  = Math.round(refTop)
   refLeft = Math.round(refLeft)
@@ -126,7 +185,7 @@ static checkOverlaps(wf){
   var moveIt = false
   $('.fwindow').each(function(i,w){
     if(w.id == wf.domId) return // c'est la fenêtre qu'on checke
-    if(moveIt === true) return  // On sait qu'on doit la bouger
+    if(isTrue(moveIt)) return  // On sait qu'on doit la bouger
     var {top, left} = $(w).offset()
     top   = Math.round(top)
     left  = Math.round(left)
@@ -140,7 +199,7 @@ static checkOverlaps(wf){
   // console.log(`Doit être mise à ${refLeft}px à gauche pour être bien`)
   // Peut-être qu'on l'a déplacée sur une autre
   // => Recommencer jusqu'à ce que ce soit bon
-  if(moveIt === true){
+  if(isTrue(moveIt)){
     var {top: topParent, left: leftParent} = wf.jqObj.parent().offset()
     refLeft -= Math.round(leftParent)
     refTop -=  Math.round(topParent)
@@ -164,7 +223,15 @@ static unsetCurrent(wf){
 **/
 static closeCurrent(){
   if(this.isReaderOrEventBtns(this.current)) return false
-  isDefined(this.current) && this.current.hide()
+  if ( isDefined(this.current) ) {
+    // S'il existe une fonction de fermeture propre, on
+    // l'utilise.
+    if (isDefined(this.current.owner) && isFunction(this.current.owner.hide)) {
+      this.current.owner.hide()
+    } else {
+      this.current.hide()
+    }
+  }
   return true
 }
 
@@ -191,8 +258,14 @@ constructor(owner, data){
     data.container || raise('fwindow-required-container')
     data.container = $(data.container)
     data.container.length || raise('fwindow-invalid-container')
-    // owner.FWcontents || data.contents || raise('fwindow-contents-required')
-  } catch (e) { throw(T(e)) }
+  } catch (e) {
+    log.error("owner:", owner)
+    log.error("data:", data)
+    if(isDefined(data)){
+      log.error("data.container", data.container)
+    }
+    throw(T(e))
+  }
 
   this.owner = owner
   for(var k in data){this[`_${k}`] = data[k]}
@@ -214,7 +287,7 @@ show(){
   this.jqObj.show()
   this.visible = true
   FWindow.setCurrent(this)
-  FWindow.checkOverlaps(this)
+  isTrue(this.draggable) && FWindow.checkOverlaps(this)
   isFunction(this.owner.onShow) && this.owner.onShow()
   log.info(`<- ${this.ref}.show() [built:${this.built}, visible:${this.visible}]`)
 }
@@ -263,6 +336,7 @@ bringToFront(){
   log.info(`-> ${this.ref}.bringToFront`)
   this.jqObj.css('z-index', 100)
   this.current = true
+  isFunction(this.owner.onFocus) && this.owner.onFocus.bind(this.owner)()
   log.info(`<- ${this.ref}.bringToFront`)
 }
 // Pour remettre la Flying window en arrière plan
@@ -270,16 +344,17 @@ bringToBack(){
   log.info(`-> ${this.ref}.bringToBack`)
   this.jqObj.css('z-index', 50)
   this.current = false
+  isFunction(this.owner.onBlur) && this.owner.onBlur.bind(this.owner)()
   log.info(`<- ${this.ref}.bringToBack`)
 }
 
-isCurrent(){return true === this.current}
+isCurrent(){ return isTrue(this.current) }
 
 build(){
   log.info(`-> ${this.ref}.build()`)
   // Si c'est une actualisation de la fenêtre, on a mémorisé sa
   // position dans `this.position`
-  if(undefined === this.position) this.position = {}
+  isDefined(this.position) || ( this.position = {} )
   // console.log("position:", this.position)
   // console.log("Construction de la FWindow ", this.domId)
   var div = DCreate(DIV, {
@@ -310,12 +385,71 @@ onBtnClose(){
   }
 }
 
+onEndMove(e){
+  isFunction(this.owner.onEndMove) && this.owner.onEndMove(e)
+}
+
+/**
+  Pour procéder au swiping
+
+  Pour le moment, on applique la même chose pour tout le monde
+  en fonction du sens
+**/
+get HANDLE_SIZE(){ return 30}
+swip(sens){
+  var dAnim = ((sens) => {
+    switch (sens) {
+      case 'lr':
+        if (this.draggable == 'y') return
+        return {left: (W - this.HANDLE_SIZE) + 'px'}
+      case 'rl':
+        if (this.draggable == 'y') return
+        return {left: (0 - this.jqObj.outerWidth() + this.HANDLE_SIZE) + 'px'}
+      case 'tb':
+        if (this.draggable == 'x') return
+        return {top: (H - this.HANDLE_SIZE) + 'px'}
+      case 'bt':
+        if (this.draggable == 'x') return
+        return {top: (0 - this.jqObj.outerHeight() + this.HANDLE_SIZE) + 'px'}
+    }
+  })(sens)
+  dAnim && this.jqObj.animate(dAnim)
+}
+get swipController(){return this._swipcontroller || defP(this,'_swipcontroller', new SwipController(this))}
+
 observe(){
+  let my = this
   // Une flying window est déplaçable par essence
   // console.log("this.jqObj:", this.jqObj)
-  this.jqObj.draggable({
-    containment: STRdocument
-  })
+  if (isNotFalse(this.draggable)) {
+    let dataDrag = { stop: this.onEndMove.bind(this) }
+    this.containment && (dataDrag.containment = this.containment)
+    switch (this.draggable) {
+      case 'y':
+      case 'x':
+        dataDrag['axis'] = this.draggable
+        break
+    }
+    this.swiping && Object.assign(dataDrag, {
+        start:(e) => {
+          my.swipController.startData = {
+              time: e.timeStamp
+            , x: e.clientX
+            , y: e.clientY
+          }
+        }
+      , stop:(e) => {
+          my.swipController.endData = {
+              time: e.timeStamp
+            , x: e.clientX
+            , y: e.clientY
+          }
+          my.swipController.checkSwip.bind(my.swipController)()
+        }
+    })
+    this.jqObj.draggable(dataDrag)
+  }
+
   // Une flying window est cliquable par essence
   // this.jqObj.find('header, body').on(STRclick, FWindow.setCurrent.bind(FWindow, this))
   this.jqObj.on(STRclick, FWindow.setCurrent.bind(FWindow, this))
@@ -328,6 +462,13 @@ observe(){
 // ---------------------------------------------------------------------
 //  Propriétés
 
+get draggable(){
+  return defaultize(this, '_draggable', true)
+}
+get containment(){
+  return defaultize(this, '_containment', STRdocument)
+}
+get swiping(){return defaultize(this,'_swiping', false)}
 get jqObj(){ return this._jqObj || defP(this,'_jqObj', $(`#${this.domId}`))}
 get domId(){ return this._domId || defP(this,'_domId', `fwindow-${this.id}`)}
 get container(){return this._container}
@@ -338,7 +479,7 @@ get x(){return this._x || 100}
 get y(){return this._y || 100}
 // Référence pour logs
 get ref(){
-  if(undefined === this._ref){this._ref = `<<fwindow ${this.name || '#'+this.id}>>` }
+  if(isUndefined(this._ref)){this._ref = `<<fwindow ${this.name || '#'+this.id}>>` }
   return this._ref
 }
 

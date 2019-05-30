@@ -19,36 +19,36 @@ static set modified(v){
 }
 
 static load(){
-  log.info("-> FAElement::load")
+  log.info(`-> FAElement::load [Class ${this.name}]`)
   this.loading = true
   this.iofile.loadIfExists({after: this.afterLoad.bind(this)})
-  log.info("<- FAElement::load")
+  log.info(`<- FAElement::load [Class ${this.name}]`)
 }
 
 static afterLoad(data){
-  log.info("-> FAElement::afterLoad")
+  log.info(`-> FAElement::afterLoad [Class ${this.name}]`)
   this.reset()
   this.data     = data // une Array d'objet contenant les données
   this.loading  = false
   this.loaded   = true
-  log.info("<- FAElement::afterLoad")
+  log.info(`<- FAElement::afterLoad [Class ${this.name}]`)
 }
 
 static save(){
-  log.info("-> FAElement::save")
+  log.info(`-> FAElement::save [Class ${this.name}]`)
   // Ne rien faire si l'analyse est verrouillée
   if(this.saving || this.a.locked) return
   this.saving = true
   this.contents = this.getData() // À DÉFINIR DANS LA CLASSE HÉRITIÈRE
   this.iofile.save({after:this.afterSave.bind(this)})
-  log.info("<- FAElement::save")
+  log.info(`<- FAElement::save [Class ${this.name}]`)
 }
 static afterSave(){
-  log.info("-> FAElement::afterSave")
+  log.info(`-> FAElement::afterSave [Class ${this.name}]`)
   this.saving = false
   this.modified = false
   isFunction(this.methodAfterSaving) && this.methodAfterSaving()
-  log.info("<- FAElement::afterSave")
+  log.info(`<- FAElement::afterSave [Class ${this.name}]`)
 }
 
 // Le type, c'est le nom de la classe, en minuscule, sans le "fa"
@@ -58,7 +58,7 @@ static defineType(){
 }
 
 static edit(item_id, e){
-  if(e) stopEvent(e) // cf. note N0001
+  e && stopEvent(e) // cf. note N0001
   if(NONE === typeof(DataEditor)) return this.a.loadDataEditor(this.edit.bind(this,item_id))
   DataEditor.open(this, item_id)
 }
@@ -90,6 +90,7 @@ static get a(){return this._a || defP(this,'_a', current_analyse)}
 
 // ---------------------------------------------------------------------
 //  INSTANCE
+
 constructor(data){
   for(var prop in data){this[`_${prop}`] = data[prop]}
 }
@@ -147,9 +148,9 @@ editLink(opts){
 get domReaderId(){return this._domreaderid||defP(this,'_domreaderid',`reader-${this.domId}`)}
 get domReaderObj(){return this._domreaderobj||defP(this,'_domreaderobj',this.jqReaderObj?this.jqReaderObj[0]:undefined)}
 get jqReaderObj(){
-  if(undefined === this._jqreaderobj){
+  if(isUndefined(this._jqreaderobj)){
     this._jqreaderobj = $(`#${this.domReaderId}`)
-    if(this._jqreaderobj.length == 0) delete this._jqreaderobj
+    isEmpty(this._jqreaderobj) && ( delete this._jqreaderobj )
   }
   return this._jqreaderobj
 }

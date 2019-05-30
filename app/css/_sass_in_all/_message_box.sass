@@ -1,0 +1,41 @@
+div#masque-message-box
+  position: fixed
+  top: -10px
+  left: -10px
+  width: 150%
+  height: 10000px
+  background-color: black
+  opacity: 0.6
+  z-index: 5000
+
+div.message-box
+  position: fixed
+  top: 300px
+  min-width: 20%
+  max-width: 40%
+  left: 35%
+  background-color: white
+  border: 2px solid white
+  border-radius: 0.5em
+  padding: 2em 3em
+  z-index: 5001
+
+  div.reponse
+    margin-top: 2em
+    width: 100%
+    INPUT[type="text"]
+      width: inherit
+
+  div.buttons
+    text-align: right
+    margin-top: 2em
+
+
+    BUTTON
+      border-radius: 6px
+
+      &:not(.main-button)
+        all: unset
+        border: 1px solid #AAAAAA
+        padding: 0 0.5em
+        border-radius: 6px

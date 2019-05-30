@@ -28,3 +28,10 @@ function showScene(numero){
 function showBrin(brin_id){
   current_analyse.displayBrins(brin_id/*TODO : mettre en exergue ce brin-là*/)
 }
+
+// Permet de voir un personnage
+function showPersonnage(perso_id, e){
+  e && stopEvent(e)
+  current_analyse.togglePanneauPersonnages(true, perso_id)
+  return false
+}

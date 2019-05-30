@@ -136,18 +136,6 @@ IRDR:
   hname: Ironie dramatique
   items:
 
-    TempsIRDR:
-      hname: Les Temps de l’ironie dramatique
-      items:
-
-        irdrsetpup:
-          hname: "Installation de l’ironie dramatique"
-          description: Moment où l’information est posée, créant l’ironie dramatique.
-        irdrexploitation:
-          hname: "Exploitation de l’ironie dramatique"
-        irdrresolution:
-          hname: "Résolution de l’ironie dramatique"
-
     AutresIrdr:
       hname: "Autres ironies dramatiques"
       items:

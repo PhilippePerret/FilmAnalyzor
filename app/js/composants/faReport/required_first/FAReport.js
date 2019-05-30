@@ -34,7 +34,7 @@ static showLast(){
 }
 // Ajoute un rapport à la liste courante
 static addReport(report){
-  if(undefined === this.reports) this.reports = []
+  isDefined(this.reports) || ( this.reports = [] )
   this.reports.push(report)
 }
 
@@ -54,11 +54,13 @@ constructor(reportType){
 * Pour ajouter un message
 * +msg+       Le message String
 * +type+      Le type. cf. ci-dessus
-* +options+   Pas encore utilisé
+* +indent+    Indentation
 *
 **/
-add(msg, type, options){
-  this.messages.push({message: msg, type: (type || 'normal'), time: new Date().getTime()})
+add(msg, type, indent){
+  var t = new Date()
+    , htime = `${t.getHours()}:${`${t.getMinutes()}`.padStart(2,'0')}:${`${t.getSeconds()}`.padStart(2,'0')}:${t.getMilliseconds()}`
+  this.messages.push({message: msg, type: (type || 'normal'), time: t, htime:htime, indent: indent || 0})
 }
 /**
 * Méthode qui produit la sortie à l'écran
@@ -94,9 +96,8 @@ endSave(){
 
 // Appelée par la fwindow
 build(){
-  var css = DCreate('LINK', {attrs: {rel: 'stylesheet', href: './css/report.css'}})
   var btnclose  = DCreate(BUTTON, {type: STRbutton, class: 'btn-close'})
-  return [css, btnclose, this.messagesDomObjects]
+  return [btnclose, this.messagesDomObjects]
 }
 
 /**
@@ -105,7 +106,10 @@ build(){
 allObjMsgs(){
   var msgs = []
   for(var msg of this.messages){
-    msgs.push(DCreate('DIV', {class: `report-msg ${msg.type}`, inner: msg.message}))
+    msgs.push(DCreate(DIV, {class: `report-msg ${msg.type} indent${msg.indent||0}`, append:[
+        DCreate(SPAN,{class:STRtime, inner: msg.htime})
+      , DCreate(SPAN,{class:'msg', inner:msg.message})
+    ]}))
   }
   return msgs
 }
@@ -127,7 +131,7 @@ get contents(){
 }
 get messagesDomObjects(){
   if(undefined === this._messagesDomObjects){
-    this._messagesDomObjects = DCreate('DIV',{class: 'report-contents', append: this.allObjMsgs()})
+    this._messagesDomObjects = DCreate(DIV,{class: 'report-contents', append: this.allObjMsgs()})
   }
   return this._messagesDomObjects
 }

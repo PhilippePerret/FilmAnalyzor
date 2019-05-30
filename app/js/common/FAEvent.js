@@ -27,10 +27,28 @@ static get(event_id){
 }
 
 /**
+  Méthode qui reçoit les données (enregistrées) d'un event et le
+  retourne comme classe de son type.
+  La méthode sert lors de la lecture du fichier events.json
+**/
+static instanceOf(edata){
+  // var eClass = eval(`FAE${eventData.type}`)
+  // var ev = new eClass(current_analyse, edata)
+
+  return new (eval(`FAE${edata.type}`))(current_analyse, edata)
+}
+
+/**
   Pour mettre l'event +event_id+ en édition
+
+  Se souvenir aussi que cette méthode est appelée par le "+" dans les
+  boite de listing de FAListing. Dans ce cas-là, +event_id+ est indéfini
+
 **/
 static edit(event_id){
-  return EventForm.editEvent.bind(EventForm, this.get(event_id))()
+  var typeOrInstance = isDefined(event_id) ? this.get(event_id) : this.type
+  // console.log("typeOrInstance:",typeOrInstance)
+  return EventForm.editEvent.bind(EventForm, typeOrInstance)()
 }
 
 /**
@@ -69,7 +87,7 @@ static tProps(own_text_properties){
   contiendra donc une sorte d'historique des modifications.
 **/
 static addModified(evt){
-  if(isUndefined(this.modifieds)) this.modifieds = []
+  defaultize(this,'modifieds',[])
   this.modifieds.push(evt.id)
   this.a.modified = true
 }
@@ -171,8 +189,13 @@ reset(){
 
 // Méthode pratique pour reconnaitre rapidement l'element
 get isAEvent(){return true}
+get isEvent(){return true}
 get isADocument(){return false}
+get isDocument(){return false}
+get isAScene(){return false} // surclassé par FAEscene
 get isScene(){return false} // surclassé par FAEscene
+get isAnImage(){return false}
+get isImage(){return false}
 
 // ---------------------------------------------------------------------
 //  Propriétés temporelles
@@ -188,7 +211,7 @@ set time(v){ this._time = v ; delete this._horl ; delete this._otime }
 get scene(){return this._scene||defP(this,'_scene',FAEscene.at(this.time))}
 
 get otime(){return this._otime || defP(this,'_otime',new OTime(this.time))}
-get horloge(){return this._horl||defP(this,'_horl',this.otime.horloge)}
+get horloge(){return this._horl||defP(this,'_horl',this.otime.rhorloge)}
 
 /**
  * Définition de la durée
@@ -297,45 +320,17 @@ show(){
     this.a.reader.append(this)
     this.observe()
   }
-  this.makeAppear() // c'est l'opacité qui masque l'event affiché
-  // Pour se mettre en exergue lorsqu'il est survolé
-  this.startWatchingTime()
-  // Trop mou ou trop rapide avec scrollIntoView. Rien de vaut la méthode
-  // old-school
-  this.domReaderObj.parentNode.scrollTop = this.domReaderObj.offsetTop
+  // SI vraiment on a besoin de montrer cet event,
+  //  on doit appeler la méthode FAReader.reveal(this)
+
   this.shown = true
 }
 
 hide(){
-  this.makeDesappear()
-  this.jqReaderObj.hide()
-  this.stopWatchingTime()
+  this.jqReaderObj && this.jqReaderObj.hide()
   this.shown = false
 }
 
-/**
-  Toutes les secondes, l'event va véfiier si le temps courant le
-  survole. Si c'est le cas, il se met en exergue.
-**/
-startWatchingTime(){
-  // console.log("-> startWatchingTime de ", this.id)
-  this.timerWatchingTime = setInterval(this.watchTime.bind(this), 1000)
-  // console.log("<- startWatchingTime de", this.id)
-}
-stopWatchingTime(){
-  // console.log("-> stopWatchingTime")
-  clearInterval(this.timerWatchingTime)
-  delete this.timerWatchingTime
-}
-watchTime(){
-  if(isUndefined(this.a) || isUndefined(this.a.locator)) return
-  var rtime = this.a.locator.currentTime
-  let iscur = rtime >= this.time - 2 && rtime <= this.end + 2
-  if(this.isCurrent != iscur){
-    this.isCurrent = !!iscur
-    this.jqReaderObj[this.isCurrent?'addClass':'removeClass']('current')
-  }
-}
 get end(){
   if(isUndefined(this._end)) this._end = this.time + this.duree
   return this._end
@@ -343,7 +338,7 @@ get end(){
 
 remove(){
   delete this._div
-  if(this.jqReaderObj.length) this.jqReaderObj.remove()
+  isEmpty(this.jqReaderObj) || this.jqReaderObj.remove()
   delete this._domreaderobj
   delete this._jqreaderobj
   this.shown = false
@@ -371,21 +366,11 @@ updateInReader(new_idx){
  * que soit l'élément.
  */
 updateInUI(){
-
   // Le temps se trouve toujours dans une balise contenant data-time, avec
   // le data-id défini
-  $(`*[data-time][data-id="${this.id}"]`).attr('data-time',this.time)
+  $(`*[data-time][data-id="${this.id}"]`).attr(STRdata_time,this.time)
   // TODO Il faut traiter l'horloge aussi
   $(`.horloge-event[data-id="${this.id}"]`).html(this.horloge)
-
-}
-
-
-makeAppear(){
-  this.jqReaderObj.animate({opacity:1}, 600)
-}
-makeDesappear(){
-  this.jqReaderObj.animate({opacity:0}, 600)
 }
 
 // ---------------------------------------------------------------------
@@ -556,11 +541,12 @@ observe(container){
   var my = this
     , o = this.jqReaderObj
 
-  if(this.jqReaderObj.attr(STRobserved) == STROBSERVED) return
-
-  if(isUndefined(this.jqReaderObj)){
-    log.warn(`BIZARREMENT, le jqReaderObj de l'event #${this.id} est introuvable dans le reader. recherché avec domReaderId:${domReaderId}`)
+  if(isUndefined(o)){
+    log.warn(`BIZARREMENT, le jqReaderObj de l'event #${this.id} est introuvable dans le reader. recherché avec domReaderId:${this.domReaderId}`)
   } else {
+
+    if(o.attr(STRobserved) == STROBSERVED) return
+
     // On rend actif les boutons d'édition
     o.find('.e-tools button.btn-edit').on(STRclick, EventForm.editEvent.bind(EventForm, this))
 
@@ -575,7 +561,7 @@ observe(container){
       .droppable(DATA_ASSOCIATES_DROPPABLE)
       .draggable(DATA_ASSOCIATES_DRAGGABLE)
 
-    this.jqReaderObj.attr(STRobserved, STROBSERVED)
+    o.attr(STRobserved, STROBSERVED)
   }
 }
 

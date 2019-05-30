@@ -30,8 +30,16 @@ static new(){
   FAWriter.message(T('new-custom-document-created'))
 }
 
+/**
+  For consistency with others elements
+**/
+static edit(doc_id){
+  if(isUndefined(doc_id)) this.new()
+  else this.get(doc_id).display()
+}
+
 static newId(){
-  if(undefined === this.lastID) this.lastID = 0
+  isDefined(this.lastID) || ( this.lastID = 0 )
   return ++ this.lastID
 }
 
@@ -42,10 +50,10 @@ static newId(){
  d'un document personnalisé.
 **/
 static get(doc_id){
-  if(undefined === this.documents) this.documents = {}
-  if(undefined === this.documents[doc_id]){
+  defaultize(this,'documents', {})
+  if( isUndefined(this.documents[doc_id])){
     let [dtype, realid] = doc_id.split('-')
-    if(dtype === 'custom') customid = parseInt(customid,10)
+    if(dtype === 'custom') realid = parseInt(realid,10)
     else [dtype, realid] = ['regular', doc_id]
     this.documents[doc_id] = new FADocument(dtype, realid)
   }
@@ -83,7 +91,7 @@ static findAssociations(){
           found = reg.exec(value)
           if(found != null){
             // console.log(`Trouvé dans event #${ev.id} :`, found, reg.lastIndex)
-            if(undefined === dDocuments[found[1]]){
+            if(isUndefined(dDocuments[found[1]])){
               dDocuments[found[1]] = []
             }
             dDocuments[found[1]].push(ev)
@@ -116,13 +124,15 @@ static forEachDocument(fn){
 
 **/
 static get allDocuments(){
-  var all = glob.sync(`${current_analyse.folderFiles}/*.*`)
-    , alldocs = []
-  for(var pdoc of all){
-    this.get(path.basename(pdoc,path.extname(pdoc)))
+  if(isUndefined(this._alldocuments)) {
+    var all = glob.sync(`${current_analyse.folderFiles}/*.*`)
+    for(var pdoc of all){
+      this.get(path.basename(pdoc,path.extname(pdoc)))
+    }
+    this._alldocuments = Object.values(this.documents)
+    all = null
   }
-  all = null
-  return this.documents
+  return this._alldocuments
 }
 
 /**
@@ -154,11 +164,11 @@ static get count(){
 **/
 constructor(dtype, id, docPath){
   // console.log("dtype, id, docPath", dtype, id, docPath)
-  undefined !== dtype || raise("Impossible d'instancier un document sans type ou ID.")
+  isDefined(dtype) || raise("Impossible d'instancier un document sans type ou ID.")
   ['regular','custom','any'].indexOf(dtype) > -1 || raise(`Le doc-type (dtype) "${dtype}" est inconnu.`)
   this.dtype = dtype
-  if(dtype === 'any'){
-    if(undefined === docPath) docPath = id
+  if(dtype === STRany){
+    isDefined(docPath) || ( docPath = id )
     docPath || raise("Il faut absolument fournir le path en troisième argument.")
     fs.existsSync(docPath) || raise(`Le path "${docPath}" est introuvable. Je ne peux pas éditer ce document.`)
     this._path  = docPath
@@ -171,11 +181,11 @@ constructor(dtype, id, docPath){
 // ---------------------------------------------------------------------
 //  Méthodes publiques
 
-get toString(){return this._tostring||defP(this,'_tostring',this.defineToString())}
+toString(){return this._tostring||defP(this,'_tostring',this.defineToString())}
 
 defineToString(){
-  t = ['Document']
-  if(this.title) t.push(`« ${DFormater(this.title)} »`)
+  var t = ['Document']
+  if(this._title) t.push(`« ${DFormater(this.title)} »`)
   else t.push(`#${this.id}`)
   return t.join(' ')
 }
@@ -215,6 +225,7 @@ get a() { return current_analyse }
 // Méthode pratique pour reconnaitre rapidement l'element
 get isAEvent(){return false}
 get isADocument(){return true}
+get isCustomDoc(){return this.dtype === 'custom'}
 get isData(){return this.dataType && this.dataType.type === 'data'}
 get isAbsoluteData(){return this.dataType && this.dataType.abs === true}
 
@@ -260,7 +271,7 @@ save(){
   if(this.a.locked && !this.isAbsoluteData) return F.notify(T('analyse-locked-no-save'))
   if(this.saving) return
   this.saving = true
-  this.isNewCustom = this.dtype === 'custom' && !this.exists()
+  this.isNewCustom = this.isCustomDoc && !this.exists()
   if (false === this.iofile.save({after: this.endSaving.bind(this)})){
     // On passe par ici lorsque la sauvegarde a rencontré une erreur
     UI.stopWait()
@@ -412,25 +423,28 @@ get themePerType(){
 * par le début du texte (les 30 premiers caractères)
 *
 **/
-get title(){
-  if(undefined === this._title){
-    if(this.exists()){
-      var buf = Buffer.alloc(200)
-      var fd  = fs.openSync(this.path, 'r');
-      fs.readSync(fd, buf, 0, 200, 0)
-      buf = buf.toString().split(RC)
-      let firstLine = buf.shift()
-      if (firstLine.substring(0,2) == '# '){
-        this._title = firstLine.substring(2, firstLine.length).trim()
-        this._firstContent = buf.join(RC)
-      } else {
-        this._firstContent = buf.unshift(firstLine).join(RC)
-      }
+get title(){ return this._title || defP(this,'_title', this.getTitle())}
+
+getTitle(){
+  log.info('-> FADocument.getTitle', this.toString())
+  var tit
+  if(this.exists()){
+    var buf = Buffer.alloc(200)
+    var fd  = fs.openSync(this.path, 'r');
+    fs.readSync(fd, buf, 0, 200, 0)
+    buf = buf.toString().split(RC)
+    let firstLine = buf.shift()
+    if (firstLine.substring(0,2).trim() == '#'){
+      tit = firstLine.substring(2, firstLine.length).trim()
+      this._firstContent = buf.join(RC)
     } else {
-      this._firstContent = ''
+      this._firstContent = buf.unshift(firstLine).join(RC)
     }
+  } else {
+    log.info(`   Le fichier "${this.path}" n'existe pas. Je ne peux pas trouver le titre.`)
+    this._firstContent = ''
   }
-  return this._title || (this.dtype === 'custom' ? `Doc #${this.id}` : this.dataType.hname)
+  return tit || (this.dtype === 'custom' ? `Doc #custom-${this.id}` : this.dataType.hname)
 }
 
 /**
@@ -438,7 +452,7 @@ get title(){
   retours chariots et autres liens.
 **/
 get firstContent(){
-  if(undefined === this._firstContent) this.title // force le calcul
+  isDefined(this._firstContent) || this.getTitle() // force le calcul
   return this._firstContent
 }
 
@@ -476,6 +490,8 @@ get path(){ return this._path||defP(this,'_path', this.definePathPerType())}
 definePathPerType(){
   if(this.isAbsoluteData){
     return path.join(APPFOLDER,'app','js','data',`${this.dtype}.yaml`)
+  } else if (this.isCustomDoc) {
+    return path.join(this.a.folderFiles,`custom-${this.id}.${this.extension}`)
   } else {
     return path.join(this.a.folderFiles,`${this.id}.${this.extension}`)
   }

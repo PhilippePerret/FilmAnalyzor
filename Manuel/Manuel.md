@@ -89,6 +89,8 @@ Pour créer les *events*, on peut utiliser les boutons qui se trouvent en bas à
 
 Une fois une de ces procédures adoptées, le formulaire de l'event s'ouvre et il suffit de le remplir.
 
+> Note : le formulaire de création (ou d'édition) s'ouvre toujours exactement à côté de la boite qui contient les boutons. Donc il suffit de déplacer cette boite pour déplacer l'emplacement où s'ouvriront tous les formulaires d'édition des *events*.
+
 ### Les events « Scènes » {#les_events_scenes}
 
 Ils permettent de définir les scènes du film. Ce sont des *events* particulier dans le sens où leurs informations sont très particulières (effet, lieu, etc.) et ils sont souvent les conteneurs d'autres éléments.

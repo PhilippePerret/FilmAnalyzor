@@ -1,0 +1,105 @@
+section#banctime-banc-timeline
+  background-color: #555555
+  border: 5px solid #333333
+  position: relative
+  height: calc(100%)
+
+  div#banctime-cursor
+    width: 4px
+    background-color: green
+    z-index: 50
+    position: absolute
+    left: 0
+    top: 0
+    height: calc(100%)
+
+
+  div#banctime-timeRuler
+    height: 14px
+    background-color: #505050
+    background-image: url('../img/graduations.png')
+    background-size: 28px
+    background-repeat: repeat
+    position: absolute
+    top: 0
+    width: 100%
+    z-index: 1
+
+    // Les marques de début et de fin de film/vidéo
+    span.mark-film
+      position: absolute
+      color: red
+      border-style: solid
+      border-color: red
+      top: 0
+      height: 100%
+      width: 4px
+      z-index: 10
+    span.mark-film-start
+      border-width: 2px 0 2px 8px
+      left: 2px // position de départ
+    span.mark-film-end
+      border-width: 2px 8px 2px 0
+      left: 8px // position de départ
+
+
+    // Les marqueurs
+    span.marker
+      position: absolute
+      width: 8px
+      height: 18px
+      border-radius: 0 0 6px 6px
+      &:not(.selected)
+        background-color: tomato
+      &.selected
+        background-color: red
+
+
+  div#banctime-tape
+    overflow: scroll
+    position: relative
+    height: inherit
+
+    // === ÉLÉMENTS EVENTS ===
+
+    div.banctime-element
+      position: absolute
+      height: 18px
+      border: 1px solid white
+
+      // La width minimum pour les largeurs d'events, sauf les scènes
+      &:not(.scene)
+        min-width: 8px
+
+      // COULEURS EN FONCTION DU TYPE D'ÉLÉMENT
+      &.event
+        all: unset
+        background-color: #CCCCCC
+      &.scene
+        background-color: #58D68D
+      &.stt
+        background-color: #EC7063
+      &.dyna
+        background-color: #A569BD
+      &.proc
+        background-color: #48C9B0
+      &.note
+        background-color: #F4D03F
+      &.idee
+        background-color: #EB984E
+      &.info
+        background-color: #DC7633
+      &.qrd
+        background-color: #F7DC6F
+      &.action
+        background-color: #F06292
+      &.dialog
+        background-color: #827717
+
+
+
+
+
+div.timeline,
+div.div-nav-video-buttons
+  display: none

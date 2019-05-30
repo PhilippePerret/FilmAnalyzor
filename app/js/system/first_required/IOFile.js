@@ -99,7 +99,7 @@ save(options){
   } else {
     this.saving = true
   }
-  if(undefined === options) options = {}
+  options = options || {}
   this.options = options
   if(!options.no_waiting_msg){
     UI.startWait(`Sauvegarde du fichier "${this.name}" en cours…`)
@@ -110,16 +110,18 @@ save(options){
   try {
     this.saved = false
     scode = this.encodeCode()
-    scode !== undefined || raise(T('code-to-save-is-undefined'))
-    scode !== null      || raise(T('code-to-save-is-null'))
+    isDefined(scode)  || raise(T('code-to-save-is-undefined'))
+    isNotNull(scode)  || raise(T('code-to-save-is-null'))
     let err_code = IOFile.codeIsOK(scode, IOFile.getFormatFromExt(this.path))
-    err_code === null   || raise(T('code-to-save-not-ok', {raison: err_code}))
-    scode.length > 0    || raise(T('code-to-save-is-empty'))
-    if(!options.no_warm_if_shorter){
-      if(false === this.confirmIfMuchShorter(scode)) raise(null)
+    isNull(err_code)  || raise(T('code-to-save-not-ok', {raison: err_code}))
+    isNotEmpty(scode) || raise(T('code-to-save-is-empty'))
+    this.savedcode = scode
+
+    if ( isFalse(options.no_warm_if_shorter) && this.codeIsMuchShorter() ) {
+      this.confirmIfMuchShorter()
+    } else {
+      this.execSave()
     }
-    if(this.tempExists()) fs.unlinkSync(this.tempPath)
-    fs.writeFile(this.tempPath,scode,'utf8', this.afterTempSaved.bind(this))
   } catch (e) {
     this.endSavingInAnyCase()
     if(e){
@@ -129,9 +131,30 @@ save(options){
       log.warn(RC + scode)
     }
     log.info('<- IOFile#save (retour false après erreur)')
-    return false
+  } finally {
+    scode = null
   }
   log.info('<- IOFile#save')
+}
+/**
+  Méthode exécutant vraiment la sauvegarde du contenu du fichier
+**/
+execSave(){
+  try {
+    if(this.tempExists()) fs.unlinkSync(this.tempPath)
+    fs.writeFile(this.tempPath,this.savedcode,'utf8', this.afterTempSaved.bind(this))
+  } catch (e) {
+    this.endSavingInAnyCase()
+    if(e){
+      F.error(`Erreur au cours de l'enregistrement du fichier : ${e}`)
+      log.error(e)
+      log.error("CODE FAUTIF :\n")
+      log.warn(RC + this.savedcode)
+    }
+    log.info('<- IOFile#save (retour false après erreur)')
+  } finally {
+    delete this.savedcode
+  }
 }
 
 afterTempSaved(err){
@@ -155,9 +178,6 @@ endSave(err){
       this.endSavingInAnyCase()
       return F.error(err)
     }
-    // console.log({
-    //   tempPath: this.tempPath, path: this.path, op: 'rename'
-    // })
     this.tempExists() || raise(T('temps-file-unfound',{fpath: this.tempPath}))
     this.tempSize > 0 || raise(T('temp-file-empty-stop-save',{fpath: this.tempPath}))
     fs.rename(this.tempPath, this.path, (err)=>{
@@ -166,9 +186,7 @@ endSave(err){
         // FIN !
         this.endSavingInAnyCase()
         this.saved = true
-        if(isFunction(this.methodAfterSaving)){
-          this.methodAfterSaving()
-        }
+        isFunction(this.methodAfterSaving) && this.methodAfterSaving()
       }
     })
   } catch (e) {
@@ -224,10 +242,10 @@ loadIfExists(options, fn_pour_suivre){
   // Noter que la méthode peut être rappelée depuis elle-même, donc
   // sans redéfinir options ou fn_pour_suivre. Donc il ne faut les
   // définir que s'ils sont définis.
-  if(undefined !== options) my.options = options
-  if(undefined !== fn_pour_suivre) my.methodAfterLoading = fn_pour_suivre
-  else if(options && options.after) my.methodAfterLoading = options.after
-  if(false === this.exists()){
+  isDefined(options) && ( my.options = options )
+  isDefined(fn_pour_suivre) && ( my.methodAfterLoading = fn_pour_suivre )
+  if(options && options.after) my.methodAfterLoading = options.after
+  if(isFalse(this.exists())){
     my.endLoad(false)
   } else {
     if(my.size === 0) {
@@ -292,6 +310,19 @@ checkBackupFolder(){
 }
 
 /**
+  @return TRUE si le code à sauver (this.savedcode) est de 20% plus court
+  que le code original.
+**/
+codeIsMuchShorter(){
+  if ( this.exists() ) {
+    let vingtPourcent = this.size * 80 / 100
+      , newLength = Buffer.from(this.savedcode).length
+    return newLength < vingtPourcent
+  } else {
+    return false
+  }
+}
+/**
   Méthode de protection qui demande confirmation, à l'enregistrement, si
   le code à enregistrer est plus court de plus de 20% que le code original
   s'il existe déjà.
@@ -300,13 +331,15 @@ checkBackupFolder(){
   @return {Boolean} true si on peut poursuivre, false quand ça n'a pas été
                     confirmé.
 **/
-confirmIfMuchShorter(scode){
-  if(this.exists()){
-    let vingtPourcent = this.size * 80 / 100
-      , newLength = Buffer.from(scode).length
-    if(newLength < vingtPourcent) return confirm(T('confirm-content-much-shorter', {doc_name: this.nameWithFolder}))
-  }
-  return true
+confirmIfMuchShorter(){
+  confirm({
+      message: T('confirm-content-much-shorter', {doc_name: this.nameWithFolder})
+    , buttons:['Renoncer', 'Je confirme']
+    , defaultButtonIndex:1
+    , cancelButtonIndex:0
+    , okButtonIndex:1
+    , methodOnOK: this.execSave.bind(this)
+  })
 }
 
 // ---------------------------------------------------------------------
@@ -329,9 +362,10 @@ set code(v){this._code = v}
 // ce ne serait pas le nouveau contenu du document qui serait enregistré,
 // mais toujours son contenu initial.
 get code(){
-  if (undefined === this.owner) {
+  if (isUndefined(this.owner)) {
     return this._code
   } else {
+    // console.log("Je prends code dans le propriétaire (pas dans _code)")
     // Le code doit être défini dans la propriété `contents` ou `code`
     // du propriétaire de l'instance
     return this.owner.contents || this.owner.code || this.owner.data || this._code
@@ -353,18 +387,18 @@ get code(){
   */
 get decodedCode(){return this._decodedCode || defP(this,'_decodedCode',this.decode())}
 decode(){
-  if(!this.code) return null // fichier inexistant, par exemple
+  if(!this._code) return null // fichier inexistant, par exemple
   try {
     switch (this.format.toUpperCase()) {
       case 'RAW':
-        return this.code // pour la clarté
+        return this._code // pour la clarté
       case 'JSON':
-        if ('object' === typeof this.code) return this.code
-        else return JSON.parse(this.code)
+        if ('object' === typeof this._code) return this._code
+        else return JSON.parse(this._code)
       case 'YAML':
-        return YAML.safeLoad(this.code)
+        return YAML.safeLoad(this._code)
       default:
-        return this.code
+        return this._code
     }
   } catch (e) {
     console.log(`ERROR ${this.format} AVEC:`, this.path)

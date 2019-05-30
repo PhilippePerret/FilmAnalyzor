@@ -103,9 +103,22 @@ let ASSOCIATES_COMMON_METHODS = {
       let flag = LABELLED
       if(!options.forBook) flag = flag | DISSOCIABLE
       for(var assoType in this.associates){
-        this.associates[assoType].map(assid => {
-          divs.push(this.a.instanceOfElement({type:assoType,id:assid}).as(STRassociate, flag, assOpts))
-        })
+          this.associates[assoType].map(assid => {
+            try {
+              divs.push(this.a.instanceOfElement({type:assoType,id:assid}).as(STRassociate, flag, assOpts))
+            } catch (e) {
+              log.error(`ERREUR AVEC ${this}
+                Méthode : divsAssociates
+                Arguments : ${options}
+                Propriétaire : ${this}
+                Type d'associé : ${assoType}
+                ID associé : ${assid}
+                ERROR:
+                `)
+              log.error(e)
+              log.error("Donnée complète des associés : ", this.associates)
+            }
+          })
       }
     } else {
       divs.push(DCreate(DIV,{class:'italic small indent2', inner:'(Aucun élément associé)'}))
@@ -362,20 +375,47 @@ const TEXTFIELD_ASSOCIATES_METHS = {
   Méthode appelée au drop sur le champ de texte qui a été préparé grâce
   à la méthode `setTextFieldsAssociable` ou qui a été rendu droppable grâce
   à la table `this.dataDroppableTF`
+
+  Attention : deux types de champs peuvent être droppés ici : les textareas
+  et les input-text. Lorsque ce sont les premiers, il faut coller une balise
+  sans sourciller.
+  Lorsque ce sont les seconds, il faut regarder si c'est un temps qui est
+  transmis et voir si le champ attend un temps. Par exemple, le champ de la
+  propriété `tps_reponse`, dans l'EventForm, attend une horloge, pas une
+  balise.
+
 **/
 , onDropAssociableElement(e, ui){
     if (FADrop.isNotCurrentDropped(e.target)) return stopEvent(e)
     let helper  = $(ui.helper)
+      , target  = $(e.target)
       , [eltype, elid]  = [helper.attr(STRdata_type), helper.attr(STRdata_id)]
-      , textAdded = '|texte/légende|style'
-      , balise = `{{${eltype}:${elid}${textAdded}}}`
-    if (this.droppedAndReceiverAreSameElement(e.target, helper))
 
-    $(e.target).insertAtCaret(balise)
-    let selector = new Selector(e.target)
+    if (this.droppedAndReceiverAreSameElement(target, helper)) return
+
+    let isHorloge = eltype == 'time' && target.hasClass('horloge')
+
+    var balise, textAdded
+
+    if(isHorloge){
+      balise = (new OTime(elid)).horloge
+    } else {
+      // Un textarea ou un input-text
+      textAdded = '|texte/légende|style'
+      balise = `{{${eltype}:${elid}${textAdded}}}`
+    }
+
+    target.insertAtCaret(balise)
+
+    // if (isTextarea(target)){
+    if (!isHorloge){
+      let selector = new Selector(e.target)
       , curOffset = selector.startOffset
-    selector.startOffset  = curOffset - 2 - textAdded.length
-    selector.endOffset    = curOffset - 2
+      selector.startOffset  = curOffset - 2 - textAdded.length
+      selector.endOffset    = curOffset - 2
+    }
+
+    delete FADrop.current
     return stopEvent(e)
   }
 

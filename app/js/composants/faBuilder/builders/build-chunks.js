@@ -1,14 +1,17 @@
 'use strict'
 /**
- * Export de l'analyse au format Markdown
- *
- * Contrairement aux autres formats d'export (exception fait de HTML), cet
- * export construit en fait l'analyse courante, à partir de tous ses éléments.
- * Le format Markdown permettra de générer les autres format
+    Export de l'analyse
+
+    Cf. la méthode exportée, en fin de module
+
+    Contrairement aux autres formats d'export (exception faite de HTML), cet
+    export construit en fait l'analyse courante, à partir de tous ses éléments.
+    Le format Markdown permettra de générer les autres format
  */
 
 const fsExtra = require('fs-extra')  // pour 'rm -Rf'
 const child_process = require('child_process')
+
 
 // Double retour chariot
 const DRC = `
@@ -45,11 +48,6 @@ convertAndAddFile(key_doc){
     return
   }
   var cmd = `echo "${itexte.replace(/\"/, '\\"')}" | pandoc -t html`
-  // exec(cmd, (err, itexteHTML, stderr) => {
-  //   if(err)throw err
-  //   my.exporter.append(my.wholeHtmlPath, itexteHTML)
-  //   my.log(`= Ajout de "${key_doc}" dans le fichier wholeHTML.html`)
-  // })
   var itexteHTML = child_process.execSync(cmd)
   my.exporter.append(my.wholeHtmlPath, itexteHTML)
   my.log(`= Ajout de "${key_doc}" dans le fichier wholeHTML.html`)
@@ -62,55 +60,6 @@ convertAndAddFile(key_doc){
  * Pour la construction d'éléments à construire comme les fondamentales ou
  * le paradigme de Field augmenté
  */
-FABuilder.prototype.buildAndAddChunk = function(what){
-  var my = this
-  my.log(`* Traitement du build "${what}"`)
-  my.traitedFiles[what] = {ok: null, error: null}
-  var ca = my.analyse
-  var finalCode = ""
-  finalCode += `<!-- BUILD ${what} -->${RC}`
-  switch (what.toLowerCase()) {
-    case 'fiche identité':
-      finalCode += my.loadAndRunBuilder('fiche_identite_film')
-      break
-    case 'infos film':
-      finalCode += my.loadAndRunBuilder('infos_film')
-      break
-    case 'fondamentales':
-      finalCode += my.loadAndRunBuilder('fondamentales')
-      break
-    case 'pfa':
-      finalCode += my.loadAndRunBuilder('pfa')
-      break;
-    case 'brins':
-      finalCode += my.loadAndRunBuilder('brins')
-      break
-    case 'diagramme dramatique':
-    case 'diagramme qrd':
-      finalCode += my.loadAndRunBuilder('diagramme_dramatique')
-      break
-    case 'statistiques':
-      finalCode += my.loadAndRunBuilder('statistiques')
-      break
-    case 'scenier':
-      finalCode += my.loadAndRunBuilder('scenier')
-      break
-    case 'rapport visionnage':
-      finalCode += my.loadAndRunBuilder('rapport_visionnage')
-      break
-    case 'test mef':
-      finalCode += my.loadAndRunBuilder('test_mef')
-      break
-    default:
-
-  }
-
-  // On enregistre le code dans son fichier (en vérifiant qu'il ait bien
-  // été enregistré)
-  my.exporter.append(my.wholeHtmlPath, finalCode)
-  my.log(`= Ajout de "${what}" dans le fichier wholeHTML.html`)
-  my.traitedFiles[what].ok = true
-}
 
 /**
 * Méthode qui charge le builder du +composant+ et lance
@@ -122,6 +71,7 @@ FABuilder.prototype.loadAndRunBuilder = function(composant){
   return method(FABuilder.options)
 }
 
+// ---------------------------------------------------------------------
 
 module.exports = function(options){
   var my = this // instance FABuilder
@@ -147,22 +97,13 @@ module.exports = function(options){
   var bScript = fs.readFileSync(bScriptPath, 'utf8')
 
   my.log("** Lecture et analyse de chaque ligne du script d'assemblage…")
-  bScript.split(RC).forEach(function(line){
+  bScript.split(RC).map(line => {
     if(line.trim() == '' || line.substring(0,1) == '#') return
-    var dline   = line.trim().split(' ')
-    if (dline.length < 2) return
-    var command = dline.shift()
-    var args    = dline.join(' ')
-    // Il faut retirer aussi les éventuels commentaires en fin de ligne
-    if(args.match(/\#/)) args = args.split('#')[0].trim()
-    switch (command.toUpperCase()) {
-      case 'FILE':
-        return my.convertAndAddFile(args.toLowerCase())
-      case 'BUILD':
-        return my.buildAndAddChunk(args.toLowerCase())
-      default:
-        console.error("Je ne connais pas la commande building script:", command.toUpperCase())
-    }
+    // On instancie une nouvelle étape et on la traite. C'est-à-dire,
+    // généralement, on construit le fichier formaté qui va permettre
+    // l'export.
+    var step = new BuildingStep(my, line.trim())
+    step.treate()
   })
 
 }

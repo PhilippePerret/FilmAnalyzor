@@ -14,8 +14,7 @@ static get TEXT_PROPERTIES(){return this._tprops||defP(this,'_tprops',FAEvent.tP
  * d'analyse sans recharger l'application
  */
 static init(analyse){
-  if(undefined === analyse) analyse = current_analyse
-  this.analyse = this.a = analyse
+  this.analyse = this.a = analyse || current_analyse
   this.reset()
 }
 
@@ -51,10 +50,10 @@ static get current(){return this._current||defP(this,'_current',this.getCurrent(
 static set current(s){
   if(s instanceof(FAEscene)) log.info(`Scène courante de FAEscene mise à ${s} (${s.numero})`)
   this._current = s
-  this.a.videoController.markCurrentScene.html(s ? s.asPitch().innerHTML : '...')
+  UI.markCurrentScene.html(s ? s.asPitch().innerHTML : '...')
 }
 static getCurrent(){
-  if(this.count === 0) return
+  if (this.count === 0) return
   return this.at(this.a.locator.currentTime)
 }
 
@@ -217,58 +216,53 @@ static forEachSortedScene(fn){
                                   du film
  */
 static at(otime){
-  return (this.atAndNext(otime)||{}).current
-}
-/**
-  Retourne la scène se trouvant au temps +time+ et la scène suivante
-
-  Note : la scène suivante sert par exemple à connaitre le temps du
-  prochain changement de scène.
-
-  @param   {OTime}  otime  Le temps considéré
-
-  @returns {Object} {current: scène courante, next: scène suivante, next_time: temps suivant}
-                    Noter que `next_time` est toujours défini, même lorsqu'au-
-                    cune scène n'a été trouvée après. C'est alors le temps de
-                    fin de la vidéo. Cela permet de ne pas rechercher la scène
-                    jusqu'à la fin.
-**/
-static atAndNext(otime){
-  log.info('-> FAEscene#atAndNext(otime=)', otime.toString())
-  // console.log("[atAndNext] time:", time)
-
-  // Si le temps courant est inférieur au temps du début du film, on
-  // retour undefined
-  if (otime.vtime < this.a.filmStartTime) return
-
-  // Si la première scène existe et que ce temps est inférieur à la première
-  // scène, on doit retourner une table contenant cette première scène.
-  if (this.firstScene && otime < this.firstScene.time){
-    return {current_time: otime.rtime, current: null, next: this.firstScene, next_time: this.firstScene.time}
-  }
-
-  // Sinon, il faut chercher dans quelle scène on peut se trouver.
-  var founded
-    , next_scene
-    , last_scene
-
-  this.forEachSortedScene(function(scene){
-    log.info(`   Comparaison de scene.time (${scene.time}) > ${otime} ? (si oui, c'est la scène qu'on cherche)`)
-    if(scene.time > otime) {
-      founded     = last_scene
-      next_scene  = scene
-      log.info(`   Next scène trouvée : #${scene.id}, numéro ${scene.numero}`)
-      return false // pour interrompre
-    }
-    last_scene = scene
+  if ( this.count === 0 ) return
+  // Même temps cherché que dernier => retourner la dernière scène trouvée
+  if ( otime.vtime == this.lastTimeSearched ) return this.lastSceneFound
+  // Pas de scène si on est avant le début du film
+  if ( otime.vtime < this.a.filmStartTime ) return
+  // Pas de scène si on se trouve après le temps de fin
+  if ( otime.vtime > this.a.filmEndTime ) return
+  // Pas de scène si le temps dépasse le temps de fin de la dernière scène
+  if ( otime > this.lastScene.endAt ) return
+  // Sinon, on cherche la scène
+  var prevSceneNumero
+  this.forEachSortedScene(scene => {
+    if ( scene.time > otime ) return false // pour interrompre
+    prevSceneNumero = scene.numero
   })
-  return {current_time: otime.seconds, current: founded || this.lastScene, next: next_scene, next_time: (next_scene ? next_scene.time : this.a.duree)}
+  this.lastSceneFound   = this.get(prevSceneNumero)
+  this.lastTimeSearched = otime.vtime
+  return this.lastSceneFound
+}
+
+// Retourne la scène qui commence avant le temps otime (ou rien)
+static before(otime){
+  if ( this.count === 0) return
+  for(var i = 0 ; i < this.count ; ++i){
+    // console.log({
+    //     operation: "Recherche scène before"
+    //   , rtime: otime.rtime
+    //   , i: i
+    //   , 'this.sortedByTime[i]': this.sortedByTime[i]
+    //   , 'startAt': this.sortedByTime[i].startAt
+    // })
+    if (this.sortedByTime[i].startAt >= otime.vtime) return this.sortedByTime[i - 1]
+  }
+  // Cas où le curseur se trouve après la dernière scène définie
+  return this.lastScene
+}
+
+// Retourne la scène qui commence après le temps otime (ou rien)
+static after(otime){
+  for(var i = 0; i < this.count; ++i){
+    if (this.sortedByTime[i].startAt > otime.vtime) return this.sortedByTime[i]
+  }
 }
 
 /**
   @returns {FAEscene} La dernière scène (ou undefined si inexistante)
 **/
-
 static get firstScene(){
   return this.sortedByTime[0]
 }
@@ -303,7 +297,7 @@ get description(){
 //  MÉTHODES D'ÉTAT
 
 get isScene(){return true} // surclasse la méthode de FAEvent
-
+get isAScene(){return true}
 /**
  * Méthode qui retourne true si l'évènement est valide (en fonction de son
  * type) et false dans le cas contraire.
@@ -343,7 +337,7 @@ onModify(){
 // Pour vérifier si c'est un nouveau décor
 checkForDecor(){
   if(this.decor){
-    if(undefined === FADecor.data[this.decor]){
+    if ( isUndefined(FADecor.data[this.decor]) ) {
       FADecor.resetAll()
     } else if (this.sous_decor && undefined === FADecor.data[this.decor].sousDecor(this.sous_decor)){
       FADecor.data[this.decor].reset()
@@ -362,7 +356,7 @@ updateNumero(){
   $(`.numero-scene[data-id="${this.id}"]`).html(this.numero)
 }
 
-get isRealScene(){return this.sceneType !== 'generic'}
-get isGenerique(){return this.sceneType === 'generic'}
+get isRealScene(){return this.sceneType !== STRgeneric}
+get isGenerique(){return this.sceneType === STRgeneric}
 
 } // Fin de FAEscene

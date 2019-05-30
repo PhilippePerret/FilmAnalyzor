@@ -89,6 +89,7 @@ for(var doc_id in DATA_DOCS){
       , id:       menu_id
       , enabled:  false
       , click:    method
+      , accelerator: ddoc.accelerator
     })
   }
 }
@@ -305,7 +306,7 @@ const DATA_MENUS = [
       , enabled: true
       , submenu: [
             {
-              label: "Analyse complète"
+                label: "Analyse complète"
               , id: 'display-full-analyse'
               , accelerator: 'CmdOrCtrl+Alt+Shift+A'
               , enabled: false
@@ -651,11 +652,64 @@ const DATA_MENUS = [
       , {
             label: 'Manuel d’utilisation Développement'
           , enabled: true
-          , click: () => {execJS('App.openManuelDeveloppement()')}
+          , click: _ => {execJS('App.openManuelDeveloppement()')}
         }
       ]
-  }
+    }
+  , {
+        label: 'Raccourcis'
+      , submenu: fakeShortcutsIn([
+          {
+              label: 'Raccourcis « Go-To »…'
+            , shortcut: 'G'
+            , click: _ => {execJS('Helper.open("go-to")')}
+          }
+        , {
+              label: 'Nouvel élément…'
+            , shortcut: 'N'
+            , click: _ => {execJS('Helper.open("new-element")')}
+          }
+        , {type:'separator'}
+        , {
+              label: 'Nouveau marqueur…'
+            , shortcut: 'M'
+            , click: _ => {execJS('current_analyse && current_analyse.locator.createNewMarker()')}
+          }
+        , {
+              label: 'Liste des marqueurs'
+            , shortcut: 'Shift M'
+            , click: _ => {execJS('current_analyse && Markers.displayListing()')}
+          }
+        ])
+    }
 ]
+
+/**
+  Pour simuler les marques de raccourcis dans les menus
+  Cf. N0004
+  @param {Array of Hash} items Définition des items de menus qui vont ensemble
+    Noter qu'il faut tous les labels, pour pouvoir estimer la taille du plus
+    grand et copier les autres par rapport.
+    Chaque élément est un `object` contenant {,:label, :shortcut}
+**/
+function fakeShortcutsIn(items){
+  var maxLen = 0
+  items.forEach(o => {
+    if ( o.type === 'separator' ) return
+    var len = o.label.length + (o.shortcut||'').length + 1
+    len < maxLen || ( maxLen = len )
+  })
+
+  maxLen += 5
+
+  items.forEach(o => {
+    if (o.type === 'separator') return
+    var scLen = (o.shortcut||'').length + 1
+    o.label = o.label.padEnd(maxLen - scLen) + (o.shortcut || '')
+  })
+
+  return items
+}
 
 var dataMenuPreferences = {
       role:   'preferences'

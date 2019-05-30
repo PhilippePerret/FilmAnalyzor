@@ -27,7 +27,10 @@ static checkLast(){
   if (!dprefs['last_analyse_folder']) return
   var apath = path.resolve(dprefs['last_analyse_folder'])
   if(fs.existsSync(apath)){
+
+    // === On charge la dernière analyse ===
     this.load(apath)
+
   } else {
     // console.log("Impossible de trouver le dossier :", apath)
     F.error(`Impossible de trouver le dossier de l'analyse à charger :<br>${apath}`)
@@ -98,7 +101,7 @@ static toggleGlobalOption(opt_id){
  * l'user de créer une nouvelle analyse.
  */
 static isDossierAnalyseValid(folder, withMessage){
-  if(undefined === withMessage) withMessage = true
+  isDefined(withMessage) || (withMessage = true)
   try {
     var eventsPath = path.join(folder,'events.json')
     var dataPath   = path.join(folder,'data.json')
@@ -106,6 +109,7 @@ static isDossierAnalyseValid(folder, withMessage){
     fs.existsSync(dataPath)   || raise('Le fichier de data est introuvable.')
     return true
   } catch (e) {
+    log.error(e)
     withMessage && console.log(e)
     return false
   }
@@ -144,6 +148,8 @@ get FondsAlt(){return this._fondsalt||defP(this,'_fondsalt',new Fondamentales(th
 
 get decors(){ return FADecor }
 
+get markers(){return this._markers || defP(this,'_markers', new Markers(this))}
+
 // {FAProtocole} Le protocole de l'analyse courante
 get protocole(){return this._protocole||defP(this,'_protocole',new FAProtocole(this))}
 
@@ -159,25 +165,21 @@ onVideoLoaded(){
   // On peut marquer l'état d'avancement de l'analyse
   this.setupState()
 
-  // Au cours du dispatch des données, la méthode modified a été invoquée
-  // de nombreuses fois. Il faut revenir à l'état normal.
-  this.modified = false
-  UI.stopWait()// toujours, au cas où
   // On peut indiquer aux menus qu'il y a une analyse chargée
   ipc.send('current-analyse-exist', true)
   // Si une fonction a été définie pour la fin du chargement, on
   // peut l'appeler maintenant.
-  if ('function' == typeof this.methodeAfterLoading){
-    this.methodeAfterLoading()
-  }
+  isFunction(this.methodeAfterLoading) && this.methodeAfterLoading()
   // On appelle la méthode de sandbox
-  if(!MODE_TEST)Sandbox.run()
+  if(!MODE_TEST) Sandbox.run()
+
+  this.onVideoReady()
 }
 
 // Méthode pour régler l'état de l'analyse
 setupState(){
-  if(undefined === this.setupStateTries) this.setupStateTries = 1
-  else ++ this.setupStateTries
+  defaultize(this,'setupStateTries',0)
+  ++ this.setupStateTries
   if (this.setupStateTries > 10){
     console.error("Trop de tentatives pour charger FAStater. J'abandonne.")
     return
@@ -194,9 +196,7 @@ init(){
   this.setTitle()
   // On règle le cadenas si elle est verrouillée
   this.setMarkModified()
-  // Si l'analyse courante définit une vidéo, on la charge et on prépare
-  // l'interface. Sinon, on masque la plupart des éléments
-  this.videoController.setVideoUI(!!this.videoPath)
+
   if (this.videoPath){
     this.videoController.load(this.videoPath)
   } else {
@@ -234,15 +234,16 @@ displayTimeline(){MainTimeline.toggle()}
  */
 displayFullAnalyse(forcer){
   log.info(`-> FAnalyse.displayFullAnalyse(forcer:${forcer})`)
-  if(undefined === this.callback_dispfullana){
+  if(isUndefined(this.callback_dispfullana)){
     this.callback_dispfullana = this.displayFullAnalyse.bind(this, forcer||false)
   }
   if(NONE === typeof(FABuilder))  return this.loadBuilder(this.callback_dispfullana)
   if(NONE === typeof(FAExporter)) return this.loadExporter(this.callback_dispfullana)
   if(NONE === typeof(FAReport))   return this.loadReporter(this.callback_dispfullana)
+  if(NONE === typeof(InfosFilm))  return this.loadInfosFilm(this.callback_dispfullana)
   log.info('   Composants full analyse chargés. Je peux la créer')
-  FABuilder.createNew().show({force_update: forcer})
   delete this.callback_dispfullana
+  FABuilder.createNew().show({force_update: forcer})
   log.info('<- FAnalyse.displayFullAnalyse')
 }
 
@@ -257,16 +258,16 @@ displayPFA(){
   this.PFA.toggle()
 }
 togglePanneauInfosFilm(){
-  window.iPanelInfosFilm = window.iPanelInfosFilm || App.loadTool('building/infos_film')
-  iPanelInfosFilm.toggle()
+  if(NONE === typeof(InfosFilm)) return this.loadInfosFilm(this.togglePanneauInfosFilm.bind(this))
+  InfosFilm.current.toggle()
 }
 togglePanneauFondamentales(){
   window.PanelFonds = window.PanelFonds || App.loadTool('building/fondamentales')
   PanelFonds.toggle()
 }
-togglePanneauPersonnages(opened){
+togglePanneauPersonnages(opened, perso_id){
   FAPersonnage.listing || App.loadTool('building/listing_personnages')
-  FAPersonnage.listing && FAPersonnage.listing.toggle(opened) // seulement si valide
+  FAPersonnage.listing && FAPersonnage.listing.toggle(opened, perso_id) // seulement si valide
 }
 
 togglePanneauDecors(opened){
@@ -276,12 +277,14 @@ togglePanneauDecors(opened){
   FADecor.listing && FADecor.listing.toggle(opened) // seulement si valide
 }
 
-togglePanneauImages(opened){
+togglePanneauImages(opened, e){
+  e && stopEvent(e) // N0001
   FAImage.listing || App.loadTool('building/listing_images')
   FAImage.listing && FAImage.listing.toggle(opened) // seulement si valide
 }
 
-togglePanneauBrins(opened){
+togglePanneauBrins(opened, e){
+  e && stopEvent(e) // N0001
   if(FABrin.loaded){
     FABrin.listing || App.loadTool('building/listing_brins')
     FABrin.listing && FABrin.listing.toggle(opened) // seulement si valide
@@ -308,20 +311,19 @@ newVersionRequired(){
  * Méthode qui ouvre le writer
  */
 openDocInWriter(dtype){
-  if('undefined' === typeof Snippets) return FAnalyse.loadSnippets(this.openDocInWriter.bind(this, dtype))
-  if(dtype && dtype.startsWith('fondamentales') && NONE === typeof(Fondamentales)){
-    return this.loadFondamentales(this.openDocInWriter.bind(this, dtype))
+  if(dtype){
+    if(dtype.startsWith('fondamentales') && NONE === typeof(Fondamentales)){
+      return this.loadFondamentales(this.openDocInWriter.bind(this, dtype))
+    } else if (dtype == 'building_script') {
+      // Maintenant, on ouvre le building script avec son éditeur propre
+      if(NONE == typeof(FABuildingScript)) return System.loadComponant('faBuildingScript', this.openDocInWriter.bind(this,dtype))
+      return FABuildingScript.toggle()
+    }
   }
   if(!FAWriter.inited) FAWriter.init()
   FAWriter.openDoc(dtype)
 }
 
-/**
-  Pour ouvrir (depuis le menu) l'analyse dans le finder
-**/
-openAnalyseInFinder(){
-  exec(`open "${this.folder}"`)
-}
 /**
   Méthode qui ouvre le DataEditor
 **/
@@ -334,6 +336,13 @@ openDocInDataEditor(dtype){
     return F.notify("Pas d'édition avec le data-editor pour les variables pour le moment. Utiliser le document complet.")
   }
   DataEditor.openPerType(dtype)
+}
+
+/**
+  Pour ouvrir (depuis le menu) l'analyse dans le finder
+**/
+openAnalyseInFinder(){
+  exec(`open "${this.folder}"`)
 }
 
 /**
@@ -362,7 +371,7 @@ get methodAfterSaving(){return this._methodAfterSaving}
 set methodAfterSaving(v){this._methodAfterSaving = v}
 
 forEachEvent(method, options){
-  if(undefined === options){options = {}}
+  isDefined(options) || ( options = {} )
   var i   = options.from || 0
     , len = options.to || this.events.length
     ;
@@ -484,11 +493,11 @@ indexOfEvent(event_id){
   c'est-à-dire de permettre ou non ses modifications.
 **/
 toggleLock(){
-  if(this.saveTimer) this.stopTimerSave()
+  this.saveTimer && this.stopTimerSave()
   this.locked = !!!this.locked
   this.saveData(true /* pour forcer le verrou, seulement pour enregistrer cette valeur */)
   this.setMarkModified()
-  if(false === this.locked) this.runTimerSave()
+  this.locked || this.runTimerSave()
 }
 
 /**
@@ -498,25 +507,6 @@ toggleLock(){
 **/
 setMarkModified(){
   this.markModified.html(this.locked ? '<img src="img/cadenas.png" style="width:15px;vertical-align:top;margin-left:6px;" />' : '•')
-}
-
-get SAVED_FILES(){
-  if(undefined === this._saved_files){
-    this._saved_files = [
-        this.eventsFilePath
-      , this.dataFilePath
-    ]
-  }
-  return this._saved_files
-}
-
-get PROP_PER_FILE(){
-  if(undefined === this._prop_per_path){
-    this._prop_per_path = {}
-    this._prop_per_path[this.eventsFilePath]  = 'eventsIO'
-    this._prop_per_path[this.dataFilePath]    = 'data'
-  }
-  return this._prop_per_path
 }
 
 /**
@@ -540,6 +530,8 @@ save() {
     // note : il sera remis en route à la toute fin de l'enregistrement
     this.stopTimerSave()
   }
+  // On checke les events avant de les enregistrer
+  this.checkEventsList()
   // En même temps qu'on sauve les fichiers, on enregistre le fichier
   // des modifiés (seuls les events modifiés à cette session sont
   // enregistrés)
@@ -547,14 +539,13 @@ save() {
   // On sauve les options toutes seules, ça se fait de façon synchrone
   this.options.saveIfModified()
   this.savers = 0
-  this.savables_count = this.SAVED_FILES.length
-  for(var fpath of this.SAVED_FILES){
-    this.saveFile(fpath, this.PROP_PER_FILE[fpath])
-  }
+  this.savables_count = this.DFILES.length
+  this.DFILES.forEach(dfile => this.saveFile(dfile))
 }
 /**
- * Méthode qui n'est appelée (a priori) qu'à la fermeture de la
- * fenêtre, et au changement d'analyse.
+ * Méthode est appelée à chaque sauvegarde et également à la fermeture de la
+ * fenêtre et au changement d'analyse.
+
  * @synchrone
  * Elle doit être synchrone pour quitter l'application
  * normalement.
@@ -577,28 +568,13 @@ saveData(force_lock){
   * fichier sur le disque, sous un autre nom, puis on change son nom
   * en mettant l'original en backup (s'il n'est pas vide)
   */
-saveFile(fpath, prop){
-  // Pour le moment, c'est une façon un peu lourde de récupérer
-  // la propriété IOFile du fichier, mais on améliorera pas la
-  // suite.
-  var iofile
-  switch (path.basename(fpath)) {
-    case 'events.json':
-      this.checkEventsList()
-      iofile = this.iofileEvent
-      break
-    case 'data.json':
-      iofile = this.iofileData
-      break
-    default:
-      throw("Il faut donner le nom du fichier", fpath)
-  }
-  iofile.code = this[prop]
-  iofile.save({ after: this.setSaved.bind(this, fpath), no_waiting_msg: true })
-  return iofile.saved
+saveFile(dfile){
+  dfile.iofile.code = this[dfile.dataMethod]
+  dfile.iofile.save({ after: this.setSaved.bind(this, dfile), no_waiting_msg: true })
+  return dfile.iofile.saved
 }
 
-setSaved(fpath){
+setSaved(dfile){
   this.savers += 1
   if(this.savers === this.savables_count){
     this.modified = false
@@ -651,7 +627,7 @@ checkEventsList(){
     , traitedIds = {} // pour consigner les ids déjà traités
     , errors = []
   for(var ev of this.events){
-    if(undefined === traitedIds[ev.id]){
+    if ( isUndefined(traitedIds[ev.id]) ) {
       // OK
       arrFinal.push(ev)
       traitedIds[ev.id] = true
@@ -684,11 +660,7 @@ get iofileData()  {return this._iofileData||defP(this,'_iofileData',    new IOFi
   @return {Object} Les données de tous les events de l'analyse courante.
 
  */
-get eventsIO(){
-  var eSaveds = []
-  for(var e of this.events){eSaveds.push(e.data)}
-  return eSaveds
-}
+get eventsIO(){ return this.events.map(e => e.data) }
 
 // Prend les données dans le fichier events.json et les dispatche dans
 // l'instance d'analyse (au début du travail, en général)
@@ -700,21 +672,18 @@ get eventsIO(){
 set eventsIO(eventsData){
   log.info("-> FAnalyse#[set]eventsIO")
   var my = this
-    , last_id = -1
-    , eventData
-  this.events = []
-  this.ids    = {}
-  for(eventData of eventsData){
-    var eClass = eval(`FAE${eventData.type}`)
-    var ev = new eClass(my, eventData)
-    this.events.push(ev)
-    this.ids[ev.id] = ev
+    , ev
+  EventForm.lastId = -1
+  my.ids    = {}
+  my.events = eventsData.map(eventData => {
+    ev = FAEvent.instanceOf(eventData)
+    my.ids[ev.id] = ev
     // Pour récupérer le dernier ID unitilisé
-    if(ev.id > last_id){last_id = parseInt(ev.id,10)}
-  }
+    if(ev.id > EventForm.lastId){EventForm.lastId = parseInt(ev.id,10)}
+    return ev
+  })
   // On peut définir le dernier ID dans EventForm (pour le formulaire)
-  log.info('   Définition du lastId de EventForm', last_id)
-  EventForm.lastId = last_id
+  log.info('   Définition du lastId de EventForm', EventForm.lastId)
   eventsData = null
   my = null
   log.info("<- FAnalyse#[set]eventsIO")
@@ -724,12 +693,12 @@ set eventsIO(eventsData){
    * Méthode qui définit le départ réel du film. Permettra de prendre un
    * bon départ
    */
-  runTimeFunction(fct_id){
+  runTimeFunction(fct_id, vtime){
     var underf = `_set${fct_id}At`
-    this.requireTimeFunctions(underf)()
+    this.requireTimeFunctions(underf).bind(this, vtime).call()
   }
   requireTimeFunctions(whichOne){
-    return require('./js/tools/timesFunctions')[whichOne].bind(this)
+    return require('./js/tools/timesFunctions')[whichOne]
   }
 
   /**

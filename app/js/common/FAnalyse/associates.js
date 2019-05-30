@@ -50,8 +50,14 @@ Object.assign(FAnalyse.prototype,{
 , dissocier(owner_ref, owned_ref){
 	  let owner = this.instanceOfElement(owner_ref)
 	    , owned = this.instanceOfElement(owned_ref)
-	  if(!confirm(`Dois-je vraiment dissocier ${owned.toString()} de ${owner.toString()} ?`)) return
-	  owner.dissocier(owned_ref)
+      , dataConf = {
+          message: `Dois-je vraiment dissocier ${owned.toString()} de ${owner.toString()} ?`
+        , buttons:['Renoncer', 'Dissocier']
+        , defaultButtonIndex: 1
+        , okButtonIndex: 1, cancelButtonIndex: 0
+        , methodOnOK: owner.dissocier.bind(owner)(owned_ref)
+      }
+	  confirm(dataConf)
 	}
 
 })// /assign

@@ -55,9 +55,14 @@ reset(){
 **/
 , destroy(brin_id){
     let brin = this.get(brin_id)
-    if(confirm(T('confirm-destroy-brin',{ref: brin.ref||brin.toString()}))){
-      this.DERemoveItem(brin)
-    }
+    confirm({
+      message: T('confirm-destroy-brin',{ref: brin.ref||brin.toString()})
+    , buttons: ['Renoncer', 'Détruire']
+    , defaultButtonIndex:0
+    , cancelButtonIndex:0
+    , okButtonIndex:1
+    , methodOnOK:this.DERemoveItem.bind(this, brin)
+    })
   }
 /**
   Demande l'ouverture du document des données
@@ -87,7 +92,7 @@ Object.defineProperties(FABrin,{
 
 , brins:{
     get(){
-      if(undefined === this._brins){
+      if(isUndefined(this._brins)){
         this._brins = {}
         if(this.data){
           for(var dbrin of this.data){

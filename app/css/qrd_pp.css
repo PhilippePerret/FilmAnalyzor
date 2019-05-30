@@ -1,8 +1,4 @@
 section#section-qrd-pp {
-  position:absolute;
-  top:0;
-  right:0;
-  width: 500px;
   height:calc(100%);
   background-color:pink;
   overflow:auto;

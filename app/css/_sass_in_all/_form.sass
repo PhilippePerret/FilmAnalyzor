@@ -1,0 +1,186 @@
+// Généralités
+
+input[type="text"], input[type="password"], textarea
+  &:focus,
+    outline: none
+
+textarea
+  resize: none
+
+img.update, img.open
+  width: 20px
+  margin-left: 8px
+  vertical-align: middle
+
+input[type="text"]
+  &[readonly="readonly"]
+    opacity: 0.5
+    font-style: italic
+
+  &.short
+    width: 40px
+    height: 18px
+    font-size: 15.1pt
+
+// ---------------------------------------------------------------------
+//  MENUS
+
+select
+  &:hover
+    cursor: ns-resize
+
+// Tous les champs contenant des erreurs
+form
+  .error
+    background-color: #FFCCCC
+
+  // Bouton pour actualiser quelque chose
+  button.update
+    all: unset
+
+    img
+      width: 20px
+
+  // ---------------------------------------------------------------------
+  //  FORM-EDIT-EVENT (formulaire d'édition des events)
+
+  &.form-edit-event
+    width: 460px
+    background-color: #EEEEE9
+    border: 4px solid slategrey
+    border-radius: 0.5em
+    padding: 0
+    z-index: 50
+    resize: horizontal
+
+    // Le bouton qui permet d'associer l'event créé/modifié depuis le formulaire
+    span
+      &.event
+        all: unset
+
+      &.event-btn-drop
+        background: transparent
+        float: right
+        margin-right: 0.5em
+
+    select
+      font-size: 0.82em
+
+      &.decors, &.sous_decors, &.decors *, &.sous_decors *
+        font-size: 0.76em
+
+    // Le Formulaire quand les données ont été modifée
+    &.modified
+      button.btn-form-submit
+        visibility: visible
+
+
+    &:not(.modified) button.btn-form-submit
+      visibility: hidden
+
+
+    // Les rangées dans le formulaire
+    .div-form
+      display: block
+      margin-top: 8px
+      padding: 0 6px 0 7px
+
+
+      textarea, input[type="text"]
+        width: 98.6%
+        resize: none
+
+      input[type="text"]
+        &.horloge
+          font-size: 10.9pt
+        &:not(.horloge)
+          width: 98%
+        &.horloge
+          width: 90px
+        &.temps-secondes
+          width: 60px
+
+    label
+      display: inline
+      font-size: 0.85em
+      color: #555555
+      font-style: italic
+      margin-right: 0.5em
+
+
+    // Section contenant le formulaire
+    section
+      &.form
+        padding: 0.5em
+
+      // Section contenant l'entête
+      &.header
+        text-align: right
+        padding: 0.2em 1em
+        color: #00DDDD
+
+      // Section contenant le footer
+      &.footer
+        margin-top: 1em
+        padding: 0.2em 1em
+        span
+          padding-right: 1em
+          &.event-type
+            text-transform: small-caps
+
+    &:not(.modified) section.footer,
+    &:not(.modified) section.footer *,
+    &:not(.modified) section.header,
+    &:not(.modified) section.header *
+      background-color: slategrey
+
+    &.modified section.footer,
+    &.modified section.footer *,
+    &.modified section.header,
+    &.modified section.header *
+      background-color: #990022
+
+    section.footer,
+    section.footer *,
+    section.header,
+    section.header *
+      font-size: 11pt
+
+    section.footer,
+    section.footer *
+      color: #CCCCCC
+
+    div
+      &.div-infos-temporelles
+        border-bottom: 1px solid
+        padding-bottom: 2px
+        margin-bottom: 2px
+
+
+      &.div-proc-types
+        select
+          max-width: 260px
+
+          &.menu-procedes, &.menu-procedes *
+            font-weight: bold
+            color: darkblue
+
+    div.buttons
+      text-align: right
+      margin-top: 1.5em
+
+    button
+      &.update, &.info, &.modify
+        all: unset
+        margin-left: 8px
+
+      &.info, &.modify
+        vertical-align: sub
+
+      &.modify
+        img
+          width: 18px
+
+//  /form
+// ---------------------------------------------------------------------
+//

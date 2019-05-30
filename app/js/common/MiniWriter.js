@@ -24,7 +24,6 @@ class MiniWriter {
 * l'aide de `MiniWriter.new(<field>)`
 **/
 static new(field /* DOMElement non jQuery */){
-  if(NONE === typeof(Snippets)) return FAnalyse.loadSnippets(this.new.bind(this, field))
   // if($(`#${field.id}`).length === 0) throw("Il faut transmettre un champ valide.")
   if(isEmpty($(field))) throw("Il faut transmettre un champ valide (existant).")
   // console.log("field:",field)
@@ -82,11 +81,20 @@ finir(){
   le cas échéant
 **/
 cancel(){
-  if (this.jqOwner.val() != this.textField.val()){
-    if(!confirm(T('confirm-abandon-modif-text'))) return false
+  if ( this.contenuHasChanged() ){
+    let dataConf = {
+        message: T('confirm-abandon-modif-text')
+      , buttons: ['Annuler', 'Abandonner les modifications']
+      , defaultButtonIndex: 0
+      , cancelButtonIndex: 0
+      , okButtonIndex:1
+      , methodOnOK: this.hide()
+    }
+    confirm(dataConf)
   }
-  this.hide()
-  return true
+}
+contenuHasChanged(){
+  return this.jqOwner.val() != this.textField.val()
 }
 /**
   On synchronize les contenus, c'est-à-dire qu'on met dans le
@@ -160,81 +168,9 @@ observe(){
   this.oButtons.find(`#${this.idFor('cb-visualizor')}`).on(STRclick, this.toggleVisualizor.bind(this))
   this.oButtons.find(`#${this.idFor('cb-mask-fond')}`).on(STRclick, this.toggleMaskFond.bind(this))
   this.oButtons.find('button.btn-ok').on(STRclick, this.finir.bind(this))
-  this.textField.on('keydown',  this.onKeyDown.bind(this))
-  this.textField.on('keyup',    this.onKeyUp.bind(this))
 
   // On peut déposer des éléments quelconques sur le champ de texte
   this.setTextFieldsAssociableIn(this.jqObj, this)
-}
-
-onKeyDown(e){
-  if(e.keyCode === KESCAPE){
-
-  } else if(e.keyCode === KRETURN){
-    if(e.metaKey){
-      // META + RETURN => FINIR
-      this.finir.bind(this)()
-      return stopEvent(e)
-    }
-  } else if(e.keyCode === KTAB){
-    return KeyUpAndDown.inTextField.stopTab(e, this.sel)
-  } else if (e.metaKey){
-    // console.log("-> metaKey")
-    if (e.ctrlKey) {
-      // console.log("-> Meta + CTRL")
-      if ( e.which === ARROW_UP || e.which === ARROW_DOWN){
-        return KeyUpAndDown.inTextField.moveParagraph(e, sel, e.which === ARROW_UP)
-      }
-    } else if (e.altKey ){
-      // META + ALT
-    } else if (e.shiftKey) {
-      // META + SHIFT
-      // console.log("[DOWN] which, KeyCode, charCode, metaKey, altKey ctrlKey shiftKey", e.which, e.keyCode, e.charCode, e.metaKey, e.altKey, e.ctrlKey, e. shiftKey)
-      if(e.which === 191){
-        // === EXCOMMENTER OU DÉCOMMENTER UNE LIGNE ===
-        return KeyUpAndDown.inTextField.toggleComments(e, this.selector, {before: '<!-- ', after: ' -->'})
-      }
-    } else {
-      // TOUCHE META SEULE
-    }
-  }
-
-}
-onKeyUp(e){
-  if(e.keyCode === KESCAPE){
-    this.cancel.bind(this)()
-    return stopEvent(e)
-  } else if(e.metaKey === true){
-    // MÉTA
-    console.log("-> Touche META")
-    if(e.shiftKey){
-      // MÉTA + SHIFT
-      // console.log("[UP] which, KeyCode, charCode, metaKey, altKey ctrlKey", e.which, e.keyCode, e.charCode, e.metaKey, e.altKey, e.ctrlKey)
-    } else {
-      // TOUCHE MÉTA SEULE
-      if (e.which === KRETURN){
-        // F.notify("Touche retour et meta")
-        return stopEvent(e)
-      }
-    }
-  } else if(e.altKey){
-    // ALT (SANS MÉTA)
-    if(e.which === K_OCROCHET){ // note : avec altKey
-      return KeyUpAndDown.inTextField.insertCrochet(e, this.selector)
-    }
-  } else if (e.which === K_GUIL_DROIT) { // " => «  »
-    return KeyUpAndDown.inTextField.insertChevrons(e, this.selector)
-  } else if(e.keyCode === KTAB){
-    if(this.selector.before() == RC){
-      // Si on est en début de ligne, on insert un élément de liste
-      return KeyUpAndDown.inTextField.replaceTab(e, this.selector, '* ')
-    } else {
-      // Si on n'est pas en début de ligne, on regarde si ça n'est
-      // un snippet
-      return KeyUpAndDown.inTextField.replaceSnippet(e, this.selector)
-    }
-  }
-  return true
 }
 
 idFor(foo){return `mw${this.id}-${foo}`}

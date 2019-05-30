@@ -3,55 +3,54 @@
   <head>
     <meta charset="utf-8">
     <title>Analyse de Films</title>
-    <link rel="stylesheet" href="./css/common.css" />
-    <link rel="stylesheet" href="./css/ui.css" />
+    <link rel="stylesheet" href="./css/jquery-ui.min.css">
     <link rel="stylesheet" href="./css/flash.css" />
-    <link rel="stylesheet" href="./css/fwindow.css" />
-    <link rel="stylesheet" href="./css/video.css" />
-    <link rel="stylesheet" href="./css/analyzer.css" />
     <link rel="stylesheet" href="./css/brins.css" />
-    <link rel="stylesheet" href="./css/reader.css" />
-    <link rel="stylesheet" href="./css/writer.css" />
-    <link rel="stylesheet" href="./css/eventer.css" />
     <link rel="stylesheet" href="./css/elements_fa.css" />
     <link rel="stylesheet" href="./css/faListing.css" />
     <link rel="stylesheet" href="./css/event.css" />
-    <link rel="stylesheet" href="./css/form.css" />
-    <link rel="stylesheet" href="./css/DOMHorloge.css" />
     <link rel="stylesheet" href="./css/timeline.css" />
     <link rel="stylesheet" href="./css/mini_writer.css" />
     <link rel="stylesheet" href="./css/qrd_pp.css" />
     <link rel="stylesheet" href="./css/hand_tests.css" />
+
+    <link rel="stylesheet" href="./css/all.css" />
+
   </head>
   <body>
 
-    <!-- READER -->
-    <section id="section-reader"></section>
+    <div id="whole-ui">
+      <div id="C1">
+        <div id="C1-R1">
+          <!-- SECTION VIDEO -->
+          <section id="C1-R1-C1-section-video"></section>
+          <!-- SECTION READER -->
+          <section id="C1-R1-C2-section-reader"></section>
+        </div>
+        <section id="C1-R2-banc-timeline"></section>
+      </div>
+      <div id="C2">
+        <section id="C2-R1-forms"></section>
+        <div id="C2-R2">
+          <section id="section-qrd-pp"></section>
+        </div>
+      </div>
 
-    <!-- Maintenant, une section de vidéo parmi plusieurs possibles -->
-    <section id="section-videos"></section>
-    <!-- /fin section des vidéos -->
+    </div>
 
-    <!-- EVENTER -->
-    <section id="section-eventers"></section>
+          <!-- EVENTER -->
+          <section id="section-eventers"></section>
+
+        </section>
+
+
+
 
 
     <!-- WRITER -->
     <section id="section-writer">
-      <div id="writer-doc-visualizor" style="display:none;">
-        <!-- Pour visualiser le code -->
-      </div>
+      <div id="writer-doc-visualizor"></div><!-- Pour visualiser le code -->
     </section>
-
-
-    <!-- Pour la partie basse, dont le formulaire d'édition des events -->
-    <section id="section-footer">
-      <!-- QRDS et PP -->
-      <section id="section-qrd-pp"></section>
-
-      <div id="message"></div>
-    </section>
-    <!-- /section#section-footer -->
 
     <!-- Section des boutons pour ajouter un nouvel évènement -->
     <div id="analyse-state-bar">
@@ -76,7 +75,9 @@
     </div>
 
     <script>window.$ = window.jQuery = require('jquery');</script>
-    <script src="./js/system/jquery-ui-min.js"></script>
+    <script src="./js/system/jquery-ui.min.js"></script>
+    <!-- <script src="https://code.jquery.com/jquery-1.12.4.js"></script> -->
+    <!-- <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
     <script type="text/javascript" src="./js/system/constants.js"></script>
     <script type="text/javascript" src="./js/system/first_requirements.js"></script>
     <script type="text/javascript" src="./js/common/requirements.js"></script>
@@ -89,10 +90,8 @@
     <script type="text/javascript" src="./js/lecteur/VideoController.js"></script>
     <script type="text/javascript" src="./js/lecteur/MainTimeline.js"></script>
     <script type="text/javascript" src="./js/composants/FATimeline.js"></script>
-    <script type="text/javascript" src="./js/lecteur/UI.js"></script>
     <script type="text/javascript" src="./js/common/FAnalyse.js"></script>
     <script type="text/javascript" src="./js/common/FAEvent.js"></script>
-    <script type="text/javascript" src="./js/common/FAEvents_data.js"></script>
     <script type="text/javascript" src="./js/common/EventsFilter.js"></script>
     <script type="text/javascript" src="./js/common/BtnsEvents.js"></script>
     <script type="text/javascript" src="./js/common/FATexte.js"></script>
@@ -102,7 +101,6 @@
     <script type="text/javascript" src="./js/common/BtnToggleContainer.js"></script>
     <script type="text/javascript" src="./js/common/MiniWriter.js"></script>
     <script type="text/javascript" src="./js/common/MiniTimeline.js"></script>
-    <script type="text/javascript" src="./js/common/KeyUpAndDown.js"></script>
     <script type="text/javascript" src="./js/common/Handies.js"></script>
     <script type="text/javascript" src="./js/lecteur/on_ready.js"></script>
 

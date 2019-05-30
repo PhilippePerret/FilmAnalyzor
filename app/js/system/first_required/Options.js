@@ -16,13 +16,22 @@ get type(){return 'object'}
   // Options par défaut
 static get DEFAULT_DATA(){
   return {
-      'option_start_when_time_choosed':   true
-    , 'option_lock_stop_points':          false
-    , 'video_size':                       "medium"
-    , 'video_speed':                      1
-    , 'option_start_3secs_before_event':  false
-    , 'option_edit_in_mini_writer':       false
-    , 'option_duree_scene_auto':          true
+      'option_start_when_time_choosed':       true
+    , 'option_lock_stop_points':              false
+    , 'video_size':                           "medium"
+    , 'video_speed':                          1
+    , 'option_start_3secs_before_event':      false
+    , 'option_edit_in_mini_writer':           false
+    , 'option_duree_scene_auto':              true
+    , 'option_banc_timeline':                 false
+    // TODO : IMPLÉMENTER CES OPTIONS
+    // Elles déterminent ce qu'il faut updater en direct quand la vidéo
+    // joue.
+    , 'video.running.updates.reader':         true
+    , 'video.running.updates.stt':            false
+    , 'video.running.updates.current_scene':  false
+    // , 'video.running.updates.banc_timeline':  true // toujours true : fonctionne avec la vidéo (locator.setVideoAt)
+
   }
 }
 
@@ -31,12 +40,8 @@ set modified(v){this._modified = v}
 
   // Obtenir l'option d'id <opid>
 get(opid, defValue){
-  // console.log("-> Options.get", opid, this.data)
-  if(undefined === this.data[opid]){
-    return defValue || this.constructor.DEFAULT_DATA[opid]
-  } else {
-    return this.data[opid]
-  }
+  if ( isDefined(this.data[opid]) ) return this.data[opid]
+  else return defValue || this.constructor.DEFAULT_DATA[opid]
 }
 
 // Définir la valeur d'une option
@@ -75,14 +80,13 @@ onSetByApp(opid, value){
   // console.log("Options#onSetByApp", opid, value)
   switch (opid) {
     case 'video_size':
-      this.a.videoController.setSize(value)
-      break
+      return this.a.videoController.setSize(value)
     case 'video_speed':
-      this.a.videoController.setSpeed(value)
-      break
+      return this.a.videoController.setSpeed(value)
     case 'option_edit_in_mini_writer':
-      UI.miniWriterizeTextFields(null, value)
-      break
+      return UI.miniWriterizeTextFields(null, value)
+    case 'option_banc_timeline':
+      return UI.toggleModeBancTimeline(value)
   }
 }
 
@@ -97,12 +101,12 @@ save(){
     this.modified = false
     return true
   } else {
-    throw(`Un problème est survenu à l'enregistrement des options dans "${this.path}"…`)
+    throw new Error(`Un problème est survenu à l'enregistrement des options dans "${this.path}"…`)
   }
 }
 
 load(){
-  if(!this.a) throw("Impossible de charger les options d'une chose qui n'existe pas…")
+  if(!this.a) throw new Error("Impossible de charger les options d'une chose qui n'existe pas…")
   if(fs.existsSync(this.path)){
     this.data = require(this.path)
   } else {
@@ -117,14 +121,15 @@ load(){
 setInMenus(){
   // Options générales
   log.info('-> Options#setInMenus')
-  ipc.send('set-option', {menu_id: 'option_start_when_time_choosed', property: 'checked', value: this.startWhenTimeChosen})
-  ipc.send('set-option', {menu_id: 'option_lock_stop_points', property: 'checked', value: this.lockStopPoints})
-  ipc.send('set-option', {menu_id: 'option_start_3secs_before_event', property: 'checked', value: this.start3SecondsBefore})
+  let set_option = 'set-option'
+  ipc.send(set_option, {menu_id: 'option_start_when_time_choosed', property:STRchecked, value: this.startWhenTimeChosen})
+  ipc.send(set_option, {menu_id: 'option_lock_stop_points', property:STRchecked, value: this.lockStopPoints})
+  ipc.send(set_option, {menu_id: 'option_start_3secs_before_event', property:STRchecked, value: this.start3SecondsBefore})
   // Options propres à l'analyse courante
   let midSize = VideoController.VIDEO_SIZES[this.videoSize] ? this.videoSize : 'custom'
-  ipc.send('set-option', {menu_id: `size-video-${midSize}`, property: 'checked', value: true})
-  ipc.send('set-option', {menu_id: `video-speed-rx${this.videoSpeed}`, property:'checked', value:true})
-  ipc.send('set-option', {menu_id: 'option-locked', property: 'checked', value: this.appLocked})
+  ipc.send(set_option, {menu_id: `size-video-${midSize}`, property:STRchecked, value: true})
+  ipc.send(set_option, {menu_id: `video-speed-rx${this.videoSpeed}`, property:STRchecked, value:true})
+  ipc.send(set_option, {menu_id: 'option-locked', property:STRchecked, value: this.appLocked})
   log.info('<- Options#setInMenus')
 }
 

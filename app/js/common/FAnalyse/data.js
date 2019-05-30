@@ -15,12 +15,17 @@ FAnalyse.classMethod = function(){
 //  INSTANCE
 
 Object.defineProperties(FAnalyse.prototype,{
-  data:{
+  reader:{get(){return this._reader || defP(this,'_reader', new FAReader(this))}}
+, locator:{get(){return this._locator || defP(this,'_locator', new Locator(this))}}
+, videoController:{get(){return this._videoctrl || defP(this,'_videoctrl', new VideoController(this))}}
+  // LES DONNÉES (I/O)
+, data:{
     get(){
       var spoints
       if(this.locator){
         spoints = (this.locator.stop_points||[]).map(sp => sp.seconds)
       } else { spoints = []}
+      delete this._lastCurT // pour actualiser le dernier temps
       return {
           folder:             this.folder
         , title:              this.title
@@ -34,6 +39,10 @@ Object.defineProperties(FAnalyse.prototype,{
         , stopPoints:         spoints
       }
     }
+  /**
+    Méthode appelée au chargement de l'analyse, pour dispatcher
+    ses données.
+  **/
   , set(v){
       this.title                = v.title
       this.version              = v.version
@@ -41,11 +50,21 @@ Object.defineProperties(FAnalyse.prototype,{
       this.filmStartTime        = v.filmStartTime || 0
       this.filmEndTime          = v.filmEndTime
       this.filmEndGenericFin    = v.filmEndGenericFin
-      this._videoPath           = this.resolvePath(v.videoPath)
+      this._videoPath           = v.videoPath ? this.resolvePath(v.videoPath) : undefined
       this.lastCurrentTime      = v.lastCurrentTime || 0
       this.stopPoints           = (v.stopPoints || []).map(st => new OTime(st))
     }
   }
+
+, DFILES:{get(){
+    isDefined(this._dfiles) || (
+      this._dfiles = [
+          {type: 'events', path: this.eventsFilePath, dataMethod: 'eventsIO', iofile:this.iofileEvent}
+        , {type: 'data',   path: this.dataFilePath,   dataMethod: 'data', iofile: this.iofileData}
+      ]
+    )
+    return this._dfiles
+  }}
 
 , modified:{
     get(){ return this._modified }
@@ -88,12 +107,18 @@ Object.defineProperties(FAnalyse.prototype,{
 
 , filmStartTime:{
     get() {return this._filmStTi || defP(this,'_filmStTi', 0)}
-  , set(v){ this._filmStTi = v ; this.duree = undefined }
+  , set(v){
+      this._filmStTi = v
+      delete this._duree
+    }
   }
 
 , filmEndTime:{
     get(){return this._filmEndTime || defP(this,'_filmEndTime',this.calcFilmEndTime())}
-  , set(v){ this._filmEndTime = v ; this.duree = undefined }
+  , set(v){
+      this._filmEndTime = v
+      delete this._duree
+    }
 }
 
 , filmEndGenericFin:{
@@ -102,36 +127,26 @@ Object.defineProperties(FAnalyse.prototype,{
   }
 
 , lastCurrentTime:{
-    get(){return this._lastCurT||defP(this,'_lastCurT',this.locator ? this.locator.getTime().seconds: 0)}
+    get(){return this._lastCurT||defP(this,'_lastCurT',this.locator?this.locator.currentTime.vtime: 0)}
   , set(v){this._lastCurT = v}
-  }
-, lastCurrentOTime:{
-    get(){return this._lastCurOTime||defP(this,'_lastCurOTime',new OTime(this.lastCurrentTime))}
-  , set(v){
-      v instanceof(OTime)||raise(T('otime-arg-required'))
-      this._lastCurOTime = v
-      this._lastCurT = v.seconds
-    }
   }
 
 })
 
-
-
 Object.assign(FAnalyse.prototype, {
 
   calcDuration(){
+    // Note : filmEndTime essaie déjà d'être défini en prenant
+    // la fin de la vidéo. Mais si la vidéo n'est pas définie,
+    // filmEndTime ne l'est pas non plus.
     if(!this.filmEndTime) return null
     return this.filmEndTime - this.filmStartTime
   }
 
 , calcFilmEndTime(){
-    var endt = null
-    if(this.videoPath){
-      this._filmEndTime = this.videoController.video.duration
-      endt = this._filmEndTime
-    }
-    return endt
+    delete this._filmEndTime
+    this.videoPath && (this._filmEndTime = this.videoController.video.duration)
+    return this._filmEndTime
   }
 
 })

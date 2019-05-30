@@ -23,6 +23,19 @@ const path  = require('path')
 const fs    = require('fs')
 const ipc   = electron.ipcMain
 
+const GOTODATA = require('../system/prefs/gotodata')
+
+const USER_PREFS_DEFAULT = {
+    'load_last_on_launching':   true
+  , 'last_analyse_folder':      null
+  , 'option_duree_scene_auto':  true
+  // Définition des raccourcis pour se déplacer avec les flèches
+}
+for(var dsc of GOTODATA){
+  USER_PREFS_DEFAULT[`goto-${dsc.type}`] = dsc.dataArrowComb
+  // par exemple USER_PREFS_DEFAULT['goto-next-scene'] = {meta:true, key:STRArrowRight}
+}
+
 const Prefs = {
   class: 'Prefs'
 , type:  'object'
@@ -121,12 +134,9 @@ const Prefs = {
    * Sauver les préférences
    */
 , save(){
-    console.log("Sauvegarde des options")
+    console.log("Sauvegarde des préférences")
     fs.writeFileSync(this.userPrefsPath, JSON.stringify(this.userPrefs), 'utf8')
     console.log("Préférences User actualisées.", this.userPrefs)
-    // TODO Faire pareil avec les préférences de l'analyse
-    // TODO Il faudrait trouver un autre nom que "analyse" pour que ce module
-    // puisse être utilisé dans d'autres application.
   }
 
   /**
@@ -138,13 +148,14 @@ const Prefs = {
 
 , loadUserPrefs(){
     if(fs.existsSync(this.userPrefsPath)){
-      this.userPrefs = require(this.userPrefsPath)
+      // this.userPrefs = require(this.userPrefsPath)
+      // Pour toujours ajouter les nouvelles préférences définies
+      this.userPrefs = Object.assign(USER_PREFS_DEFAULT, require(this.userPrefsPath))
+      // log.info("this.userPrefs: ", this.userPrefs)
+      console.log("this.userPrefs: ", this.userPrefs)
     } else {
-      this.userPrefs = {
-          'load_last_on_launching':   true
-        , 'last_analyse_folder':      null
-        , 'option_duree_scene_auto':  true
-      }
+      // Les valeurs par défaut
+      this.userPrefs = USER_PREFS_DEFAULT
     }
     /*/     + "/" pour décommenter, - "/" pour ex-commenter
     else {
@@ -178,8 +189,6 @@ const Prefs = {
  * Pour les préférences
  */
 ipc.on('get-pref', (ev, data) => {
-  console.log("Dans ipc on get-pref, je reçois :", data)
-  console.log("La valeur retournée est :", Prefs.get(data))
   ev.returnValue = Prefs.get(data)
 })
 ipc.on('set-pref', (ev, data) => {

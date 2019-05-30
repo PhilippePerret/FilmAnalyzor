@@ -18,6 +18,21 @@ class OTime {
 static get(time){
   return new OTime(time)
 }
+
+// Retourne une instance dont le temps est 0:00:00
+static get ZERO(){return this._zero||defP(this,'_zero',new OTime(0))}
+
+// Pour utiliser une instance OTime sans instancier un nouvel objet.
+static vVary(time){
+  isDefined(this._otimevar) || ( this._otimevar = new OTime(0) )
+  this._otimevar.updateSeconds(time)
+  return this._otimevar
+}
+static rVary(vtime){
+  isDefined(this._otimevar) || ( this._otimevar = new OTime(0) )
+  this._otimevar.rtime = vtime
+  return this._otimevar
+}
 // ---------------------------------------------------------------------
 // INSTANCE
 
@@ -58,32 +73,57 @@ constructor(v){
   }
 }
 
+reset(){
+  delete this._toString
+  delete this._rtime
+  delete this._rhorloge
+  delete this._rhorloge_simple
+  delete this._horloge
+  delete this._vhorloge
+  delete this._horloge_simple
+  delete this._vhorloge_simple
+}
+
 valueOf(){return this.seconds}
-toString(){return this._toString || defP(this,'_toString', `le temps ${this.horloge_simple}`)}
+toString(){return this._toString || defP(this,'_toString', `le temps ${this.rhorloge_simple}`)}
 
 // @return TRUE si le temps est entre les seconds +av+ et +ap+
 between(av,ap){
   return this.seconds.between(av,ap)
 }
-get rtime(){ return this.seconds}
-set rtime(s){ this.updateSeconds(s.round(2))}
-get vtime(){ return this.seconds + current_analyse.filmStartTime}
-set vtime(s){ this.updateSeconds((s - current_analyse.filmStartTime).round(2))}
+get rtime(){ return this._rtime || defP(this, '_rtime', (this.seconds - current_analyse.filmStartTime).round(2)) }
+set rtime(s){ this.updateSeconds(s + current_analyse.filmStartTime) }
+get vtime(){ return this.seconds }
+set vtime(s){ this.updateSeconds(s) }
+/**
+ * Permet d'actualiser le nombre de seconds de l'instance
+ * Cette méthode est utile par exemple pour régler l'horloge de la vidéo,
+ * pour ne pas créer intensivement des instances à chaque millisecondes
+ */
+updateSeconds(s){
+  // console.log("s dans updateSeconds :",s)
+  this.reset()
+  this.seconds = s.round(2)
+}
 
-
-set horloge(v)  { this._horloge = v }
-get horloge()   {return this._horloge  || defP(this,'_horloge', this.s2h())}
+// horloge renvoie l'horloge relative, par rapport au début du film
+get horloge()   {return this.rhorloge}
+get rhorloge()  {return this._rhorloge || defP(this,'_rhorloge', this.s2h(this.rtime))}
 get vhorloge()  {return this._vhorloge || defP(this,'_vhorloge', this.s2h(this.vtime))}
-get horloge_simple(){
-  if(undefined === this._horloge_simple){
-    this._horloge_simple = this.s2h(this.rtime, {no_frames: true})
-  }
-  return this._horloge_simple
+set horloge(v)  { this._horloge = v }
+// Par défaut, l'horloge simple retourne l'horloge simple relative
+// Pour avoir l'horloge de la vidéo, utiliser vhorloge_simple
+get horloge_simple(){ return this.rhorloge_simple }
+get rhorloge_simple(){
+  isDefined(this._rhorloge_simple) || (
+    this._rhorloge_simple = this.s2h(this.rtime, {no_frames: true})
+  )
+  return this._rhorloge_simple
 }
 get vhorloge_simple(){
-  if(undefined === this._vhorloge_simple){
+  isDefined(this._vhorloge_simple) || (
     this._vhorloge_simple = this.s2h(this.vtime, {no_frames: true})
-  }
+  )
   return this._vhorloge_simple
 }
 
@@ -91,7 +131,7 @@ get horloge_as_duree(){return this.hduree}
 get hduree(){return this.s2h(this.seconds,{as_duree: true, no_frames: true})}
 get duree_sec(){ return Math.round(this.seconds) }
 
-get id(){return this.seconds} // pour les associations
+get id(){ return this.seconds } // pour les associations
 /**
   Méthode qui permet de traiter les temps comme des events dans
   les associations. Pour afficher le temps courant et aussi pouvoir
@@ -101,7 +141,7 @@ get id(){return this.seconds} // pour les associations
 
 */
 asAssociate(opts){
-  if(undefined === opts) opts = {}
+  opts = opts || {}
   var dvs = []
   dvs.push(DCreate(A, {class:'lktime', inner: this.horloge_simple, attrs:{onclick:`showTime(${this.seconds})`}}))
   if(opts.owner){
@@ -109,7 +149,7 @@ asAssociate(opts){
     // dissocier le temps de son possesseur
     dvs.push(this.dissociateLink({owner: opts.owner}))
   }
-  return DCreate('SPAN', {class:'lktime', append: dvs})
+  return DCreate(SPAN, {class:'lktime', append: dvs})
 }
 
 set duree(v) { this.duree = v }
@@ -130,9 +170,11 @@ h2s(h){
   return tps / 1000
 }
 s2h(s, format){
-  if(undefined===format) format = {}
   var r, hrs, mns, scs, frm ;
-  if(undefined==s){s = this.seconds}
+  s = s || this.seconds
+  format = format || {}
+  let isNegative = s < 0
+  isNegative && ( s = -s )
   hrs = Math.floor(s / 3600)
   r = s - (hrs * 3600)
   mns = Math.floor(r / 60)
@@ -154,21 +196,10 @@ s2h(s, format){
   if(!format.as_duree){
     hstr = `${hrs}:${hstr}`
   }
+  isNegative && ( hstr = `-${hstr}` )
   return hstr
 }
 
-/**
- * Permet d'actualiser le nombre de seconds de l'instance
- * Cette méthode est utile par exemple pour régler l'horloge de la vidéo,
- * pour ne pas créer intensivement des instances à chaque millisecondes
- */
-updateSeconds(s){
-  delete this._toString
-  delete this._vhorloge
-  delete this._horloge
-  delete this._horloge_simple
-  this.seconds = s
-}
 
 }
 const {

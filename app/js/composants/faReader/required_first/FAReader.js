@@ -12,32 +12,100 @@ class FAReader {
 // après tempsCourant + TIME_AROUND seront masqués (mais laissés dans le DOM)
 // TODO Plus tard, cette constante devra devenir une préférence qu'on peut
 // régler.
-static get TIME_AROUND(){ return 5*60 }
+static get TIME_AROUND(){ return 5 * 60 }
 
 static reset(){
-  $('section#section-reader').html('')
+  UI.sectionReader.html('')
 }
+
+/**
+  Révèle l'élément +item+ dans le reader
+
+  @param {AnyElement} item  event, image, etc. qui doit répondre à la
+                            propriété `jqReaderObj` qui est l'objet du
+                            reader de l'itme.
+  @param {Object} options   Diverses options
+                            fadeOut: si true, on le fait disparaitre au
+                            bout de quelques secondes.
+**/
+static reveal(item, options){
+  isDefined(options) || ( options = {} )
+  if(isNotEmpty(item.jqReaderObj)){
+    item.jqReaderObj.show()
+    // Un timer qui permet :
+    //  1. de savoir lorsque l'item visible est précisément survolé
+    //  2. lorsque le temps est dépassé et qu'il faut retirer l'élément
+    this.startWatchingItem(item)
+
+    try {
+      item.jqReaderObj[0].parentNode.scrollTop = item.jqReaderObj[0].offsetTop
+    } catch(e){
+      log.error(e)
+    }
+  } else {
+    log.warn(`L'élément ${item} n'a pas d'objet reader défini (jqReaderObj). Impossible de le révéler.`)
+  }
+}
+
+/**
+  Toutes les secondes, on va vérifier si le temps courant survole
+  l'item +item+ (event ou image). Si c'est le cas, on le met en exergue.
+  Si le temps de fin de l'item est dépassé depuis plus de cinq seconde,
+  on le fait disparaitre et on arrête de le surveiller.
+
+  Noter que ça ne le fait que lorsqu'il est visible.
+
+  @param {FAEvent|FAImage} item   Image ou event à surveiller
+**/
+static startWatchingItem(item){
+  isDefined(this.watchedItems) || ( this.watchedItems = {} )
+  this.restartWatchingItem(item)
+  this.watchedItems[`${item.type}:${item.id}`] = item
+}
+static restartWatchingItem(item){
+  item.timerWatchingTime = setInterval(this.watchItem.bind(this, item), 1000)
+}
+static watchItem(item){
+  var rtime = this.a.locator.currentTime
+  let iscur = rtime >= item.time - 2 && rtime <= item.end + 2
+    , isover = item.end < rtime + 5
+  if(item.isCurrent != iscur){
+    item.isCurrent = !!iscur
+    item.jqReaderObj[item.isCurrent?'addClass':'removeClass']('current')
+  }
+  if ( isover ){
+    item.hide() // la méthode appelle aussi stopWatchingItem
+    this.stopWatchingItem(item)
+  }
+}
+static stopWatchingItem(item){
+  clearInterval(item.timerWatchingTime)
+  delete item.timerWatchingTime
+  delete this.watchedItems[`${item.type}:${item.id}`]
+}
+
+static get a(){return current_analyse}
 
 // ---------------------------------------------------------------------
 //  INSTANCE
 
 constructor(analyse){
-  this.analyse = this.a = analyse
+  this.a = analyse
 }
 
 /**
  * Initialisation de l'instance FAReader
  */
 init(){
-  // Rien pour le moment
+  this.show().hide()
 }
-show(){this.fwindow.show()}
-hide(){this.fwindow.hide()}
+show(){this.fwindow.show(); return this}
+hide(){this.fwindow.hide(); return this}
 build(){
-  return DCreate(DIV, {inner: 'LECTEUR', class: 'fw-title'})
+  return DCreate(DIV, {id:'titre-reader-to-remove', inner: 'LECTEUR', class: 'fw-title'})
 }
 afterBuilding(){
-  // Peut-être supprimer le div ci-dessus avec READER dedans
+  $('#titre-reader-to-remove').remove()
 }
 
 /**
@@ -51,7 +119,35 @@ remove(){ this.fwindow.remove() }
   Vide tout le reader
   Ne pas la confondre avec la méthode `resetBeyond` suivante
  */
-reset(){ this.container.innerHTML = ''}
+reset(){ this.reader.html('')}
+
+/**
+  Lorsqu'une analyse est chargée, on appelle cette méthode pour mettre
+  tous les events dans le reader
+
+  Note : on n'utilise pas la méthode this.append qui vérifierait chaque
+  fois l'emplacement. Ici, on peut les mettre les uns après les autres
+**/
+peuple(){
+  let hImages = [...FAImage.byTimes]
+  var hNextImage = hImages.shift(), nextImage
+    , currentTime = 0
+  this.a.forEachEvent(ev => {
+    // Si la prochaine image est inférieure au temps courant, on doit
+    // l'insérer à cet endroit.
+    while ( hNextImage && hNextImage.time < currentTime ) {
+      nextImage = FAImage.get(hNextImage.id)
+      this.reader.append(nextImage.div)
+      nextImage.observe()
+      nextImage.jqReaderObj.hide()
+      hNextImage = hImages.shift()
+    }
+    this.reader.append(ev.div)
+    ev.observe()
+    ev.jqReaderObj.hide()
+    currentTime = ev.otime.vtime
+  })
+}
 
 /**
  * Vide le reader, mais seulement en supprimant les évènements qui se trouvent
@@ -63,7 +159,7 @@ reset(){ this.container.innerHTML = ''}
 resetBeyond(from_time, to_time){
   var ti, id, my = this
   this.forEachEventNode(function(o){
-    ti  = parseFloat(o.getAttribute('data-time'))
+    ti  = parseFloat(o.getAttribute(STRdata_time))
     id  = parseInt(o.getAttribute(STRdata_id),10)
     if ( ti < from_time || ti > to_time){my.analyse.ids[id].hide()}
   })
@@ -88,13 +184,13 @@ append(ev){
   // On cherche à placer l'event au meilleur endroit temporel
   var hasBeenInserted = false
   this.forEachEventNode(function(ne){
-    if(parseFloat(ne.getAttribute('data-time')) > ev.time){
+    if(parseFloat(ne.getAttribute(STRdata_time)) > ev.time){
       hasBeenInserted = true
-      my.container.insertBefore(div, ne)
+      my.reader.insertBefore(div, ne)
       return false // pour interrompre la boucle
     }
   })
-  hasBeenInserted || this.container.append(div)
+  hasBeenInserted || this.reader.append(div)
 
   // Pour observer l'event dans le reader
   ev.observe()
@@ -113,7 +209,7 @@ forEachEventNode(fn){
     , eventNodes  = this.eventNodes
     , nb_nodes    = eventNodes.length
     , i = 0
-  for(;i<nb_nodes;++i){if(false === fn(eventNodes[i])) break}
+  for(;i<nb_nodes;++i){if(isFalse(fn(eventNodes[i]))) break}
 }
 
 /**
@@ -129,10 +225,10 @@ forEachEvent(fn){
   for(;i<nb_nodes;++i){
     no = eNodes[i]
     ev = this.a.ids[parseInt(no.getAttribute(STRdata_id),10)]
-    if(undefined === ev){
+    if(isUndefined(ev)){
       console.error("[Dans FAReader#forEachEvent], l'event d'id suivant est inconnu :", no.getAttribute(STRdata_id))
     } else {
-      if(false === fn(ev)) break
+      if(isFalse(fn(ev))) break
     }
   }
 }
@@ -142,7 +238,7 @@ get eventNodes(){
   // ERREUR CI-DESSOUS CAR D'AUTRES ÉLÉMENTS, DANS LES ÉLÉMENTS, PORTENT
   // LA CLASSE .event. DANS L'IDÉAL, IL FAUT QUE LES ÉLÉMENTS DE PREMIER
   // NIVEAU PORTENT UNE CLASSE VRAIMENT UNIQUE (p.e. reader-event)
-  return this.container.querySelectorAll('.reader-event')
+  return this.reader.find('.reader-event')
 }
 /**
  * Méthode qui permet d'afficher tous les events d'un coup
@@ -154,12 +250,8 @@ displayAll(){
 // ---------------------------------------------------------------------
 //  DOM ELEMENTS
 get fwindow(){
-  return this._fwindow || defP(this,'_fwindow', new FWindow(this, {id: 'reader', name:ReaderFWindowName, container: this.section, x: ScreenWidth - 650, y: 4}))
+  return this._fwindow || defP(this,'_fwindow', new FWindow(this, {id:'reader', name:ReaderFWindowName, draggable:false, container:UI.sectionReader, x:0, y:0}))
 }
-get container(){
-  return this._container || defP(this,'_container', DGet('reader'))
-}
-get section(){
-  return this._section || defP(this,'_section', DGet('section-reader'))
-}
+get reader(){return this._reader || defP(this,'_reader', this.fwindow.jqObj)}
+
 }

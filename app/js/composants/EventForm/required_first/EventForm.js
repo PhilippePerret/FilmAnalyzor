@@ -12,11 +12,7 @@
  */
 class EventForm {
 
-static init(){
-  var my = this
-
-  my = null
-}
+static init(){}
 
 static get a(){return current_analyse}
 
@@ -36,39 +32,34 @@ static onClickNewEvent(e, eventType){
   e && stopEvent(e)
   this.videoWasPlaying = !!this.a.locator.playing
   if(this.a.locator.playing) this.a.locator.togglePlay()
-  if(e.metaKey === true){
+  if(e && e.metaKey){
     FAEvent.FAlistingEvents(eventType)
+  } else if ( eventType == STRscene && this.filmHasSceneNearCurrentPos() ) {
+      // L'analyste veut créer une nouvelle scène, mais il en existe
+      // une tout proche. Il faut demander confirmation.
+      let [iScene, ecart] = this.filmHasSceneNearCurrentPos()
+      if (ecart < 2) return alert(T('scene-too-close'))
+      else this.confirmCreationSceneClose(ecart)
   } else {
-    if (eventType == STRscene && this.notConfirmNewScene() ) return false
-    this.currentForm = new EventForm(eventType)
-    this.currentForm.toggleForm()
+    this.initNewEventOfType(eventType)
   }
 }
+static initNewEventOfType(eventType){
+  this.currentForm = new EventForm(eventType)
+  this.currentForm.toggleForm()
+}
 
-/**
- * Méthode appelée à la création d'une nouvelle scène, pour s'assurer
- * qu'il n'en existe pas déjà une.
- * @return  true si la scène est trop proche, false si la scène peut être
- *          créée.
- *
- * Plus précisément, la fonction interdit de créer une scène à moins de
- * 2 secondes. Mais si l'autre scène est entre 2 et 10 secondes, elle demande
- * confirmation.
- */
-static notConfirmNewScene(){
-  var sceneFound = this.filmHasSceneNearCurrentPos()
-  if (sceneFound){
-    let [iScene, ecart] = sceneFound
-    if (ecart < 2) {
-      alert(T('scene-to-close'))
-      return true
-    } else {
-      if(!confirm(T('confirm-scene-close',{ecart: ecart}))){
-        return true
-      }
-    }
-  }
-  return false
+static confirmCreationSceneClose(ecart){
+  let my = this
+  confirm({
+      message:T('confirm-scene-close',{ecart: ecart})
+    , buttons:['Renoncer', 'La créer quand même']
+    , width:'30%'
+    , defaultButtonIndex:1
+    , cancelButtonIndex:0
+    , okButtonIndex:1
+    , methodOnOK:my.initNewEventOfType.bind(my, STRscene)
+  })
 }
 
 /**
@@ -93,16 +84,16 @@ static filmHasSceneNearCurrentPos(){
   Note : on ne conserve plus le formulaire une fois fermé.
 **/
 static editEvent(ev){
-  if('number' === typeof ev) ev = this.a.ids[ev]
-  var eForm
+  isNumber(ev) && ( ev = this.a.ids[ev] )
   this.playing && this.a.locator.togglePlay()
   this.currentForm = new EventForm(ev)
   this.currentForm.toggleForm()
+  // (this.currentForm = new EventForm(ev)).toggleForm()
 }
 
 // Pour obtenir un nouvel identifiant pour un nouvel event
 static newId(){
-  if (undefined === this.lastId){ this.lastId = -1 }
+  isDefined(this.lastId) || ( this.lastId = -1 )
   return ++ this.lastId
 }
 
@@ -113,8 +104,8 @@ static newId(){
                     exister.
 **/
 static optionsTypes(typ){
-  if(undefined === this._optionsTypes) this._optionsTypes = {}
-  if(undefined === this._optionsTypes[typ]){
+  isDefined(this._optionsTypes) || ( this._optionsTypes = {} )
+  if(isUndefined(this._optionsTypes[typ])){
     var p = path.join(APPFOLDER,'app','js','data',`data_${typ}.yaml`)
     if(false == fs.existsSync(p)) return '' // "dépeuplera" le menu
     let dataE = YAML.safeLoad(fs.readFileSync(p,'utf8'))
@@ -127,6 +118,13 @@ static optionsTypes(typ){
   }
   return this._optionsTypes[typ]
 }
+
+/**
+  On mémorise toujours la dernière position de la fenêtre d'édition pour
+  la remettre au même endoit.
+**/
+static get lastLeft(){ return this._lastLeft || 200 }
+static set lastLeft(v){ this._lastLeft = v }
 
 // ---------------------------------------------------------------------
 //  INSTANCE
@@ -502,17 +500,17 @@ get menuSousDecors(){return this._menuSousDecors||defP(this,'_menuSousDecors', t
 
 /**
   Méthode pour éditer les types +typ+ en ouvrant leur fichier
-  (dans le writer ?)
+  dans le writer
 
   Note : le nom 'data_<typ>' correspond au nom du fichier
 **/
 modifyDataTypes(e, typ){
-  if(undefined === typ) typ = this.type
-  FAWriter.openDoc(`data_${typ}`)
+  typ = typ || this.type
+  FAWriter.openAnyDoc(path.join(APPFOLDER,'app','js','data',`data_${typ}.yaml`))
 }
 
 updateTypes(e, typ){
-  if(undefined === typ) typ = this.type
+  typ = typ || this.type
   if(EventForm._optionsTypes && EventForm._optionsTypes[typ]){
     delete EventForm._optionsTypes[typ]
   }
@@ -520,7 +518,7 @@ updateTypes(e, typ){
   F.notify(`Liste des types « ${typ} » actualisée.`)
 }
 peupleTypes(typ){
-  if(undefined === typ) typ = this.type
+  typ = typ || this.type
   this.menuTypes(typ).html(EventForm.optionsTypes(typ))
 }
 menuTypes(typ){
@@ -784,6 +782,15 @@ onKeyDownOnTextFields(e){
   return true
 }
 
+/**
+  Méthode appelée par FWindow à la fin d'un drag de la fenêtre
+  On mémorise la position left de façon globale pour l'appliquer à la
+  prochaine fenêtre
+**/
+onEndMove(e){
+    this.constructor.lastLeft = this.fwindow.jqObj.position().left
+  }
+
 // ---------------------------------------------------------------------
 // Méthodes de DOM
 
@@ -796,14 +803,9 @@ get fwindow(){
   return this._fwindow || defP(this,'_fwindow', new FWindow(this,{container: document.body, x: this.left, y:80}))
 }
 // Position left de la fenêtre du formulaire, pour qu'elle soit bien placée
-// par rapport à la vidéo.
-get left(){
-  if(undefined === this._left){
-    let vl = this.a.videoController.video.width
-    this._left = vl + Math.round(((ScreenWidth - vl) - 460) / 2)
-  }
-  return this._left
-}
+// à côté de la boite de bouton => Il suffit de déplacer la boite de bouton
+// pour déplacer la création des boites
+get left(){ return this.constructor.lastLeft }
 // Le formulaire lui-même
 get form(){return this._form || defP(this,'_form', DGet(`form-edit-event-${this.id}`))}
 // Idem, normalement, le formulaire

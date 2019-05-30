@@ -48,7 +48,7 @@ Notes sur versions
 
 class Selector {
 constructor(domObj){
-  if(domObj instanceof HTMLTextAreaElement){
+  if((domObj instanceof(HTMLTextAreaElement)) || (domObj instanceof(HTMLInputElement))){
     [this.domObj, this.jqObj]  = [domObj, $(domObj)]
   } else {
     [this.domObj, this.jqObj] = [domObj[0], domObj]
@@ -196,9 +196,8 @@ afterUpTo(sig, compris, options){
 }
 // Mettre les valeurs par défaut
 defaultize(compris, options){
-  if(undefined === compris) compris = true
-  if(undefined === options) options = {}
-  return [compris, options]
+  isDefined(compris) || ( compris = true )
+  return [compris, options || {}]
 }
 }
 

@@ -2,28 +2,47 @@
 
 const APPFOLDER = path.resolve('.')
 
+window.onCancelMe = function(){
+  F.notify("Je cancel le truc")
+}
+window.onOKMe = function(){F.notify("OK ? Tu as fait OK ?…")}
+
 function WhenAllIsReallyReady(){
+
+  // confirm("Voulez-vous vraiment tout casser ?", {type: 'confirm',
+  //     defaultButtonIndex:1
+  //   , okButtonIndex:1
+  //   , cancelButtonIndex:0
+  //   , methodOnCancel: window.onCancelMe.bind(window)
+  //   , methodOnOK: window.onOKMe.bind(window)
+  // })
   // FAPersonnage.dataEditor.open()
   // FABrin.dataEditor.open()
   // current_analyse.openDocInDataEditor('fondamentales')
   // current_analyse.openDocInDataEditor('infos')
+  // current_analyse.openDocInWriter('building_script')
+  // current_analyse.openDocInWriter()
   // current_analyse.togglePanneauDecors()
   // current_analyse.togglePanneauBrins()
   // setTimeout(current_analyse.togglePanneauBrins.bind(current_analyse),1000)
   // current_analyse.togglePanneauImages()
   // current_analyse.togglePanneauPersonnages()
+
+  // // Construire l'analyse
+  // current_analyse.displayFullAnalyse(/*forcer update = */true)
 }
 
 $(document).ready(() => {
+  // Mais ici on n'est pas encore prêt, des dossiers sont toujours en
+  // chargement
+  // Par exemple, ici, UI n'est pas défini, encore
+
   log.info("--- DOM ready ---")
   // console.clear()
 
-  var d = ipc.sendSync('get-screen-dimensions')
-  ScreenWidth   = d.width
-  ScreenHeight  = d.height
-
-  window.onkeydown  = KeyUpAndDown.commonKeyDown
-  window.onkeyup    = KeyUpAndDown.commonKeyUp
+  // var d = ipc.sendSync('get-screen-dimensions')
+  // window.W = ScreenWidth  = d.width
+  // window.H = ScreenHeight = d.height
 
   // ATTENTION : QUAND ON PASSE ICI, TOUT N'EST
   // PAS ENCORE CHARGÉ CAR CERTAINS MODULES  SONT
@@ -33,4 +52,5 @@ $(document).ready(() => {
 
   // SI ON VEUT VRAIMENT JOUER DU CODE TOUT À LA FIN, UTILISER
   // LA MÉTHODE `WhenAllIsReallyReady` ci-dessus
+  // ET ENCORE… IL SE PASSE DES CHOSES APRÈS
 })

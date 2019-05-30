@@ -16,11 +16,12 @@ const FAWriter = {
 
 // Ouvre un fichier quelconque (par son path)
 , openAnyDoc(path){
-    if(false === this.checkCurrentDocModified()) return
-    if(undefined === this.writerDocs) this.writerDocs = {}
-    let ndoc = new FADocument('any', null, path)
+    if(isFalse(this.checkCurrentDocModified())) return
+    // isDefined(this.writerDocs) || ( this.writerDocs = {} )
+    defaultize(this, 'writerDocs', {})
+    let ndoc = new FADocument(STRany, null, path)
     this.writerDocs[`any^^^${ndoc.id}`] = ndoc
-    this.makeCurrent('any', ndoc.id)
+    this.makeCurrent(STRany, ndoc.id)
   }
 
 /**
@@ -31,11 +32,11 @@ const FAWriter = {
  */
 , openDoc(dtype, docid){
     let idx
-    if(dtype && undefined === docid){
+    if(dtype && isUndefined(docid)){
       // Quand seul l'identifiant est transmis
       [docid, dtype] = [dtype, undefined]
     }
-    if(undefined === docid || '' == docid){
+    if( isUndefined(docid) || isEmpty(docid) ){
       // <= Aucun type de document n'a été choisi (note : cela se produit
       //    par exemple lorsque l'on choisit d'ouvrir le writer par le menu)
       // => On prend le document par défaut, c'est-à-dire l'introduction
@@ -64,17 +65,15 @@ const FAWriter = {
    */
 , makeCurrent(dtype, docid) {
     let kdoc ;
-    if(undefined === docid){
+    if(isUndefined(docid)){
       // C'est que c'est le kdoc qui a été envoyé
       [dtype, docid, kdoc] = [...dtype.split('^^^'), dtype]
     } else {
       kdoc = `${dtype}^^^${docid}`
     }
-    if(false === this.checkCurrentDocModified()) return
-    if(undefined === this.writerDocs) this.writerDocs = {}
-    if(undefined === this.writerDocs[kdoc]){
-      this.writerDocs[kdoc] = new FADocument(dtype, docid)
-    }
+    if(isFalse(this.checkCurrentDocModified())) return
+    defaultize(this, 'writerDocs', {})
+    isDefined(this.writerDocs[kdoc]) || ( this.writerDocs[kdoc] = new FADocument(dtype, docid) )
     this.currentDoc = this.writerDocs[kdoc]
     if(!this.isOpened) this.open()
     this.currentDoc.display()
@@ -91,7 +90,7 @@ const FAWriter = {
 // Permet de forcer le rechargement du document d'identifiant +kdoc+. La
 // méthode est utilisée par le dataeditor
 , resetDocument(kdoc){
-    if(undefined === this.writerDocs) return
+    if(isUndefined(this.writerDocs)) return
     if (this.currentDoc && this.currentDoc.type == kdoc){
       this.hide()
     }
@@ -128,7 +127,7 @@ const FAWriter = {
         choix = 2 // Pour ignore les changements
       } else {
         choix = DIALOG.showMessageBox({
-          type:       'warning'
+            type:       'warning'
           , buttons:    ["Enregistrer", "Annuler", "Ignorer les changements"]
           , title:      "Document courant non sauvegardé"
           , defaultId:  0
@@ -171,7 +170,7 @@ const FAWriter = {
    * Quand on change de thème
    */
 , onChooseTheme(e,theme){
-    if(undefined === theme) theme = $('#section-writer #writer-theme').val()
+    theme = theme || $('#section-writer #writer-theme').val()
     this.applyTheme(theme)
     // $('#section-writer #writer-theme').val('')
   }
@@ -195,30 +194,25 @@ const FAWriter = {
     this.currentDoc.contents = this.docField.val()
   }
 
-// Cf. require_then/FAWriter_keyUp_keyDown.js
-// , onKeyDown(e){}
-// , onKeyUp(e){}
-
-, onFocusContents(){
-    this.message('')
-  }
-, onBlurContents(){
-  }
-
 , reset(){
     this.docField.val('')
   }
 
   /**
-   * Ouverture du FAWriter. Cela correspond à masquer le Reader.
+   * Ouverture du FAWriter.
    *
    * Noter que ce seront les «FAEventers» qui afficheront les events
    */
 , open(){
-    if(this.isOpened) return this.fwindow.hide()
-    this.fwindow.show()
+    if(this.isOpened){
+      UI.sectionWriter.hide()
+      this.fwindow.hide()
+    } else {
+      UI.sectionWriter.show()
+      this.fwindow.show()
+    }
   }
-, OTHER_SECTIONS: ['#section-reader']
+
 , onShow(){
     this.setUI() // préparer l'interface en fonction du type de document
     this.docField.focus()
@@ -240,20 +234,26 @@ const FAWriter = {
     my.section.find('.header .div-modeles')[any?'hide':'show']()
     my.section.find('.header .writer-btn-drop')[any?'hide':'show']()
     my.section.find('.header #writer-btn-new-doc')[any?'hide':'show']()
+
+    // On règle la taille pour que ça prenne tout la hauteur
+    this.fwindow.jqObj.outerHeight( H - 10 )
   }
 
 , beforeHide(){
-  if(false === this.checkCurrentDocModified()) return false
+  if(isFalse(this.checkCurrentDocModified())) return false
   return true
 }
 , hide(){
     this.fwindow.hide()
   }
+
 , onHide(){
     this.stopTimers()
     this.isOpened = false
     delete this.currentDoc
-}
+    this.setAutoVisualize()
+    this.visualizor.hide() // au cas où
+  }
 
   /**
    * Sauvegarde du document courant
@@ -300,30 +300,38 @@ const FAWriter = {
     $('#btn-save-doc').css('opacity',this.autoSave ? '0.3' : '1')
   }
 
-// TODO voir pourquoi ça n'est pas simple…
-// Est-ce à cause du draggable ???
 , setAutoVisualize(e){
     this.visualizeDoc = DGet('cb-auto-visualize').checked
     if (this.visualizeDoc){
       this.autoVisuTimer = setInterval(this.updateVisuDoc.bind(this), 5000)
+      this.positionneWriter()
       this.updateVisuDoc() // on commence tout de suite
     } else {
       this.stopTimerAutoVisu()
     }
-    this.visualizor[this.visualizeDoc?'show':'hide']()
+    this.visualizor[this.visualizeDoc?STRshow:STRhide]()
+  }
+
+/**
+  S'assure que le writer ne se trouve pas sur le visualiseur
+**/
+, positionneWriter(){
+    // console.log("this.jqObj.position().left:", this.jqObj.position().left)
+    // console.log("this.jqObj.position().left:", this.jqObj.position().left)
+    if(this.jqObj.position().left < (this.visualizor.position().left + this.visualizor.outerWidth())){
+      this.jqObj.animate({left:(this.visualizor.position().left + this.visualizor.outerWidth() + 40) + 'px'})
+    }
   }
 
 , setModified(mod){
-    this.section[mod?'addClass':'removeClass']('modified')
+    if (this.autoSave) return
+    this.jqObj[mod?'addClass':'removeClass'](STRmodified)
   }
 
-  /**
-   * Pour afficher un message propre au writer
-   */
-, message(msg){
-    if(!msg) msg = ''
-    this.section.find('#writer-message').html(msg)
-  }
+/**
+   Pour afficher un message propre au writer
+ */
+, message(msg){ this.spanMessage.html(msg || '') }
 
 /**
 * Méthode permettant de boucler sur tous les documents User (donc les
@@ -335,11 +343,11 @@ const FAWriter = {
 
 }
 Object.defineProperties(FAWriter,{
-  a:{
-    get(){return current_analyse}
-  }
+  a:{ get(){return current_analyse} }
+, spanMessage:{get(){ return this._spanmsg || defP(this,'_spanmsg', this.section.find('#writer-message'))}}
+
 , fwindow:{
-    get(){return this._fwindow || defP(this,'_fwindow', new FWindow(this,{id: 'writer', container: this.section, left: 400, top:10}))}
+    get(){return this._fwindow || defP(this,'_fwindow', new FWindow(this,{id: 'writer', containment: null, container:this.section, draggable:'x', swiping:true, left: 400, top:10}))}
   }
   // Pour utiliser `[print] this.formater("le texte")`
 , formater:{
@@ -356,7 +364,7 @@ Object.defineProperties(FAWriter,{
  }
 , customDocuments:{
     get(){
-      if(undefined === this._customDocuments){
+      if(isUndefined(this._customDocuments)){
         this._customDocuments = []
         var last_id = 0
         var files = glob.sync(path.join(this.a.folderFiles, '**', 'custom-*.md'))
@@ -376,26 +384,14 @@ Object.defineProperties(FAWriter,{
 , menuTypeDoc:{
     get(){return $('#section-writer .header select#document-type')}
   }
-, body:{
-    get(){return $('#section-writer .body')}
-  }
-, docField:{
-    get(){return $('#section-writer .body textarea#document-contents')}
-  }
+, body:{ get(){return $('#section-writer .body')} }
+, docField:{ get(){return $('#section-writer .body textarea#document-contents')} }
 , btnSave: {get(){return this.section.find('.footer button#btn-save-doc')}}
 , btnDrop: {get(){return this.section.find('.header .writer-btn-drop')}}
 , menuThemes: {get(){return this.section.find('#writer-theme')}}
-, menuModeles:{
-    get(){return $('#section-writer select#modeles-doc')}
-  }
-, visualizor:{
-    get(){return $('#writer-doc-visualizor')}
-  }
-, header:{
-    get(){return $('#section-writer .header')}
-  }
-, footer:{
-    get(){return $('#section-writer .footer')}
-  }
+, menuModeles:{ get(){return $('#section-writer select#modeles-doc')} }
+, visualizor:{ get(){return $('#writer-doc-visualizor')} }
+, header:{ get(){return $('#section-writer .header')} }
+, footer:{ get(){return $('#section-writer .footer')} }
 
 })

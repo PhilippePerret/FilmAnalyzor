@@ -14,7 +14,7 @@ Object.assign(FABrin,{
   Méthode utilisée par DataEditor pour créer un item
 **/
 , DECreateItem(dbrin){
-    if(undefined === this._brins) this._brins = {}
+    defaultize(this, '_brins', {})
     this._brins[dbrin.id] = new FABrin(dbrin)
     this.DESave()
     return this._brins[dbrin.id]

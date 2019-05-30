@@ -40,7 +40,7 @@ const Prefs = {
       *   }
      */
   , set:function(tbl){
-      // console.log("-> Prefs#set (renderer)", tbl)
+      console.log("-> Prefs#set (renderer)", tbl)
       return ipc.sendSync('set-pref', tbl)
     }
 }

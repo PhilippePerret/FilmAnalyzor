@@ -1,0 +1,124 @@
+//
+//   Pour les fwindows
+.fwindow
+  position: absolute
+  // C'est le contenu qui doit colorer
+  // Si on ne met pas transparent, les coins
+  // arrondis laissent voir du fond
+  background-color: transparent
+  display: inline-block
+
+  // .fwindow-listing-type .header h3
+  .header h3
+    font-weight: normal
+    font-size: 14pt
+    padding: 0.3em 1em
+    margin: 0
+    margin-left: 1em // pour le bouton close
+
+
+  // Tous les .body
+  .body
+    overflow: auto
+    &:not(.plain)
+      padding: 2em
+
+    li
+      list-style: none
+      border: 1px solid #DDDDDD
+      padding: 4px 12px
+
+    a.lkedit
+      background-color: green
+      color: white
+      font-size: 9pt
+      padding: 0 3px
+      cursor: pointer
+
+  .footer
+    button
+      font-size: inherit
+      margin-top: 4px
+
+  // Tous les styles communs à :
+  //  .fwindow.fwindow-listing-type
+  //  .fwindow.large-edition
+  //  .fwindow.helper-window
+  &.fwindow-listing-type,
+  &.large-edition,
+  &.helper-window
+    background-color: white
+    border: 1px solid black
+
+    .header
+      height: 42px
+      background-color: #516468
+      color: white
+
+    .footer
+      position: absolute
+      background-color: #516468
+      bottom: 0
+      height: 50px
+      padding: 4px 5%
+      width: 90%
+      text-align: right
+
+  &.large-edition
+    max-width: 680px
+    min-width: 680px
+    max-height: 800px
+    min-height: 800px
+    .body
+      height: 658px
+      max-height: 658px
+
+  // ---------------------------------------------------------------------
+  //   Le format utilisé pour afficher les brins, les infos du
+  //   film, les décors, etc., les listes en général, d'où son
+  //   nom
+  //
+  //   Ce type est composé d'un .header, d'un .body et d'un .footer
+  &.fwindow-listing-type
+    max-width: 540px
+    min-width: 540px
+    max-height: 600px
+    min-height: 600px
+
+    .body
+      height: 458px
+      max-height: 458px
+
+
+  // Les fenêtres de la class Helper, créée pour afficher des listes
+  // de choix (new-element) et autres textes d'aide interactifs.
+  &.helper-window
+    position: fixed
+    top: 40px
+    left: 400px
+    width: 420px
+
+    .body
+      height: 500px
+
+      label
+        &:before
+          all: unset
+        &:after
+          all: unset
+        &.shortcut
+          display: inline-block
+          width: 40px
+
+      INPUT[type="text"]
+        // Le span qui peut contenir un autre shortcut, par exemple,
+        // pour go-to, on a les lettres qui sont les raccourcis "normaux" de
+        // helper, mais on a aussi, à droite, les raccourcis avec les flèches
+        // qui sont dans ces span.shortuct
+        &.shortcut
+          cursor: pointer
+
+      div.separator
+        border-bottom: 1px solid #CCCCCC
+        margin-bottom: 0.5em
+        padding-top: 0.5em

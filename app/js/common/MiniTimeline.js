@@ -8,7 +8,7 @@ class MiniTimeline {
 // ---------------------------------------------------------------------
 //  INSTANCE
 constructor(owner, elements){
-  this.a = this.analyse = current_analyse
+  this.a = current_analyse
   this.owner = owner
   this.scenes = elements.scenes
   this.times  = elements.times
@@ -26,12 +26,11 @@ constructor(owner, elements){
 build(options){
   log.info("-> MiniTimeline#build()",options)
   // return DCreate('DIV',{inner:'rien pour le moment'})
-
-  if(undefined === options) options = {}
-  if(undefined === options.width){
+  options = options || {}
+  if(isUndefined(options.width)){
     options.width = 100 /* i.e. 100 % */
     options.unit = '%'
-  } else if(undefined === options.unit){
+  } else if(isUndefined(options.unit)){
     options.unit = 'px'
   }
   let width   = options.width

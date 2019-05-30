@@ -131,6 +131,28 @@ INTRIGUE:
           hname: Le mal par le mal
           description: consiste à faire mourir le méchant par là où il a pêché.
 
+# --- THÉMATIQUE ---
+THEM:
+  hname: Thématique
+  items:
+
+    MainTheme:
+      hname: "Thèmes principaux"
+      items:
+        geotropisme:
+          hname: Géotropisme
+          description: élément qui oriente, de façon suggestive, l'attention du spectateur/lecteur vers un thème important de l'histoire.
+        devdial:
+          hname: Développement par le dialogue
+          description: développement d'un des thèmes principaux par le dialogue.
+        devaction:
+          hname: Développement par l'action
+          description: développement d'un des thèmes principaux par l'action.
+        devautremoyen:
+          hname: Développement par un autre moyen
+          description: développement d'un des thèmes principaux par un autre moyen que le dialogue et l'action.
+          
+
 # --- IRONIE DRAMATIQUE ---
 IRDR:
   hname: Ironie dramatique

@@ -1,0 +1,67 @@
+/*
+  Styles propres à la flying-window de l'édition du script d'assemblage
+*/
+.fwindow .body #bse-left-column {
+  float: left;
+  width:55%;
+}
+/* La liste contenant les steps */
+#building-script #bse-steps-list {
+  width:100%;
+  border:1px solid green;
+  height:600px;
+  overflow:auto;
+}
+#building-script #bse-steps-list > .step {
+  border:1px solid #CCFFCC;
+  padding:1px 4px;
+}
+
+#building-script #bse-steps-list > .step {
+  width:365px;
+}
+#building-script #bse-steps-outlist > div > button.btn-sup {display:none;}
+
+#building-script #bse-steps-list > div > button.btn-sup {
+  border:1px solid #FFBBBB;
+  opacity:0.4;
+}
+#building-script #bse-steps-list > div > button.btn-sup:hover {
+  opacity:1;
+  background-color:red;
+  color:white;
+}
+
+#building-script #bse-steps-outlist > div {
+  border:1px solid #FFCCCC;
+  width:240px;
+}
+
+
+#building-script #bse-steps-list > div input[type="checkbox"]{
+  margin-right:8px;
+  font-size:12pt;
+}
+
+.fwindow .body #bse-right-column {
+  width:40%;
+  margin-left:60%;
+  font-size:12pt;
+}
+
+#building-script #bse-steps-outlist > div {
+  padding:4px 1em;
+  border:1px solid #DDDDDD;
+  font-size:9pt;
+  vertical-align:middle;
+}
+#building-script #bse-steps-outlist > div input[type="checkbox"]{
+  display:none;
+}
+
+#building-script #bse-steps-list > div img,
+#building-script #bse-steps-outlist > div img
+{
+  float:right;
+  width:14px;
+}

@@ -16,8 +16,8 @@ Object.assign(FAImage.prototype,{
 , show(){
     let my = this
     // console.log("-> show", this.id)
-    if(my.shown === true) return
-    if(my.jqReaderObj && this.jqReaderObj.length){
+    if(isTrue(my.shown)) return
+    if(isNotEmpty(my.jqReaderObj)){
       // <= l'objet DOM existe déjà
       // => On a juste à l'afficher
       my.jqReaderObj.show()
@@ -27,26 +27,20 @@ Object.assign(FAImage.prototype,{
       my.a.reader.append(this)
       my.observe()
     }
-    my.makeAppear() // c'est l'opacité qui masque l'event affiché
 
     // Déplacé dans makeAppear
     // my.domReaderObj.parentNode.scrollTop = this.domReaderObj.offsetTop
     my.shown = true
   }
 
-, makeAppear(){
-    this.jqReaderObj.animate({opacity:1}, 600)
-    // Trop mou ou trop rapide avec scrollIntoView. Rien de vaut la méthode
-    // old-school
-    if(this.domReaderObj){
-      this.domReaderObj.parentNode.scrollTop = this.domReaderObj.offsetTop
-    } else {
-      log.warn("Bizarrement, le domReaderObj de l'image suivante est introuvable : ", this.id, `div#${this.domId}`)
-    }
-  }
 , observe(){
     let my = this
-    my.jqReaderObj.draggable(Object.assign({},DATA_ASSOCIATES_DRAGGABLE,{helper:'clone'}))
+    if(isNotEmpty(my.jqReaderObj)){
+      my.jqReaderObj.draggable(Object.assign({},DATA_ASSOCIATES_DRAGGABLE,{helper:'clone'}))
+      my.jqReaderObj.hide()
+    } else {
+      log.warn(`L'objet Reader de l'image ${this} est introuvable. Impossible de l'observer.`)
+    }
   }
 }) // /assign
 
@@ -63,6 +57,5 @@ Object.defineProperties(FAImage.prototype,{
         ]})
   }}
 , domId:{get(){return this._domId||defP(this,'_domId', `image-${this.affixe}`)}}
-, jqObj:{get(){return this.jqReaderObj}}
 // , domReaderObj:{get(){return this.jqReaderObj[0]}}
 })

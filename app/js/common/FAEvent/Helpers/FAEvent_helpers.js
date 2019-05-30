@@ -238,7 +238,7 @@ Object.defineProperties(FAEvent.prototype,{
   **/
   div:{
     get(){
-      if (undefined === this._div){
+      if (isUndefined(this._div)){
         // flag pour la méthode 'as'
         var asFlag = FORMATED
         if(!this.isScene) asFlag = asFlag | LABELLED
@@ -257,7 +257,6 @@ Object.defineProperties(FAEvent.prototype,{
         this._div = DCreate(DIV,{
           id: this.domReaderId
         , class: `reader-event event ${this.type} EVT${this.id}`
-        , style: 'opacity:0;'
         , attrs: attrs
         , append: [
             DCreate(DIV,{class: 'e-tools', append:[br, be, h]})

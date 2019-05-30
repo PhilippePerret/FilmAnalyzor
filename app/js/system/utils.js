@@ -1,5 +1,15 @@
 'use strict'
 
+
+function confirm(msg, options){
+  let mbox = new MessageBox(isString(msg) ? Object.assign(options, {message: msg}) : msg)
+  mbox.show()
+}
+// Demande une réponse
+// On utilise `confirm` parce que la seule différence, c'est que `args`
+// définit `defaultAnswer` qui permet de savoir que c'est un prompt
+function prompt(msg, args){ return confirm(msg, args) }
+
 function isUndefined(foo){
   return STRundefined === typeof(foo)
 }
@@ -7,26 +17,31 @@ function isNumber(foo){return STRnumber === typeof(foo)}
 function isNotNumber(foo){return false === isNumber(foo)}
 
 function isNull(foo){ return null === foo }
+function isNotNull(foo){ return isFalse(isNull(foo)) }
 function isNullish(foo){ return isNull(foo) || isUndefined(foo) }
 function isNotNullish(foo){ return false === isNullish(foo) }
 
-function isFalse(foo){
-  return false === foo
-}
-function isTrue(foo){
-  return true === foo
-}
+function isFalse(foo){ return false === foo }
+function isNotFalse(foo) { return isFalse(isFalse(foo))}
+function not(foo){ return false == foo }
+
+function isTrue(foo){ return true === foo }
+function isNotTrue(foo){return isFalse(isTrue(foo))}
+
 function isDefined(foo){
   return false === isUndefined(foo)
 }
 function isEmpty(foo){
-  if(isDefined(foo.length)){
+  if(!foo) return true
+  if(isDefined(foo.length) /* string ou array */){
     return 0 == foo.length
   } else if (isObject(foo)){
     return 0 == Object.keys(foo).length
   }
 }
-function isNotEmpty(foo){return false === isEmpty(foo)}
+function isNotEmpty(foo){
+  if(!foo) return false
+  return false === isEmpty(foo)}
 function isNotAscii(str){
   return str.replace(/[a-zA-Z0-9_]/g,'') != ''
 }
@@ -37,7 +52,13 @@ function isNotString(foo){return false === isString(foo)}
 function isObject(foo)  { return STRobject == typeof(foo) && !isArray(foo) }
 function isArray(foo)   { return Array.isArray(foo) }
 
-// Fonction utiles un peu plus particulière
+// Fonction utiles pour le dom
+
+function isTextarea(foo){
+  if(isDefined(foo.length)) foo = foo[0] // jquerySet
+  if(isDefined(foo.tagName)) return foo.tagName === 'TEXTAREA'
+  return false
+}
 
 /**
   Retourne false si l'élément +domE+ ne possède pas l'attribut +attr+ ou,
@@ -103,6 +124,15 @@ function defP(obj, prop, val){
   return val
 }
 
+/**
+  Remplace la tournure :
+    if (undefined === objet.property) objet.property = default_value
+  Et retourne la valeur de la propriété
+**/
+function defaultize(objet, property, default_value){
+ isDefined(objet[property]) || ( objet[property] = default_value)
+ return objet[property]
+}
 
 /**
  *
@@ -241,8 +271,16 @@ function DLibVal(obj, property, libelle, widths, options){
   }
   return obj[ghostProp]
 }
+
+function zIndex(jqSet, zindex, opts){
+  isDefined(opts) || (opts = {})
+  jqSet.css('z-index', zindex)
+  opts.deep && jqSet.find('*').css('z-index', zindex)
+}
+
+
 function DFormater(str, opts){
-  if(undefined === FATexte._dformater){
+  if(isUndefined(FATexte._dformater)){
     let fatexte =  new FATexte('')
     FATexte._dformater = fatexte.formate.bind(fatexte)
   }

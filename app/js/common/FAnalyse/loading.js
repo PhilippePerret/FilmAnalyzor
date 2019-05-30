@@ -2,6 +2,7 @@
 
 // ---------------------------------------------------------------------
 //  CLASS
+
 Object.assign(FAnalyse,{
 /**
   Méthode de classe qui charge l'analyse dont le dossier est +aFolder+
@@ -13,68 +14,25 @@ Object.assign(FAnalyse,{
                     le moment.
  */
   load(aFolder, fn_afterLoading){
-    // On mémorise le dossier à charger et la méthode pour poursuivre
-    if(undefined === this.loadingData){
-      this.loadingData = {folder: aFolder, after: fn_afterLoading}
-    }
-    // On commence par vérifier que tous les composants soient bien chargés
-    if (!this.allComponantsLoaded){
-      try {
-        return this.loadAllComponants()
-      } catch (e) {
-        console.error()
-        return
-      }
-    }
-
-    // On reprend les données initiales
-    aFolder         = this.loadingData.folder
-    fn_afterLoading = this.loadingData.after
-    delete this.loadingData
-
+    log.info(`-> FAnalyse::load(folder:${aFolder})`)
     try {
-      log.info(`-> FAnalyse::load [Load analyse: ${aFolder}]`)
-      this.isDossierAnalyseValid(aFolder) || raise(T('invalid-folder', {fpath: aFolder}))
       UI.startWait(T('loading-analyse'))
+      // Tous les composants sont requis (chargés par AppLoader)
+      isTrue(App.allComponantsLoaded) || raise(T('all-componants-required'))
+      this.isDossierAnalyseValid(aFolder) || raise(T('invalid-folder', {fpath: aFolder}))
       this.resetAll()
       window.current_analyse = new FAnalyse(aFolder)
-      if(undefined !== fn_afterLoading){
+      isDefined(fn_afterLoading) && (
         window.current_analyse.methodAfterLoadingAnalyse = fn_afterLoading
-      }
+      )
       current_analyse.load()
+      log.info(`<- FAnalyse::load(folder:${aFolder})`)
       return true
     } catch (e) {
       log.error(e)
       UI.stopWait()
       return F.error(e)
     }
-  }
-
-  /**
-    Méthode qui s'assure, avant de charger l'analyse choisie, que tous les
-    composants sont bien chargés. Et les charge au besoin.
-  **/
-, loadAllComponants(){
-    log.info("-> FAnalyse::FAnalyse::loadAllComponants")
-    this.allComponantsLoaded = false
-    if(NONE === typeof DataEditor)    return this.loadComponant('DataEditor')
-    if(NONE === typeof EventForm)     return this.loadComponant('EventForm')
-    if(NONE === typeof FAWriter)      return this.loadComponant('faWriter')
-    if(NONE === typeof FAProtocole)   return this.loadComponant('faProtocole')
-    if(NONE === typeof FAStater)      return this.loadComponant('faStater')
-    if(NONE === typeof FAEventer)     return this.loadComponant('faEventer')
-    if(NONE === typeof FABrin)        return this.loadComponant('faBrin')
-    if(NONE === typeof FAPersonnage)  return this.loadComponant('faPersonnage')
-    if(NONE === typeof FAProcede)     return this.loadComponant('faProcede')
-    if(NONE === typeof FAReader)      return this.loadComponant('faReader')
-    if(NONE === typeof FAStats)       return this.loadComponant('faStats')
-    if(NONE === typeof FAImage)       return this.loadComponant('faImage')
-
-    // Si tout est OK, on peut rappeler la méthode Fanalyse.load
-    log.info("   Tous les composants sont chargés.")
-    this.allComponantsLoaded = true
-    this.load()
-    log.info("<- FAnalyse::FAnalyse::loadAllComponants")
   }
 
 /**
@@ -84,12 +42,11 @@ Object.assign(FAnalyse,{
 , resetAll(){
     log.info("-> [FAnalyse::resetAll] Réinitialisation complète")
     // On détruit la section vidéo de l'analyse courante
-    if(window.current_analyse){
+    if ( window.current_analyse ) {
       // <= Il y a une analyse courante
       // => On doit tout initialiser
       FAReader.reset()
       EventForm.reset() // notamment destruction des formulaires
-      current_analyse.videoController.remove()
       FAEscene.reset()
       FABrin.reset()
       FAPersonnage.reset()
@@ -102,30 +59,14 @@ Object.assign(FAnalyse,{
       delete current_analyse.reader
       delete current_analyse.stater
     }
-    // $('#section-videos').html()
     log.info("<- [FAnalyse::resetAll] Réinitialisation complète")
   }
-
-/**
-  Méthodes de chargement des composants (au load principal)
-**/
-, loadComponant(componant, fn_callback){
-    if(undefined === fn_callback) fn_callback = this.loadAllComponants.bind(this)
-    log.info(`  Chargement du composant <${componant}>`)
-    return System.loadComponant(componant, fn_callback)
-  }
-
-/**
-  Chargement des snippets
-**/
-, loadSnippets(fn_callback){
-  return System.loadComponant('Snippets', fn_callback)
-}
 
 })
 
 // ---------------------------------------------------------------------
 //  INSTANCE
+
 Object.assign(FAnalyse.prototype, {
 /**
   Méthode d'instance pour charger l'analyse (courante ou pas)
@@ -137,52 +78,48 @@ Object.assign(FAnalyse.prototype, {
 
 */
 load(){
-  log.info("-> FAnalyse#load")
-  var my = this
-    , fpath ;
-  // Les options peuvent être chargée en premier, de façon synchrone
+  log.info("-> FAnalyse.load")
+  let my = this
+
+  // Les options peuvent être chargées en premier, de façon synchrone
   // Noter qu'elles seront appliquées plus tard, à la fin.
   this.options.load()
-  // Les fichiers à charger
-  var loadables = Object.assign([], my.SAVED_FILES)
-  // Pour comptabiliser le nombre de fichiers chargés
-  this.loaders = 0
-  my.loadables_count = loadables.length
-  // console.log("loadables:",loadables)
-  while(fpath = loadables.shift()){
-    my.loadFile(fpath, my.PROP_PER_FILE[fpath])
-  }
-  log.info("<- FAnalyse#load (mais traitement asynchrone)")
+
+  // Les fichiers à charger. On les charge tous en même temps. Lorsque
+  // le dernier est chargé, la méthode onLoaded fait passer à la suite
+  this.loaders = 0 // nombre de fichiers chargés
+  my.loadables_count = this.DFILES.length
+  this.DFILES.forEach(dfile => my.loadFile(dfile))
+  log.info("<- FAnalyse.load (asynchrone)")
 }
 
-, onLoaded(fpath){
-  this.loaders += 1
-  // console.log("-> onLoaded", fpath, this.loaders)
-  if(this.loaders === this.loadables_count){
-    // console.log("Analyse chargée avec succès.")
-    // console.log("Event count:",this.events.length)
-    this.ready = true
-    this.onReady()
+, onLoaded(dfile){
+    log.info(`-> FAnalyse.onLoaded(<${dfile.type}>)`)
+    ++ this.loaders
+    if(this.loaders === this.loadables_count){
+      log.info('   FAnalyse.onLoaded FIN (loaders = loadables count)')
+      this.ready = true
+      log.info('   [FAnalyse.onLoaded] --> FAnalyse.onReady')
+      this.onReady()
+    }
+    log.info(`<- FAnalyse.onLoaded [<${dfile.type}>]`)
   }
-}
 
 /**
-  Méthode appelé ci-dessus quand l'analyse est prête, c'est-à-dire que toutes ses
-  données ont été chargées et traitées. Si un fichier vidéo existe, on le
+  Méthode appelée lorsque toutes les données de l'analyse (data et event)
+  ont été chargées et traitées. Si un fichier vidéo existe, on le
   charge.
 
   À la fin de cette méthode, tout a été préparé, tout est OK
-  Note : ça n'est pas tout à fait vrai, en fait…
+  Note : ça n'est pas tout à fait vrai, en fait… Car il faut encore préparer
+  l'interface, rechercher par exemple la scène courante.
  */
 , onReady(){
-    log.info('-> <<FAanalyse>>#onReady')
-    this.videoController = new VideoController(this)
-    this.locator = new Locator(this)
-    this.reader  = new FAReader(this)
-    this.init()
-    this.locator.init()
-    this.locator.stop_points = this.stopPoints
-    this.reader.show()//pour le moment, on affiche toujours le reader au démarrage
+    log.info('-> FAnalyse.onReady')
+    let my = this
+    my.init()
+    my.locator.init()
+    my.locator.stop_points = my.stopPoints
     FAProcede.reset().init()
     FABrin.reset().init()
     EventForm.init()
@@ -190,38 +127,82 @@ load(){
     FAImage.init()
     FAEqrd.reset().init()
     FAPersonnage.reset().init()
-    this.options.setInMenus()
-    this.videoController.init()
-    this.runTimerSave()
+    my.options.setInMenus()
+    my.videoController.init()
+    // Les marqueurs
+    Markers.reset()
+    // Les raccourcis clavier "universels"
+    UI.toggleKeyUpAndDown(/* out texte field */ true)
+    // On met en route le timer de sauvegarde
+    my.runTimerSave()
+    try {
+      // On peuple le reader avec les events et les images
+      my.reader.init() // notamment : construction du reader
+      my.reader.show()
+      my.reader.peuple()
+    } catch (e) {
+      log.error("Impossible de peupler le reader (voir l'erreur ci-dessous)")
+      log.error(e)
+    }
+
     // Si une méthode après le chargement est requise, on
     // l'invoque.
     // Pour le moment, la méthode est surtout utilisée pour les
     // tests (même seulement pour les tests)
-    if(isFunction(this.methodAfterLoadingAnalyse)){
-      this.methodAfterLoadingAnalyse()
+    if(isFunction(my.methodAfterLoadingAnalyse)){
+      my.methodAfterLoadingAnalyse()
     }
+
+
+    log.info('<- FAnalyse.onReady')
+  }
+
+, onVideoReady(){
+    let my = this
+    log.info('-> FAnalyse.onVideoReady')
+    try {
+      // On peuple la timeline avec les events
+      BancTimeline.init()
+    } catch (e) {
+      log.error("Impossible de peupler la timeline (voir l'erreur ci-dessous)")
+      log.error(e)
+    }
+    log.info('<- FAnalyse.onVideoReady')
+
+    BancTimeline.positionneMarkFilmStartEnd()
+    this.markers.load().build()
+
+    // Si un dernier temps était mémorisé, on replace le curseur à
+    // cet endroit (dans la timeline)
+    var lastCurTime = new OTime(my.lastCurrentTime)
+    lastCurTime && my.locator.setTime(lastCurTime, true)
+
+    // Au cours du dispatch des données, la méthode modified a été invoquée
+    // de nombreuses fois. Il faut revenir à l'état normal.
+    this.modified = false
+    UI.stopWait()// toujours, au cas où
+
     // On appelle la méthode `window.WhenAllIsReallyReady` qui permet de
     // jouer du code pour essai à la toute fin
     WhenAllIsReallyReady()
-    log.info('<- <<FAanalyse>>#onReady')
   }
-
 
 // Charger le fichier +path+ pour la propriété +prop+ de façon
 // asynchrone.
-, loadFile(fpath, prop){
-  new IOFile(fpath).loadIfExists({after: this.endLoadingFile.bind(this, fpath, prop)})
+, loadFile(dfile){
+    dfile.iofile.loadIfExists({after: this.endLoadingFile.bind(this, dfile)})
 }
 
-, endLoadingFile(fpath, prop, data){
-  var my = this
-  if(isFunction(my[prop])){
-    my[prop](data)
-  } else {
-    my[prop] = data
+, endLoadingFile(dfile, data){
+    let my = this
+      , prop = dfile.dataMethod
+    if(isFunction(my[prop])){
+      my[prop](data)
+    } else {
+      my[prop] = data
+    }
+    my.onLoaded.bind(my)(dfile)
   }
-  my.onLoaded.bind(my)(fpath)
-}
 
 
 /** ---------------------------------------------------------------------
