@@ -1,7 +1,7 @@
 {
     "name": "filmsanalyse",
     "productName": "Film-Analyzer",
-    "version": "0.7.0",
+    "version": "0.8.0",
     "description": "Application pour l'analyse de films",
     "main": "main.js",
     "scripts": {
