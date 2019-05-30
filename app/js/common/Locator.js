@@ -33,11 +33,6 @@ init(){
   // du temps réel, donc lorsque le début du film est défini
   UI.videoHorloge.css('visibility', this.a.filmStartTime?STRvisible:STRhidden)
 
-  // L'instance NextTime qui va permettre de connaitre
-  // le temps suivant et la nature de l'élément portant
-  // ce temps
-  // this.nextTime.initWithTime(OTime.ZERO)
-
 }
 
 // ---------------------------------------------------------------------
@@ -461,8 +456,8 @@ actualiseBancTimeline(curt){
 
 actualizeHorloge(curt){
   // console.log("[actualizeHorloge] curt:", curt)
-  UI.mainHorloge.html(curt.rhorloge)
-  UI.videoHorloge.html(curt.horloge)
+  UI.mainHorloge.html(curt.horloge)
+  UI.videoHorloge.html(curt.vhorloge)
 }
 
 actualizeReader(curt){
