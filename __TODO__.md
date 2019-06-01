@@ -2,6 +2,21 @@
 
 ### Traiter :
 
+* Gérer l'insertion, la suppression et le déplacement des events au niveau des `e.__index`, `e.__next` et `e.__prev`
+
+* Pouvoir se déplacer d'event en event
+  Traiter en même temps le déplacement de noeud STT en noeud STT
+  Fonctionner en mémorisant les choses pour ne pas avoir à tout recalculer
+  chaque fois
+    => dès qu'on demande à trouver l'event suivant, soit il est défini, soit
+       il faut le chercher
+       - en le cherchant, on mémorise aussi le suivant
+       - si un nouveau setTime est appelé, on reset l'objet PrevNext (`PrevNext.reset()`)
+       - si un nouvel event est créé, on le compare aux données actuelles de PrevNext
+       - si un nouveau noeud STT est défini/modifié, on le compare.
+
+* Possibilité d'afficher un "calque de PFA absolu"
+
 * Garder toujours le curseur visible (faire l'essai en zoomant et en passant du début à la fin du film)
 * Ré-étudier le survol de la timeline pour que ça ne court-circuite pas le déplacement des marqueurs, marqueurs de début et fin, etc.
 

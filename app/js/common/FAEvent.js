@@ -196,6 +196,8 @@ get isAScene(){return false} // surclassé par FAEscene
 get isScene(){return false} // surclassé par FAEscene
 get isAnImage(){return false}
 get isImage(){return false}
+get isASttNode(){return this.type === STRstt}
+get isSttNode(){return this.isASttNode}
 
 // ---------------------------------------------------------------------
 //  Propriétés temporelles

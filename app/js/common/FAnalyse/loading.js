@@ -167,7 +167,6 @@ load(){
       log.error("Impossible de peupler la timeline (voir l'erreur ci-dessous)")
       log.error(e)
     }
-    log.info('<- FAnalyse.onVideoReady')
 
     BancTimeline.positionneMarkFilmStartEnd()
     this.markers.load().build()
@@ -177,6 +176,12 @@ load(){
     var lastCurTime = new OTime(my.lastCurrentTime)
     lastCurTime && my.locator.setTime(lastCurTime, true)
 
+    // On définit la time-map
+    // Tous les events et autres éléments temporels vont être placés
+    // dans une table dont les clés sont les secondes, qui permettront de
+    // connaitre, à un temps donné, tous les éléments qu'on trouve.
+    TimeMap.update()
+
     // Au cours du dispatch des données, la méthode modified a été invoquée
     // de nombreuses fois. Il faut revenir à l'état normal.
     this.modified = false
@@ -185,6 +190,8 @@ load(){
     // On appelle la méthode `window.WhenAllIsReallyReady` qui permet de
     // jouer du code pour essai à la toute fin
     WhenAllIsReallyReady()
+
+    log.info('<- FAnalyse.onVideoReady')
   }
 
 // Charger le fichier +path+ pour la propriété +prop+ de façon

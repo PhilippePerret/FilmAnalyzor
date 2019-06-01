@@ -134,7 +134,7 @@ goToLastScene(){
 }
 
 get PFA(){
-  if(undefined === this._PFA){
+  if ( isUndefined(this._PFA) ) {
     SttNode   = require('./js/common/PFA/SttNode.js')
     this._PFA = require('./js/common/PFA/PFA.js')
     this._PFA.init()
@@ -294,9 +294,7 @@ togglePanneauBrins(opened, e){
   }
 }
 togglePanneauStatistiques(){
-  if(undefined === window.PanelStatistiques){
-    window.PanelStatistiques = require('./js/tools/building/statistiques.js')
-  }
+  defaultize(window,'PanelStatistiques',require('./js/tools/building/statistiques.js'))
   PanelStatistiques.toggle()
 }
 
@@ -471,18 +469,13 @@ getIndexOfEventAfter(time){
   for(i;i<len;++i) { if(this.events[i].time > time) { return i } }
   return len
 }
+
 /**
- * Retourne l'index de l'event d'identifiant +event_id+
- *
- * Noter que cette méthode peut devenir extrêmement lente avec de nombreux
- * events dans l'analyse. Il faudrait opter pour un autre système, peut-être
- * depuis des `event_after` et `event_before`
- * TODO Voir d'abord où on se sert exactement de la liste this.events comme
- * liste.
- */
+  Retourne l'index de l'event d'identifiant +event_id+
+**/
 indexOfEvent(event_id){
-  var i = 0, len = this.events.length ;
-  for(;i<len;++i) { if(this.events[i].id == event_id) { return i } }
+  isDefined(this.events[i].__index) || PrevNext.prepareListeEvents()
+  return this.events[i].__index
 }
 
 // --- FONCTIONS I/O ----------------------------------------------

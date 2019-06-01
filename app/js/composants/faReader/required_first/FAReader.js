@@ -58,30 +58,24 @@ static reveal(item, options){
   @param {FAEvent|FAImage} item   Image ou event à surveiller
 **/
 static startWatchingItem(item){
-  isDefined(this.watchedItems) || ( this.watchedItems = {} )
-  this.restartWatchingItem(item)
-  this.watchedItems[`${item.type}:${item.id}`] = item
+  this.timerWatchingItems = setInterval(this.watchEvents.bind(this), 1000)
 }
-static restartWatchingItem(item){
-  item.timerWatchingTime = setInterval(this.watchItem.bind(this, item), 1000)
+static watchEvents(){
+  // On prend les events courants qui commencent et on les affiche
+
+  // On prend les events courants qui finissent et on les affiche
+
 }
-static watchItem(item){
-  var rtime = this.a.locator.currentTime
-  let iscur = rtime >= item.time - 2 && rtime <= item.end + 2
-    , isover = item.end < rtime + 5
+
   if(item.isCurrent != iscur){
     item.isCurrent = !!iscur
     item.jqReaderObj[item.isCurrent?'addClass':'removeClass']('current')
   }
-  if ( isover ){
-    item.hide() // la méthode appelle aussi stopWatchingItem
-    this.stopWatchingItem(item)
-  }
+  
 }
-static stopWatchingItem(item){
-  clearInterval(item.timerWatchingTime)
-  delete item.timerWatchingTime
-  delete this.watchedItems[`${item.type}:${item.id}`]
+static stopWatchingItems(){
+  clearInterval(item.timerWatchingItems)
+  delete item.timerWatchingItems
 }
 
 static get a(){return current_analyse}

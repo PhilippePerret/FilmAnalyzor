@@ -24,11 +24,17 @@ static init(analyse){
   scènes.
 **/
 static updateAll(){
-  // console.log("-> FAEscene::updateAll")
+  log.info("-> FAEscene::updateAll")
   this.reset()
+
+  // On actualise la map par secondes
+  TimeMap.update()
+
   // this.updateNumerosScenes() // sera automatiquement affecté en updatant les listes
   // this.updateDureeScenes() // sera automatiquement redéfini en updatant les listes
   this.a.modified = true
+
+  log.info("<- FAEscene::updateAll")
 }
 
 static reset(){
@@ -180,7 +186,7 @@ static doLists(){
   Détruit la scène de numéro +numero+
 **/
 static destroy(numero){
-  if(undefined === this.scenes[numero]) return
+  if ( isUndefined(this.scenes[numero]) ) return
   delete this.scenes[numero]
   this.updateAll()
 }
@@ -192,7 +198,7 @@ static destroy(numero){
 **/
 static forEachScene(fn){
   for(var num in this.scenes){
-    if(false === fn(this.scenes[num])) break // pour pouvoir interrompre
+    if( isFalse(fn(this.scenes[num])) ) break // pour pouvoir interrompre
   }
 }
 
@@ -202,62 +208,28 @@ static forEachScene(fn){
 static forEachSortedScene(fn){
   for(var scene of this.sortedByTime){
     // console.log("Boucle avec scène:", scene)
-    if(false === fn(scene)) break // pour pouvoir interrompre
+    if ( isFalse(fn(scene)) ) break // pour pouvoir interrompre
   }
 }
 
 /**
- * Retourne l'instance FAEscene de la scène au temps +time+
- *
- * +time+ est le temps par rapport au début défini du film, PAS le début
- * de la vidéo
- * @param   time  Le temps à considérer
- * @returns {FAEscene|Undefined}  undefined si c'est un temps avant le début
-                                  du film
+  Retourne l'instance FAEscene de la scène au temps +time+
+
+  @param   {OTime} time  Le temps à considérer
+  @returns {FAEscene|Undefined}  La scène ou undefined si pas de scène
  */
 static at(otime){
-  if ( this.count === 0 ) return
-  // Même temps cherché que dernier => retourner la dernière scène trouvée
-  if ( otime.vtime == this.lastTimeSearched ) return this.lastSceneFound
-  // Pas de scène si on est avant le début du film
-  if ( otime.vtime < this.a.filmStartTime ) return
-  // Pas de scène si on se trouve après le temps de fin
-  if ( otime.vtime > this.a.filmEndTime ) return
-  // Pas de scène si le temps dépasse le temps de fin de la dernière scène
-  if ( otime > this.lastScene.endAt ) return
-  // Sinon, on cherche la scène
-  var prevSceneNumero
-  this.forEachSortedScene(scene => {
-    if ( scene.time > otime ) return false // pour interrompre
-    prevSceneNumero = scene.numero
-  })
-  this.lastSceneFound   = this.get(prevSceneNumero)
-  this.lastTimeSearched = otime.vtime
-  return this.lastSceneFound
+  return TimeMap.sceneAt(otime)
 }
 
 // Retourne la scène qui commence avant le temps otime (ou rien)
 static before(otime){
-  if ( this.count === 0) return
-  for(var i = 0 ; i < this.count ; ++i){
-    // console.log({
-    //     operation: "Recherche scène before"
-    //   , rtime: otime.rtime
-    //   , i: i
-    //   , 'this.sortedByTime[i]': this.sortedByTime[i]
-    //   , 'startAt': this.sortedByTime[i].startAt
-    // })
-    if (this.sortedByTime[i].startAt >= otime.vtime) return this.sortedByTime[i - 1]
-  }
-  // Cas où le curseur se trouve après la dernière scène définie
-  return this.lastScene
+  return TimeMap.sceneBefore(otime)
 }
 
 // Retourne la scène qui commence après le temps otime (ou rien)
 static after(otime){
-  for(var i = 0; i < this.count; ++i){
-    if (this.sortedByTime[i].startAt > otime.vtime) return this.sortedByTime[i]
-  }
+  return TimeMap.sceneAfter(otime)
 }
 
 /**

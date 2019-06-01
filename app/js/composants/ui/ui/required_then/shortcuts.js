@@ -267,7 +267,7 @@ Object.assign(UI, {
     if ( touche === STRArrowLeft || touche === STRArrowRight ) {
       // cf. N0003
       var flag = this.keyComb2flag(e)
-      console.log("Où dois-je aller avec le flag ", flag)
+      log.info("Flag Goto:", flag)
       if ( isFunction(this.a.locator[TBL_GOTO_FLAG2METHOD[flag]]) ) {
         this.a.locator[TBL_GOTO_FLAG2METHOD[flag]].bind(this.a.locator).call()
         // TODO

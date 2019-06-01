@@ -10,6 +10,8 @@ const GOTODATA = [
   , {hname:'Image précédente', type:'prev-image', shortcut:'G', arrowComb:'←', dataArrowComb:{key:STRArrowLeft}}
   , {hname:'Seconde suivante', type:'next-second', shortcut:'c', arrowComb:'⌥→', dataArrowComb:{meta:false, alt:true, key:STRArrowRight}}
   , {hname:'Seconde précédente', type:'prev-second', shortcut:'C', arrowComb:'⌥←', dataArrowComb:{meta:false, alt:true, key:STRArrowLeft}}
+  , {hname:'Event suivant', type:'next-event', shortcut:'e', arrowComb:'⇧⌥→', dataArrowComb:{meta:false, alt:true, shift:true, key:STRArrowRight}}
+  , {hname:'Event précédent', type:'prev-event', shortcut:'E', arrowComb:'⇧⌥←', dataArrowComb:{meta:false, alt:true, shift:true, key:STRArrowLeft}}
   , {hname:'10 secondes après', type:'next-tenseconds', shortcut:'t', arrowComb:'⌃→', dataArrowComb:{meta:false, ctrl:true, key:STRArrowRight}}
   , {hname:'10 secondes avant', type:'prev-tenseconds', shortcut:'T', arrowComb:'⌃←', dataArrowComb:{meta:false, ctrl:true, key:STRArrowLeft}}
   , {hname:'Minute suivante', type:'next-minute', shortcut:'l'}

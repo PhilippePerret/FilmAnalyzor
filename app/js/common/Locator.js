@@ -45,7 +45,7 @@ init(){
 
  */
 togglePlay(ev){
-  var pauser = this.playing === true
+  var pauser = isTrue(this.playing)
   if (pauser) {
     //
     // => PAUSE
@@ -56,8 +56,8 @@ togglePlay(ev){
     this.actualizeALL() // à l'arrêt, on actualise tout
     this.desactivateFollowers()
     this.setPlayButton(this.playing)
-    this.stopWatchTimerEvent()
-    this.a.modified = true // pour le temps courant
+    // this.stopWatchTimerEvent()
+    this.a.modified = true // pour le temps courant -- (?)
   } else {
     //
     // => PLAY
@@ -91,7 +91,8 @@ togglePlay(ev){
     // On redémarre la surveillance des temps par les events du
     // reader pour qu'ils se mettent en exergue quand le temps
     // passe sur eux.
-    this.restartWatchTimerEvent()
+    // OBSOLÈTE : ON UTILISE MAINTENANT LA TimeMap
+    // this.restartWatchTimerEvent()
   }
   // console.log("<- togglePlay")
 }
@@ -165,7 +166,7 @@ forward(secs){
   // console.log("-> forward")
   var newtime = UI.video.currentTime + secs
   if(newtime > UI.video.duration){
-    if(this.timerForward) this.stopForward()
+    this.timerForward && this.stopForward()
     return
   }
   let ontime = new OTime(0)
@@ -289,30 +290,32 @@ setPlayButton(running){
   this.btnPlay.innerHTML = running ? this.imgPauser : this.imgPlay
 }
 
-/**
-  Méthode qui arrête la surveillance des events affichés dans
-  le reader (quand on arrête la lecture)
-**/
-stopWatchTimerEvent(){
-  if (isEmpty(this.a.reader.watchedItems)) return
-  Object.values(this.a.reader.watchedItems).forEach(item => this.a.reader.stopWatchingItem(item))
-}
+// OBSOLÈTE : ON UTILISE MAINTENANT LA TimeMap
+// /**
+//   Méthode qui arrête la surveillance des events affichés dans
+//   le reader (quand on arrête la lecture)
+// **/
+// stopWatchTimerEvent(){
+//   if (isEmpty(this.a.reader.watchedItems)) return
+//   Object.values(this.a.reader.watchedItems).forEach(item => this.a.reader.stopWatchingItem(item))
+// }
 
-/**
-  Méthode contraire à la méthode précédente, qui relance la
-  surveillance des events affichés dans le reader, pour savoir
-  si on passe par leur temps.
-**/
-restartWatchTimerEvent(){
-  if (isEmpty(this.a.reader.watchedItems)) return
-  Object.values(this.a.reader.watchedItems).forEach(item => this.a.reader.restartWatchingItem(item))
-}
+// OBSOLÈTE : ON UTILISE MAINTENANT LA TimeMap
+// /**
+//   Méthode contraire à la méthode précédente, qui relance la
+//   surveillance des events affichés dans le reader, pour savoir
+//   si on passe par leur temps.
+// **/
+// restartWatchTimerEvent(){
+//   if (isEmpty(this.a.reader.watchedItems)) return
+//   Object.values(this.a.reader.watchedItems).forEach(item => this.a.reader.restartWatchingItem(item))
+// }
 
 /**
  * On peut déterminer quand la vidéo devra s'arrêter avec cette méthode
  */
 setEndTime(time, fnOnEndTime){
-  if(!(time instanceof(OTime))){
+  if(isFalse(time instanceof(OTime))){
     console.error(`${time} n'est pas une instance OTime. Je ne définis pas la fin de la vidéo.`)
     return
   }

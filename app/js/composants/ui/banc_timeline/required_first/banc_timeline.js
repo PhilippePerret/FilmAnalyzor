@@ -121,10 +121,8 @@ Object.defineProperties(BancTimeline, {
 , currentTime:{
     get(){return this._currenttime || new OTime(0)}
   , set(v){
-      console.log("v dans currentTime:", v)
       isDefined(this._currenttime) || (this._currenttime = new OTime(0))
       isDefined(v.vtime) && ( v = v.vtime )
-      console.log("v avant updateSeconds", v)
       this._currenttime.updateSeconds(v)
 
     }

@@ -23,29 +23,21 @@ module.exports = {
   }
 
 , goToNextScene(){
-    this.stopGoToNextScene() // un appel précédent
     log.info('-> Locator#goToNextScene')
-    let method = () => {
-      let nScene = this.nextScene
-      if (nScene) this.setTime(nScene.otime)
-      else F.notify('Pas de scène suivante.')
-    }
-    this.timerNextScene = setTimeout(method, 300)
+    let nScene = this.nextScene
+    if (nScene) this.setTime(nScene.otime)
+    else F.notify('Pas de scène suivante.')
     log.info('<- Locator#goToNextScene')
   }
 , goToPrevScene(){
-    this.stopGoToPrevScene() // un appel précédent
     log.info('-> Locator#goToPrevScene')
-    let method = () => {
-      let pScene = this.prevScene
-      if (pScene) this.setTime(pScene.otime)
-      else F.notify('Pas de scène précédente.')
-    }
-    this.timerPrevScene = setTimeout(method, 300)
+    let pScene = this.prevScene
+    if (pScene) this.setTime(pScene.otime)
+    else F.notify('Pas de scène précédente.')
+    log.info('<- Locator#goToPrevScene')
   }
 
 , goToNextImage(){
-    // F.notify("Aller à l'image suivante")
     this.setTime(this.varOTime(this.currentTime.seconds + 1/24))
   }
 , goToPrevImage(){
@@ -73,11 +65,28 @@ module.exports = {
     this.setTime(this.varOTime(this.currentTime.seconds - 60))
   }
 
-, goToNextSttnode(){
-    F.notify("Aller au nœud PFA suivant")
+/**
+  Pour aller à l'event suivant (en dehors des scènes et des nœud structurels)
+**/
+, goToNextEvent()   {
+    var e = TimeMap.eventAfter(this.currentTime)
+    e && this.setTime(e.otime)
   }
-, goToPrevSttnode(){
-    F.notify("Aller au nœud PFA précédent")
+, goToPrevEvent()   {
+    var e = TimeMap.eventBefore(this.currentTime)
+    e && this.setTime(e.otime)
+  }
+
+/**
+  Pour aller au nœud structurel suivant ou précédent
+**/
+, goToNextSttnode() {
+    var node = TimeMap.sttNodeAfter(this.currentTime)
+    node && this.setTime(node.otime)
+  }
+, goToPrevSttnode() {
+    var node = TimeMap.sttNodeBefore(this.currentTime)
+    node && this.setTime(node.otime)
   }
 
 , goToNextMarker(){

@@ -32,10 +32,10 @@ Object.assign(PFA, {
   //  * Note : +nid+ est une des clés de DATA_STT_NODES (cf. ci-dessus)
   //  */
 , node(nid){
-    if(undefined === this.nodes) this.nodes = {}
-    if(undefined === this.nodes[nid]){
+    defaultize(this,'nodes',{})
+    isDefined(this.nodes[nid]) || (
       this.nodes[nid] = new SttNode(nid, this.DATA_STT_NODES[nid])
-    }
+    )
     return this.nodes[nid]
   }
 
@@ -47,7 +47,9 @@ Object.assign(PFA, {
   **/
 , forEachNode(method){
     var kstt
-    for(kstt in this.DATA_STT_NODES){ if (false === method(this.node(kstt))) break}
+    for(kstt in this.DATA_STT_NODES){
+      if (isFalse(method(this.node(kstt)))) break // pour pouvoir interrompre
+    }
 }
 
 // ---------------------------------------------------------------------
