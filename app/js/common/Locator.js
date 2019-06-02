@@ -59,6 +59,7 @@ togglePlay(ev){
     // => PLAY
     //
     my.resetAllTimes()
+    my.actualizeALL() // à l'arrêt, on actualise tout
     var curT = my.currentTime // {OTime}
     // Pour gérer l'Autoplay Policy de Chromium
     var videoPromise = UI.video.play()
