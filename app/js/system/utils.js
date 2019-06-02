@@ -266,8 +266,8 @@ function DLibVal(obj, property, libelle, widths, options){
     else if(undefined !== widths) css += ` ${widths /* p.e. w40-60 */}`
     else css += ' normal'
     obj[ghostProp] = DCreate('DIV', {class: css, append:[
-        DCreate((widths ? 'SPAN' : 'LABEL'), {class: (widths ? 'label' : null), inner: libelle})
-      , DCreate('SPAN', {class:'value', inner: DFormater(obj[property])})
+        DCreate((widths ? SPAN : 'LABEL'), {class: (widths ? 'label' : null), inner: libelle})
+      , DCreate(SPAN, {class:'value', inner: DFormater(obj[property])})
     ]})
   }
   return obj[ghostProp]

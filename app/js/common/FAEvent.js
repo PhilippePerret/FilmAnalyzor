@@ -6,8 +6,8 @@ class FAEvent {
 // ---------------------------------------------------------------------
 //  CLASSE
 
-static get OWN_PROPS(){return ['id', 'type', 'titre', STRtime, 'duree', 'parent', 'curimage', ['content', 'longtext1'], 'associates']}
-static get TEXT_PROPERTIES(){return ['titre', 'content']}
+static get OWN_PROPS(){return [STRid, STRtype, STRtitre, STRtime, STRduree, 'parent', 'curimage', ['content', 'longtext1'], 'associates']}
+static get TEXT_PROPERTIES(){return [STRtitre, STRcontent]}
 
 static get ALL_PROPS(){
   if(isUndefined(this._all_props)){
@@ -125,7 +125,7 @@ static saveModifieds(){
 static pathModifieds(){return path.join(this.folderModifieds,`${new Date().getTime()}.json`)}
 static get folderModifieds(){
   if(isUndefined(this._folderModifieds)){
-    this._folderModifieds = path.join(this.a.folderBackup, 'events')
+    this._folderModifieds = path.join(this.a.folderBackup, STRevents)
     if(!fs.existsSync(this._folderModifieds)) fs.mkdirSync(this._folderModifieds)
   }
   return this._folderModifieds
@@ -267,7 +267,7 @@ unsetParent(){
 forEachTextProperty(fn){
   let my = this
   for(var prop of my.constructor.TEXT_PROPERTIES){
-    if(false === fn(prop, my[prop])) break
+    if ( isFalse(fn(prop, my[prop])) ) break
   }
 }
 // ---------------------------------------------------------------------
@@ -283,9 +283,9 @@ onErrors(evt, errors){
   var focusPrefix  = `#event-${evt.id}-`
   var focusFieldId = `${focusPrefix}${errors[0].prop}`
   F.notify(errors.map(function(d){
-    $(`${focusPrefix}${d.prop}`).addClass('error')
+    $(`${focusPrefix}${d.prop}`).addClass(STRerror)
     return d.msg
-  }).join(RC), {error: true, duree: 'auto'})
+  }).join(RC), {error: true, duree: STRauto})
   if($(focusFieldId).length) evt.firstErroredFieldId = focusFieldId
 }
 /**
@@ -399,7 +399,7 @@ hasPersonnages(filtre){
       stxt = new RegExp(`@${FAPersonnage.get(pid).dim}[^a-zA-Z0-9_]`)
       if(!!this.content.match(stxt) && false === filtre.all){
         return true
-      } else if(true === filtre.all && !this.content.match(stxt)) {
+      } else if( isTrue(filtre.all) && !this.content.match(stxt)) {
         return false
       }
     }

@@ -57,7 +57,7 @@ libvalDiv(prop, libelle, options){
     if(undefined === libelle) libelle = prop.titleize()
     this[ghostProp] = DCreate('DIV', {class: 'libval normal', append:[
         DCreate('LABEL', {inner: libelle})
-      , DCreate('SPAN', {class:'value', inner: this.formater(this[prop])})
+      , DCreate(SPAN, {class:'value', inner: this.formater(this[prop])})
     ]})
   }
   return this[ghostProp]

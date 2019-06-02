@@ -13,7 +13,7 @@ Object.assign(FAEscene.prototype,{
   nouvelle façon de procéder.
 **/
 asPitch(opts){
-  if(undefined === this._aspitch){
+  if ( isUndefined(this._aspitch) ) {
     if(this.isRealScene) this._aspitch = DFormater(`${this.numero}. ${this.pitch}`)
     else this._aspitch = 'GÉNÉRIQUE'
     this._aspitch = DCreate(SPAN,{class:'pitch', inner: this._aspitch})
@@ -46,7 +46,7 @@ asShort(opts){
   Sortie complète de l'event, par exemple pour le reader
 **/
 , asFull(opts){
-    if(undefined === opts) opts = {}
+    opts = opts || {}
     opts.noTime = true
     let divs = []
     divs.push(...this.asBook(opts))
@@ -75,7 +75,7 @@ asBook(opts){
 ,
 f_scene_heading(opts){
   // console.log("-> FAEscene#f_scene_heading")
-  if(undefined === opts) opts = {}
+  opts = opts || {}
   var headingElements = []
   if(this.isRealScene){
     headingElements.push(DCreate(SPAN, {class:'scene-numero', inner: `${this.numero}. `}))
@@ -108,9 +108,9 @@ f_scene_heading(opts){
 Object.defineProperties(FAEscene.prototype,{
   f_pitch:{
     get(){
-      if(undefined === this._f_pitch){
+      isDefined(this._f_pitch) || (
         this._f_pitch = DCreate(SPAN, {class:'scene-pitch', inner: DFormater(this.pitch)})
-      }
+      )
       return this._f_pitch
     }
   }

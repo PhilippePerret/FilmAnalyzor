@@ -120,7 +120,7 @@ const HandTests = {
   let my = this
   var headers = [
     DCreate(BUTTON, {type: STRbutton, class:'btn-close'})
-  , DCreate('H2', {class: 'htest-libelle', append:[DCreate('SPAN',{inner:'...'})]})
+  , DCreate('H2', {class: 'htest-libelle', append:[DCreate(SPAN,{inner:'...'})]})
   ]
   headers.push(DCreate('DIV', {class: 'div-htest-path', append:[
       DCreate('LABEL', {inner: 'Fichier : '})
@@ -129,11 +129,11 @@ const HandTests = {
   ]}))
   this.description && headers.push(DCreate('DIV', {class: 'htest-description explication', append:[
       DCreate('LABEL', {inner: 'Description : '})
-    , DCreate('SPAN', {inner: '...'})
+    , DCreate(SPAN, {inner: '...'})
   ]}))
   this.note && headers.push(DCreate('DIV', {class: 'htest-note explication', append:[
       DCreate('LABEL', {inner: 'Note : '})
-    , DCreate('SPAN', {inner: '...'})
+    , DCreate(SPAN, {inner: '...'})
   ]}))
 
   return [DCreate('DIV', {class:'htest', append: [
@@ -149,7 +149,7 @@ const HandTests = {
     , DCreate(BUTTON, {id: 'btn-next-file', inner: 'Next File'})
     , DCreate(BUTTON, {id: 'btn-next-test', inner: 'Next Test'})
     , DCreate(BUTTON, {id: 'btn-next-step', inner: 'Next Step'})
-    , DCreate('SPAN', {class:'separator', style:'display:inline-block;width:50px;'})
+    , DCreate(SPAN, {class:'separator', style:'display:inline-block;width:50px;'})
     , DCreate(BUTTON, {id: 'btn-step-success', inner: OK})
     , DCreate(BUTTON, {id: 'btn-step-failure', inner: 'ERROR'})
     ]})

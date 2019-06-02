@@ -72,7 +72,7 @@ buildElementDiv(elm, type, coefT2P){
   }
   if (u != '%' && w < 4) w = 4
   else if (u == '%' && w < 0.5) w = 0.5
-  return DCreate('SPAN', {class:`mtl-seg mtl-${type}`, style:`left:${l}${u};width:${w}${u};`})
+  return DCreate(SPAN, {class:`mtl-seg mtl-${type}`, style:`left:${l}${u};width:${w}${u};`})
 }
 
 

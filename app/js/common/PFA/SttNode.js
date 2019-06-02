@@ -93,7 +93,7 @@ inAbsPFA(coefT2P, name){
   // , leftAbs: this.leftAbs(coefT2P)
   // , widthAbs: this.widthAbs(coefT2P)
   // })
-  return DCreate('SPAN', {
+  return DCreate(SPAN, {
     class:  `pfa-part-${this.isMainPart?'part':'zone'}`
   , style:  `left:${this.leftAbs(coefT2P)};width:${this.widthAbs(coefT2P)};`
   , append: [this.aSpanName(name)]
@@ -139,7 +139,7 @@ widthRel(coef){return this._widthRel||defP(this,'_widthRel', `${Math.round((this
 * Noter qu'il faut faire des instances différentes pour chaque partie.
 **/
 aSpanName(name){
-  return DCreate('SPAN', {class:'name', inner: name || (this.isMainPart?this.hname:this.shortHname)})
+  return DCreate(SPAN, {class:'name', inner: name || (this.isMainPart?this.hname:this.shortHname)})
 }
 
 

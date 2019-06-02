@@ -33,7 +33,7 @@ as(format, flag, opts){
       divs.push(this.asShort(opts))
   }
 
-  if(flag & DUREE) divs.push(DCreate('SPAN',{class:'horloge', inner:` (${this.hduree})` }))
+  if(flag & DUREE) divs.push(DCreate(SPAN,{class:'horloge', inner:` (${this.hduree})` }))
 
   // --- LE DIV FINAL ---
 
@@ -62,8 +62,8 @@ as(format, flag, opts){
   return str
 }
 
-, asShort(opts){ return DCreate('SPAN', {class:'titre', inner:DFormater(this.title)}) }
-, asBook(opts){ return DCreate('SPAN', {class:'titre', inner:DFormater(this.title)}) }
+, asShort(opts){ return DCreate(SPAN, {class:'titre', inner:DFormater(this.title)}) }
+, asBook(opts){ return DCreate(SPAN, {class:'titre', inner:DFormater(this.title)}) }
 
 , asFull(opts){
     return this.asBook() // pour le moment

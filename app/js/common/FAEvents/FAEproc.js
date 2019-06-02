@@ -4,8 +4,8 @@ class FAEproc extends FAEvent {
 // ---------------------------------------------------------------------
 //  CLASSE
 
-static get OWN_PROPS(){return ['procType', ['setup', 'longtext2'], ['exploit','longtext3'], ['payoff','longtext4']]}
-static get OWN_TEXT_PROPS(){ return ['setup', 'exploit', 'payoff']}
+static get OWN_PROPS(){return ['procType', [STRsetup, 'longtext2'], ['exploit','longtext3'], ['payoff','longtext4']]}
+static get OWN_TEXT_PROPS(){ return [STRsetup, 'exploit', 'payoff']}
 static get TEXT_PROPERTIES(){return this._tprops||defP(this,'_tprops',FAEvent.tProps(this.OWN_TEXT_PROPS))}
 
 // ---------------------------------------------------------------------
@@ -36,7 +36,7 @@ get isValid(){
 **/
 checkResolution(){
   if(undefined != this.payoff && this.payoff.length) return
-  UI.warningSection.append(DCreate('DIV', {inner: this.as(STRshort, EDITABLE|LABELLED)}))
+  UI.warningSection.append(DCreate(DIV, {inner: this.as(STRshort, EDITABLE|LABELLED)}))
 }
 
 }

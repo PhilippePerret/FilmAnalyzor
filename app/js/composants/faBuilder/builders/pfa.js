@@ -62,7 +62,7 @@ const PFABuilder = {
       DCreate('DIV', {
         class: `pfa-main-node-rel${pos.class}`
       , style: `left:${pos.left}px;width:${pos.width}px`
-      , append:[ DCreate('SPAN', {inner: pfa.node(kstt).dim}) ]
+      , append:[ DCreate(SPAN, {inner: pfa.node(kstt).dim}) ]
       })
     )
   }
@@ -81,7 +81,7 @@ const PFABuilder = {
       DCreate('DIV', {
         class: `pfa-sub-node-rel${pos.class}`
       , style: `left:${pos.left}px;width:${pos.width}px`
-      , append:[ DCreate('SPAN', {inner: pfa.node(kstt).dim}) ]
+      , append:[ DCreate(SPAN, {inner: pfa.node(kstt).dim}) ]
       })
     )
   }
@@ -293,16 +293,16 @@ const PFABuilder = {
 , buildPFAtext(pfa){
   var allDivs = [
       DCreate('DIV',{class:'pfa-part-name expo', append:[
-        DCreate('SPAN', {inner:'EXPOSITION'})
+        DCreate(SPAN, {inner:'EXPOSITION'})
       ]})
     , DCreate('DIV',{class:'pfa-part-name dev1', append:[
-        DCreate('SPAN', {inner:'DÉV 1'})
+        DCreate(SPAN, {inner:'DÉV 1'})
       ]})
     , DCreate('DIV',{class:'pfa-part-name dev2', append:[
-        DCreate('SPAN', {inner:'DÉV 2'})
+        DCreate(SPAN, {inner:'DÉV 2'})
       ]})
     , DCreate('DIV',{class:'pfa-part-name dnou', append:[
-        DCreate('SPAN', {inner:'DÉNOUEMENT'})
+        DCreate(SPAN, {inner:'DÉNOUEMENT'})
       ]})
   ]
   var divZone

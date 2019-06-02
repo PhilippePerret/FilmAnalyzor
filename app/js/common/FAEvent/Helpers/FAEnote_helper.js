@@ -14,9 +14,9 @@ Object.assign(FAEnote.prototype,{
                             d'édition
 **/
 asNote(options){
-  if(undefined === options) options = {}
+  options = options || {}
   var divs = []
-  if(undefined === this.indice_note) this.indice_note = FATexte.newIndiceNote()
+  isDefined(this.indice_note) || ( this.indice_note = FATexte.newIndiceNote() )
   if(options.curimage && this.needCurImage()){
     divs.push(this.curImageDiv(options))
   }
@@ -25,7 +25,7 @@ asNote(options){
   if(options.linked){divs.push(this.editLink())}
   divs.push(DCreate(DIV,{style:'clear:both;'}))
   divs = DCreate(SPAN,{class:STRnote, append:divs})
-  if (options.as === 'string'){
+  if (options.as === STRstring){
     return divs.outerHTML
   } else {
     return [divs]

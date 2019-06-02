@@ -4,8 +4,8 @@ class FAEidee extends FAEvent {
 // ---------------------------------------------------------------------
 //  CLASSE
 
-static get OWN_PROPS(){return ['ideeType', ['setup', 'longtext2'], ['exploit','longtext3'], ['fcts','longtext4']]}
-static get OWN_TEXT_PROPS(){ return ['setup', 'exploit', 'payoff']}
+static get OWN_PROPS(){return ['ideeType', [STRsetup, 'longtext2'], ['exploit','longtext3'], ['fcts','longtext4']]}
+static get OWN_TEXT_PROPS(){ return [STRsetup, 'exploit', 'payoff']}
 static get TEXT_PROPERTIES(){return this._tprops||defP(this,'_tprops',FAEvent.tProps(this.OWN_TEXT_PROPS))}
 
 

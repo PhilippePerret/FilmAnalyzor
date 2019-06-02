@@ -95,7 +95,7 @@ onDoubleClickOnSlider(e){
 * Construction de la Timeline
 **/
 build(options){
-  // var ho = document.createElement('span')
+  // var ho = document.createElement(SPAN)
   // ho.className = 'timeline-horloge horloge'
   // ho.style = 'visibility:hidden;'
   // this.container.appendChild(ho)
@@ -112,7 +112,7 @@ build(options){
   , style: cursorStyle
   })
 
-  var ho = DCreate('SPAN',{class:'timeline-horloge horloge', style: 'visibility:hidden;'})
+  var ho = DCreate(SPAN,{class:'timeline-horloge horloge', style: 'visibility:hidden;'})
 
   var shcu = DCreate('DIV', {
     class: 'cursor timeline-shadowcursor'

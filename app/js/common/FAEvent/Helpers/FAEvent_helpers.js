@@ -9,9 +9,9 @@ Object.assign(FAEvent.prototype,{
   Méthode pour
 **/
 toString(){
-  if(undefined === this._tostring){
+  isDefined(this._tostring) || (
     this._tostring = `Event #${this.id} (${this.isScene ? `scène ${this.numero}` : this.type})`
-  }
+  )
   return this._tostring
 }
 

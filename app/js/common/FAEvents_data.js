@@ -17,8 +17,8 @@ EVENTS_TYPES_DATA[STRnote] = {
 , shortcut: 'n'
 , genre: 'F'
 , article:{
-    indefini: {sing: 'une', plur: 'des'}
-  , defini:   {sing: 'la', plur: 'les'}
+    indefini: {sing: STRune, plur: STRdes}
+  , defini:   {sing: STRla, plur: STRles}
   }
 , name: {
     plain: {
@@ -47,8 +47,8 @@ EVENTS_TYPES_DATA[STRinfo] = {
 , shortcut: 'f'
 , genre: 'F'
 , article:{
-    indefini: {sing: 'une', plur: 'des'}
-  , defini: {sing: 'l’', plur: 'les'}
+    indefini: {sing: STRune, plur: STRdes}
+  , defini: {sing: 'l’', plur: STRles}
   }
 , name: {
     plain: {
@@ -59,7 +59,7 @@ EVENTS_TYPES_DATA[STRinfo] = {
   , short:{
       cap: {sing: 'Info', plur: 'Infos'}
     , min: {sing: STRinfo, plur: 'infos'}
-    , maj: {sing: 'IDÉE', plur: 'IDÉES'}
+    , maj: {sing: 'INFO', plur: 'INFOS'}
     }
   , tiny: {
       cap: {sing: 'Info', plur: 'Infos'}
@@ -76,8 +76,8 @@ EVENTS_TYPES_DATA[STRproc] = {
 , shortcut: 'p'
 , genre: 'M'
 , article:{
-    indefini: {sing: 'un', plur: 'des'}
-  , defini: {sing: 'le', plur: 'les'}
+    indefini: {sing: STRun, plur: STRdes}
+  , defini: {sing: STRle, plur: STRles}
   }
 , name: {
     plain: {
@@ -106,8 +106,8 @@ EVENTS_TYPES_DATA[STRscene] = {
 , shortcut: 's'
 , genre: 'F'
 , article:{
-    indefini: {sing: 'une', plur: 'des'}
-  , defini:   {sing: 'la', plur: 'les'}
+    indefini: {sing: STRune, plur: STRdes}
+  , defini:   {sing: STRla, plur: STRles}
   }
 , name: {
     plain: {
@@ -136,8 +136,8 @@ EVENTS_TYPES_DATA[STRaction] = {
   , shortcut: 'a'
   , genre: 'F'
   , article:{
-      indefini: {sing: 'une', plur: 'des'}
-    , defini: {sing: 'l’', plur: 'les'}
+      indefini: {sing: STRune, plur: STRdes}
+    , defini: {sing: 'l’', plur: STRles}
     }
   , name: {
       plain: {
@@ -165,8 +165,8 @@ EVENTS_TYPES_DATA[STRdialog] = {
 , shortcut: 'd'
 , genre: 'M'
 , article:{
-    indefini: {sing: 'un', plur: 'des'}
-  , defini: {sing: 'le', plur: 'les'}
+    indefini: {sing: STRun, plur: STRdes}
+  , defini: {sing: STRle, plur: STRles}
   }
 , name: {
     plain: {
@@ -194,8 +194,8 @@ EVENTS_TYPES_DATA[STRdyna] = {
 , shortcut: 'o'
 , genre: 'M'
 , article:{
-    indefini: {sing: 'un', plur: 'des'}
-  , defini: {sing: 'l’', plur: 'les'}
+    indefini: {sing: STRun, plur: STRdes}
+  , defini: {sing: 'l’', plur: STRles}
   }
 , name: {
     plain: {
@@ -223,8 +223,8 @@ EVENTS_TYPES_DATA[STRevent] = {
 , shortcut: 'e'
 , genre: 'M'
 , article:{
-    indefini: {sing: 'un', plur: 'des'}
-  , defini: {sing: 'l’', plur: 'les'}
+    indefini: {sing: STRun, plur: STRdes}
+  , defini: {sing: 'l’', plur: STRles}
   }
 , name: {
     plain: {
@@ -252,8 +252,8 @@ EVENTS_TYPES_DATA[STRidee] = {
 , shortcut: 'i'
 , genre: 'F'
 , article:{
-    indefini: {sing: 'une', plur: 'des'}
-  , defini: {sing: 'l’', plur: 'les'}
+    indefini: {sing: STRune, plur: STRdes}
+  , defini: {sing: 'l’', plur: STRles}
   }
 , name: {
     plain: {
@@ -281,8 +281,8 @@ EVENTS_TYPES_DATA[STRqrd] = {
 , shortcut: 'q'
 , genre: 'F'
 , article:{
-    indefini: {sing: 'une', plur: 'des'}
-  , defini: {sing: 'la', plur: 'les'}
+    indefini: {sing: STRune, plur: STRdes}
+  , defini: {sing: STRla, plur: STRles}
   }
 , name: {
     plain: {
@@ -310,8 +310,8 @@ EVENTS_TYPES_DATA[STRstt] = {
 , shortcut: 't'
 , genre: 'M'
 , article:{
-    indefini: {sing: 'un', plur: 'des'}
-  , defini: {sing: 'le', plur: 'les'}
+    indefini: {sing: STRun, plur: STRdes}
+  , defini: {sing: STRle, plur: STRles}
   }
 , name: {
     plain: {

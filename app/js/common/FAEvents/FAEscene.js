@@ -5,8 +5,8 @@ class FAEscene extends FAEvent {
 //  CLASSE
 
 // Les propriétés propres aux instances (constante de classe)
-static get OWN_PROPS(){return ['numero', ['decor', 'shorttext1'], ['sous_decor', 'shorttext2'],'lieu','effet','sceneType']}
-static get OWN_TEXT_PROPS(){ return ['decor', 'sous_decor']}
+static get OWN_PROPS(){return [STRnumero, [STRdecor, 'shorttext1'], ['sous_decor', 'shorttext2'],'lieu','effet','sceneType']}
+static get OWN_TEXT_PROPS(){ return [STRdecor, 'sous_decor']}
 static get TEXT_PROPERTIES(){return this._tprops||defP(this,'_tprops',FAEvent.tProps(this.OWN_TEXT_PROPS))}
 
 /**

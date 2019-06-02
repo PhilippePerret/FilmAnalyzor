@@ -11,9 +11,9 @@ Object.defineProperties(FAPersonnage.prototype,{
 , f_references:{get(){
     return DCreate('DIV',{append:[
               DCreate('LABEL',{inner:'ID'})
-            , DCreate('SPAN',{class:`id ${this.domC('id')}`, inner: this.id})
+            , DCreate(SPAN,{class:`id ${this.domC('id')}`, inner: this.id})
             , DCreate('LABEL',{inner:'Dim'})
-            , DCreate('SPAN',{class:`dim ${this.domC('dim')}`, inner: this.dim})
+            , DCreate(SPAN,{class:`dim ${this.domC('dim')}`, inner: this.dim})
             ]}).innerHTML
   }}
 , f_ages:{get(){
@@ -29,7 +29,7 @@ Object.defineProperties(FAPersonnage.prototype,{
     var divs = []
     divs.push(DCreate('H3',{inner:'Fonctions'}))
     this.fonctions.split(RC).map(f => {
-      divs.push(DCreate('SPAN',{class:'fonction', inner:f}))
+      divs.push(DCreate(SPAN,{class:'fonction', inner:f}))
     })
     return DFormater(DCreate('DIV',{append:divs}).innerHTML)
   }}
@@ -69,7 +69,7 @@ Object.assign(FAPersonnage.prototype,{
     var divs = []
     switch (format) {
       case STRassociate:
-        divs.push(DCreate('SPAN',{inner:this.toString()}))
+        divs.push(DCreate(SPAN,{inner:this.toString()}))
         break;
       default:
 
@@ -90,7 +90,7 @@ Object.assign(FAPersonnage.prototype,{
 , f_dimension(tDim, dDim){
     return DCreate('DIV', {class:`dimension`, append:[
       DCreate('LABEL',{class:'dimension-name', inner:`Dimension ${tDim}`})
-    , DCreate('SPAN',{class:'dimension-description', inner:DFormater(dDim)})
+    , DCreate(SPAN,{class:'dimension-description', inner:DFormater(dDim)})
   ]}).outerHTML
   }
 
