@@ -46,7 +46,7 @@ constructor(owner, args){
 **/
 forEachFilteredEvent(method){
   for(var ev of this.filtereds){
-    if(false === method(ev)) break
+    if ( isFalse(method(ev)) ) break
   }
 }
 get forEachFiltered(){ return this.forEachFilteredEvent.bind(this) }
@@ -58,7 +58,7 @@ get filtereds(){
   let my = this
     , fn_texte        // fonction pour chercher le texte
   // console.log("-> EventFilter#filtereds", this.filter)
-  if(undefined === this._filtereds){
+  if ( isUndefined(this._filtereds) ) {
     this._filtereds = []
 
     // Ce qu'il faut checker
@@ -84,10 +84,8 @@ get filtereds(){
     })
   }
   my = null
-  if(this._filtereds.length === 0 && FAEvent.count > 0){
-    F.notify(T('no-event-with-filter'))
-  }
-  // console.log("this._filtereds:", this._filtereds)
+  isEmpty(this._filtereds) && FAEvent.count > 0 && F.notify(T('no-event-with-filter'))
+
   return this._filtereds
 }
 
@@ -100,7 +98,7 @@ get items(){return this.filtereds}
                       dans le `content` et le `titre`
 **/
 get filtreText(){
-  if (undefined === this._filtreText){
+  if ( isUndefined(this._filtreText) ){
     let my = this
     if(my.withText){
       if(my.withText.regular){
@@ -129,7 +127,7 @@ get filtreText(){
 
 get filtrePersonnages(){
   let my = this
-  if(undefined === this._filtrePersonnages){
+  if( isUndefined(this._filtrePersonnages) ){
     if(my.withPersonnages){
       // Il faut faire la liste de tous les diminutifs des personnages
       // recherchés
@@ -182,8 +180,8 @@ get eventTypes(){return this.filter.eventTypes}
 
 // Pour inverser la condition générale
 get invert(){
-  if(undefined === this._invert){
-    if(undefined === this.filter.invert){
+  if ( isUndefined(this._invert) ) {
+    if ( isUndefined(this.filter.invert) ) {
       this._invert = false
     } else {
       this._invert = this.filter.invert
@@ -200,7 +198,7 @@ get invert(){
 **/
 prepareFilter(){
   var my = this
-  if(my.eventTypes == null) return
+  if( isNull(my.eventTypes) ) return
   my.hTypes = {}
   my.eventTypes.forEach(function(el){my.hTypes[el] = true})
   // console.log("[Préparation du filtre] my.hTypes:", my.hTypes)

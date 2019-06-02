@@ -100,8 +100,6 @@ get HTMLTitle(){
   isDefined(this._htmltitle) || (
     this._htmltitle = `${DFormater(this.title)} (${OTime.vVary(this.time).horloge})`
   )
-  console.log("this.time = ", this.time)
-  console.log("this.horloge = ", OTime.vVary(this.time).horloge)
   return this._htmltitle
 }
 

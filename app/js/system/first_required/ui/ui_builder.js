@@ -140,6 +140,8 @@ const UIBuilder = {
     UI.markFilmStart  = UI.timeRuler.find('span.mark-film-start')
     UI.markFilmEnd    = UI.timeRuler.find('span.mark-film-end')
 
+    // La section contenant les eventers
+    UI.sectionEventers = $('#section-eventers')
   }
 
 /**

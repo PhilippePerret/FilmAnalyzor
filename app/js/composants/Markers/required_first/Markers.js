@@ -15,6 +15,24 @@ constructor(analyse){
 }
 
 /**
+  Pour créer un nouveau marker
+**/
+createNew(){
+  let my = this
+  prompt("Nom du nouveau marqueur :", {
+      defaultAnswer: ''
+    , buttons:['Renoncer','Créer le marqeur']
+    , defaultButtonIndex:1
+    , cancelButtonIndex:0
+    , okButtonIndex:1
+    , methodOnOK: (title, indexButtonClicked) => {
+        let m = new Marker(my.a, {time: my.a.locator.currentTime.vtime, title:title})
+        m.create()
+      }
+  })
+}
+
+/**
   Pour faire une boucle sur les marqueurs
 **/
 forEach(fn){

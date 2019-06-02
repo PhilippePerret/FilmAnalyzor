@@ -216,7 +216,6 @@ const UI = {
     current_analyse && current_analyse.locator[method].bind(current_analyse.locator)(arg)
   }
 , hideCurrentTime(){this.runIfAnalyse('hideCurrentTime')}
-, goToTime(){this.runIfAnalyse('goToTime')}
 , stopAndRewind(){this.runIfAnalyse('stopAndRewind')}
 , goToFilmStart(){this.runIfAnalyse('goToFilmStart')}
 , goToNextStopPoint(){this.runIfAnalyse('goToNextStopPoint')}

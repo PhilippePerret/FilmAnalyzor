@@ -15,16 +15,16 @@ constructor(analyse){
   this.stop_points_times = [] // pour mettre les seconds
 }
 
-
 // Pour savoir si la vidéo est en train de jouer
 get playing(){return this._playing || false}
 set playing(v){ this._playing = v}
 
 init(){
-  this.videoController = this.a.videoController
+  this.controller = this.a.videoController
 
   // Le bouton pour rejoindre le début du film. Il n'est défini que si
   // ce temps est défini pour l'analyse courante
+  // TODO : régler tous les boutons d'un coup
   this.a.setButtonGoToStart()
 
   // L'horloge de la vidéo n'est visible que lorsque son temps est différent
@@ -43,26 +43,26 @@ init(){
 
  */
 togglePlay(ev){
+  let my = this
   var pauser = isTrue(this.playing)
   if (pauser) {
     //
     // => PAUSE
     //
     UI.video.pause()
-    $(this.btnPlay).removeClass('actived')
-    this.playing = false
-    this.actualizeALL() // à l'arrêt, on actualise tout
-    this.desactivateFollowers()
-    this.setPlayButton(this.playing)
-    // this.stopWatchTimerEvent()
-    this.a.modified = true // pour le temps courant -- (?)
+    $(my.controller.btnPlay).removeClass('actived')
+    my.playing = false
+    my.actualizeALL() // à l'arrêt, on actualise tout
+    my.desactivateFollowers()
+    my.controller.setPlayButton(this.playing)
+    my.a.modified = true // pour le temps courant -- (?)
   } else {
     //
     // => PLAY
     //
-    this.resetAllTimes()
+    my.resetAllTimes()
     // stop.
-    var curT = this.getTime() // {OTime}
+    var curT = my.currentTime // {OTime}
     // Pour gérer l'Autoplay Policy de Chromium
     var videoPromise = UI.video.play()
     if (isDefined(videoPromise)) {
@@ -71,115 +71,23 @@ togglePlay(ev){
         // Autoplay started!
 
         // On mémorise le dernier temps d'arrêt pour y revenir avec le bouton
-        this.lastStartTime = curT
-        this.addStopPoint(curT)
-        $(this.btnPlay).addClass('actived')
-        this.playing = true
+        my.lastStartTime = curT
+        my.addStopPoint(curT)
+        $(my.controller.btnPlay).addClass('actived')
+        my.playing = true
         // On déclenche le suivi de l'horloge, curseur, etc.
-        this.activateFollowers()
-        this.setPlayButton(this.playing)
+        my.activateFollowers()
+        my.controller.setPlayButton(my.playing)
       }).catch(error => {
         // Autoplay was prevented.
         // Show a "Play" button so that user can start playback.
         // Pouvoir mettre cette alerte, en cas de début fort
         console.warn("Autoplay prevented, ok.")
-        this.setPlayButton(this.playing)
+        my.controller.setPlayButton(my.playing)
       });
     }
-    // On redémarre la surveillance des temps par les events du
-    // reader pour qu'ils se mettent en exergue quand le temps
-    // passe sur eux.
-    // OBSOLÈTE : ON UTILISE MAINTENANT LA TimeMap
-    // this.restartWatchTimerEvent()
   }
   // console.log("<- togglePlay")
-}
-
-// ---------------------------------------------------------------------
-//  MÉTHODES DE NAVIGATION DANS LA VIDÉO
-
-stop(){
-  this.playing && this.togglePlay()
-}
-
-/**
- * Méthode pour rembobiner au début du film (si on est après et qu'il est
- * défini) ou au début de la vidéo
- *
- * Note : le -5 ci-dessous permet de cliquer deux fois sur le bouton pour
- * revenir tout au début (sinon, on revient toujours au début défini du
- * film)
- */
-stopAndRewind(){
-  var curOTime = this.currentTime // {OTime}
-  var newOTime = new OTime(0)
-
-  // Si le film jouait, on doit l'arrêter
-  if(this.playing) this.togglePlay()
-
-  if(curOTime > this.lastStartTime){ // instances {OTime}
-    // <= Le temps courant est supérieur au dernier temps de départ
-    // => on revient au dernier temps de départ
-    newOTime.rtime = this.lastStartTime.seconds
-  } else if (this.hasStartTime && curOTime > (this.a.filmStartTime + 5)){
-    // <= le temps courant est au-delà des 5 secondes après le début du film
-    // => On revient au début du film
-    newOTime.rtime = 0
-  } else {
-    // Sinon, on revient au début de la vidéo
-    newOTime.vtime = 0
-  }
-  this.setTime(newOTime)
-}
-
-/**
-  Méthode appelée par les boutons pour rembobiner ou avancer, quand
-  on tient dessus.
-  Elle doivent être utilisées avec les méthode `stop` correspondantes
-  pour stoper l'avance ou le recul.
-**/
-startRewind(sec){
-  this.timerRewind = setInterval(() => {this.rewind(sec)}, 100)
-}
-startForward(sec){
-  this.timerForward = setInterval(()=>{this.forward(sec)}, 100)
-}
-/**
- * Méthode pour rembobiner de +secs+ seconds (on continue de jouer si
- * on jouait, ou alors on remet en route)
- */
-rewind(secs){
-  // console.log("-> rewind")
-  var newtime = UI.video.currentTime - secs
-  if(newtime < 0){
-    newtime = 0
-    if(this.timerRewind) this.stopRewind()
-  }
-  let ontime = new OTime(0)
-  ontime.vtime = newtime
-  this.setTime(ontime)
-}
-
-forward(secs){
-  // console.log("-> forward")
-  var newtime = UI.video.currentTime + secs
-  if(newtime > UI.video.duration){
-    this.timerForward && this.stopForward()
-    return
-  }
-  let ontime = new OTime(0)
-  ontime.vtime = newtime
-  this.setTime(ontime)
-}
-stopRewind(){
-  // console.log("-> stopRewind")
-  clearInterval(this.timerRewind)
-  delete this.timerRewind
-}
-stopForward(){
-  // console.log("-> stopForward")
-  clearInterval(this.timerForward)
-  delete this.timerForward
 }
 
 /**
@@ -235,11 +143,7 @@ setTime(time, options){
 
   time instanceof(OTime) || raise(T('otime-arg-required'))
 
-  if ( updateTimes ) {
-    // Initialisation de tous les temps. Cf. [1]
-    this.resetAllTimes()
-
-  }
+  updateTimes && this.resetAllTimes()
 
   // Réglage de la vidéo. L'image au temps donné doit apparaitre
   // + réglage des curseurs
@@ -248,7 +152,7 @@ setTime(time, options){
   // Réglage de l'horloge principale (toujours)
   this.actualizeHorloge(time)
 
-  if ( playVideo ) {
+  if ( playVideo && isFalse(this.playing) ) {
     // Si l'on n'a pas précisé explicitement qu'on ne voulait
     // pas démarrer la vidéo, on doit voir si on doit le
     // faire.
@@ -256,7 +160,7 @@ setTime(time, options){
     //  - elle n'est pas déjà en train de jouer
     //  - l'option de démarrer après le choix d'un temps est
     //    activée.
-    isTrue(this.playAfterSettingTime) && isFalse(this.playing) && this.togglePlay()
+    isTrue(this.playAfterSettingTime) && this.togglePlay()
     log.info('<- Locator#setTime')
   }
 
@@ -264,9 +168,7 @@ setTime(time, options){
   // les éléments, reader, horloge, markers de structure, etc.
   // Sauf si les options demandent de n'actualiser que la
   // vidéo et l'horloge.
-  if ( isNotTrue(options.updateOnlyVideo) ) {
-    UI.video.paused && this.actualizeALL()
-  }
+  isNotTrue(options.updateOnlyVideo) && UI.video.paused && this.actualizeALL()
 
 }
 
@@ -281,10 +183,6 @@ setVideoAt(curt){
 // ---------------------------------------------------------------------
 //  MÉTHODES DOM
 
-// Réglage du bouton PLAY en fonction de +running+ (qui est this.playing)
-setPlayButton(running){
-  this.btnPlay.innerHTML = running ? this.imgPauser : this.imgPlay
-}
 
 // OBSOLÈTE : ON UTILISE MAINTENANT LA TimeMap
 // /**
@@ -330,7 +228,6 @@ setEndTime(otime, fnOnEndTime){
 resetAllTimes(){
   delete this.wantedEndTime
   delete this.wantedEndTimeCallback
-  delete this.timeNextScene
 }
 
 
@@ -369,11 +266,6 @@ addStopPoint(otime){
 get startTime(){return this._startTime||defP(this,'_startTime', OTime.ZERO)}
 get endTime(){return this._endtime||defP(this,'_endtime', new OTime(UI.video.duration))}
 get currentTime(){ return OTime.vVary(UI.video.currentTime) }
-
-/**
-* Alias de this.currentTime pour retourner le temps vidéo courant
-**/
-getTime(){ return this.currentTime }
 
 
 // ---------------------------------------------------------------------
@@ -448,13 +340,16 @@ buildActualizeMainFunction(){
 }
 
 actualiseBancTimeline(curt){
-  BancTimeline.setCursorByTime(curt)
+  // On n'actualise pas le curseur, car on l'actualise dans `actualizeHorloge`
+  // pour que le curseur soit toujours synchronisé avec le temps joué.
+  // BancTimeline.setCursorByTime(curt)
+  // TODO Qu'est-ce qu'on doit actualiser d'autres ?
 }
 
 actualizeHorloge(curt){
-  // console.log("[actualizeHorloge] curt:", curt)
   UI.mainHorloge.html(curt.horloge)
   UI.videoHorloge.html(curt.vhorloge)
+  BancTimeline.setCursorByTime(curt)
 }
 
 
@@ -474,17 +369,13 @@ stopAtEndTimeWanted(){
   actualise la marque des parties et des zones à côté de
   l'horloge principale
 
-  TODO Pour le moment, on vient ici tous les 40ème de secondes
-  et on fait l'opération de checker dans les tables. On pourrait
-  améliorer les choses en retenant le temps suivant à attendre
-  et en s'en retournant tout de suite après (c'était un peu l'idée
-  avant de revenir à quelque chose de plus efficace).
-  Pour attendre le temps suivant, il suffit de prendre le start
-  de l'élément suivant dans chaque table.
+  TODO Utiliser la TimeMap pour gérer l'actualisation des markers.
+  Et cette méthode deviendra normalement obsolète si on a une méthode
+  générale qui gère toutes les actualisations.
  */
 actualizeMarkersStt(curt){
   // console.log("-> actualizeMarkersStt", curt)
-  var vid = this.videoController
+  var vid = this.controller
   isDefined(curt) || ( curt = this.currentTime )
   isDefined(this.a.PFA.TimesTables) || this.a.PFA.setTimesTables()
   // On doit répéter pour les quatre tables, heureusement petites,
@@ -511,51 +402,11 @@ actualizeMarkScene(curt){
 }
 
 // ---------------------------------------------------------------------
-//  MÉTHODES MARKERS
-
-createNewMarker(){
-  let my = this
-  prompt("Nom du nouveau marqueur :", {
-      defaultAnswer: ''
-    , buttons:['Renoncer','Créer le marqeur']
-    , defaultButtonIndex:1
-    , cancelButtonIndex:0
-    , okButtonIndex:1
-    , methodOnOK: (title, indexButtonClicked) => {
-        let m = new Marker(my.a, {time: my.currentTime.vtime, title:title})
-        m.create()
-      }
-  })
-}
-
-// ---------------------------------------------------------------------
-// Méthodes DOM
-
-/**
-  Méthode appelée pour se rendre au temps voulu.
- */
-goToTime(ev){
-  this.setTime(new OTime(VideoController.current.section.find('.requested_time').val()))
-  // En pause, il faut forcer l'affichage du temps, ça ne se fait pas
-  // tout seul.
-  if(UI.video.paused) this.actualizeALL()
-}
-
-// ---------------------------------------------------------------------
 // Méthodes d'état
-get hasStartTime(){
-  return this.a && this.a.filmStartTime > 0
-}
 
 get playAfterSettingTime(){
   return this.a.options.get('option_start_when_time_choosed')
 }
-
-// --- DOM ÉLÉMENTS ---
-get btnPlay(){return this.videoController.btnPlay}
-get btnRewindStart(){return this.videoController._btnRwdSt}
-get imgPauser(){return '<img src="./img/btns-controller/btn-pause.png" />'}
-get imgPlay(){return '<img src="./img/btns-controller/btn-play.png" />'}
 
 }
 

@@ -121,49 +121,11 @@ load(vpath){
     })
     .on('ended', () => {
       // Quand on atteint le bout de la vidéo
-      my.a.locator.stop()
+      my.stop()
     })
   UI.video.src = path.resolve(vpath)
   UI.video.load() // la vidéo, vraiment
   log.info("<- VideoController#load")
-}
-
-/**
-  Quand on clique sur les marker de structure à côté de l'horloge principale,
-  on peut se rendre aux parties choisies. Chaque clic passe à la partie
-  suivante. CMD click permet de revenir en arrière.
-
-  +mainSub+   Soit 'Main' soit 'Sub', pour indiquer qu'il s'agit d'une
-              partie (expo, dév, dénouement) ou d'une zone
-  +absRel+    Soit 'Abs', soit 'Rel', pour indiquer qu'on a cliqué sur
-              la section qui s'occupe des valeurs absolues ou la section
-              qui s'occupe des valeurs relatives.
-
-**/
-onClickMarkStt(mainSub, absRel, e){
-  var pfa = this.a.PFA
-  // L'objet jQuery du marker
-  var mk = this[`mark${mainSub}Part${absRel}`]
-  // l'identifiant structure de la partie courant (peut-être indéfini)
-  var kstt = mk.attr('data-stt-id')
-  if(!kstt){
-    // <= L'identifiant structurel n'est pas défini
-    // => Il n'existe pas de noeud courant ou on est au tout début
-    // ==> Prendre l'exposition
-    kstt = mainSub == 'Main' ? 'DNOU' : 'desine'
-  }
-  var node = pfa.node(kstt)
-  // console.log("Noeud courant : ", node.hname)
-  var other_node
-  if (e.metaKey){
-    other_node = pfa.node(node.previous || node.last)
-  } else {
-    other_node = pfa.node(node.next || node.first)
-  }
-  // console.log("Nœud suivant/précédent, son temps:", other_node, other_node[`startAt${absRel}`])
-  this.a.locator.setTime(new OTime(other_node[`startAt${absRel}`]))
-
-  pfa = null
 }
 
 /**
@@ -180,13 +142,6 @@ setMarkStt(mainSub, absRel, node, name){
 /**
 * On place les observeurs sur le video-controleur
 **/
-get DATA_BUTTONS(){return [
-    ['.btn-play', 'togglePlay']
-  , ['.btn-stop', 'stopAndRewind']
-  , ['.btn-go-to-film-start', 'goToFilmStart']
-  , ['.btn-stop-points', 'goToNextStopPoint']
-  , ['.btn-go-to-time-video', 'goToTime']
-]}
 
 observe(){
   var my = this
@@ -198,10 +153,10 @@ observe(){
     var val = valsRewForw.shift()
       , btnRewind   = this.section.find(`.btn-rewind-${i}`)[0]
       , btnForward  = this.section.find(`.btn-forward-${i}`)[0]
-    listenMDown(btnRewind,  my.locator, 'startRewind', val)
-    listenMUp(btnRewind,    my.locator, 'stopRewind')
-    listenMDown(btnForward, my.locator, 'startForward', val)
-    listenMUp(btnForward,   my.locator, 'stopForward')
+    listenMDown(btnRewind,  my, 'startRewind', val)
+    listenMUp(btnRewind,    my, 'stopRewind')
+    listenMDown(btnForward, my, 'startForward', val)
+    listenMUp(btnForward,   my, 'stopForward')
   }
 
   // Les « horlogeables »
@@ -261,7 +216,7 @@ get spanVCtrl(){
 
 get btnPlay(){return this._btnPlay||defP(this,'_btnPlay', this.spanVCtrl.find('.btn-play')[0])}
 get btnStop(){return this._btnStop||defP(this,'_btnStop', this.spanVCtrl.find('.btn-stop')[0])}
-get btnRewindStart(){return this.btnSop}
+get btnRewindStart(){return this.btnStop}
 
 get markMainPartAbs(){return this._markMainPartAbs || defP(this,'_markMainPartAbs', this.section.find('.main-part-abs'))}
 get markSubPartAbs(){return this._markSubPartAbs || defP(this,'_markSubPartAbs',    this.section.find('.sub-part-abs'))}
@@ -280,4 +235,11 @@ static get CTRL_BUTTONS(){
   }
 }
 
+// Retourne le locator de l'analyse courante
+get loc(){ return this.a.locator }
+
 }
+
+let extension = require('./js/lecteur/videoController/controller.js')
+Object.assign(VideoController.prototype, extension.methods)
+Object.defineProperties(VideoController.prototype, extension.properties)

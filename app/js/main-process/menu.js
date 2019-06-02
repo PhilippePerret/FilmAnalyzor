@@ -673,7 +673,7 @@ const DATA_MENUS = [
         , {
               label: 'Nouveau marqueur…'
             , shortcut: 'M'
-            , click: _ => {execJS('current_analyse && current_analyse.locator.createNewMarker()')}
+            , click: _ => {execJS('current_analyse && current_analyse.markers.createNew()')}
           }
         , {
               label: 'Liste des marqueurs'

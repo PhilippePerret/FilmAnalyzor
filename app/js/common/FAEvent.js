@@ -1,5 +1,7 @@
 'use strict'
 
+window.EVENTS_TYPES_DATA = require('./js/common/FAEvents_data.js')
+
 class FAEvent {
 // ---------------------------------------------------------------------
 //  CLASSE
@@ -502,7 +504,7 @@ dispatch(d){
 
 togglePlay(){
   if(this.playing){
-    this.locator.stop()
+    this.controller.stop()
   } else {
     // On met en route
     var t = this.time

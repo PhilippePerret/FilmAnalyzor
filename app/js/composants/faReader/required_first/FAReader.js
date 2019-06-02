@@ -93,7 +93,6 @@ stopWatchingItems(){
   permet d'afficher les éléments visibles à un moment M quelconques.
 **/
 revealAndHideElementsAt(curt) {
-  console.log("TimeMap.allAt(curt):", curt, TimeMap.allAt(curt))
   TimeMap.allAt(curt).map( he => {
     $(`#reader-${TYP_TIMEMAP_TO_TYP[he.type]}-${he.id}`).show()
     if ( he.scene ) {

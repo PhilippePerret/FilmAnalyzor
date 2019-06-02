@@ -149,10 +149,10 @@ Object.assign(UI, {
                 , vid = a.videoController
               if (e.key === STRj) { // meta + j => rewind or accelerate
                 loc.playing && loc.togglePlay()
-                loc.rewind(1.0)
+                vid.rewind(1.0)
                 return stopEvent(e)
               } else if(e.key === STRk){ // meta + k => stop
-                loc.playing && loc.stop()
+                loc.playing && vid.stop()
                 vid.setSpeed(1.0)
                 return stopEvent(e)
               } else if(e.key === STRl){ // meta + l => start or accelerate
@@ -206,7 +206,7 @@ Object.assign(UI, {
         return stopEvent(e) // pas par le menu cf. N0004
       case STRm: // m
         log.info('m:New marker')
-        this.a.locator.createNewMarker() // pas par le menu cf. N0004
+        this.a.markers.createNew() // pas par le menu cf. N0004
         return stopEvent(e)
       case STRM: // M
         log.info('M:show markers list')
@@ -225,12 +225,12 @@ Object.assign(UI, {
           , vid = this.a.videoController
         if ( touche === STRj ) { // meta + j => rewind
           loc.playing && loc.togglePlay()
-          loc.rewind(1.0)
+          vid.rewind(1.0)
         } else if(touche === STRJ){ // maj + j => rewind plus fort
           loc.playing && loc.togglePlay()
-          loc.rewind(10)
+          vid.rewind(10)
         } else if(touche === STRk){ // meta + k => stop
-          loc.playing && loc.stop()
+          loc.playing && vid.stop()
           vid.setSpeed(1.0)
         } else if(touche === STRl){ // meta + l => start or accelerate
           // Si la vidéo est déjà en train de jouer, on l'accélère

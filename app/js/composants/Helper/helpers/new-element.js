@@ -1,7 +1,7 @@
 'use strict'
 
 module.exports = {
-  init(): function(){
+  init: function(){
     log.info('n:New element')
   }
 , onKeyUp: function(e){// NE PAS UTILISER () => {...} (scope)

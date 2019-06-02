@@ -2,16 +2,10 @@
 
 ### Traiter :
 
-* Pouvoir se déplacer d'event en event
-  Traiter en même temps le déplacement de noeud STT en noeud STT
-  Fonctionner en mémorisant les choses pour ne pas avoir à tout recalculer
-  chaque fois
-    => dès qu'on demande à trouver l'event suivant, soit il est défini, soit
-       il faut le chercher
-       - en le cherchant, on mémorise aussi le suivant
-       - si un nouveau setTime est appelé, on reset l'objet PrevNext (`PrevNext.reset()`)
-       - si un nouvel event est créé, on le compare aux données actuelles de PrevNext
-       - si un nouveau noeud STT est défini/modifié, on le compare.
+* Est-ce qu'on met les markers dans la TimeMap et dans le reader ? Ça serait sympa d'avoir l'indication du marqueur.
+  - Penser à bien respecter la convention de nommage pour avoir comme ID dans le reader le bon nom pour le retrouver : `reader-<type>-<identifiant>`
+
+* Pouvoir se déplacer de noeud STT en noeud STT
 
 * Possibilité d'afficher un "calque de PFA absolu"
 
