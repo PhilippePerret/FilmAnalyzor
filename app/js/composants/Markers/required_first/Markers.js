@@ -15,6 +15,14 @@ constructor(analyse){
 }
 
 /**
+  Pour boucler sur tous les markers
+**/
+each ( fn ) {
+  for ( var idm in this.items ) {
+    if ( isFalse( fn(this.items[idm]) ) ) break
+  }
+}
+/**
   Pour créer un nouveau marker
 **/
 createNew(){

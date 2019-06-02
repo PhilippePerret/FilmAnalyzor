@@ -81,7 +81,15 @@ const TimeMap = {
     })
 
     // Ajout des images
+    FAImage.forEachByTime( himg => {
+      s = Math.floor(himg.time)
+      this.map[s].push(Object.assign(himg,{type:'image', id:himg.affixe}))
+    })
 
+    // Ajout des markers
+    this.a.markers.each( marker => {
+      this.map[Math.floor(marker.time)].push({type:STRmarker, id:marker.id, time:marker.time})
+    })
 
     // Finalisation de la map : on classe dans chaque seconde
     for(s in this.map){

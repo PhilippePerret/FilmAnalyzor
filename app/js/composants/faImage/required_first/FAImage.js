@@ -8,7 +8,7 @@ class FAImage extends FAElement {
 static get PROPS(){return [STRid,'legend','size','position',STRtime,'path','fname','associates']}
 
 static get positionsValues(){
-  if(undefined === this._positionsvalues){
+  if ( isUndefined(this._positionsvalues) ) {
     this._positionsvalues = {
       '':'Mettre…'
     , 'float-left': 'Flottant à gauche'
@@ -23,7 +23,7 @@ static get positionsValues(){
   Retourne l'image d'identifiant +img_id+ (instance {FAImage})
 **/
 static get(img_id){
-  if(undefined === this._images) this.getAllPictures()
+  isDefined(this._images) || this.getAllPictures()
   return this._images[img_id]
 }
 
@@ -37,7 +37,7 @@ static show(image_id){
   @param {OTime|Number} time  Le temps à prendre ou le temps courant par défaut
 **/
 static shotFrame(time, options){
-  if(undefined === time) time = this.a.locator.currentTime
+  isDefined(time) || ( time = this.a.locator.currentTime )
   this.takeAShot(time, options)
   // TODO Une méthode qui remplace la source de cette image par la valeur,
   // pour forcer son chargement
@@ -62,7 +62,6 @@ static add(image_fname){
 }
 
 static destroy(image_id){
-  if(false == confirm()) return
   confirm({
       message:`Veux-tu vraiment détruire DÉFINITIVEMENT l'image « ${image_id} » (donnée + fichier image) ?`
     , buttons:['Renoncer','Détruire l’image']
@@ -100,7 +99,7 @@ static updateByTimes(){
 }
 
 static updateListingIfNecessary(){
-  if(undefined === this.listing) return
+  if ( isUndefined(this.listing) ) return
   this.listing.items = Object.values(this.images)
   this.listing.update()
 }
@@ -120,13 +119,13 @@ static imagesAt(time){
 
 static forEachImage(fn){
   for(var imgid in this.images){
-    if(false === fn(this.images[imgid])) break
+    if ( isFalse(fn(this.images[imgid])) ) break
   }
 }
 
 static forEachByTime(fn){
   for(var duo of this.byTimes){// duo = {time: temps, id:identifiant, fname: nom fichier}
-    if(false === fn(duo)) break
+    if ( isFalse(fn(duo)) ) break
   }
 }
 
@@ -177,7 +176,7 @@ static decomposeData(data){
 }
 
 static dataByTimesFor(faimg){
-  return {time:faimg.otime.seconds, id:faimg.id, fname:faimg.fname}
+  return {time:faimg.otime.seconds, id:faimg.id, fname:faimg.fname, affixe:faimg.affixe}
 }
 
 /**
