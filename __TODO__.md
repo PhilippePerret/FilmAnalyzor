@@ -2,9 +2,6 @@
 
 ### Traiter :
 
-* Est-ce qu'on met les markers dans la TimeMap et dans le reader ? Ça serait sympa d'avoir l'indication du marqueur.
-  - Penser à bien respecter la convention de nommage pour avoir comme ID dans le reader le bon nom pour le retrouver : `reader-<type>-<identifiant>`
-
 * Pouvoir se déplacer de noeud STT en noeud STT
 
 * Possibilité d'afficher un "calque de PFA absolu"

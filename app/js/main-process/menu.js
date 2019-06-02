@@ -27,7 +27,7 @@ const CURRENT_THING_MENUS = [
   'display-timeline', 'display-analyse-state', 'display-last-report',
   'display-protocole', 'option-locked', 'new-version', 'display-brins',
   'goto-last-scene', 'display-decors', 'check-data-validity',
-  'display-personnages', 'display-images', 'open-in-finder'
+  'display-personnages', 'display-images', 'open-in-finder', 'calc-pfa'
 ]
 // Note : les ID des menus de documents seront ajoutés "à la volée"
 
@@ -343,6 +343,13 @@ const DATA_MENUS = [
               , click: ()=>{execJsOnCurrent('displayPFA')}
             }
           , {
+                label: 'Calque du PFA'
+              , id: 'calc-pfa'
+              , accelerator: 'CmdOrCtrl+Shift+P'
+              , enabled: false
+              , click:() => {execJsOnCurrent('displayCalcPFA')}
+            }
+          , {
                 label: "Fondamentales"
               , id: 'display-fondamentales'
               , accelerator: 'CmdOrCtrl+Alt+Shift+F'
@@ -421,12 +428,6 @@ const DATA_MENUS = [
       , enabled: true
       , submenu: [
             {
-                label: "Jouer"
-              , accelerator: 'CmdOrCtrl+P'
-              , click: () => {console.log("Jouer la vidéo")}
-            }
-          , {type: 'separator'}
-          , {
                 label: 'Taille'
               , submenu: [
                     {label: 'Petite',   id: 'size-video-small', type:'radio', click:()=>{setVideoSize('small')}}

@@ -254,9 +254,9 @@ displayLastReport(){
 }
 
 
-displayPFA(){
-  this.PFA.toggle()
-}
+displayPFA(){ this.PFA.toggle() }
+displayCalcPFA(){ this.PFA.toggleCalc() }
+
 togglePanneauInfosFilm(){
   if(NONE === typeof(InfosFilm)) return this.loadInfosFilm(this.togglePanneauInfosFilm.bind(this))
   InfosFilm.current.toggle()

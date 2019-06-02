@@ -2,6 +2,8 @@
 
 const PFA = require('./PFA-mini')
 Object.assign(PFA, require('./PFA-calculs'))
+Object.assign(PFA, require('./PFA-calque'))
+
 Object.assign(PFA, {
   class: 'PFA'
 , inited: false
@@ -77,6 +79,11 @@ Object.assign(PFA, {
 , toggle(){
     this.fwindow.toggle()
 }
+/**
+  Afficher masquer le calque du PFA
+**/
+, toggleCalc(){ this.calque.toggle() }
+
 , show(){
     this.fwindow.show()
   }
