@@ -135,24 +135,6 @@ load(){
     UI.toggleKeyUpAndDown(/* out texte field */ true)
     // On met en route le timer de sauvegarde
     my.runTimerSave()
-    try {
-      // On peuple le reader avec les events et les images
-      my.reader.init() // notamment : construction du reader
-      my.reader.show()
-      my.reader.peuple()
-    } catch (e) {
-      log.error("Impossible de peupler le reader (voir l'erreur ci-dessous)")
-      log.error(e)
-    }
-
-    // Si une méthode après le chargement est requise, on
-    // l'invoque.
-    // Pour le moment, la méthode est surtout utilisée pour les
-    // tests (même seulement pour les tests)
-    if(isFunction(my.methodAfterLoadingAnalyse)){
-      my.methodAfterLoadingAnalyse()
-    }
-
 
     log.info('<- FAnalyse.onReady')
   }
@@ -182,10 +164,28 @@ load(){
     // connaitre, à un temps donné, tous les éléments qu'on trouve.
     TimeMap.update()
 
+    // On peuple le reader avec les events et les images
+    try {
+      my.reader.init() // notamment : construction du reader
+      my.reader.show()
+      my.reader.peuple()
+    } catch (e) {
+      log.error("Impossible de peupler le reader (voir l'erreur ci-dessous)")
+      log.error(e)
+    }
+
     // Au cours du dispatch des données, la méthode modified a été invoquée
     // de nombreuses fois. Il faut revenir à l'état normal.
     this.modified = false
     UI.stopWait()// toujours, au cas où
+
+    // Si une méthode après le chargement est requise, on
+    // l'invoque.
+    // Pour le moment, la méthode est surtout utilisée pour les
+    // tests (même seulement pour les tests)
+    if(isFunction(my.methodAfterLoadingAnalyse)){
+      my.methodAfterLoadingAnalyse()
+    }
 
     // On appelle la méthode `window.WhenAllIsReallyReady` qui permet de
     // jouer du code pour essai à la toute fin

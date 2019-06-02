@@ -5,12 +5,17 @@ const PHASE_START     = 1
 const PHASE_CONTINUE  = 2
 const PHASE_END       = 4
 
-const TYPE_EVENT = 1
-const TYPE_STT   = 2
+const TYPE_EVENT  = 1
+const TYPE_STT    = 2
+const TYPE_MARKER = 4
+const TYPE_IMAGE  = 8
 
 const TYP_TIMEMAP_TO_TYP = {}
 TYP_TIMEMAP_TO_TYP[TYPE_EVENT]  = STRevent
 TYP_TIMEMAP_TO_TYP[TYPE_STT]    = 'sttNode'
+TYP_TIMEMAP_TO_TYP[TYPE_MARKER] = 'marker'
+TYP_TIMEMAP_TO_TYP[TYPE_IMAGE]  = 'image'
+
 
 
 const TimeMap = {
@@ -81,14 +86,29 @@ const TimeMap = {
     })
 
     // Ajout des images
+    // Note : on les laisse 5 secondes à l'affichage
     FAImage.forEachByTime( himg => {
+      // console.log("Image dans TimeMap:", himg)
       s = Math.floor(himg.time)
-      this.map[s].push(Object.assign(himg,{type:'image', id:himg.affixe}))
+      Object.assign(himg,{type:TYPE_IMAGE, id:himg.affixe, phase:PHASE_START})
+      this.map[s].push(himg)
+      for(var i = 0; i<5;++i){
+        this.map[++s].push(Object.assign({}, himg,{phase:PHASE_CONTINUE}))
+      }
+      this.map[s + 6].push(Object.assign({}, himg,{phase:PHASE_END}))
     })
 
     // Ajout des markers
+    // -----------------
+    // On les laisse 5 secondes à l'affichage dans le reader
     this.a.markers.each( marker => {
-      this.map[Math.floor(marker.time)].push({type:STRmarker, id:marker.id, time:marker.time})
+      var hmarker = {type:TYPE_MARKER, id:marker.id, time:marker.time, phase:PHASE_START}
+        , s = Math.floor(marker.time)
+      this.map[s].push(hmarker)
+      for(var i = 0; i<5;++i){
+        this.map[++s].push(Object.assign({}, hmarker,{phase:PHASE_CONTINUE}))
+      }
+      this.map[s + 6].push(Object.assign({}, hmarker,{phase:PHASE_END}))
     })
 
     // Finalisation de la map : on classe dans chaque seconde

@@ -62,29 +62,23 @@ revealAndHideElements(){
 
   // On prend les events courants qui commencent et on les affiche
   TimeMap.allStartAt(this.currentTime).map( he => {
+    console.log("Reader revèle : ", he)
     $(`#reader-${TYP_TIMEMAP_TO_TYP[he.type]}-${he.id}`).show()
-    if ( he.scene ) {
-
-    } else if ( he.stt ) {
-
-    }
   })
 
   // On prend les events courants qui finissent et on les affiche
   TimeMap.allEndAt(this.currentTime).map( he => {
+    console.log("Reader masque : ", he)
     $(`#reader-${TYP_TIMEMAP_TO_TYP[he.type]}-${he.id}`).hide()
-    if ( he.scene ) {
-
-    } else if ( he.stt ) {
-
-    }
   })
 
   // console.log("<- revealAndHideElements")
 }
 stopWatchingItems(){
-  clearInterval(this.timerWatchingItems)
-  delete this.timerWatchingItems
+  if ( isDefined(this.timerWatchingItems) ) {
+    clearInterval(this.timerWatchingItems)
+    delete this.timerWatchingItems
+  }
 }
 
 /**
@@ -120,30 +114,47 @@ reset(){ this.reader.html('')}
 
 /**
   Lorsqu'une analyse est chargée, on appelle cette méthode pour mettre
-  tous les events dans le reader
+  tous les éléments dans le reader. Il s'agit pour le moment :
+    - des events (avec les scènes comme event particulier)
+    - les images
+    - les marqueurs
 
   Note : on n'utilise pas la méthode this.append qui vérifierait chaque
   fois l'emplacement. Ici, on peut les mettre les uns après les autres
 **/
 peuple(){
-  let hImages = [...FAImage.byTimes]
-  var hNextImage = hImages.shift(), nextImage
-    , currentTime = 0
+
+  // Boucle pour écrire tous les events
   this.a.forEachEvent(ev => {
-    // Si la prochaine image est inférieure au temps courant, on doit
-    // l'insérer à cet endroit.
-    while ( hNextImage && hNextImage.time < currentTime ) {
-      nextImage = FAImage.get(hNextImage.id)
-      this.reader.append(nextImage.div)
-      nextImage.observe()
-      nextImage.jqReaderObj.hide()
-      hNextImage = hImages.shift()
-    }
     this.reader.append(ev.div)
     ev.observe()
     ev.jqReaderObj.hide()
-    currentTime = ev.otime.vtime
   })
+
+  // Boucle pour écrire toutes les images et tous les markers
+  let aImages   = FAImage.byTimes.map( himg => FAImage.get(himg.id) )
+    , aMarkers  = [...this.a.markers.arrayItems]
+  var nextImage, nextMarker, o, time
+
+  nextImage   = aImages.shift()
+  nextMarker  = aMarkers.shift()
+
+  this.reader.find('> div').each( (i, o) => {
+    if ( isUndefined(nextImage) && isUndefined(nextMarker)) return // accélération
+    o = $(o)
+    time = parseFloat(o.data(STRtime))
+    if ( nextImage && time > nextImage.time ) {
+      $(nextImage.div).insertBefore(o)
+      nextImage.observe()
+      nextImage.jqReaderObj.hide()
+      nextImage = aImages.shift()
+    }
+    if ( nextMarker && time > nextMarker.time ) {
+      $(nextMarker.divReader).insertBefore(o)
+      nextMarker = aMarkers.shift()
+    }
+  })
+
 }
 
 /**

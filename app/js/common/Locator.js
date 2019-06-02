@@ -5,8 +5,6 @@
  * Pour la gestion d'un locateur vidéo
  */
 
-const LocatorGotoMethods = require('./js/common/Locator/goto_methods')
-
 class Locator {
 
 constructor(analyse){
@@ -61,7 +59,6 @@ togglePlay(ev){
     // => PLAY
     //
     my.resetAllTimes()
-    // stop.
     var curT = my.currentTime // {OTime}
     // Pour gérer l'Autoplay Policy de Chromium
     var videoPromise = UI.video.play()
@@ -180,31 +177,6 @@ setVideoAt(curt){
   // présents à l'affichage
 }
 
-// ---------------------------------------------------------------------
-//  MÉTHODES DOM
-
-
-// OBSOLÈTE : ON UTILISE MAINTENANT LA TimeMap
-// /**
-//   Méthode qui arrête la surveillance des events affichés dans
-//   le reader (quand on arrête la lecture)
-// **/
-// stopWatchTimerEvent(){
-//   if (isEmpty(this.a.reader.watchedItems)) return
-//   Object.values(this.a.reader.watchedItems).forEach(item => this.a.reader.stopWatchingItem(item))
-// }
-
-// OBSOLÈTE : ON UTILISE MAINTENANT LA TimeMap
-// /**
-//   Méthode contraire à la méthode précédente, qui relance la
-//   surveillance des events affichés dans le reader, pour savoir
-//   si on passe par leur temps.
-// **/
-// restartWatchTimerEvent(){
-//   if (isEmpty(this.a.reader.watchedItems)) return
-//   Object.values(this.a.reader.watchedItems).forEach(item => this.a.reader.restartWatchingItem(item))
-// }
-
 /**
   On peut déterminer quand la vidéo devra s'arrêter avec cette méthode
 
@@ -268,91 +240,6 @@ get endTime(){return this._endtime||defP(this,'_endtime', new OTime(UI.video.dur
 get currentTime(){ return OTime.vVary(UI.video.currentTime) }
 
 
-// ---------------------------------------------------------------------
-
-/**
- * Méthode pour activer l'horloge qui dépend du début défini pour le
- * film (ou le début en cas d'erreur). Elle marche au frame près
- */
-activateFollowers(){
-  var my = this
-  // On construit la méthode d'actualisation en fonction des options et du
-  // mode d'affichage.
-  this.buildActualizeMainFunction()
-  // === INTERVAL TIMER QUI DEMANDE L'ACTUALISATION DE L'AFFICHAGE ===
-  this.intervalTimer = setInterval(my.actualizeMainFunction.bind(my), 1000/40)
-  // Watcher sur le reader. Toutes les secondes, il regardera les éléments
-  // qui doivent être affichés dans le reader.
-  this.a.reader.startWatchingItems()
-  my = null
-}
-
-desactivateFollowers(){
-  if(this.intervalTimer){
-    clearInterval(this.intervalTimer)
-    this.intervalTimer = null
-  }
-  // On finit de suivre le reader
-  this.a.reader.timerWatchingItems && this.a.reader.stopWatchingItems()
-}
-
-/**
-  Méthode qui se charge de tout actualiser,
-  c'est-à-dire l'horloge, le reader (events proches) et le
-  indicateur de structure.
-
-  Note : avant, c'était la méthode appelée tous les 40 millièmes de seconde
-  pour actualiser l'affichage. Maintenant, elle ne sert que lorsqu'on est à
-  l'arrêt.
-**/
-actualizeALL(){
-  log.info('-> Locator.actualizeALL')
-  var curt = this.currentTime
-  this.actualizeHorloge(curt)
-  this.actualizeMarkersStt(curt)
-  this.actualizeMarkScene(curt)
-  this.a.reader.revealAndHideElementsAt(curt)
-  curt = null
-  log.info('<- Locator.actualizeALL')
-}
-
-/**
-  Méthode qui construit la fonction d'actualisation en fonction des options
-  choisies.
-**/
-buildActualizeMainFunction(){
-  var codeLines = [] // on mettra les lignes de code dedans
-  // On actualise toujours les horloges
-  codeLines.push("var curt = this.currentTime;")
-  codeLines.push("this.actualizeHorloge(curt)")
-  codeLines.push("this.actualizeMarkScene(curt)")
-
-  if (this.a.options.get('video.running.updates.stt')){
-    codeLines.push("this.actualizeMarkersStt(curt)")
-  }
-  // Arrêter de jouer si un temps de fin est défini et qu'il est
-  // atteint
-  codeLines.push("this.isEndTimeWanted(curt) && this.stopAtEndTimeWanted()")
-
-  this.actualizeMainFunction = new Function(codeLines.join(RC))
-  this.actualizeMainFunction = this.actualizeMainFunction.bind(this)
-
-}
-
-actualiseBancTimeline(curt){
-  // On n'actualise pas le curseur, car on l'actualise dans `actualizeHorloge`
-  // pour que le curseur soit toujours synchronisé avec le temps joué.
-  // BancTimeline.setCursorByTime(curt)
-  // TODO Qu'est-ce qu'on doit actualiser d'autres ?
-}
-
-actualizeHorloge(curt){
-  UI.mainHorloge.html(curt.horloge)
-  UI.videoHorloge.html(curt.vhorloge)
-  BancTimeline.setCursorByTime(curt)
-}
-
-
 // Retourne true si un temps de fin est voulu et qu'il est atteint
 isEndTimeWanted(curt){
   return this.wantedEndTime && curt >= this.wantedEndTime
@@ -364,42 +251,10 @@ stopAtEndTimeWanted(){
   if(isFunction(this.wantedEndTimeCallback)) this.wantedEndTimeCallback()
 }
 
-/*
-  De la même manière qu'on actualise l'horloge et le reader, on
-  actualise la marque des parties et des zones à côté de
-  l'horloge principale
+// ---------------------------------------------------------------------
+//  MÉTHODES D'ACTUALISATION
 
-  TODO Utiliser la TimeMap pour gérer l'actualisation des markers.
-  Et cette méthode deviendra normalement obsolète si on a une méthode
-  générale qui gère toutes les actualisations.
- */
-actualizeMarkersStt(curt){
-  // console.log("-> actualizeMarkersStt", curt)
-  var vid = this.controller
-  isDefined(curt) || ( curt = this.currentTime )
-  isDefined(this.a.PFA.TimesTables) || this.a.PFA.setTimesTables()
-  // On doit répéter pour les quatre tables, heureusement petites,
-  // pour trouver :
-  //  - la partie absolue
-  //  - la partie relative (if any)
-  //  - la zone absolue
-  //  - la zone relative si elle existe
-  // TODO
-}
 
-/**
-  On renseigne la scène courante.
-
-  Maintenant, cette méthode ne sert plus que lorsqu'on est à l'arrêt.
-
-  @param {Float} curt  Le temps vidéo courant (donc pas le temps "réel")
-
- */
-actualizeMarkScene(curt){
-  log.info("-> actualizeMarkScene")
-  delete FAEscene._current
-  UI.markCurrentScene.html(FAEscene.current?FAEscene.current.asPitch().innerHTML:'---')
-}
 
 // ---------------------------------------------------------------------
 // Méthodes d'état
@@ -410,4 +265,5 @@ get playAfterSettingTime(){
 
 }
 
-Object.assign(Locator.prototype, LocatorGotoMethods)
+Object.assign(Locator.prototype, require('./js/common/Locator/goto_methods'))
+Object.assign(Locator.prototype, require('./js/common/Locator/update_methods'))

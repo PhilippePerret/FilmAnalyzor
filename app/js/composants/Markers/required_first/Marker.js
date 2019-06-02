@@ -53,6 +53,7 @@ onChangePosition(){
   this.time = BancTimeline.p2t(this.jqObj.offset().left)
   this.updateHTMLTitle()
   this.a.markers.save(/* no message */true)
+  delete this._otime
 }
 
 // Actualise l'aide quand on survole le marqueur (titre formaté et horloge)
@@ -102,5 +103,7 @@ get HTMLTitle(){
   )
   return this._htmltitle
 }
+
+get otime(){return this._otime||defP(this,'_otime',new OTime(this.time))}
 
 } // /Class Marker

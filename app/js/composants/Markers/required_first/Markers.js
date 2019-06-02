@@ -69,6 +69,7 @@ afterSave(noMessage){
   Chargement des marqueurs de l'analyse (if any)
 **/
 load(){
+  log.info("-> Markers.load")
   this.items = {}
   delete this._arritems
   if ( this.iofile.exists() ) {
@@ -76,6 +77,7 @@ load(){
       this.items[item.id] = new Marker(this.a, item)
     })
   }
+  log.info("<- Markers.load")
   return this // chainage
 }
 // Construction de tous les marqueurs
