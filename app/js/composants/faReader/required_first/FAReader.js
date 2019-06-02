@@ -71,7 +71,7 @@ static watchEvents(){
     item.isCurrent = !!iscur
     item.jqReaderObj[item.isCurrent?'addClass':'removeClass']('current')
   }
-  
+
 }
 static stopWatchingItems(){
   clearInterval(item.timerWatchingItems)

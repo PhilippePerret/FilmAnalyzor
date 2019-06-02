@@ -5,7 +5,6 @@
  * Pour la gestion d'un locateur vidéo
  */
 
-const NextTime = require('./js/common/NextTime')
 const LocatorGotoMethods = require('./js/common/Locator/goto_methods')
 
 class Locator {
@@ -16,7 +15,6 @@ constructor(analyse){
   this.stop_points_times = [] // pour mettre les seconds
 }
 
-get nextTime(){return this._nexttime || defP(this,'_nexttime', new NextTime())}
 
 // Pour savoir si la vidéo est en train de jouer
 get playing(){return this._playing || false}
@@ -240,8 +238,6 @@ setTime(time, options){
   if ( updateTimes ) {
     // Initialisation de tous les temps. Cf. [1]
     this.resetAllTimes()
-    // On instancie le nextTime avec le temps choisi
-    this.nextTime.initWithTime(time)
 
   }
 
@@ -312,14 +308,15 @@ setPlayButton(running){
 // }
 
 /**
- * On peut déterminer quand la vidéo devra s'arrêter avec cette méthode
+  On peut déterminer quand la vidéo devra s'arrêter avec cette méthode
+
+  Par exemple quand on ne doit lire qu'un event.
+
+  @param {OTime} otime          Temps de fin
+  @param {Function} fnOnEndTime Fonction à appeler à la fin (if any)
  */
-setEndTime(time, fnOnEndTime){
-  if(isFalse(time instanceof(OTime))){
-    console.error(`${time} n'est pas une instance OTime. Je ne définis pas la fin de la vidéo.`)
-    return
-  }
-  this.wantedEndTime = time
+setEndTime(otime, fnOnEndTime){
+  this.wantedEndTime = otime
   this.wantedEndTimeCallback = fnOnEndTime
 }
 
@@ -334,8 +331,6 @@ resetAllTimes(){
   delete this.wantedEndTime
   delete this.wantedEndTimeCallback
   delete this.timeNextScene
-
-  delete this.nextTime
 }
 
 
@@ -467,20 +462,9 @@ actualizeReader(curt){
   // Note : on passe tous les 40 millième de secondes
   // par cette méthode, quand on joue la vidéo.
 
-  // Nouveau fonctionnement. On se sert d'une instance
-  // nextTime pour connaitre les prochains temps
-  // d'event, d'image ou de structure
-  // Rappel : nextTime est une instance NextTime dont le
-  // valueOf retourne le prochain temps
-  if (isUndefined(this.nextTime.nextItem) || curt.rtime < this.nextTime){
-    return // rien à faire
-  }
-
-  // => Le temps suivant est atteint, on affiche l'élément
-  // qui peut être un event, une image ou un noeud stt
-  // Noter que ça va aussi actualiser la scène, si c'en est une
-  // et où les noeuds structurels
-  this.nextTime.revealNextItemAndFindNext()
+  // OBSOLÈTE. Maintenant, on appelle la méthode toutes les
+  // secondes et on se sert de la TimeMap pour savoir les events
+  // à afficher ou à supprimer.
 
 }
 
@@ -514,45 +498,19 @@ actualizeMarkersStt(curt){
   var vid = this.videoController
   isDefined(curt) || ( curt = this.currentTime )
   isDefined(this.a.PFA.TimesTables) || this.a.PFA.setTimesTables()
-  isDefined(this.nextTimes) || (
-    this.nextTimes = {'Main-Abs': null, 'Main-Rel': null, 'Sub-Abs':null, 'Sub-Rel': null}
-  )
   // On doit répéter pour les quatre tables, heureusement petites,
   // pour trouver :
   //  - la partie absolue
   //  - la partie relative (if any)
   //  - la zone absolue
   //  - la zone relative si elle existe
-
-  var kmar, node, name, nexT
-  for(var ma of ['Main','Sub']){
-    for(var ar of ['Abs','Rel']){
-      kmar = `${ma}-${ar}`
-      if(this.nextTimes[kmar] && this.nextTimes[kmar] > curt){
-        // <= Le temps courant (curt) n'a pas encore atteint
-        //    le prochain temps (nextTimes[key]) dans la table
-        //    kmar
-        // => On continue.
-        continue
-      }
-      var res = this.getSttNameFor(curt, ma, ar)
-      node = res[0]
-      name = res[1]
-      nexT = res[2]
-      // Malheureusement, ça ne fonctionne pas avec :
-      // [node, name, nextTime] = this.getSttNameFor(curt, ma, ar)
-      vid.setMarkStt(ma, ar, node, name)
-      this.nextTimes[kmar] = Math.round(nexT)
-    }
-  }
-
+  // TODO
 }
 
 /**
   On renseigne la scène courante.
 
   Maintenant, cette méthode ne sert plus que lorsqu'on est à l'arrêt.
-  Si on est en lecture, l'objet NextTime gère les scènes qui arrivent.
 
   @param {Float} curt  Le temps vidéo courant (donc pas le temps "réel")
 
@@ -562,79 +520,6 @@ actualizeCurrentScene(curt){
   // Rien à faire s'il n'y a pas de scène
   if(FAEscene.count === 0) return
   FAEscene.current = FAEscene.at(curt)
-}
-
-// ---------------------------------------------------------------------
-
-/**
-  Tourne le nom, le noeud et le prochain temps pour le noeud
-  structurel correspondant au temps courant de la vidéo.
-**/
-getSttNameFor(curt, mainSub, absRel){
-  var table = this.a.PFA.TimesTables[`${mainSub}s-${absRel}`/* p.e. 'Subs-Abs' */]
-    , len = table.length
-    , dtime
-    , i = 0
-    , nextTime = null
-  for(;i<len;++i){
-    dtime = table[i]
-    if(curt.between(dtime.start, dtime.end - 0.01)){
-      nextTime = table[i+1] ? table[i+1].start : null
-      return [dtime.node, dtime.name, nextTime]
-    }
-    if(dtime.start > curt && !nextTime){
-      nextTime = dtime.start
-    }
-  }
-  return [null, null, nextTime]
-}
-
-/**
- * Méthode qui retourne les évènements proches du temps +time+
- */
-eventsAt(time) {
-  var trancheTime = parseInt(time - (time % 5),10)
-  // On commence à chercher 10 secondes avant (on pourra changer ce nombre)
-  var fromTranche = trancheTime // - 20
-  var toTranche   = trancheTime // + 20
-  // On prend tous les évènements dans ce temps
-  var evs = []
-  var evsBT = this.eventsByTrancheTime
-  for(var tranche = fromTranche; tranche <= toTranche; tranche+=5){
-    // console.log("Recherche dans la tranche : ", tranche)
-    if(isUndefined(evsBT[tranche])) continue
-    for(var i=0, len=evsBT[tranche].length;i<len;++i){
-      evs.push(this.a.ids[evsBT[tranche][i]])
-    }
-  }
-  return evs
-}
-
-/**
- * Ajoute l'évènement +ev+ à la liste par tranche (à sa création par exemple)
- */
-addEvent(ev){
-  var tranche = parseInt(ev.time - (ev.time % 5),10)
-  if(isUndefined(this.eventsByTrancheTime[tranche])){
-    // <= La tranche n'existe pas encore
-    // => On la crée et on ajoute l'identifiant de l'event
-    this._events_by_tranche_time[tranche] = [ev.id]
-  } else {
-    // <= La tranche existe déjà
-    // => Placer l'évènement pile à l'endroit voulu
-    var len = this.eventsByTrancheTime[tranche].length
-    // console.log("tranche:",tranche)
-    // console.log("this.eventsByTrancheTime[tranche]:", this.eventsByTrancheTime[tranche])
-    // console.log("this._events_by_tranche_time[tranche]:", this._events_by_tranche_time[tranche])
-    var etested
-    for(var i=0;i<len;++i){
-      etested = FAEvent.get(this._events_by_tranche_time[tranche][i])
-      if (etested.time > ev.time){
-        this._events_by_tranche_time[tranche].splice(i, 0, ev.id)
-        break
-      }
-    }
-  }
 }
 
 // ---------------------------------------------------------------------
@@ -666,28 +551,6 @@ goToTime(ev){
   // En pause, il faut forcer l'affichage du temps, ça ne se fait pas
   // tout seul.
   if(UI.video.paused) this.actualizeALL()
-}
-
-// ---------------------------------------------------------------------
-/**
- * Propriété qui contient les évènements de l'analyse courante par tranche de
- * temps de 5 secondes.
- */
-get eventsByTrancheTime(){
-  if(isUndefined(this._events_by_tranche_time)){
-    this._events_by_tranche_time = {}
-    var i = 0, len = this.a.events.length, e, t
-    for(i;i<len;++i){
-      e = this.a.events[i]
-      var t = parseInt(e.time - (e.time % 5),10)
-      if(isUndefined(this._events_by_tranche_time[t])){
-        this._events_by_tranche_time[t] = []
-      }
-      this._events_by_tranche_time[t].push(e.id)
-    }
-    // console.log("this._events_by_tranche_time:",this._events_by_tranche_time)
-  }
-  return this._events_by_tranche_time
 }
 
 // ---------------------------------------------------------------------

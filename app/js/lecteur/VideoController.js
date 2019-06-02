@@ -157,9 +157,6 @@ onClickMarkStt(mainSub, absRel, e){
   var other_node
   if (e.metaKey){
     other_node = pfa.node(node.previous || node.last)
-    // Sinon le temps ne serait pas contrôlé, car il est avant le
-    // temps suivant attendu :
-    delete this.a.locator.nextTimes
   } else {
     other_node = pfa.node(node.next || node.first)
   }

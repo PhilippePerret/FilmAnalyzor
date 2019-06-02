@@ -2,8 +2,6 @@
 
 ### Traiter :
 
-* Gérer l'insertion, la suppression et le déplacement des events au niveau des `e.__index`, `e.__next` et `e.__prev`
-
 * Pouvoir se déplacer d'event en event
   Traiter en même temps le déplacement de noeud STT en noeud STT
   Fonctionner en mémorisant les choses pour ne pas avoir à tout recalculer
