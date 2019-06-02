@@ -2,7 +2,7 @@
 
 Object.assign(TimeMap,{
 /**
-  Retourne la scène se trouvant sur la seconde +otime+
+  Retourne l'event se trouvant sur la seconde +otime+
   Ou undefined
 **/
   eventAt(otime){

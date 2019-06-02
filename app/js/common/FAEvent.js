@@ -311,8 +311,8 @@ reveal(){
  */
 show(){
   // console.log("-> show", this.id)
-  if(this.shown === true) return
-  if(this.jqReaderObj && this.jqReaderObj.length){
+  if ( isTrue(this.shown) ) return
+  if ( this.jqReaderObj && this.jqReaderObj.length ) {
     // <= l'objet DOM existe déjà
     // => On a juste à l'afficher
     this.jqReaderObj.show()
@@ -322,8 +322,6 @@ show(){
     this.a.reader.append(this)
     this.observe()
   }
-  // SI vraiment on a besoin de montrer cet event,
-  //  on doit appeler la méthode FAReader.reveal(this)
 
   this.shown = true
 }

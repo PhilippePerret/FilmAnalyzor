@@ -98,10 +98,7 @@ init(){
   }
 
 , setCurrentPosition(left){
-    console.log("left dans setCurrentPosition :", left)
-    // this.cursor.css('left',`${left}px`)
     this.currentTime = this.p2t(left)
-    console.log("currentTime envoyé à setTime:", this.currentTime)
     this.a.locator.setTime(this.currentTime)
   }
 /**
@@ -109,7 +106,7 @@ init(){
 **/
 , setCursorByTime(t){
     this.currentTime = t
-    this.cursor.css('left',`${(this.t2p(t.vtime))}px`)
+    this.cursor.css(STRleft,`${(this.t2p(t.vtime))}px`)
   }
 
 

@@ -53,11 +53,11 @@ static reset(){
   @returns {FAEscene} La scène courante dans le film visionné
 **/
 static get current(){return this._current||defP(this,'_current',this.getCurrent())}
-static set current(s){
-  if(s instanceof(FAEscene)) log.info(`Scène courante de FAEscene mise à ${s} (${s.numero})`)
-  this._current = s
-  UI.markCurrentScene.html(s ? s.asPitch().innerHTML : '...')
-}
+// static set current(s){
+//   if(s instanceof(FAEscene)) log.info(`Scène courante de FAEscene mise à ${s} (${s.numero})`)
+//   this._current = s
+//   s && this.a.locator.actualizeMarkScene(s)
+// }
 static getCurrent(){
   if (this.count === 0) return
   return this.at(this.a.locator.currentTime)

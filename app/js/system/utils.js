@@ -13,6 +13,7 @@ function prompt(msg, args){ return confirm(msg, args) }
 function isUndefined(foo){
   return STRundefined === typeof(foo)
 }
+function isBoolean(foo){return STRboolean === typeof foo }
 function isNumber(foo){return STRnumber === typeof(foo)}
 function isNotNumber(foo){return false === isNumber(foo)}
 

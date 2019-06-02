@@ -18,65 +18,6 @@ static reset(){
   UI.sectionReader.html('')
 }
 
-/**
-  Révèle l'élément +item+ dans le reader
-
-  @param {AnyElement} item  event, image, etc. qui doit répondre à la
-                            propriété `jqReaderObj` qui est l'objet du
-                            reader de l'itme.
-  @param {Object} options   Diverses options
-                            fadeOut: si true, on le fait disparaitre au
-                            bout de quelques secondes.
-**/
-static reveal(item, options){
-  isDefined(options) || ( options = {} )
-  if(isNotEmpty(item.jqReaderObj)){
-    item.jqReaderObj.show()
-    // Un timer qui permet :
-    //  1. de savoir lorsque l'item visible est précisément survolé
-    //  2. lorsque le temps est dépassé et qu'il faut retirer l'élément
-    this.startWatchingItem(item)
-
-    try {
-      item.jqReaderObj[0].parentNode.scrollTop = item.jqReaderObj[0].offsetTop
-    } catch(e){
-      log.error(e)
-    }
-  } else {
-    log.warn(`L'élément ${item} n'a pas d'objet reader défini (jqReaderObj). Impossible de le révéler.`)
-  }
-}
-
-/**
-  Toutes les secondes, on va vérifier si le temps courant survole
-  l'item +item+ (event ou image). Si c'est le cas, on le met en exergue.
-  Si le temps de fin de l'item est dépassé depuis plus de cinq seconde,
-  on le fait disparaitre et on arrête de le surveiller.
-
-  Noter que ça ne le fait que lorsqu'il est visible.
-
-  @param {FAEvent|FAImage} item   Image ou event à surveiller
-**/
-static startWatchingItem(item){
-  this.timerWatchingItems = setInterval(this.watchEvents.bind(this), 1000)
-}
-static watchEvents(){
-  // On prend les events courants qui commencent et on les affiche
-
-  // On prend les events courants qui finissent et on les affiche
-
-}
-
-  if(item.isCurrent != iscur){
-    item.isCurrent = !!iscur
-    item.jqReaderObj[item.isCurrent?'addClass':'removeClass']('current')
-  }
-
-}
-static stopWatchingItems(){
-  clearInterval(item.timerWatchingItems)
-  delete item.timerWatchingItems
-}
 
 static get a(){return current_analyse}
 
@@ -101,6 +42,69 @@ build(){
 afterBuilding(){
   $('#titre-reader-to-remove').remove()
 }
+
+/**
+  Toutes les secondes, on va vérifier si le temps courant survole
+  l'item +item+ (event ou image). Si c'est le cas, on le met en exergue.
+  Si le temps de fin de l'item est dépassé depuis plus de cinq seconde,
+  on le fait disparaitre et on arrête de le surveiller.
+
+  Noter que ça ne le fait que lorsqu'il est visible.
+
+  @param {FAEvent|FAImage} item   Image ou event à surveiller
+**/
+startWatchingItems(item){
+  this.timerWatchingItems = setInterval(this.revealAndHideElements.bind(this), 1000)
+}
+
+revealAndHideElements(){
+  // console.log("-> revealAndHideElements")
+
+  // On prend les events courants qui commencent et on les affiche
+  TimeMap.allStartAt(this.currentTime).map( he => {
+    $(`#reader-${TYP_TIMEMAP_TO_TYP[he.type]}-${he.id}`).show()
+    if ( he.scene ) {
+
+    } else if ( he.stt ) {
+
+    }
+  })
+
+  // On prend les events courants qui finissent et on les affiche
+  TimeMap.allEndAt(this.currentTime).map( he => {
+    $(`#reader-${TYP_TIMEMAP_TO_TYP[he.type]}-${he.id}`).hide()
+    if ( he.scene ) {
+
+    } else if ( he.stt ) {
+
+    }
+  })
+
+  // console.log("<- revealAndHideElements")
+}
+stopWatchingItems(){
+  clearInterval(this.timerWatchingItems)
+  delete this.timerWatchingItems
+}
+
+/**
+  Révèle et masque les éléments au point temps +curt+. Contrairement à la
+  méthode `revealAndHideElements` qui fonctionne toutes les secondes, celle-ci
+  permet d'afficher les éléments visibles à un moment M quelconques.
+**/
+revealAndHideElementsAt(curt) {
+  console.log("TimeMap.allAt(curt):", curt, TimeMap.allAt(curt))
+  TimeMap.allAt(curt).map( he => {
+    $(`#reader-${TYP_TIMEMAP_TO_TYP[he.type]}-${he.id}`).show()
+    if ( he.scene ) {
+      this.a.locator.actualizeMarkScene(curt)
+    } else if ( he.stt ) {
+
+    }
+  })
+}
+
+get currentTime(){ return this.a.locator.currentTime }
 
 /**
   Quand on charge une autre analyse, il faut détruire le

@@ -221,7 +221,7 @@ setTime(time, options){
   //   throw(e)
   // } finally {
   // }
-  if ( 'boolean' === typeof options ){
+  if ( isBoolean(options) ){
     options = {dontPlay: options}
   } else if ( isUndefined(options) ){
     options = {}
@@ -264,7 +264,7 @@ setTime(time, options){
   // les éléments, reader, horloge, markers de structure, etc.
   // Sauf si les options demandent de n'actualiser que la
   // vidéo et l'horloge.
-  if ( isFalse(options.updateOnlyVideo) ) {
+  if ( isNotTrue(options.updateOnlyVideo) ) {
     UI.video.paused && this.actualizeALL()
   }
 
@@ -384,15 +384,14 @@ getTime(){ return this.currentTime }
  */
 activateFollowers(){
   var my = this
-  if (this.intervalTimer){
-    this.desactivateFollowers()
-  } else {
-    // On construit la méthode d'actualisation en fonction des options et du
-    // mode d'affichage.
-    this.buildActualizeMainFunction()
-    // === INTERVAL TIMER QUI DEMANDE L'ACTUALISATION DE L'AFFICHAGE ===
-    this.intervalTimer = setInterval(my.actualizeMainFunction.bind(my), 1000/40)
-  }
+  // On construit la méthode d'actualisation en fonction des options et du
+  // mode d'affichage.
+  this.buildActualizeMainFunction()
+  // === INTERVAL TIMER QUI DEMANDE L'ACTUALISATION DE L'AFFICHAGE ===
+  this.intervalTimer = setInterval(my.actualizeMainFunction.bind(my), 1000/40)
+  // Watcher sur le reader. Toutes les secondes, il regardera les éléments
+  // qui doivent être affichés dans le reader.
+  this.a.reader.startWatchingItems()
   my = null
 }
 
@@ -401,6 +400,8 @@ desactivateFollowers(){
     clearInterval(this.intervalTimer)
     this.intervalTimer = null
   }
+  // On finit de suivre le reader
+  this.a.reader.timerWatchingItems && this.a.reader.stopWatchingItems()
 }
 
 /**
@@ -416,9 +417,9 @@ actualizeALL(){
   log.info('-> Locator.actualizeALL')
   var curt = this.currentTime
   this.actualizeHorloge(curt)
-  this.actualizeReader(curt)
   this.actualizeMarkersStt(curt)
-  this.actualizeCurrentScene(curt)
+  this.actualizeMarkScene(curt)
+  this.a.reader.revealAndHideElementsAt(curt)
   curt = null
   log.info('<- Locator.actualizeALL')
 }
@@ -432,10 +433,8 @@ buildActualizeMainFunction(){
   // On actualise toujours les horloges
   codeLines.push("var curt = this.currentTime;")
   codeLines.push("this.actualizeHorloge(curt)")
+  codeLines.push("this.actualizeMarkScene(curt)")
 
-  if (this.a.options.get('video.running.updates.reader')){
-    codeLines.push("this.actualizeReader(curt)")
-  }
   if (this.a.options.get('video.running.updates.stt')){
     codeLines.push("this.actualizeMarkersStt(curt)")
   }
@@ -456,16 +455,6 @@ actualizeHorloge(curt){
   // console.log("[actualizeHorloge] curt:", curt)
   UI.mainHorloge.html(curt.horloge)
   UI.videoHorloge.html(curt.vhorloge)
-}
-
-actualizeReader(curt){
-  // Note : on passe tous les 40 millième de secondes
-  // par cette méthode, quand on joue la vidéo.
-
-  // OBSOLÈTE. Maintenant, on appelle la méthode toutes les
-  // secondes et on se sert de la TimeMap pour savoir les events
-  // à afficher ou à supprimer.
-
 }
 
 
@@ -515,11 +504,10 @@ actualizeMarkersStt(curt){
   @param {Float} curt  Le temps vidéo courant (donc pas le temps "réel")
 
  */
-actualizeCurrentScene(curt){
-  log.info("-> actualizeCurrentScene")
-  // Rien à faire s'il n'y a pas de scène
-  if(FAEscene.count === 0) return
-  FAEscene.current = FAEscene.at(curt)
+actualizeMarkScene(curt){
+  log.info("-> actualizeMarkScene")
+  delete FAEscene._current
+  UI.markCurrentScene.html(FAEscene.current?FAEscene.current.asPitch().innerHTML:'---')
 }
 
 // ---------------------------------------------------------------------

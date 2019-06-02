@@ -662,7 +662,7 @@ La méthode `Locator.actualizeAll` :
 * actualise les horloges avec le temps courant
 * actualise le Reader pour afficher les events au temps courant (`Locator.actualizeReader`)
 * actualise les marques de structure (`Locator.actualizeMarkersStt`)
-* actualise la marque de scène courante (`actualizeCurrentScene`)
+* actualise la marque de scène courante (`actualizeMarkScene`)
 * actualise le Banc Timeline en positionnant le curseur.
 
 Note : à l'avenir, il faudrait pouvoir décider ce que l'on actualise pour alléger le travail. La méthode `actualizeALL` ne sert plus qu'à tout actualiser lorsque l'on s'arrête ou qu'on choisit un temps.

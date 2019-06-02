@@ -8,6 +8,11 @@ const PHASE_END       = 4
 const TYPE_EVENT = 1
 const TYPE_STT   = 2
 
+const TYP_TIMEMAP_TO_TYP = {}
+TYP_TIMEMAP_TO_TYP[TYPE_EVENT]  = STRevent
+TYP_TIMEMAP_TO_TYP[TYPE_STT]    = 'sttNode'
+
+
 const TimeMap = {
 
   init(){
