@@ -74,9 +74,7 @@ static findAssociations(){
     // Dans la propriété `documents`
     if(ev.documents.length){
       ev.documents.map(doc_id => {
-        if(undefined === dDocuments[doc_id]){
-          dDocuments[doc_id] = []
-        }
+        isDefined(dDocuments[doc_id]) || ( dDocuments[doc_id] = [] )
         dDocuments[doc_id].push(ev)
       })
       return // inutile de poursuivre
@@ -109,7 +107,7 @@ static findAssociations(){
 **/
 static forEachDocument(fn){
   for(var doc of this.allDocuments){
-    if(false === fn(doc)) break // pour pouvoir interrompre
+    if ( isFalse(fn(doc)) ) break // pour pouvoir interrompre
   }
 }
 
@@ -321,14 +319,14 @@ setContents(code){
 }
 
 /**
- * Pour récupérer le contenu du textearea
- *
- * TODO Réfléchir à ça :
- * Normalement, si un observeur onchange est placé sur le textarea, il
- * est inutile d'actualiser le contenu quand on change de document (voir où
-* on le fait ici).
-*
-* @return true si le contenu a changé, false otherwise.
+  Pour récupérer le contenu du textearea
+
+  TODO Réfléchir à ça :
+  Normalement, si un observeur onchange est placé sur le textarea, il
+  est inutile d'actualiser le contenu quand on change de document (voir où
+    on le fait ici).
+
+  @return true si le contenu a changé, false otherwise.
  */
 getContents(){
   if(this.contents != FAWriter.docField.val()){
@@ -370,7 +368,7 @@ preparePerType(){
 toggleMenuModeles(){
   if(this.isAbsoluteData) return
   var maskIt = this.contents && this.contents.length > 0
-  $('#section-writer .header .modeles')[maskIt?'hide':'show']()
+  $('#section-writer .header .modeles')[maskIt?STRhide:STRshow]()
 }
 maskSpanModeles(){
   $('#section-writer .header .modeles').hide()
@@ -404,9 +402,9 @@ exists(){ return fs.existsSync(this.path) }
 
 get theme(){return this._theme||defP(this,'_theme',this.themePerType)}
 get themePerType(){
-  if(undefined === this.dataType) throw(`Impossible de trouver les données du type "${this.dtype}"`)
+  isDefined(this.dataType) || raise(`Impossible de trouver les données du type "${this.dtype}"`)
   switch (this.dataType.type) {
-    case 'data': return 'data-theme'
+    case STRdata: return 'data-theme'
     case 'real': return 'real-theme'
     default:
       return 'real-theme'
@@ -414,14 +412,14 @@ get themePerType(){
 }
 
 /**
-* Retourne le titre du document.
-*
-* Pour un document type (non customdoc), il peut être défini soit par la
-* première ligne du fichier (si elle commence par un '# '), soit par le hname
-* par défaut.
-* Pour un customdoc, c'est la première ligne qui doit commencer par un #, soit
-* par le début du texte (les 30 premiers caractères)
-*
+  Retourne le titre du document.
+
+  Pour un document type (non customdoc), il peut être défini soit par la
+  première ligne du fichier (si elle commence par un '# '), soit par le hname
+  par défaut.
+  Pour un customdoc, c'est la première ligne qui doit commencer par un #, soit
+  par le début du texte (les 30 premiers caractères)
+
 **/
 get title(){ return this._title || defP(this,'_title', this.getTitle())}
 
@@ -471,9 +469,9 @@ get dataType(){
 }
 getDataType(){
   switch (this.dtype) {
-    case 'regular': return DATA_DOCUMENTS[this.id]
-    case 'custom':
-    case 'any':     return DATA_DOCUMENTS[this.dtype]
+    case STRregular: return DATA_DOCUMENTS[this.id]
+    case STRcustom:
+    case STRany:     return DATA_DOCUMENTS[this.dtype]
     default:
       throw(`Le dtype "${this.dtype}" est inconnu…`)
   }
@@ -496,4 +494,5 @@ definePathPerType(){
     return path.join(this.a.folderFiles,`${this.id}.${this.extension}`)
   }
 }
+
 }

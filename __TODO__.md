@@ -2,23 +2,18 @@
 
 ### Traiter :
 
+* Mettre le FAWriter sur le côté
+
 * Pouvoir se déplacer de noeud STT en noeud STT
 
-* Possibilité d'afficher un "calque de PFA absolu"
-
 * Garder toujours le curseur visible (faire l'essai en zoomant et en passant du début à la fin du film)
-* Ré-étudier le survol de la timeline pour que ça ne court-circuite pas le déplacement des marqueurs, marqueurs de début et fin, etc.
 
-* Bien travailler les calculs de position pour que tout soit bien
-  - On ne doit pas pouvoir dépasser la fin de la vidéo (setTime doit contrôler)
-  - quand on veut se rendre à un temps précis
+* Ré-étudier le survol de la timeline pour que ça ne court-circuite pas le déplacement des marqueurs, marqueurs de début et fin, etc.
 
 * Liste des marqueurs : utiliser une Helper, pas une liste normale d'éléments
 
 * Fenêtres (Helpers) indiquant les raccourcis de base :
   Les ajouter au menu "Raccourcis". S'inspirer des éléments présents
-
-* Généraliser l'affichage facile de tout un tas de panneaux avec la classe `Helper`.
 
 * Dans un champ d'édition, la touche escape doit permettre d'annuler l'édition après confirmation.
 

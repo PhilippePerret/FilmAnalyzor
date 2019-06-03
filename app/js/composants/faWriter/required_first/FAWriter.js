@@ -45,12 +45,12 @@ const FAWriter = {
         else return false
       } else {
         this.menuTypeDoc.value = 'introduction'
-        dtype = 'regular'
+        dtype = STRregular
         docid = 'introduction'
       }
     } else if(!dtype) {
       [dtype, idx] = (docid||'').split('-')
-      if(dtype !== 'custom') dtype = 'regular'
+      if(dtype !== STRcustom) dtype = STRregular
     }
     this.message(`Document ${dtype} "${docid}" est en préparation…`)
     this.makeCurrent(dtype, docid)
@@ -65,8 +65,8 @@ const FAWriter = {
    */
 , makeCurrent(dtype, docid) {
     let kdoc ;
-    if(isUndefined(docid)){
-      // C'est que c'est le kdoc qui a été envoyé
+    if ( isUndefined(docid) ) {
+      // Quand la k-doc qui a été envoyé
       [dtype, docid, kdoc] = [...dtype.split('^^^'), dtype]
     } else {
       kdoc = `${dtype}^^^${docid}`
@@ -75,9 +75,9 @@ const FAWriter = {
     defaultize(this, 'writerDocs', {})
     isDefined(this.writerDocs[kdoc]) || ( this.writerDocs[kdoc] = new FADocument(dtype, docid) )
     this.currentDoc = this.writerDocs[kdoc]
-    if(!this.isOpened) this.open()
+    this.isOpened || this.open()
     this.currentDoc.display()
-    if(this.visualizeDoc) this.updateVisuDoc()
+    this.visualizeDoc && this.updateVisuDoc()
     // On "referme" toujours le menu des types (après l'ouverture)
     this.menuTypeDoc.val(kdoc)
     // On renseigne le bouton droppable
@@ -90,10 +90,8 @@ const FAWriter = {
 // Permet de forcer le rechargement du document d'identifiant +kdoc+. La
 // méthode est utilisée par le dataeditor
 , resetDocument(kdoc){
-    if(isUndefined(this.writerDocs)) return
-    if (this.currentDoc && this.currentDoc.type == kdoc){
-      this.hide()
-    }
+    if ( isUndefined(this.writerDocs) ) return
+    this.currentDoc && this.currentDoc.type == kdoc && this.hide()
     delete this.writerDocs[kdoc]
   }
 
@@ -102,7 +100,7 @@ const FAWriter = {
    */
 , updateVisuDoc(){
     var contenu
-    if (this.currentDoc.dataType.type === 'data'){
+    if (this.currentDoc.dataType.type === STRdata){
       contenu = '<div>Fichier de données. Pas de formatage particulier.</div>'
     } else {
       contenu = this.formater(this.docField.val(), {format: HTML})
@@ -124,7 +122,7 @@ const FAWriter = {
     var choix
     if(this.currentDoc && this.currentDoc.isModified()){
       if(this.a.locked){
-        choix = 2 // Pour ignore les changements
+        choix = 2 // Pour ignorer les changements
       } else {
         choix = DIALOG.showMessageBox({
             type:       'warning'
@@ -204,13 +202,9 @@ const FAWriter = {
    * Noter que ce seront les «FAEventers» qui afficheront les events
    */
 , open(){
-    if(this.isOpened){
-      UI.sectionWriter.hide()
-      this.fwindow.hide()
-    } else {
-      UI.sectionWriter.show()
-      this.fwindow.show()
-    }
+    UI.sectionWriter[this.isOpened?STRhide:STRshow]()
+    this.fwindow[this.isOpened?STRhide:STRshow]()
+    this.visualizor[this.visualizeDoc?STRshow:STRhide]()
   }
 
 , onShow(){
@@ -226,33 +220,34 @@ const FAWriter = {
 **/
 , setUI(){
     let my = this
-      , any = this.currentDoc.dtype == 'any'
+      , any = this.currentDoc.dtype == STRany
       , rpath = any ? this.currentDoc.path.replace(new RegExp(`^${APPFOLDER}`),'.'):'DOCUMENT '
-    my.menuTypeDoc[any?'hide':'show']()
-    my.section.find('.header #writer-doc-title select')[any?'hide':'show']()
+    my.menuTypeDoc[any?STRhide:STRshow]()
     my.section.find('.header #writer-doc-title label').html(rpath)
-    my.section.find('.header .div-modeles')[any?'hide':'show']()
-    my.section.find('.header .writer-btn-drop')[any?'hide':'show']()
-    my.section.find('.header #writer-btn-new-doc')[any?'hide':'show']()
+    new Array(
+        '#writer-doc-title select'
+      , '.div-modeles'
+      , '.writer-btn-drop'
+      , '#writer-btn-new-doc'
+    ).map( sel => my.section.find(`.header ${sel}`)[any?STRhide:STRshow]())
 
     // On règle la taille pour que ça prenne tout la hauteur
     this.fwindow.jqObj.outerHeight( H - 10 )
+
+    // On le positionne par rapport au visualiseur
+    this.positionneWriter()
+
   }
 
-, beforeHide(){
-  if(isFalse(this.checkCurrentDocModified())) return false
-  return true
-}
-, hide(){
-    this.fwindow.hide()
-  }
+, beforeHide(){ return !!this.checkCurrentDocModified() }
+, hide(){ this.fwindow.hide() }
 
 , onHide(){
     this.stopTimers()
     this.isOpened = false
     delete this.currentDoc
     this.setAutoVisualize()
-    this.visualizor.hide() // au cas où
+    this.visualizor.hide() // s'il est ouvert
   }
 
   /**
@@ -301,7 +296,6 @@ const FAWriter = {
   }
 
 , setAutoVisualize(e){
-    this.visualizeDoc = DGet('cb-auto-visualize').checked
     if (this.visualizeDoc){
       this.autoVisuTimer = setInterval(this.updateVisuDoc.bind(this), 5000)
       this.positionneWriter()
@@ -316,8 +310,6 @@ const FAWriter = {
   S'assure que le writer ne se trouve pas sur le visualiseur
 **/
 , positionneWriter(){
-    // console.log("this.jqObj.position().left:", this.jqObj.position().left)
-    // console.log("this.jqObj.position().left:", this.jqObj.position().left)
     if(this.jqObj.position().left < (this.visualizor.position().left + this.visualizor.outerWidth())){
       this.jqObj.animate({left:(this.visualizor.position().left + this.visualizor.outerWidth() + 40) + 'px'})
     }
@@ -334,16 +326,39 @@ const FAWriter = {
 , message(msg){ this.spanMessage.html(msg || '') }
 
 /**
-* Méthode permettant de boucler sur tous les documents User (donc les
-* document propres à l'analyse courante)
+  Méthode permettant de boucler sur tous les documents User (donc les
+  document propres à l'analyse courante)
 **/
 , forEachUserDocument(method){
     this.customDocuments.forEach(wdoc => method(wdoc))
 }
 
+/**
+  Relève la liste des documents personnalisés (pour la propriété
+  `this.customDocuments`)
+**/
+, makeCustomDocumentsList(){
+    let docs = []
+    var last_id = 0
+    var files = glob.sync(path.join(this.a.folderFiles, '**', 'custom-*.md'))
+    for(var file of files){
+      var doc_id = parseInt(path.basename(file,path.extname(file)).split('-')[1],10)
+      docs.push(new FADocument(STRcustom, doc_id))
+      if(doc_id > last_id) last_id = 0 + doc_id
+    }
+    // On renseigne le dernier identifiant utilisé
+    FADocument.lastID = last_id
+    return docs
+  }
+
 }
 Object.defineProperties(FAWriter,{
   a:{ get(){return current_analyse} }
+
+// Retourne true si la case "Visualiser" est cochée
+, visualizeDoc:{get(){return this.cbVisualize.checked}}
+, cbVisualize:{get(){return this._cbvisualize||defP(this,'_cbvisualize',DGet('cb-auto-visualize'))}}
+
 , spanMessage:{get(){ return this._spanmsg || defP(this,'_spanmsg', this.section.find('#writer-message'))}}
 
 , fwindow:{
@@ -362,22 +377,11 @@ Object.defineProperties(FAWriter,{
 , selector:{
    get(){return this._selector || defP(this,'_selector', new Selector(this.docField))}
  }
+/**
+  Retourne la liste des documents personnalisés
+**/
 , customDocuments:{
-    get(){
-      if(isUndefined(this._customDocuments)){
-        this._customDocuments = []
-        var last_id = 0
-        var files = glob.sync(path.join(this.a.folderFiles, '**', 'custom-*.md'))
-        for(var file of files){
-          var doc_id = parseInt(path.basename(file,path.extname(file)).split('-')[1],10)
-          this._customDocuments.push(new FADocument('custom', doc_id))
-          if(doc_id > last_id) last_id = 0 + doc_id
-        }
-        // On renseigne le dernier identifiant utilisé
-        FADocument.lastID = last_id
-      }
-      return this._customDocuments
-    }
+    get(){return this._customDocuments || defP(this,'_customDocuments', this.makeCustomDocumentsList())}
   }
 , jqObj: {get(){return this.fwindow.jqObj}}
 , section: {get(){return $('#section-writer')}}
