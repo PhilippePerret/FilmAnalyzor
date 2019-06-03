@@ -1,11 +1,10 @@
 'use strict'
 /**
- * Ce module du FAWriter est le module minimum chargé tout le temps, qui
- * contient les données minimum à connaitre.
+    Extension du porte-documents
  */
 
-Object.assign(FAWriter, {
-  // what:'Extension de FAWriter pour la construction du writer'
+Object.assign(PorteDocuments, {
+  // what:'Extension de PorteDocuments pour la construction du writer'
 
 // Rappel : appelé par la FWindow
   build(){
@@ -72,7 +71,7 @@ Object.assign(FAWriter, {
   // Pour séparer les documents propres à cette analyse
   m.append(DCreate(OPTION, {class: 'separator', disabled: true}))
   // La liste des documents propres à cette analyse
-  this.forEachUserDocument(function(wdoc){
+  this.forEachCustomDocument(function(wdoc){
     m.append(DCreate(OPTION, {value: `custom^^^${wdoc.id}`, inner: wdoc.title}))
   })
 }

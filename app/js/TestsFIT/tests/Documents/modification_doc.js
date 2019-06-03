@@ -11,17 +11,17 @@ t.case('Modification et enregistrement', () => {
   action("J'active le menu Documents > Synopsis", () => {
     ipc.send('click-menu', {menu_id: 'open-doc-synopsis'})
   })
-  return waitFor("'undefined' !== typeof(FAWriter) && FAWriter.isOpened === true", {timeout: 4000})
+  return waitFor("'undefined' !== typeof(PorteDocuments) && PorteDocuments.isOpened === true", {timeout: 4000})
   .then(()=>{
 
-    let curDoc = FAWriter.currentDoc
+    let curDoc = PorteDocuments.currentDoc
 
     // On se met dans le champ de texte
-    FAWriter.docField.focus()
-    FAWriter.docField.insertAtCaret('Super')
-    FAWriter.docField.blur()
+    PorteDocuments.docField.focus()
+    PorteDocuments.docField.insertAtCaret('Super')
+    PorteDocuments.docField.blur()
     // Malheureusement, le blur ne suffit pas à provoquer le change.
-    FAWriter.docField.trigger('change')
+    PorteDocuments.docField.trigger('change')
 
     assert_equal(
       true, curDoc._modified,
@@ -32,9 +32,9 @@ t.case('Modification et enregistrement', () => {
     )
 
     action("J'enregistre le document en cliquant sur le bouton…", ()=>{
-      FAWriter.btnSave.click()
+      PorteDocuments.btnSave.click()
     })
-    return waitFor("FAWriter.currentDoc._modified === false", {timeout: 6000})
+    return waitFor("PorteDocuments.currentDoc._modified === false", {timeout: 6000})
     .then(()=>{
       assert_equal(
         false, curDoc._modified,
@@ -44,18 +44,18 @@ t.case('Modification et enregistrement', () => {
         }
       )
 
-      FAWriter.docField.focus()
-      FAWriter.docField.insertAtCaret(RC + RC + "Nouveau texte")
+      PorteDocuments.docField.focus()
+      PorteDocuments.docField.insertAtCaret(RC + RC + "Nouveau texte")
 
       action("Je fais CMD-S depuis le champ de saisie", ()=>{
         var press = $.Event('keypress')
         press.which   = K_S
         press.metaKey = true
-        FAWriter.docField.trigger(press)
+        PorteDocuments.docField.trigger(press)
       })
 
       var expected  = `Super${RC}${RC}Nouveau texte`
-      var actual    = FAWriter.currentDoc.contents
+      var actual    = PorteDocuments.currentDoc.contents
       assert_equal(
         expected, actual,
         {

@@ -22,7 +22,7 @@
   * [Filtrage des events](#filtering_events)
   * [Association des events](#associations_elements)
 * [Autres données de l'analyse](#analyse_autres_donnees)
-  * [Éléments propres de l'analyse (Personnages, Brins, etc.)](#elements_analyse)
+  * [FAElements, éléments propres de l'analyse (Personnages, Brins, etc.)](#elements_analyse)
   * [Récupérer une instance par son type et son id](#get_instance_with_type_and_id)
   * [FAListing, listing des éléments](#falisting_elements)
   * [DataEditor, l'éditeur de données](#data_editor)
@@ -128,7 +128,7 @@ On peut charger des modules en inscrivant leur balise `<script>` dans le documen
 
 L'avantage de ce système — contrairement à `require` —, c'est que tout le contenu du code est exposé à l'application. Si une classe `FADocument` est définie, elle sera utilisable partout, à commencer par les modules chargés.
 
-C'est cette formule qu'on utilise par exemple pour charger le *FAWriter* qui permet de rédiger les textes.
+C'est cette formule qu'on utilise par exemple pour charger le *PorteDocuments* qui permet de rédiger les textes.
 
 ### Chargement de dossiers JS au lancement de l'application {#load_folders_at_launching}
 
@@ -603,7 +603,7 @@ Pour rendre une classe *associable*, les requis sont les suivants.
 * Définir l'élément qui sera déplaçable (peut-être le même) pour associer l'élément avec un autre élément droppable :
         `$(element).draggable(DATA_ASSOCIATES_DRAGGABLE)`
 * Définir les propriétés obligatoires (requis pour tous les éléments) :
-  * `CLASSE#type`, propriété d'instance qui retourne le type de l'élément.
+  * `CLASSE#type`, propriété d'instance qui retourne le type de l'élément (qui doit être le nom minuscule de la classe).
   * `CLASSE#id` propriété d'instance qui retourne l'identifiant de l'élément (celui qui permettra de le récupérer en utilisant la méthode de classe `get` — cf. ci-dessous).
 * Définir les méthodes obligatoires :
   * `CLASSE#toString()`, méthode d'instance qui retourne la référence simplifiée de l'élément (sert pour le helper qu'on déplacera pour dragguer l'élément). Cette méthode sert aussi pour tous les messages traitant de l'élément.
@@ -886,7 +886,7 @@ Les documents de l'analyse sont entièrement gérés, au niveau de l'écriture, 
 
 Ces documents permettent de construire l'analyse de trois façons différentes :
 
-* en les rédigeant dans le *FAWriter* (qui s'ouvre grâce au menu « Documents »),
+* en les rédigeant dans le *PorteDocuments* (qui s'ouvre grâce au menu « Documents »),
 * en les peuplant grâce à l'[éditeur de données](#data_editor),
 * en en créant le code de façon dynamique pour ce qui est des stats, des PFA et autres notes au fil du texte.
 
@@ -901,13 +901,13 @@ Il faut comprendre qu'il y a 4 types de documents, même s'ils sont tous accessi
 
 ### Édition quelconque d'un fichier {#edit_any_file}
 
-Le `FAWriter` permet d'éditer un fichier quelconque, par exemple une liste de valeurs programme, et même, pourquoi pas, un fichier de code.
+Le `PorteDocuments` permet d'éditer un fichier quelconque, par exemple une liste de valeurs programme, et même, pourquoi pas, un fichier de code.
 
 On utilise alors la méthode `openAnyDoc`.
 
 ```javascript
 
-  FAWriter.openAnyDoc('<path/absolue/to/document.ext>')
+  PorteDocuments.openSystemDoc('<path/absolue/to/document.ext>')
 
 ```
 

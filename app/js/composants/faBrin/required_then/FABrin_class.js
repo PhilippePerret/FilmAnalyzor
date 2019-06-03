@@ -67,7 +67,7 @@ reset(){
 /**
   Demande l'ouverture du document des données
 **/
-, openDocData(){ FAWriter.openDoc('dbrins') }
+, openDocData(){ PorteDocuments.openDocument(12 /* dbrins */) }
 
 /**
   Méthode qui reconstitue les data pour le fichier (utilisé par

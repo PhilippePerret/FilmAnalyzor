@@ -65,9 +65,9 @@ Object.assign(UI, {
 
       // TODO TROUVER COMMENT SAVOIR QUE LE PROPRIÉTAIRE EST LE FAWRITER
       if ( e.target.data('owner-id') === 'writer') {
-        if(FAWriter.currentDoc.isData){
+        if(PorteDocuments.currentDoc.isData){
           // On doit effacer deux espaces
-          sel = FAWriter.selector
+          sel = PorteDocuments.selector
           let st = 0 + sel.startOffset
           sel.startOffset= st - 1
           sel.remplace('')
@@ -79,7 +79,7 @@ Object.assign(UI, {
     } else if(e.keyCode === KTAB){
 
       if(target.data('owner-id') === 'writer'){
-        if(FAWriter.selector.before() == RC){
+        if(PorteDocuments.selector.before() == RC){
           // Si on est en début de ligne, on insert un élément de liste
           return UI.inTextField.replaceTab(e, this.selector, '* ')
         }
@@ -119,7 +119,7 @@ Object.assign(UI, {
           if(e.which === 191){
             // === EXCOMMENTER OU DÉCOMMENTER UNE LIGNE ===
             if(target.data('owner-id') === 'writer'){
-              return this.inTextField.toggleComments(e, FAWriter.selector, {before: '<!-- ', after: ' -->'})
+              return this.inTextField.toggleComments(e, PorteDocuments.selector, {before: '<!-- ', after: ' -->'})
             }
           }
         } else {
@@ -134,9 +134,9 @@ Object.assign(UI, {
               // déjà traité ailleurs).
               F.notify("Il faut définir la cible courants pour savoir quoi faire de ce CMD+S")
               if (e.target.data('owner-id') === 'writer'){
-                FAWriter.currentDoc.getContents()
-                if (FAWriter.currentDoc.isModified()){
-                  FAWriter.currentDoc.save()
+                PorteDocuments.currentDoc.getContents()
+                if (PorteDocuments.currentDoc.isModified()){
+                  PorteDocuments.currentDoc.save()
                 }
                 return stopEvent(e)
               }

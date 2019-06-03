@@ -24,18 +24,19 @@ const CURRENT_THING_MENUS = [
   'export-as-kindle', 'export-as-docbook', 'display-infos-film',
   'display-full-analyse', 'display-full-analyse-forcer', 'display-pfa',
   'display-fondamentales', 'display-statistiques', 'new-eventer', 'open-writer',
-  'display-timeline', 'display-analyse-state', 'display-last-report',
+  'display-analyse-state', 'display-last-report', 'display-documents',
   'display-protocole', 'option-locked', 'new-version', 'display-brins',
   'goto-last-scene', 'display-decors', 'check-data-validity',
-  'display-personnages', 'display-images', 'open-in-finder', 'calc-pfa'
+  'display-personnages', 'display-images', 'open-in-finder', 'calc-pfa',
+
 ]
 // Note : les ID des menus de documents seront ajoutés "à la volée"
 
 // Les submenus du writer, qui doivent être calculés en fonction des types
 // de documents.
-const FAWriterSubmenus = [
+const PorteDocumentsSubmenus = [
       {
-          label: "Ouvrir/fermer le FAWriter"
+          label: "Ouvrir/fermer le Porte-documents"
         , id: 'open-writer'
         , accelerator: 'CmdOrCtrl+Shift+W'
         , enabled: false
@@ -56,7 +57,7 @@ var curType = null
 for(var doc_id in DATA_DOCS){
   if (DATA_DOCS[doc_id].menu === false) continue
   else if (DATA_DOCS[doc_id] === 'separator'){
-    FAWriterSubmenus.push({type:'separator'})
+    PorteDocumentsSubmenus.push({type:'separator'})
     continue
   }
   var ddoc = DATA_DOCS[doc_id]
@@ -66,7 +67,7 @@ for(var doc_id in DATA_DOCS){
   if(ddoc.dataeditor){
     CURRENT_THING_MENUS.push(`${menu_id}-de`)
     var DEMethod  = openDocInDataEditor.bind(null,doc_id)
-    FAWriterSubmenus.push({
+    PorteDocumentsSubmenus.push({
         label:    ddoc.hname
       , submenu:[
             {
@@ -84,7 +85,7 @@ for(var doc_id in DATA_DOCS){
         ]
     })
   } else {
-    FAWriterSubmenus.push({
+    PorteDocumentsSubmenus.push({
         label:    ddoc.hname
       , id:       menu_id
       , enabled:  false
@@ -94,7 +95,7 @@ for(var doc_id in DATA_DOCS){
   }
 }
 
-// console.log("FAWriterSubmenus:", FAWriterSubmenus)
+// console.log("PorteDocumentsSubmenus:", FAWriterSubmenus)
 
 const ObjMenus = {
     class: 'ObjMenus'
@@ -364,6 +365,13 @@ const DATA_MENUS = [
               , click: ()=>{execJsOnCurrent('togglePanneauBrins')}
             }
           , {
+                label: 'Documents'
+              , id: 'display-documents'
+              , accelerator: 'CmdOrCtrl+Alt+Shift+W'
+              , enabled: false
+              , click: _ => {execJsOnCurrent('togglePanneauDocuments')}
+            }
+          , {
                 label: "Décors"
               , id: 'display-decors'
               , accelerator: 'CmdOrCtrl+Alt+Shift+D'
@@ -412,7 +420,7 @@ const DATA_MENUS = [
   , {
         label: "Documents"
       , enabled: true
-      , submenu: FAWriterSubmenus
+      , submenu: PorteDocumentsSubmenus
     }
   /**
    * MENU VIDÉO

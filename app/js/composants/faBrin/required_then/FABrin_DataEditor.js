@@ -8,7 +8,7 @@ Object.assign(FABrin,{
   DESave(){
     this.save()
     this.update()
-    FAWriter.resetDocument('dbrins')
+    PorteDocuments.resetDocument(12)
   }
 /**
   Méthode utilisée par DataEditor pour créer un item
@@ -50,7 +50,7 @@ Object.assign(FABrin,{
 , DEOpenDoc(type){
     switch (type) {
       case 'bType':
-        FAWriter.openAnyDoc(this.btypeFilePath)
+        PorteDocuments.openSystemDoc(this.btypeFilePath)
         break
       default:
         console.error("Impossible de traiter le type", type)

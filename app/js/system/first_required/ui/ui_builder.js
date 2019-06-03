@@ -62,7 +62,7 @@ const UIBuilder = {
     UI.stateBar = $('#analyse-state-bar')
 
     // Le div qui contiendra les writer
-    UI.sectionWriter = $('#section-writer')
+    UI.sectionWriter = $('#section-porte-documents')
 
   }
 //

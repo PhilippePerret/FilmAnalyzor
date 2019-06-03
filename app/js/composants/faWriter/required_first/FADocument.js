@@ -24,22 +24,44 @@ static reset(){
 * créer un nouveau document.
 **/
 static new(){
-  var newDoc = new FADocument('custom', `custom-${this.newId()}`)
-  FAWriter.makeCurrent('custom', newDoc.id)
+  var newDoc = new FADocument(this.newId())
+  PorteDocuments.makeCurrent(newDoc.id)
   newDoc.setContents('# Titre du nouveau document'+RC+RC)
-  FAWriter.message(T('new-custom-document-created'))
+  PorteDocuments.message(T('new-custom-document-created'))
 }
 
 /**
   For consistency with others elements
 **/
 static edit(doc_id){
-  if(isUndefined(doc_id)) this.new()
+  if ( isUndefined(doc_id) ) this.new()
   else this.get(doc_id).display()
 }
 
+/**
+  Utile pour le listing (pour sauver les associations)
+  Note : ce n'est pas la méthode utilisé par le fawriter
+**/
+static save(doc_id){
+
+}
+/**
+  Utile pour le listing (pour détruire un document)
+**/
+static destroy(doc_id){
+  confirm({
+      message: `Confirmez-vous la destruction définitive du document ${doc_id} ?`
+    , buttons:['Renoncer', 'Détruire le document']
+    , defaultButtonIndex:0
+    , methodOnOK: this.execDestroy.bind(this, doc_id)
+  })
+}
+static execDestroy(doc_id){
+
+}
+
 static newId(){
-  isDefined(this.lastID) || ( this.lastID = 0 )
+  this.lastID = this.lastID || 0
   return ++ this.lastID
 }
 
@@ -53,8 +75,8 @@ static get(doc_id){
   defaultize(this,'documents', {})
   if( isUndefined(this.documents[doc_id])){
     let [dtype, realid] = doc_id.split('-')
-    if(dtype === 'custom') realid = parseInt(realid,10)
-    else [dtype, realid] = ['regular', doc_id]
+    if(dtype === STRcustom) realid = parseInt(realid,10)
+    else [dtype, realid] = [STRregular, doc_id]
     this.documents[doc_id] = new FADocument(dtype, realid)
   }
   return this.documents[doc_id]
@@ -87,7 +109,7 @@ static findAssociations(){
       if(value.match(/\{\{document\:/)){
         do {
           found = reg.exec(value)
-          if(found != null){
+          if ( isNotNull(found) ) {
             // console.log(`Trouvé dans event #${ev.id} :`, found, reg.lastIndex)
             if(isUndefined(dDocuments[found[1]])){
               dDocuments[found[1]] = []
@@ -122,7 +144,7 @@ static forEachDocument(fn){
 
 **/
 static get allDocuments(){
-  if(isUndefined(this._alldocuments)) {
+  if ( isUndefined(this._alldocuments) ) {
     var all = glob.sync(`${current_analyse.folderFiles}/*.*`)
     for(var pdoc of all){
       this.get(path.basename(pdoc,path.extname(pdoc)))
@@ -191,7 +213,7 @@ defineToString(){
 // Affiche le document
 display(){
   // console.log("-> display ", this)
-  FAWriter.reset() // pour vider le champ, notamment
+  PorteDocuments.reset() // pour vider le champ, notamment
   this.preparePerType() // préparer le writer en fonction du type
   if (this.exists() && !this.loaded){
     this.load(this.suiteDisplay.bind(this))
@@ -201,18 +223,18 @@ display(){
 }
 suiteDisplay(){
   this.displayContents()
-  FAWriter.applyTheme.bind(FAWriter)(this.theme)
+  PorteDocuments.applyTheme.bind(PorteDocuments)(this.theme)
   this.toggleMenuModeles()
-  FAWriter.docField.focus()
+  PorteDocuments.docField.focus()
 }
 
 displayContents(){
-  FAWriter.docField.val(this.contents)
+  PorteDocuments.docField.val(this.contents)
 }
 
 // Pour afficher la taille du document dans l'interface (gadget)
 displaySize(){
-  $('#section-writer #text-size').html(this.contents.length)
+  $('#section-porte-documents #text-size').html(this.contents.length)
 }
 
 // ---------------------------------------------------------------------
@@ -228,7 +250,7 @@ get isData(){return this.dataType && this.dataType.type === STRdata}
 get isAbsoluteData(){return this.dataType && this.dataType.abs === true}
 
 set modified(v){
-  FAWriter.setModified(v)
+  PorteDocuments.setModified(v)
   this._modified = v
 }
 isModified(){return this._modified === true}
@@ -304,8 +326,8 @@ afterSavingPerType(){
 addToMenuIfNew(){
   if (this.isNewCustom){
     delete this.title // Pour forcer sa relecture
-    FAWriter.menuTypeDoc.append(DCreate(OPTION, {value: this.id, inner: this.title}))
-    FAWriter.menuTypeDoc.val(this.id)
+    PorteDocuments.menuTypeDoc.append(DCreate(OPTION, {value:this.id, inner:this.title}))
+    PorteDocuments.menuTypeDoc.val(this.id)
   }
 }
 /**
@@ -329,8 +351,8 @@ setContents(code){
   @return true si le contenu a changé, false otherwise.
  */
 getContents(){
-  if(this.contents != FAWriter.docField.val()){
-    this.contents = FAWriter.docField.val()
+  if(this.contents != PorteDocuments.docField.val()){
+    this.contents = PorteDocuments.docField.val()
     return true
   } else {
     return false
@@ -368,14 +390,14 @@ preparePerType(){
 toggleMenuModeles(){
   if(this.isAbsoluteData) return
   var maskIt = this.contents && this.contents.length > 0
-  $('#section-writer .header .modeles')[maskIt?STRhide:STRshow]()
+  $('#section-porte-documents .header .modeles')[maskIt?STRhide:STRshow]()
 }
 maskSpanModeles(){
-  $('#section-writer .header .modeles').hide()
+  $('#section-porte-documents .header .modeles').hide()
 }
 afficheModeles(modeles){
   if(this.isAbsoluteData) return
-  var mModeles = $('#section-writer select#modeles-doc')
+  var mModeles = $('#section-porte-documents select#modeles-doc')
   var opts = []
   opts.push('<option value="">Choisir…</option>')
   for(var p of modeles){
@@ -493,6 +515,14 @@ definePathPerType(){
   } else {
     return path.join(this.a.folderFiles,`${this.id}.${this.extension}`)
   }
+}
+
+/**
+  Pour le listing
+  Retourne true si le document a des associations
+**/
+hasAssociates(){
+  return false // pour le moment
 }
 
 }

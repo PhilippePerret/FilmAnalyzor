@@ -51,7 +51,7 @@ const UI = {
     // dans lesquelles ont peut ajouter des éléments (car
     // subtree est false dans les configurations de mutation)
     domObserver.observe(document.body, domObserverConfig)
-    domObserver.observe(DGet('section-writer'), domObserverConfig)
+    domObserver.observe(DGet('section-porte-documents'), domObserverConfig)
     domObserver.observe(DGet('section-eventers'), domObserverConfig)
 
   }

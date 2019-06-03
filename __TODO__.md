@@ -2,7 +2,16 @@
 
 ### Traiter :
 
-* Mettre le FAWriter sur le côté
+* Rechercher le chargement de 'min.js' (données de documents)
+* Simplifier la gestion des documents :
+  - Faire la classe `PorteDocuments` qui remplacement `FAWriter`
+  - Faire de la classe `FADocument` une héritière de `FAElement`
+  de 1 à 49 => les documents "standard"
+  au-dessus de 49 => le documents customisés (custom-<xx>)
+  - Un document sera toujours identifié par "document-<id nombre>". Cette clé renverra soit à un document standard (si id < 50) soit à un document customisé (id > 49).
+  - Voir les associations qui existent déjà
+  - Voir si les FADocuments sont des FAElement. Il semble que non, il faut les transformer
+  - En profiter aussi pour renommer FAWriter par "FAPorteDocs"
 
 * Pouvoir se déplacer de noeud STT en noeud STT
 

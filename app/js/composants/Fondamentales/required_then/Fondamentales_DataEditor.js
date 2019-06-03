@@ -10,7 +10,7 @@ Object.assign(Fondamentales,{
     delete ditem.fd1.path
     iFonds.contents = ditem // pour l'IOFile
     iFonds.save({after: this.DEAfterUpdateItem.bind(this)})
-    FAWriter.resetDocument(iFonds.affixe)
+    PorteDocuments.resetDocument(iFonds.affixe)
     return iFonds
   }
 , DEAfterUpdateItem(){

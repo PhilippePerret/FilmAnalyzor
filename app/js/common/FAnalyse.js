@@ -262,9 +262,12 @@ togglePanneauFondamentales(){
 }
 togglePanneauPersonnages(opened, perso_id){
   FAPersonnage.listing || App.loadTool('building/listing_personnages')
-  FAPersonnage.listing && FAPersonnage.listing.toggle(opened, perso_id) // seulement si valide
+  FAPersonnage.listing && FAPersonnage.listing.toggle(opened, perso_id)
 }
-
+togglePanneauDocuments(opened){
+  FADocument.listing || App.loadTool('building/listing_documents')
+  FADocument.listing && FADocument.listing.toggle(opened)
+}
 togglePanneauDecors(opened){
   // window.iPanelDecors = window.iPanelDecors || App.loadTool('building/decors')
   // iPanelDecors.toggle()
@@ -313,8 +316,8 @@ openDocInWriter(dtype){
       return FABuildingScript.toggle()
     }
   }
-  if(!FAWriter.inited) FAWriter.init()
-  FAWriter.openDoc(dtype)
+  PorteDocuments.inited || PorteDocuments.init()
+  PorteDocuments.openDocument(dtype)
 }
 
 /**
@@ -390,7 +393,7 @@ addEvent(nev) {
 // Note : on pourrait y aller directement, mais c'est pour compatibiliser
 // les choses
 editDocument(dtype, doc_id){
-  return FAWriter.openDoc(dtype, doc_id)
+  return PorteDocuments.openDocument(docId)
 }
 
 /**
