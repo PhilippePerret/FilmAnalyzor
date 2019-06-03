@@ -163,7 +163,7 @@ static get count(){
 constructor(dtype, id, docPath){
   // console.log("dtype, id, docPath", dtype, id, docPath)
   isDefined(dtype) || raise("Impossible d'instancier un document sans type ou ID.")
-  ['regular','custom','any'].indexOf(dtype) > -1 || raise(`Le doc-type (dtype) "${dtype}" est inconnu.`)
+  [STRregular,STRcustom,STRany].indexOf(dtype) > -1 || raise(`Le doc-type (dtype) "${dtype}" est inconnu.`)
   this.dtype = dtype
   if(dtype === STRany){
     isDefined(docPath) || ( docPath = id )
@@ -223,8 +223,8 @@ get a() { return current_analyse }
 // Méthode pratique pour reconnaitre rapidement l'element
 get isAEvent(){return false}
 get isADocument(){return true}
-get isCustomDoc(){return this.dtype === 'custom'}
-get isData(){return this.dataType && this.dataType.type === 'data'}
+get isCustomDoc(){return this.dtype === STRcustom}
+get isData(){return this.dataType && this.dataType.type === STRdata}
 get isAbsoluteData(){return this.dataType && this.dataType.abs === true}
 
 set modified(v){

@@ -103,7 +103,7 @@ const FAWriter = {
     if (this.currentDoc.dataType.type === STRdata){
       contenu = '<div>Fichier de données. Pas de formatage particulier.</div>'
     } else {
-      contenu = this.formater(this.docField.val(), {format: HTML})
+      contenu = this.formater(this.docField.val(), {format: HTML, no_br: true})
     }
     this.visualizor.html(contenu)
     contenu = null

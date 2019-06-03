@@ -10,7 +10,6 @@ Object.assign(FAWriter, {
 // Rappel : appelé par la FWindow
   build(){
     var spa, lab, sel
-
     var btnClose = DCreate(BUTTON, {
       id: 'btn-close-writer'
     , class: 'btn-close'
@@ -121,7 +120,7 @@ Object.assign(FAWriter, {
     // le document
     $('input#cb-save-auto-doc').on(STRclick, my.setAutoSave.bind(my))
     // // On observe la case à cocher pour visualiser régulièrement le document
-    $('input#cb-auto-visualize').on(STRchange, my.setAutoVisualize.bind(my))
+    $(this.cbVisualize).on(STRchange, my.setAutoVisualize.bind(my))
 
     // On observe le bouton pour créer un nouveau document
     $('button#writer-btn-new-doc').on(STRclick, FADocument.new.bind(FADocument))

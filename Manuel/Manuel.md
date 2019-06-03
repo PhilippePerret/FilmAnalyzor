@@ -34,6 +34,7 @@
   * [Variables dans les documents](#variables_dans_les_documents)
   * [Les snippets](#les_snippets)
   * [Rédaction des documents](#redaction_documents)
+    * [Retours à la ligne forcés](#force_return_newline)
 * [Assemblage de l'analyse finale](#assemblage_analyse)
 * [Publication online](#publication_online)
 
@@ -353,6 +354,13 @@ On utilisera des [variables](#variables_dans_les_documents) les [diminutifs](#le
 Pour faire référence à des *events* de tout type, il suffit de prendre ces *events* et de les glisser dans le texte. Une référence sera écrite au curseur. La nature et l'aspect de cette référence est fonction du type de l'*event* et peut varier beaucoup d'un type à l'autre. On reconnait les balises à leur forme `{{event: <id de l'event>}}`. Si l'*event* est une scène, il apparaitra de cette manière : `{{scene: <id event>}}` (noter que ça n'est pas le *numéro de la scène*, mais bien l'*identifiant de l'event* qui est inscrit).
 
 ASTUCE : On peut voir tout de suite l'aspect que prendra la référence — et la modifier au besoin — en demandant la visualisation en direct du texte (case à cocher « Visualiser » dans le pied de page du `Writer`).
+
+#### Retours à la ligne forcés {#force_return_newline}
+
+Pour forcer un retour à la ligne dans un document Markdown, il faut utiliser le caractère `¶` qui s'obtient, sur Mac, avec `ALT 6`.
+
+
+---------------------------------------------------------------------
 
 ## Assemblage de l'analyse finale {#assemblage_analyse}
 

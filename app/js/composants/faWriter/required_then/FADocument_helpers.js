@@ -9,14 +9,14 @@ Object.assign(FADocument.prototype,{
   méthode de même nom pour les events)
 **/
 as(format, flag, opts){
-  if (undefined === flag) flag = 0
-  if (undefined === opts) opts = {}
+  flag = flag || 0
+  opts = opts || {}
 
   opts.owner = {type: STRdocument, id: this.id}
 
   var divs = []
 
-  if(flag & LABELLED) divs.push(DCreate('LABEL', {inner: `DOC #${this.id}`}))
+  if(flag & LABELLED) divs.push(DCreate(LABEL, {inner: `DOC #${this.id}`}))
 
   switch (format) {
     case STRshort:
@@ -39,7 +39,7 @@ as(format, flag, opts){
 
   // Avec tous ses éléments ajoutés en fonction des choix
   // console.log("domEls:",domEls)
-  let divAs = DCreate('DIV', {class:`document DOC${this.id}`, append: divs})
+  let divAs = DCreate(DIV, {class:`document DOC${this.id}`, append: divs})
 
   // --- LE STRING FINAL ---
 
@@ -62,8 +62,8 @@ as(format, flag, opts){
   return str
 }
 
-, asShort(opts){ return DCreate(SPAN, {class:'titre', inner:DFormater(this.title)}) }
-, asBook(opts){ return DCreate(SPAN, {class:'titre', inner:DFormater(this.title)}) }
+, asShort(opts){ return DCreate(SPAN, {class:STRtitre, inner:DFormater(this.title)}) }
+, asBook(opts){ return DCreate(SPAN, {class:STRtitre, inner:DFormater(this.title)}) }
 
 , asFull(opts){
     return this.asBook() // pour le moment
@@ -81,7 +81,7 @@ as(format, flag, opts){
 }
 
 , asLink(options){
-    if(undefined === options) options = {}
+    options = options || {}
     return `« <a onclick="${this.onclickShow}" class="doclink">${options.title || this.title}</a> »`
   }
 
