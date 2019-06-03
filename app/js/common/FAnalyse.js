@@ -222,11 +222,6 @@ exportAs(format){
 toggleProtocole(){this.protocole.toggle()}
 
 /**
-* Pour afficher la Timeline
-**/
-displayTimeline(){MainTimeline.toggle()}
-
-/**
  * Méthode appelée quand on clique sur le menu "Affichage > Analyse complète"
  *
  * Pour le moment, on construit chaque fois l'analyse. Plus tard, peut-être

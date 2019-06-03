@@ -343,13 +343,6 @@ const DATA_MENUS = [
               , click: ()=>{execJsOnCurrent('displayPFA')}
             }
           , {
-                label: 'Calque du PFA'
-              , id: 'calc-pfa'
-              , accelerator: 'CmdOrCtrl+Shift+P'
-              , enabled: false
-              , click:() => {execJsOnCurrent('displayCalcPFA')}
-            }
-          , {
                 label: "Fondamentales"
               , id: 'display-fondamentales'
               , accelerator: 'CmdOrCtrl+Alt+Shift+F'
@@ -405,10 +398,11 @@ const DATA_MENUS = [
             }
           , {type:'separator'}
           , {
-                label: 'Afficher/masquer la Timeline'
-              , id: 'display-timeline'
-              , accelerator: 'CmdOrCtrl+Shift+T'
-              , click: () => {execJsOnCurrent('displayTimeline')}
+                label: 'Calque du PFA'
+              , id: 'calc-pfa'
+              , accelerator: 'CmdOrCtrl+Shift+P'
+              , enabled: false
+              , click:() => {execJsOnCurrent('displayCalcPFA')}
             }
       ]
     }
