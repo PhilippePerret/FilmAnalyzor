@@ -120,8 +120,8 @@ const FAWriter = {
   **/
 , checkCurrentDocModified(){
     var choix
-    if(this.currentDoc && this.currentDoc.isModified()){
-      if(this.a.locked){
+    if ( this.currentDoc && this.currentDoc.isModified()){
+      if ( this.a.locked ) {
         choix = 2 // Pour ignorer les changements
       } else {
         choix = DIALOG.showMessageBox({
@@ -143,7 +143,7 @@ const FAWriter = {
           this.currentDoc.retreiveLastContents()
           return true
       }
-    }
+    } else return true // pas de document ou pas de document modifié
   }
 
   /**

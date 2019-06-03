@@ -278,7 +278,7 @@ constructor(owner, data){
 }
 
 toggle(){
-  this[this.visible?'hide':'show']()
+  this[this.visible?STRhide:STRshow]()
 }
 show(){
   log.info(`-> ${this.ref}.show() [built:${this.built}, visible:${this.visible}]`)
@@ -293,7 +293,7 @@ show(){
 }
 hide(){
   if(isFunction(this.owner.beforeHide)){
-    if(this.owner.beforeHide() === false) return // abandon
+    if ( isFalse(this.owner.beforeHide()) ) return // abandon
   }
   this.constructor.unsetCurrent(this)
   // Dans tous les cas, il faut retirer cette fenêtre de la liste des
@@ -378,11 +378,8 @@ build(){
 
 // Méthode appelée quand on clique sur le bouton 'btn-close'
 onBtnClose(){
-  if(isFunction(this.owner.cancel)){
-    this.owner.cancel.bind(this.owner)()
-  } else {
-    this.hide()
-  }
+  if ( isFunction(this.owner.cancel) ) this.owner.cancel.bind(this.owner).call()
+  else this.hide()
 }
 
 onEndMove(e){

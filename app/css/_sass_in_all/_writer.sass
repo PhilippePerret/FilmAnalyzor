@@ -26,12 +26,11 @@ section#section-writer
 
     // Quand le document a été modifié, on le passe
     // en quelque chose qui ressemble à du rouge.
-    &.modified div.header,
-    &.modified div.header *,
-    &.modified div.footer,
-    &.modified div.footer *
-      background-color: #990022
-      color: white
+    &.modified
+      div.header, div.header *,
+      div.footer, div.footer *
+        background-color: #990022
+        color: white
 
   div.header
     background-color: #DFDFDF
@@ -126,23 +125,24 @@ section#section-writer
       font-size: 15pt
 
   // THÈME : real (pour les "vrais" documents)
-  textarea#document-contents.real-theme,
-  div.body.real-theme
-    color: #333333
-    background-color: white
+  textarea#document-contents
+    &.real-theme,
+      div.body.real-theme
+        color: #333333
+        background-color: white
 
-  // THEME : data-theme
-  textarea#document-contents.data-theme,
-  div.body.data-theme
-    color: white
-    background-color: #333333
-    border-color: transparent
+    // THEME : data-theme
+    &.data-theme,
+      div.body.data-theme
+        color: white
+        background-color: #333333
+        border-color: transparent
 
-  // THEME : musical-theme
-  textarea#document-contents.musical-theme,
-  div.body.musical-theme
-    color: #000055
-    background-color: #EEEFFF
+    // THEME : musical-theme
+    &.musical-theme,
+      div.body.musical-theme
+        color: #000055
+        background-color: #EEEFFF
 
 
   // ---------------------------------------------------------------------
@@ -157,7 +157,6 @@ section#section-writer
     padding: 1em
     border: 4px solid grey
     border-radius: 0 0.3em 0.3em 0
-    box-shadow: 5px 5px 5px 0px #DDDDDD
     background-color: white
     overflow: auto
     z-index: 20

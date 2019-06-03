@@ -34,9 +34,9 @@ static init(){
 }
 
 static defineRegexpAndReplacements(){
-  window.REG_MD_BOLD = /\*\*([^\*]+)\*\*/g
+  window.REG_MD_BOLD = /\*\*([^\*\n]+)\*\*/g
   window.REP_MD_BOLD = '<strong>$1</strong>'
-  window.REG_MD_ITAL = /\*([^\*]+)\*/g
+  window.REG_MD_ITAL = /\*([^\*\n]+)\*/g
   window.REP_MD_ITAL = '<em>$1</em>'
   window.VAR_REGEXP  = new RegExp('\{\{(?<key>[a-zA-Z0-9_\-]+)\}\}','g')
   window.DOC_REGEXP  = new RegExp('\{\{document: ?(?<key>[a-zA-Z0-9_\-]+)(\\|(?<text>[^}]+))?\}\}','g')

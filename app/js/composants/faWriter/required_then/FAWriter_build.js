@@ -9,44 +9,23 @@ Object.assign(FAWriter, {
 
 // Rappel : appelé par la FWindow
   build(){
-    var spa, lab, sel
-    var btnClose = DCreate(BUTTON, {
-      id: 'btn-close-writer'
-    , class: 'btn-close'
-    , type: STRbutton
-    })
+    var lab, sel
+
     var attrs = {'title': "Pour glisser et déposer le document sur un event ou un texte."}
     attrs[STRdata_type] = STRdocument
-    spa = DCreate(SPAN, {
-      class: 'writer-btn-drop document'
-    , attrs: attrs
-    , inner: ' ⎆'
-    })
-    var doctitle = DCreate(DIV,{
-      id: 'writer-doc-title'
-    , append: [
-      DCreate(SELECT, {id: 'document-type', class: 'main'})
-      , spa
-    ]
-    })
 
-    var divmodeles = DCreate(DIV, {
-      class: 'div-modeles right'
-    , append: [
-        DCreate(LABEL, {class: 'small', inner: 'MODÈLES '})
-      , DCreate(SELECT, {id: 'modeles-doc'})]
-    })
-
-    var btnNew = DCreate(BUTTON, {
-      id: 'writer-btn-new-doc'
-    , inner: '+'
-    , type: STRbutton
-    })
-
-    var header = DCreate(DIV,{
-      class: STRheader
-    , append: [btnClose, doctitle, divmodeles, btnNew]
-    })
+    var header = DCreate(DIV,{class:STRheader, append:[
+        DCreate(BUTTON, {id:'btn-close-writer', class:'btn-close', type:STRbutton})
+      , DCreate(DIV,{id:'writer-doc-title', append:[
+          DCreate(SELECT, {id: 'document-type', class: 'main'})
+        , DCreate(SPAN, {class:'writer-btn-drop document', attrs:attrs, inner:' ⎆'})
+        ]})
+      , DCreate(DIV,{class:'div-modeles right', append:[
+            DCreate(LABEL, {class: 'small', inner: 'MODÈLES '})
+          , DCreate(SELECT, {id: 'modeles-doc'})
+        ]})
+      , DCreate(BUTTON,{id:'writer-btn-new-doc', inner:'+', type:STRbutton})
+    ]})
 
     var body = DCreate(DIV, {
       class: STRbody
@@ -131,8 +110,6 @@ Object.assign(FAWriter, {
       revert: true
     , zIndex: 5000
     })
-
-    // Mettre la taille : non, ça doit se régler à chaque ouverture
 
     my.ready = true
   }
