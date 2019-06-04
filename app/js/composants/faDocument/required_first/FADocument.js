@@ -123,6 +123,8 @@ constructor(id){
   } else {
     this.id = id
   }
+
+  this.loaded = false
 }
 
 // ---------------------------------------------------------------------
@@ -142,9 +144,9 @@ defineToString(){
 
 **/
 edit(){
-  // console.log("-> display ", this)
+  // console.log("-> FADocument.edit ", this)
   PorteDocuments.reset() // pour vider le champ, notamment
-  this.preparePerType() // préparer le porte-documents en fonction du type
+  this.preparePerDocument() // préparer le porte-documents en fonction du type
   if ( this.exists() && isFalse(this.loaded) ){
     this.load(this.suiteEdit.bind(this))
   } else {
@@ -153,9 +155,11 @@ edit(){
 }
 // Deuxième temps de l'affichage du document
 suiteEdit(){
+  // console.log("-> FADocument.suiteEdit", this)
   this.toggleMenuModeles()
   PorteDocuments.applyTheme.bind(PorteDocuments)(this.theme)
   this.displayContents()
+  // console.log("<- FADocument.suiteEdit")
 }
 
 displayContents(){
@@ -172,6 +176,7 @@ displaySize(){
 // Méthodes pratiques pour reconnaitre rapidement l'element
 get isAEvent(){return false}
 get isADocument(){return true}
+get isRegularDoc(){return this.dtype === STRregular}
 get isCustomDoc(){return this.dtype === STRcustom}
 get isSystemDoc(){return this.dtype === STRsystem}
 get isData(){return this.data && this.data.type === STRdata}
@@ -247,8 +252,8 @@ afterSavingPerType(){
 addToMenuIfNew(){
   if (this.isNewCustom){
     delete this.title // Pour forcer sa relecture
-    PorteDocuments.menuTypeDoc.append(DCreate(OPTION, {value:this.id, inner:this.title}))
-    PorteDocuments.menuTypeDoc.val(this.id)
+    PorteDocuments.menuDocuments.append(DCreate(OPTION, {value:this.id, inner:this.title}))
+    PorteDocuments.menuDocuments.val(this.id)
   }
 }
 /**
@@ -285,9 +290,10 @@ getContents(){
  * Notamment, ça fait la liste des documents modèles qui peuvent être
  * utilisés
  */
-preparePerType(){
+preparePerDocument(){
   var my = this
-  if ( this.isSystemDoc || this.isCustomDoc ) return
+  if ( this.isSystemDoc || this.isCustomDoc ) return this.maskSpanModeles()
+
   // Templates à proposer
   var tempFolderPath = path.join('.','app','analyse_files', `${this.dim}.${this.extension}`)
   var tempFilePath = `${tempFolderPath}.${this.extension}`

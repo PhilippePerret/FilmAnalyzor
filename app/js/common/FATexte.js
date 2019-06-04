@@ -351,7 +351,7 @@ deSceneTags(str){
   else this.raw_string = str
   str = str.replace(FATexte.REGEXP_SCENE_TAG, function(){
     var groups = arguments[arguments.length - 1]
-    return current_analyse.ids[groups.event_id].asLink(groups.alt_text)
+    return current_analyse.ids[groups.event_id].showLink(groups.alt_text)
   })
   // console.log(founds)
   return str

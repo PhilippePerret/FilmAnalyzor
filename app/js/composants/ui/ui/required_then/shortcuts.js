@@ -65,7 +65,7 @@ Object.assign(UI, {
 
       // TODO TROUVER COMMENT SAVOIR QUE LE PROPRIÉTAIRE EST LE FAWRITER
       if ( e.target.data('owner-id') === 'writer') {
-        if(PorteDocuments.currentDoc.isData){
+        if(PorteDocuments.currentDocument.isData){
           // On doit effacer deux espaces
           sel = PorteDocuments.selector
           let st = 0 + sel.startOffset
@@ -134,9 +134,9 @@ Object.assign(UI, {
               // déjà traité ailleurs).
               F.notify("Il faut définir la cible courants pour savoir quoi faire de ce CMD+S")
               if (e.target.data('owner-id') === 'writer'){
-                PorteDocuments.currentDoc.getContents()
-                if (PorteDocuments.currentDoc.isModified()){
-                  PorteDocuments.currentDoc.save()
+                PorteDocuments.currentDocument.getContents()
+                if (PorteDocuments.currentDocument.isModified()){
+                  PorteDocuments.currentDocument.save()
                 }
                 return stopEvent(e)
               }

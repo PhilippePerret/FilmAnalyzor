@@ -336,7 +336,7 @@ const DATA_AUTOMATIC_STEPS = {
     {NaT: true, exec: "if(current_analyse.locked === true){current_analyse.locked=false};current_analyse.locked", expected: false}
   ]
 , "enregistrer le document courant":[
-    {NaT: true, exec: "PorteDocuments.currentDoc.save()", expected: '---nothing---'}
+    {NaT: true, exec: "PorteDocuments.currentDocument.save()", expected: '---nothing---'}
   ]
 , "afficher la liste des décors": "ouvrir la fenêtre des décors"
 , "afficher les décors": "ouvrir la fenêtre des décors"

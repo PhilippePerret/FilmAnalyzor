@@ -37,7 +37,7 @@ Object.defineProperties(PorteDocuments,{
   }
 , jqObj: {get(){return this.fwindow.jqObj}}
 , section: {get(){return $('#section-porte-documents')}}
-, menuTypeDoc:{
+, menuDocuments:{
     get(){return $('#section-porte-documents .header select#document-type')}
   }
 , header:{ get(){return $('#section-porte-documents .header')} }

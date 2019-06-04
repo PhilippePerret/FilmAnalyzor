@@ -4,7 +4,7 @@ const PorteDocuments = {
   class: 'PorteDocuments'
 , inited: false
 , isOpened: false
-, currentDoc: undefined // instance FADocument
+, currentDocument: undefined // instance FADocument
 
 /**
   Ouvre le document d'identifiant +doc_id+ ('document-XXX') en édition
@@ -15,29 +15,34 @@ const PorteDocuments = {
 **/
 , editDocument(docId) {
     docId = docId || 1
+    // console.log("-> editDocument()", docId)
     // Si le porte-documents est déjà ouvert, il faut vérifier que le
     // document édité ait bien été enregistré
     if ( this.keepCurrentDocument() ) return
+    isDefined(this.documents[docId]) || this.defineDocument(docId)
     this.currentDocument = this.documents[docId]
     this.isOpened || this.open()
     this.currentDocument.edit()
+    this.visualizeDoc && this.updateVisuDoc()
+    this.menuDocuments.val(docId)
+    this.setDroppableButtonForCurrent()
   }
 
+/**
+  Quand il faut définir un document qui n'existe pas encore
+**/
+, defineDocument(docId){
+    this.documents[docId] = new FADocument(docId)
+  }
 
   /**
     Fait du document +docId+ le document courant.
 
     @param {Number} docId Identifiant du document à ouvrir (ou path)
    */
-, makeCurrent(docId) {
-    this.visualizeDoc && this.updateVisuDoc()
-    // On "referme" toujours le menu des documents (après l'ouverture)
-    this.menuTypeDoc.val(docId)
-    // On renseigne le bouton droppable
-    var attrs = {}
-    attrs[STRdata_type] = STRdocument
-    attrs[STRdata_id]   = this.currentDocument.id
-    this.btnDrop.attr(attrs)
+, setDroppableButtonForCurrent() {
+    this.btnDrop.attr('data-id',this.currentDocument.id)
+    console.log("this.btnDrop:", this.btnDrop)
   }
 
 /**
@@ -61,7 +66,7 @@ const PorteDocuments = {
  */
 , updateVisuDoc(){
     var contenu
-    if (this.currentDoc.dataType.type === STRdata){
+    if (this.currentDocument.data.type === STRdata){
       contenu = '<div>Fichier de données. Pas de formatage particulier.</div>'
     } else {
       contenu = this.formater(this.docField.val(), {format: HTML, no_br: true})
@@ -81,38 +86,36 @@ const PorteDocuments = {
 *   - annuler, donc ne pas poursuire (return false)
 **/
 , keepCurrentDocument(){
-    var choix
     if ( isUndefined(this.currentDocument) ) return false
     if ( this.a.locked ) return false
-    if ( this.currentDocument.isModified() ){
-      choix = DIALOG.showMessageBox({
-          type:       'warning'
-        , buttons:    ["Enregistrer", "Annuler", "Ignorer les changements"]
-        , title:      "Document courant non sauvegardé"
-        , defaultId:  0
-        , cancelId:   1
-        , message:    T('ask-for-save-document-modified', {type: this.currentDoc.type})
-      })
-      switch (choix) {
-        case 0:
-          this.currentDoc.save()
-          return true
-        case 1: // annulation
-          return false
-        case 2: // on ignore les modifications
-          this.currentDoc.retreiveLastContents()
-          return true
-      }
-    } else return true // pas de document ou pas de document modifié
+    if ( isFalse(this.currentDocument.isModified()) ) return false
+    var choix = DIALOG.showMessageBox({
+        type:       'warning'
+      , buttons:    ["Enregistrer", "Annuler", "Ignorer les changements"]
+      , title:      "Document courant non sauvegardé"
+      , defaultId:  0
+      , cancelId:   1
+      , message:    T('ask-for-save-document-modified', {type: this.currentDocument.type})
+    })
+    switch (choix) {
+      case 0:
+        this.currentDocument.save()
+        return false
+      case 1: // annulation
+        return true
+      case 2: // on ignore les modifications
+        this.currentDocument.retreiveLastContents()
+        return false
+    }
   }
 
 /**
- * Menu appelé quand on choisit un type de document dans le menu
- TODO : modifier le nom, "Type" est confusionnant alors que c'est plutôt un
- ID maintenant.
+   Menu appelé quand on choisit un type de document dans le menu
+
+   @param {Event} e L'évènement de menu
  */
-, onChooseTypeDoc(e){
-    this.edit(this.menuTypeDoc.val())
+, onChooseDocument(e){
+    this.editDocument(parseInt(this.menuDocuments.val(),10))
   }
 
 /**
@@ -185,7 +188,7 @@ const PorteDocuments = {
       , sys = this.currentDocument.dtype == STRsystem
       , rpath = sys ? this.currentDocument.path.replace(new RegExp(`^${APPFOLDER}`),'.'):'DOCUMENT '
     // On masque le menu des types de document si c'est un document système
-    my.menuTypeDoc[sys?STRhide:STRshow]()
+    my.menuDocuments[sys?STRhide:STRshow]()
     my.section.find('.header #writer-doc-title label').html(rpath)
     new Array(
         '#writer-doc-title select'

@@ -60,26 +60,26 @@ Object.assign(PorteDocuments, {
 // Appelé par la FWindow
 , afterBuilding(){
   // Peupler la liste des types de document
-  var m = this.menuTypeDoc, dOpt
+  var m = this.menuDocuments, dOpt
   for(var did in DATA_DOCUMENTS){
     var ddoc = DATA_DOCUMENTS[did]
     if(ddoc.menu === false) continue
     if(ddoc === 'separator') dOpt = {class: 'separator', disabled: true}
-    else dOpt = {value: `regular^^^${did}`, inner: ddoc.hname}
+    else dOpt = {value: `${ddoc.id}`, inner: ddoc.hname}
     m.append(DCreate(OPTION, dOpt))
   }
   // Pour séparer les documents propres à cette analyse
   m.append(DCreate(OPTION, {class: 'separator', disabled: true}))
   // La liste des documents propres à cette analyse
   this.forEachCustomDocument(function(wdoc){
-    m.append(DCreate(OPTION, {value: `custom^^^${wdoc.id}`, inner: wdoc.title}))
+    m.append(DCreate(OPTION, {value: wdoc.id, inner: wdoc.title}))
   })
 }
 // Appelé par la FWindow
 , observe(){
     var my = this
     // On observe le menu de choix d'un document
-    my.menuTypeDoc.on(STRchange, my.onChooseTypeDoc.bind(my))
+    my.menuDocuments.on(STRchange, my.onChooseDocument.bind(my))
     // On observe le menu de choix d'un modèle de document
     my.menuModeles.on(STRchange,  my.onChooseModeleDoc.bind(my))
     // On observe le menu qui choisit le thème

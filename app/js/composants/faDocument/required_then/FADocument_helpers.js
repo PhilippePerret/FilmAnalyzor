@@ -91,5 +91,8 @@ as(format, flag, opts){
 }) // /fin Object.assign
 
 Object.defineProperties(FADocument.prototype,{
-  onclickShow:{get(){return this._onclickshow||defP(this,'_onclickshow',`showDocument('${this.dtype}','${this.id}')`)}}
+  onclickShow:{get(){
+    var idFn = isString(this.id) ? `"${this.id}"` : this.id
+    return this._onclickshow||defP(this,'_onclickshow',`showDocument(${idFn})`)}
+  }
 })

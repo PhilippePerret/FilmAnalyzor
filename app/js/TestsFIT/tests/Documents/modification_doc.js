@@ -14,7 +14,7 @@ t.case('Modification et enregistrement', () => {
   return waitFor("'undefined' !== typeof(PorteDocuments) && PorteDocuments.isOpened === true", {timeout: 4000})
   .then(()=>{
 
-    let curDoc = PorteDocuments.currentDoc
+    let curDoc = PorteDocuments.currentDocument
 
     // On se met dans le champ de texte
     PorteDocuments.docField.focus()
@@ -34,7 +34,7 @@ t.case('Modification et enregistrement', () => {
     action("J'enregistre le document en cliquant sur le bouton…", ()=>{
       PorteDocuments.btnSave.click()
     })
-    return waitFor("PorteDocuments.currentDoc._modified === false", {timeout: 6000})
+    return waitFor("PorteDocuments.currentDocument._modified === false", {timeout: 6000})
     .then(()=>{
       assert_equal(
         false, curDoc._modified,
@@ -55,7 +55,7 @@ t.case('Modification et enregistrement', () => {
       })
 
       var expected  = `Super${RC}${RC}Nouveau texte`
-      var actual    = PorteDocuments.currentDoc.contents
+      var actual    = PorteDocuments.currentDocument.contents
       assert_equal(
         expected, actual,
         {

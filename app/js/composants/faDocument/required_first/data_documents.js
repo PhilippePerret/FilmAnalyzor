@@ -67,6 +67,7 @@ const DATA_DOCUMENTS = {
 // On va ajouter en clé les id des documents qui en ont
 for (var dimDoc in DATA_DOCUMENTS) {
   if ( 'undefined' !== typeof DATA_DOCUMENTS[dimDoc].id /* NE PAS UTILISER isDefined */ ) {
+    DATA_DOCUMENTS[dimDoc].dim = dimDoc
     DATA_DOCUMENTS[DATA_DOCUMENTS[dimDoc].id] = Object.assign({}, DATA_DOCUMENTS[dimDoc], {dim: dimDoc, menu:false})
   }
 }

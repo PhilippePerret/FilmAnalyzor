@@ -30,8 +30,8 @@ Object.assign(PorteDocuments,{
   Méthode d'autosauvegarde du document courant
  */
 , autoSaveCurrent(){
-    this.currentDoc.getContents()
-    this.currentDoc.isModified() && this.currentDoc.save()
+    this.currentDocument.getContents()
+    this.currentDocument.isModified() && this.currentDocument.save()
   }
 
 /**

@@ -44,8 +44,8 @@ toString(){
 **/
 , as(format, flag, opts){
   // console.log("-> as", format, flag, opts)
-  if (undefined === flag) flag = 0
-  if (undefined === opts) opts = {}
+  flag = flag || 0
+  opts = opts || {}
 
   // La liste dans laquelle on va mettre tous les DOMElements fabriqués
   var domEls = []
@@ -170,8 +170,8 @@ toString(){
   return DCreate(A, {class:'lktool lkedit', inner:'edit', attrs:{onclick:`EventForm.editEvent.bind(EventForm)(${this.id})`}})
 }
 
-, showLink(){
-  return DCreate(A, {class:'lktool btn', inner:'voir', attrs:{onclick:`showEvent(${this.id})`}})
+, showLink(altText){
+  return DCreate(A, {class:'lktool btn', inner:altText||'voir', attrs:{onclick:`showEvent(${this.id})`}})
 }
 
 // Version livre commune
