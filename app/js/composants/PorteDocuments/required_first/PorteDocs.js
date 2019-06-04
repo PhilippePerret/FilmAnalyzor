@@ -2,37 +2,25 @@
 
 const PorteDocuments = {
   class: 'PorteDocuments'
-, inited: false,
+, inited: false
 , isOpened: false
 , currentDoc: undefined // instance FADocument
 
 /**
-  Ouvre le document d'identifiant +doc_id+ ('document-XXX')
+  Ouvre le document d'identifiant +doc_id+ ('document-XXX') en édition
 
   @param {Number} docId   L'identifiant du document (ou undefined)
                           Si indéfini, c'est l'introduction qui est ouverte,
                           c'est-à-dire le document #1
 **/
-, openDocument(docId) {
+, editDocument(docId) {
     docId = docId || 1
     // Si le porte-documents est déjà ouvert, il faut vérifier que le
     // document édité ait bien été enregistré
-    if ( this.isOpened && isFalse(this.checkCurrentDocModified()) ) return
-    this.message(`Document #${docId} en préparation…`)
-    this.makeCurrent(docId)
-    this.message('Document prêt à être travaillé.')
-  }
-/**
-  Ouvre un fichier quelconque, par exemple un fichier de données de procédés.
-  Ce type de document n'appartiennent jamais à l'analyse.
-
-**/
-, openSystemDoc(path){
-    if(isFalse(this.checkCurrentDocModified())) return
-    defaultize(this,'documents',{})
-    let fadoc = new FADocument(path)
-    this.documents[path] = fadoc
-    this.makeCurrent(path)
+    if ( this.keepCurrentDocument() ) return
+    this.currentDocument = this.documents[docId]
+    this.isOpened || this.open()
+    this.currentDocument.edit()
   }
 
 
@@ -42,28 +30,30 @@ const PorteDocuments = {
     @param {Number} docId Identifiant du document à ouvrir (ou path)
    */
 , makeCurrent(docId) {
-    if ( isFalse(this.checkCurrentDocModified()) ) return
-    defaultize(this, 'documents', {})
-    isDefined(this.documents[docId]) || ( this.documents[docId] = new FADocument(docId) )
-    this.currentDoc = this.documents[docId]
-    this.isOpened || this.open()
-    this.currentDoc.display()
     this.visualizeDoc && this.updateVisuDoc()
-    // On "referme" toujours le menu des types (après l'ouverture)
+    // On "referme" toujours le menu des documents (après l'ouverture)
     this.menuTypeDoc.val(docId)
     // On renseigne le bouton droppable
     var attrs = {}
     attrs[STRdata_type] = STRdocument
-    attrs[STRdata_id]   = this.currentDoc.id
+    attrs[STRdata_id]   = this.currentDocument.id
     this.btnDrop.attr(attrs)
   }
 
-// Permet de forcer le rechargement du document d'identifiant +kdoc+. La
-// méthode est utilisée par le dataeditor
+/**
+  Méthode pour boucler sur tous les documents actuels
+**/
+, forEachDocument(fn){
+    for(var docId in this.documents){
+      if ( isFalse(fn(this.documents[docId])) ) break // pour pouvoir interrompre
+    }
+  }
+
+// Permet de forcer le rechargement du document d'identifiant +docId+. La
+// méthode est utilisée par le dataeditor quand le document a été modifié.
 , resetDocument(docId){
-    if ( isUndefined(this.documents) ) return
-    this.currentDoc && this.currentDoc.id == docId && this.hide()
-    delete this.documents[docId]
+    this.currentDocument && this.currentDocument.id == docId && this.hide()
+    this.documents[docId].reset()
   }
 
 /**
@@ -90,21 +80,19 @@ const PorteDocuments = {
 *   - ignore les changements et poursuivre (return true)
 *   - annuler, donc ne pas poursuire (return false)
 **/
-, checkCurrentDocModified(){
+, keepCurrentDocument(){
     var choix
-    if ( this.currentDoc && this.currentDoc.isModified()){
-      if ( this.a.locked ) {
-        choix = 2 // Pour ignorer les changements
-      } else {
-        choix = DIALOG.showMessageBox({
-            type:       'warning'
-          , buttons:    ["Enregistrer", "Annuler", "Ignorer les changements"]
-          , title:      "Document courant non sauvegardé"
-          , defaultId:  0
-          , cancelId:   1
-          , message:    T('ask-for-save-document-modified', {type: this.currentDoc.type})
-        })
-      }
+    if ( isUndefined(this.currentDocument) ) return false
+    if ( this.a.locked ) return false
+    if ( this.currentDocument.isModified() ){
+      choix = DIALOG.showMessageBox({
+          type:       'warning'
+        , buttons:    ["Enregistrer", "Annuler", "Ignorer les changements"]
+        , title:      "Document courant non sauvegardé"
+        , defaultId:  0
+        , cancelId:   1
+        , message:    T('ask-for-save-document-modified', {type: this.currentDoc.type})
+      })
       switch (choix) {
         case 0:
           this.currentDoc.save()
@@ -120,9 +108,11 @@ const PorteDocuments = {
 
 /**
  * Menu appelé quand on choisit un type de document dans le menu
+ TODO : modifier le nom, "Type" est confusionnant alors que c'est plutôt un
+ ID maintenant.
  */
 , onChooseTypeDoc(e){
-    this.makeCurrent(this.menuTypeDoc.val())
+    this.edit(this.menuTypeDoc.val())
   }
 
 /**
@@ -131,7 +121,7 @@ const PorteDocuments = {
 , onChooseModeleDoc(e){
     // On charge le modèle
     var modelPath = $('#section-porte-documents select#modeles-doc').val()
-    this.currentDoc.setContents(fs.readFileSync(modelPath, 'utf8'))
+    this.currentDocument.setContents(fs.readFileSync(modelPath, 'utf8'))
     // On remet toujours le menu au début
     $('#section-porte-documents select#modeles-doc').val('')
   }
@@ -160,7 +150,7 @@ const PorteDocuments = {
   document courant.
 */
 , onContentsChange(){
-    this.currentDoc.contents = this.docField.val()
+    this.currentDocument.contents = this.docField.val()
   }
 
 /**
@@ -191,18 +181,18 @@ const PorteDocuments = {
   mis en édition.
 **/
 , setUI(){
-    let my = this
-      , any = this.currentDoc.dtype == STRany
-      , rpath = any ? this.currentDoc.path.replace(new RegExp(`^${APPFOLDER}`),'.'):'DOCUMENT '
+    let my  = this
+      , sys = this.currentDocument.dtype == STRsystem
+      , rpath = sys ? this.currentDocument.path.replace(new RegExp(`^${APPFOLDER}`),'.'):'DOCUMENT '
     // On masque le menu des types de document si c'est un document système
-    my.menuTypeDoc[any?STRhide:STRshow]()
+    my.menuTypeDoc[sys?STRhide:STRshow]()
     my.section.find('.header #writer-doc-title label').html(rpath)
     new Array(
         '#writer-doc-title select'
       , '.div-modeles'
       , '.writer-btn-drop'
       , '#writer-btn-new-doc'
-    ).map( sel => my.section.find(`.header ${sel}`)[any?STRhide:STRshow]())
+    ).map( sel => my.section.find(`.header ${sel}`)[sys?STRhide:STRshow]())
 
     // On règle la taille pour que ça prenne toute la hauteur
     this.fwindow.jqObj.outerHeight( H - 10 )
@@ -211,12 +201,12 @@ const PorteDocuments = {
     this.positionneWriter()
   }
 
-, beforeHide(){ return !!this.checkCurrentDocModified() }
+, beforeHide(){ return !this.keepCurrentDocument() }
 , hide(){ this.fwindow.hide() }
 , onHide(){
     this.stopTimers()
     this.isOpened = false
-    delete this.currentDoc
+    delete this.currentDocument
     this.setAutoVisualize()
     this.visualizor.hide()
   }

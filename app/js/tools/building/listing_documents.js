@@ -2,8 +2,7 @@
 
 
 Object.defineProperty(FADocument,'DataFAListing',{get(){return {
-  // items: Object.values(this.documents)
-  items: this.allDocuments
+  items: Object.values(PorteDocuments.documents)
   // items:[]
 , mainTitle: 'Documents'
 , asListItem(item, opts){

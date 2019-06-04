@@ -151,8 +151,6 @@ const Prefs = {
       // this.userPrefs = require(this.userPrefsPath)
       // Pour toujours ajouter les nouvelles préférences définies
       this.userPrefs = Object.assign(USER_PREFS_DEFAULT, require(this.userPrefsPath))
-      // log.info("this.userPrefs: ", this.userPrefs)
-      console.log("this.userPrefs: ", this.userPrefs)
     } else {
       // Les valeurs par défaut
       this.userPrefs = USER_PREFS_DEFAULT

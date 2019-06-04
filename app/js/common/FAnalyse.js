@@ -306,32 +306,42 @@ newVersionRequired(){
 /**
  * Méthode qui ouvre le writer
  */
-openDocInWriter(dtype){
-  if(dtype){
-    if(dtype.startsWith('fondamentales') && NONE === typeof(Fondamentales)){
-      return this.loadFondamentales(this.openDocInWriter.bind(this, dtype))
-    } else if (dtype == 'building_script') {
-      // Maintenant, on ouvre le building script avec son éditeur propre
-      if(NONE == typeof(FABuildingScript)) return System.loadComponant('faBuildingScript', this.openDocInWriter.bind(this,dtype))
+editDocumentInPorteDocuments(docId) {
+  switch (docId) {
+    case 13:
+    case 14:
+      if ( NONE === typeof(Fondamentales) ) {
+        return this.loadFondamentales(this.openDocInDataEditor.bind(this, docId))
+      }
+      break
+    case 9:
+      if ( NONE == typeof(FABuildingScript) ) return System.loadComponant('faBuildingScript', this.editDocumentInPorteDocuments.bind(this, docId))
       return FABuildingScript.toggle()
-    }
   }
   PorteDocuments.inited || PorteDocuments.init()
-  PorteDocuments.openDocument(dtype)
+  PorteDocuments.editDocument(docId)
 }
 
 /**
   Méthode qui ouvre le DataEditor
 **/
-openDocInDataEditor(dtype){
-  if(dtype.startsWith('fondamentales') && NONE === typeof(Fondamentales)){
-    return this.loadFondamentales(this.openDocInDataEditor.bind(this, dtype))
-  } else if(dtype == 'infos' && NONE === typeof(InfosFilm)){
-    return this.loadInfosFilm(this.openDocInDataEditor.bind(this, dtype))
-  } else if (dtype === 'variables'){
-    return F.notify("Pas d'édition avec le data-editor pour les variables pour le moment. Utiliser le document complet.")
+openDocInDataEditor(docId){
+  switch (docId) {
+    case 13: // fondamentales
+    case 14:
+      if ( NONE === typeof(Fondamentales) ) {
+        return this.loadFondamentales(this.openDocInDataEditor.bind(this, docId))
+      }
+      break
+    case 20: // infos
+      if ( NONE === typeof(InfosFilm) ) {
+        return this.loadInfosFilm(this.openDocInDataEditor.bind(this, docId))
+      }
+      break
+    case 30: // variables
+      return F.notify("Pas d'édition avec le data-editor pour les variables pour le moment. Utiliser le document complet.")
   }
-  DataEditor.openPerType(dtype)
+  DataEditor.openDocument(docId)
 }
 
 /**
@@ -393,7 +403,7 @@ addEvent(nev) {
 // Note : on pourrait y aller directement, mais c'est pour compatibiliser
 // les choses
 editDocument(dtype, doc_id){
-  return PorteDocuments.openDocument(docId)
+  return PorteDocuments.editDocument(docId)
 }
 
 /**

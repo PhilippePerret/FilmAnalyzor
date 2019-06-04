@@ -506,7 +506,7 @@ get menuSousDecors(){return this._menuSousDecors||defP(this,'_menuSousDecors', t
 **/
 modifyDataTypes(e, typ){
   typ = typ || this.type
-  PorteDocuments.openSystemDoc(path.join(APPFOLDER,'app','js','data',`data_${typ}.yaml`))
+  PorteDocuments.editDocument(path.join(APPFOLDER,'app','js','data',`data_${typ}.yaml`))
 }
 
 updateTypes(e, typ){

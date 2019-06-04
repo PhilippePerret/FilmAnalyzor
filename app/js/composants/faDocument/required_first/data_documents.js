@@ -16,7 +16,7 @@
  */
 const DATA_DOCUMENTS = {
 
-  building_script:  {hname: 'Script d’assemblage', format:'md', type:'data', accelerator:'CmdOrCtrl+Shift+X', menu:false}
+  building_script:  {id:9, hname: 'Script d’assemblage', format:'md', type:'data', accelerator:'CmdOrCtrl+Shift+X'}
 
 , separatorInfos: 'separator'
 
@@ -24,7 +24,7 @@ const DATA_DOCUMENTS = {
 
 , separator2: 'separator'
 
-, variables:        {id:30, hname: 'Variables', format: 'yaml', type:'data', dataeditor: true}
+, variables:        {id:30, hname: 'Variables',  format: 'yaml', type:'data', dataeditor: true}
 , diminutifs:       {id:31, hname: 'Diminutifs', format:'yaml', type:'data'}
 , snippets:         {id:32, hname: 'Snippets',   format:'yaml', type:'data'}
 
@@ -62,6 +62,13 @@ const DATA_DOCUMENTS = {
 , data_scene:       {hname: 'Date absolues Scènes', type:'data', abs:true, menu:false}
 , data_idee:        {hname: 'Date absolues Idées', type:'data', abs:true, menu:false}
 
+}
+
+// On va ajouter en clé les id des documents qui en ont
+for (var dimDoc in DATA_DOCUMENTS) {
+  if ( 'undefined' !== typeof DATA_DOCUMENTS[dimDoc].id /* NE PAS UTILISER isDefined */ ) {
+    DATA_DOCUMENTS[DATA_DOCUMENTS[dimDoc].id] = Object.assign({}, DATA_DOCUMENTS[dimDoc], {dim: dimDoc, menu:false})
+  }
 }
 
 // Pour les menus

@@ -907,7 +907,7 @@ On utilise alors la méthode `openAnyDoc`.
 
 ```javascript
 
-  PorteDocuments.openSystemDoc('<path/absolue/to/document.ext>')
+  PorteDocuments.editDocument('<path/absolue/to/document.ext>')
 
 ```
 

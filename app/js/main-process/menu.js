@@ -23,7 +23,7 @@ const CURRENT_THING_MENUS = [
   'save-analyse', 'save-as-analyse', 'export-as-pdf', 'export-as-epub',
   'export-as-kindle', 'export-as-docbook', 'display-infos-film',
   'display-full-analyse', 'display-full-analyse-forcer', 'display-pfa',
-  'display-fondamentales', 'display-statistiques', 'new-eventer', 'open-writer',
+  'display-fondamentales', 'display-statistiques', 'new-eventer', 'open-porte-documents',
   'display-analyse-state', 'display-last-report', 'display-documents',
   'display-protocole', 'option-locked', 'new-version', 'display-brins',
   'goto-last-scene', 'display-decors', 'check-data-validity',
@@ -37,50 +37,52 @@ const CURRENT_THING_MENUS = [
 const PorteDocumentsSubmenus = [
       {
           label: "Ouvrir/fermer le Porte-documents"
-        , id: 'open-writer'
+        , id: 'open-porte-documents'
         , accelerator: 'CmdOrCtrl+Shift+W'
         , enabled: false
-        , click: () => {execJsOnCurrent('openDocInWriter')}
+        , click: () => {execJsOnCurrent('editDocumentInPorteDocuments')}
       }
     , {type:'separator'}
   ]
 
-const DATA_DOCS = require('../composants/faWriter/required_first/min.js')
+const DATA_DOCS = require('../composants/faDocument/required_first/data_documents')
 
-function openDocInWriter(doc_id){
-  mainW.webContents.executeJavaScript(`current_analyse && current_analyse.openDocInWriter("${doc_id}")`)
+function editDocumentInPorteDocuments(docId){
+  mainW.webContents.executeJavaScript(`current_analyse && current_analyse.editDocumentInPorteDocuments(${docId})`)
 }
-function openDocInDataEditor(doc_id){
-  mainW.webContents.executeJavaScript(`current_analyse && current_analyse.openDocInDataEditor("${doc_id}")`)
+function openDocInDataEditor(docId){
+  mainW.webContents.executeJavaScript(`current_analyse && current_analyse.openDocInDataEditor(${docId})`)
 }
 var curType = null
-for(var doc_id in DATA_DOCS){
-  if (DATA_DOCS[doc_id].menu === false) continue
-  else if (DATA_DOCS[doc_id] === 'separator'){
+for(var docDim in DATA_DOCS){
+  if ( DATA_DOCS[docDim].menu === false ) continue
+  else if (DATA_DOCS[docDim] === 'separator') {
     PorteDocumentsSubmenus.push({type:'separator'})
     continue
   }
-  var ddoc = DATA_DOCS[doc_id]
-  var menu_id = `open-doc-${doc_id}`
-  CURRENT_THING_MENUS.push(menu_id)
-  var method    = openDocInWriter.bind(null, doc_id)
-  if(ddoc.dataeditor){
-    CURRENT_THING_MENUS.push(`${menu_id}-de`)
-    var DEMethod  = openDocInDataEditor.bind(null,doc_id)
+  var ddoc = DATA_DOCS[docDim]
+  var menu_id = `open-doc-${docDim}`
+  // CURRENT_THING_MENUS.push(menu_id) // ça ne marche plus…
+  var method    = editDocumentInPorteDocuments.bind(null, ddoc.id)
+  if ( ddoc.dataeditor ) {
+    // CURRENT_THING_MENUS.push(`${menu_id}-de`)  // ça ne marche plus…
+    var deMethod  = openDocInDataEditor.bind(null, ddoc.id)
     PorteDocumentsSubmenus.push({
         label:    ddoc.hname
       , submenu:[
             {
               label: "Éditeur de données"
             , id:     `${menu_id}-de`
-            , enabled: false
-            , click: DEMethod
+            , enabled: true
+            // , enabled: false// ça ne marche plus…
+            , click: deMethod
             }
           , {
               label:  "Fichier complet"
             , id:     menu_id
-            , enabled: false
-            , click:    method
+            // , enabled: false // ça ne marche plus
+            , enabled: true
+            , click: method
             }
         ]
     })
@@ -88,7 +90,8 @@ for(var doc_id in DATA_DOCS){
     PorteDocumentsSubmenus.push({
         label:    ddoc.hname
       , id:       menu_id
-      , enabled:  false
+      , enabled:  true
+      // , enabled:  false // ça ne marche plus
       , click:    method
       , accelerator: ddoc.accelerator
     })
@@ -103,15 +106,26 @@ const ObjMenus = {
   , getMenuData: null
   , getMenu(id) {
       var d = this.getMenuData[id]
-      if('undefined' == typeof(d)){
+      if('undefined' === typeof(d)){
         log.error(`Menu <${id}> is not defined…`)
         throw("Menu introuvable",id)
         return null
       }
       var m = this.mainMenuBar.items[d[0]].submenu.items[d[1]] ;
-      // console.log("m:", m)
+      if ('undefined' === typeof(m)){
+        console.error("this.mainMenuBar.items[d[0]].submenu.items[d[1]] EST INDÉFINI")
+        console.error("\n\nd = ", d)
+        console.log("\n\nthis.mainMenuBar.items[d[0]]:",this.mainMenuBar.items[d[0]])
+        console.log("\n\nthis.mainMenuBar.items[d[0]].submenu.items",this.mainMenuBar.items[d[0]].submenu.items)
+      }
       // Si hiérarchie plus profonde
-      if (d.length > 2){ m = m.submenu.items[d[2]] }
+      try {
+        if (d.length > 2){ m = m.submenu.items[d[2]] }
+      } catch (e) {
+        console.error("Impossible d'obtenir le menu id (d)", id, d)
+        console.error(e)
+        return null
+      }
       // console.log("m final:", m)
       return m ;
     }
@@ -124,6 +138,7 @@ const ObjMenus = {
   , setMenusState(id_menus, state) {
       var my = this
       for(var mid of id_menus){
+        // console.log("----> réglage du menu ", mid)
         my.getMenu(mid).enabled = state
       }
     }
@@ -779,8 +794,10 @@ for(iMainMenu = 0; iMainMenu < nbMainMenus; ++iMainMenu ){
       nbSubSubMenus = subMenu.submenu.length
       for(iSubSubMenu=0; iSubSubMenu < nbSubSubMenus; ++iSubSubMenu){
         subSubMenu = subMenu.submenu[iSubSubMenu]
+        // console.log("----> subSubMenu:", subSubMenu)
         if(!subSubMenu.id){continue}
         my.getMenuData[subSubMenu.id] = [iMainMenu, iSubMenu, iSubSubMenu]
+        // console.log("=====> Je prends ses données :", my.getMenuData[subSubMenu.id])
       }
     }
     if (!subMenu.id){ continue }
@@ -791,7 +808,8 @@ for(iMainMenu = 0; iMainMenu < nbMainMenus; ++iMainMenu ){
   }
 
 }//fin de boucle sur tous les menus principaux
-
+// console.log("my.getMenuData:", my.getMenuData)
+// throw("pour s'arrêter")
 
 ObjMenus.data_menus = DATA_MENUS
 

@@ -15,6 +15,7 @@ function loadAllComponants(){
     if(NONE === typeof BancTimeline)  return this.loadComponant('ui/banc_timeline')
     if(NONE === typeof DataEditor)    return this.loadComponant('DataEditor')
     if(NONE === typeof EventForm)     return this.loadComponant('EventForm')
+    if(NONE === typeof FADocument)    return this.loadComponant('faDocument')
     if(NONE === typeof PorteDocuments)return this.loadComponant('PorteDocuments')
     if(NONE === typeof FAProtocole)   return this.loadComponant('faProtocole')
     if(NONE === typeof FAStater)      return this.loadComponant('faStater')

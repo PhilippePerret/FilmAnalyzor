@@ -41,7 +41,7 @@ FAnalyse.prototype.execSetFilmStartTimeAt = function(diff){
   // Corriger toutes les balises {{time:...}} qu'on
   // peut trouver dans les documents.
   var cont
-  FADocument.forEachDocument(function(doc){
+  PorteDocuments.forEachDocument(function(doc){
     if ( isUndefined(doc.contents) ) return
     if(!doc.contents.match(/\{\{time\:/)) return
     cont = doc.contents

@@ -349,7 +349,7 @@ const DATA_AUTOMATIC_STEPS = {
     {NaT: true, exec: "current_analyse.displayBrins()", expected: '---nothing---'}
   ]
 , "ouvrir le document dbrins":[
-    {NaT: true, exec: "PorteDocuments.openDocument(13)", expected: '---nothing---'}
+    {NaT: true, exec: "PorteDocuments.editDocument(13)", expected: '---nothing---'}
   ]
 
 // ---------------------------------------------------------------------

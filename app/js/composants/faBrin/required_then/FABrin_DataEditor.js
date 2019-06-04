@@ -50,7 +50,7 @@ Object.assign(FABrin,{
 , DEOpenDoc(type){
     switch (type) {
       case 'bType':
-        PorteDocuments.openSystemDoc(this.btypeFilePath)
+        PorteDocuments.editDocument(this.btypeFilePath)
         break
       default:
         console.error("Impossible de traiter le type", type)

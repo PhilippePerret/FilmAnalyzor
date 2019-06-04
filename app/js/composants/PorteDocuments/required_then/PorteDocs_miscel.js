@@ -11,7 +11,7 @@ Object.assign(PorteDocuments,{
 /**
     Sauvegarde du document courant
  */
-, saveCurrentDoc(){ this.currentDoc.save() }
+, saveCurrentDoc(){ this.currentDocument.save() }
 
 
 /**
@@ -25,9 +25,9 @@ Object.assign(PorteDocuments,{
 
 // Marque que le document courant est modifié
 , setModified(mod){
-  if (this.autoSave) return
-  this.jqObj[mod?'addClass':'removeClass'](STRmodified)
-}
+    if (this.autoSave) return
+    this.jqObj[mod?'addClass':'removeClass'](STRmodified)
+  }
 
 /**
  Pour afficher un message propre au writer
@@ -47,17 +47,7 @@ document propres à l'analyse courante)
   `this.customDocuments`)
 **/
 , makeCustomDocumentsList(){
-    let docs = []
-    var last_id = 0
-    var files = glob.sync(path.join(this.a.folderFiles, '**', 'custom-*.md'))
-    for(var file of files){
-      var docId = parseInt(path.basename(file,path.extname(file)).split('-')[1],10)
-      docs.push( new FADocument(docId) )
-      if ( docId > last_id ) last_id = 0 + docId
-    }
-    // On renseigne le dernier identifiant utilisé
-    FADocument.lastID = last_id
-    return docs
+    return Object.values(this.documents).filter( doc => doc.isCustomDoc )
   }
 
 })

@@ -29,9 +29,9 @@ Object.defineProperties(PorteDocuments,{
 , selector:{
    get(){return this._selector || defP(this,'_selector', new Selector(this.docField))}
  }
-/**
-  Retourne la liste des documents personnalisés
-**/
+// Retourne la liste de tous les documents courants
+, documents:{get(){return this._documents || defP(this,'_documents',this.getDocuments())}}
+// Retourne la liste des documents personnalisés
 , customDocuments:{
     get(){return this._customDocuments || defP(this,'_customDocuments', this.makeCustomDocumentsList())}
   }
@@ -49,5 +49,40 @@ Object.defineProperties(PorteDocuments,{
 , menuThemes: {get(){return this.section.find('#writer-theme')}}
 , menuModeles:{ get(){return $('#section-porte-documents select#modeles-doc')} }
 , visualizor:{ get(){return $('#writer-doc-visualizor')} }
+
+})
+
+Object.assign(PorteDocuments,{
+  /**
+    Fait la table de tous les documents courants et la retourne
+    (pour this.documents)
+  **/
+  getDocuments(){
+    var maxId = 49
+      , tbl   = {}
+    glob.sync(`${this.a.folderFiles}/*.*`).forEach( dpath => {
+      var docId = this.docIdFromPath(dpath)
+      tbl[docId] = new FADocument(docId)
+      if ( docId > maxId ) maxId = docId
+    })
+    // On renseigne le dernier identifiant utilisé (ou 49 pour 1er à 50)
+    FADocument.lastCustomID = maxId
+    return tbl
+  }
+
+/**
+  Retourne l'identifiant du document de path +dpath+
+  Ce peut être un document standard (dans ce cas l'affixe est la clé dans
+  la table DATA_DOCUMENT) ou ça peut être un document customisé (dans ce
+  cas l'affixe est composé avec "custom-<ID>")
+**/
+, docIdFromPath(dpath){
+    let affixe = path.basename(dpath, path.extname(dpath))
+    if ( isDefined(DATA_DOCUMENTS[affixe]) ) { // Un document standard
+      return DATA_DOCUMENTS[affixe].id
+    } else { // Un document customisé ("custom-XXX.md")
+      return parseInt(affixe.split('-')[1],10)
+    }
+  }
 
 })
