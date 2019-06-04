@@ -37,7 +37,7 @@ build(){
   }
 
 , buildFooter(){
-    return DCreate(DIV, {id:'section-video-footer', append:[
+    return DCreate(DIV, {id:'section-video-footer', style:'display:none;', append:[
         // Le DIV principal contenant les boutons de contrôle
         DCreate(DIV, {class: 'div-nav-video-buttons no-user-selection'})
         // La boite de navigatoire

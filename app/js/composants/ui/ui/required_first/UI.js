@@ -155,7 +155,7 @@ const UI = {
 
 /**
   Méthode qui règle les inputs champs texte pour définir si les
-  textes doivent être édités dans le mini-writer ou dans leur
+  textes doivent être édités dans le miniwriter ou dans leur
   champ d'origine.
 **/
 , miniWriterizeTextFields(container, editInMiniwriter){

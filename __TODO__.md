@@ -2,20 +2,16 @@
 
 ### Traiter :
 
-* Rechercher le chargement de 'min.js' (données de documents)
 * Simplifier la gestion des documents :
-  - Faire la classe `PorteDocuments` qui remplacement `FAWriter`
   - Faire de la classe `FADocument` une héritière de `FAElement`
   de 1 à 49 => les documents "standard"
   au-dessus de 49 => le documents customisés (custom-<xx>)
-  - Un document sera toujours identifié par "document-<id nombre>". Cette clé renverra soit à un document standard (si id < 50) soit à un document customisé (id > 49).
   - Voir les associations qui existent déjà
   - Voir si les FADocuments sont des FAElement. Il semble que non, il faut les transformer
-  - En profiter aussi pour renommer FAWriter par "FAPorteDocs"
 
 * Pouvoir se déplacer de noeud STT en noeud STT
 
-* Garder toujours le curseur visible (faire l'essai en zoomant et en passant du début à la fin du film)
+* Garder toujours le curseur visible dans le banc-timeline (faire l'essai en zoomant et en passant du début à la fin du film)
 
 * Ré-étudier le survol de la timeline pour que ça ne court-circuite pas le déplacement des marqueurs, marqueurs de début et fin, etc.
 
@@ -27,8 +23,6 @@
 * Dans un champ d'édition, la touche escape doit permettre d'annuler l'édition après confirmation.
 
 * Traiter les observeurs de keyup/keydown différemment en fonction du propriétaire (rappel : l'observer de mutations met dans la propriété "data-owner-id" l'identifiant du DOMElement qui contient le champ de saisie. C'est 'writer' lorsque c'est le writer)
-
-* Supprimer les boutons de commande de la vidéo (prendre l'option "tout clavier" pour l'application, pour forcer l'utilisateur à les utiliser)
 
 * Traiter la sélection courante de l'interface, qui peut être n'importe quoi, un marqueur, une fiche, un document, etc. Pouvoir agir dessus (supprimer, éditer, déplacer)
 

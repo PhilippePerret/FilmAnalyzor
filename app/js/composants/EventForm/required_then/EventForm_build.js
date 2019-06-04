@@ -15,10 +15,10 @@ Object.assign(EventForm.prototype,{
     @return {String}        Le formulaire propre à l'event
   **/
 , formsByType(type){
-    if(undefined === this._formsByType) this._formsByType = {}
-    if(undefined === this._formsByType[type]){
+    isDefined(this._formsByType) || ( this._formsByType = {} )
+    isDefined(this._formsByType[type]) || (
       this._formsByType[type] = this.buildFormOfType(type)
-    }
+    )
     return this._formsByType[type]
   }
 
@@ -200,7 +200,7 @@ Object.assign(EventForm.prototype,{
         default:     return
       }
     })(type)
-    if(undefined !== label){
+    if ( isDefined(label) ) {
       dom.push(DCreate(DIV, {class:'div-form', append:[
           DCreate(LABEL, {inner:label})
         , DCreate(TEXTAREA, {id: my.fId('longtext3'), attrs:{rows:'4'}})
@@ -214,7 +214,7 @@ Object.assign(EventForm.prototype,{
         default:     return
       }
     })(type)
-    if(undefined !== label){
+    if ( isDefined(label) ) {
       dom.push(DCreate(DIV, {class:'div-form', append:[
           DCreate(LABEL, {inner:label})
         , DCreate(TEXTAREA, {id: my.fId('longtext4'), attrs:{rows:'4'}})
@@ -290,7 +290,7 @@ Object.assign(EventForm.prototype,{
     my.jqObj.find('textarea, input[type="text"], input[type="checkbox"], select').on('keydown', this.onKeyDownOnTextFields.bind(this))
 
     // Pour savoir si l'on doit éditer dans les champs de texte ou
-    // dans le mini-writer
+    // dans le miniwriter
     UI.miniWriterizeTextFields(this.jqObj, this.a.options.get('option_edit_in_mini_writer'))
 
     // Pour tous les events, le champ permet d'associer à une image

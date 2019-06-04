@@ -15,7 +15,7 @@ Object.assign(PorteDocuments,{
 
 
 /**
-  S'assure que le writer ne se trouve pas sur le visualiseur
+  S'assure que le porte_documents ne se trouve pas sur le visualiseur
 **/
 , positionneWriter(){
   if(this.jqObj.position().left < (this.visualizor.position().left + this.visualizor.outerWidth())){
@@ -30,7 +30,7 @@ Object.assign(PorteDocuments,{
   }
 
 /**
- Pour afficher un message propre au writer
+ Pour afficher un message propre au porte_documents
 */
 , message(msg){ this.spanMessage.html(msg || '') }
 

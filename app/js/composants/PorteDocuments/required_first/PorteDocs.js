@@ -133,7 +133,7 @@ const PorteDocuments = {
    * Quand on change de thème
    */
 , onChooseTheme(e,theme){
-    theme = theme || $('#section-porte-documents #writer-theme').val()
+    theme = theme || $('#section-porte-documents #porte_documents-theme').val()
     this.applyTheme(theme)
   }
   /**
@@ -189,12 +189,12 @@ const PorteDocuments = {
       , rpath = sys ? this.currentDocument.path.replace(new RegExp(`^${APPFOLDER}`),'.'):'DOCUMENT '
     // On masque le menu des types de document si c'est un document système
     my.menuDocuments[sys?STRhide:STRshow]()
-    my.section.find('.header #writer-doc-title label').html(rpath)
+    my.section.find('.header #porte_documents-doc-title label').html(rpath)
     new Array(
-        '#writer-doc-title select'
+        '#porte_documents-doc-title select'
       , '.div-modeles'
-      , '.writer-btn-drop'
-      , '#writer-btn-new-doc'
+      , '.porte_documents-btn-drop'
+      , '#porte_documents-btn-new-doc'
     ).map( sel => my.section.find(`.header ${sel}`)[sys?STRhide:STRshow]())
 
     // On règle la taille pour que ça prenne toute la hauteur

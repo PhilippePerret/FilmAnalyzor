@@ -64,7 +64,7 @@ Object.assign(UI, {
     } else if (e.keyCode === KERASE && ((sel && sel.beforeUpTo(RC,false))||'').match(/^ +$/)){
 
       // TODO TROUVER COMMENT SAVOIR QUE LE PROPRIÉTAIRE EST LE FAWRITER
-      if ( e.target.data('owner-id') === 'writer') {
+      if ( e.target.data('owner-id') === 'porte_documents') {
         if(PorteDocuments.currentDocument.isData){
           // On doit effacer deux espaces
           sel = PorteDocuments.selector
@@ -78,7 +78,7 @@ Object.assign(UI, {
 
     } else if(e.keyCode === KTAB){
 
-      if(target.data('owner-id') === 'writer'){
+      if(target.data('owner-id') === 'porte_documents'){
         if(PorteDocuments.selector.before() == RC){
           // Si on est en début de ligne, on insert un élément de liste
           return UI.inTextField.replaceTab(e, this.selector, '* ')
@@ -95,10 +95,14 @@ Object.assign(UI, {
     if(e.keyCode === KESCAPE){
       // TODO
       F.notify("Il faudrait fermer la fenêtre.")
-    } else if(e.keyCode === KRETURN){
+    } else if ( e.keyCode === KRETURN ) {
       if(e.metaKey){
-        // META + RETURN => FINIR
-        this.finir.bind(this)() // on aura une erreur ici
+        // META + RETURN => FINIR L'ÉDITION DE ?…
+        if ( FWindow.currentIsEventForm() ) {
+          EventForm.currentForm.submit.bind(EventForm.currentForm).call()
+        } else {
+          F.notify("Je ne sais pas ce qu'est la fenêtre au premier plan, je ne peux donc pas provoquer l'enregistrement.")
+        }
         return stopEvent(e)
       }
     } else if(e.keyCode === KTAB){
@@ -118,7 +122,7 @@ Object.assign(UI, {
           // console.log("[DOWN] which, KeyCode, charCode, metaKey, altKey ctrlKey shiftKey", e.which, e.keyCode, e.charCode, e.metaKey, e.altKey, e.ctrlKey, e. shiftKey)
           if(e.which === 191){
             // === EXCOMMENTER OU DÉCOMMENTER UNE LIGNE ===
-            if(target.data('owner-id') === 'writer'){
+            if(target.data('owner-id') === 'porte_documents'){
               return this.inTextField.toggleComments(e, PorteDocuments.selector, {before: '<!-- ', after: ' -->'})
             }
           }
@@ -133,7 +137,7 @@ Object.assign(UI, {
               // les données et on sort (mais j'ai le sentiment que c'est
               // déjà traité ailleurs).
               F.notify("Il faut définir la cible courants pour savoir quoi faire de ce CMD+S")
-              if (e.target.data('owner-id') === 'writer'){
+              if (e.target.data('owner-id') === 'porte_documents'){
                 PorteDocuments.currentDocument.getContents()
                 if (PorteDocuments.currentDocument.isModified()){
                   PorteDocuments.currentDocument.save()

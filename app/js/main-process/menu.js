@@ -32,7 +32,7 @@ const CURRENT_THING_MENUS = [
 ]
 // Note : les ID des menus de documents seront ajoutés "à la volée"
 
-// Les submenus du writer, qui doivent être calculés en fonction des types
+// Les submenus du porte_documents, qui doivent être calculés en fonction des types
 // de documents.
 const PorteDocumentsSubmenus = [
       {
@@ -619,7 +619,7 @@ const DATA_MENUS = [
             }
           , {type: 'separator'}
           , {
-                label:    "Utiliser le mini-writer pour éditer les textes"
+                label:    "Utiliser le miniwriter pour éditer les textes"
               , id:       'option_edit_in_mini_writer'
               , type:     'checkbox'
               , checked:  false

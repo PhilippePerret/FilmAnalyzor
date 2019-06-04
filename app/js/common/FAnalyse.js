@@ -304,7 +304,7 @@ newVersionRequired(){
 }
 
 /**
- * Méthode qui ouvre le writer
+ * Méthode qui ouvre le porte_documents
  */
 editDocumentInPorteDocuments(docId) {
   switch (docId) {

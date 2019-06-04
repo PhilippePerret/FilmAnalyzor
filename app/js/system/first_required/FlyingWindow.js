@@ -235,6 +235,11 @@ static closeCurrent(){
   return true
 }
 
+// Retourne TRUE si la fenêtre courante est le formulaire d'event
+static currentIsEventForm(){
+  return this.current.name === 'AEVENTFORM'
+}
+
 static get current()  {return this._current}
 static set current(w) {this._current = w}
 

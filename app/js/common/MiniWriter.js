@@ -8,8 +8,8 @@
   Features
   --------
   - Le MiniWriter doit pouvoir s'utiliser pour tous les types de texte, sauf
-    peut-être les documents, qui ont leur propre writer
-  - On doit pouvoir utiliser tous les snippets avec le mini-writer
+    peut-être les documents, qui ont leur propre porte_documents
+  - On doit pouvoir utiliser tous les snippets avec le miniwriter
   - On doit pouvoir visualiser le rendu de tout texte écrit.
   - On doit pouvoir passer simplement dans miniwriter depuis n'importe quel
     champ d'édition, donc n'importe quel textarea, notamment à partir de
@@ -20,7 +20,7 @@
 class MiniWriter {
 
 /**
-* Méthode de classe de création du mini-writer qui permet de le créer à
+* Méthode de classe de création du miniwriter qui permet de le créer à
 * l'aide de `MiniWriter.new(<field>)`
 **/
 static new(field /* DOMElement non jQuery */){
@@ -138,16 +138,16 @@ toggleMaskFond(){
   this.fondMasked = !this.fondMasked
 }
 /**
-  Méthode de construction du mini-writer
+  Méthode de construction du miniwriter
  */
 build(){
   return [
-      DCreate(DIV, {class:'mini-writer-editor', append: [
-          DCreate(DIV, {class: 'mini-writer-tools', inner: '[Mettre ici les outils]'})
-        , DCreate(DIV, {class:'mini-writer-div-textarea', append : [
-            DCreate(TEXTAREA, {id: `mini-writer-${this.id}-content`, class:'mini-writer-content'})
+      DCreate(DIV, {class:'miniwriter-editor', append: [
+          DCreate(DIV, {class: 'miniwriter-tools', inner: '[Mettre ici les outils]'})
+        , DCreate(DIV, {class:'miniwriter-div-textarea', append : [
+            DCreate(TEXTAREA, {id: `miniwriter-${this.id}-content`, class:'miniwriter-content'})
           ]})
-        , DCreate(DIV, {class: 'mini-writer-buttons', append: [
+        , DCreate(DIV, {class: 'miniwriter-buttons', append: [
             DCreate(DIV, {class:'fleft cbs', append:[
                 DCreate(INPUT, {type:STRcheckbox, id: this.idFor('cb-visualizor')})
               , DCreate(LABEL, {inner: 'Visualiser', attrs: {for: this.idFor('cb-visualizor')}})
@@ -157,8 +157,8 @@ build(){
           , DCreate(BUTTON, {class:'main btn-ok', type:BUTTON, inner:'Finir'})
           ]})
       ]})
-    , DCreate(DIV, {class:'mini-writer-visualizor', style: 'display:none;', append: [
-        DCreate(DIV, {class:'mini-writer-visualizor-content'})
+    , DCreate(DIV, {class:'miniwriter-visualizor', style: 'display:none;', append: [
+        DCreate(DIV, {class:'miniwriter-visualizor-content'})
     ]})
     ]
 }
@@ -179,14 +179,14 @@ idFor(foo){return `mw${this.id}-${foo}`}
 get contents(){return this.textField.val()}
 get formater(){return this._formater||defP(this,'_formater', this.fatexte.formate.bind(this.fatexte))}
 
-get textField(){return $(`#${this.domId} .mini-writer-content`)}
-get oButtons(){return this._obuttons||defP(this,'_obuttons', $(`#${this.domId} .mini-writer-buttons`))}
-get oVisualizor(){return this._ovisualizor||defP(this,'_ovisualizor', $(`#${this.domId} .mini-writer-visualizor`))}
-get oVisualizorContent(){return this._ovisualizorContent||defP(this,'_ovisualizorContent', $(`#${this.domId} .mini-writer-visualizor-content`))}
-get domId(){return this._domId||defP(this,'_domId',`mini-writer-${this.id}`)}
+get textField(){return $(`#${this.domId} .miniwriter-content`)}
+get oButtons(){return this._obuttons||defP(this,'_obuttons', $(`#${this.domId} .miniwriter-buttons`))}
+get oVisualizor(){return this._ovisualizor||defP(this,'_ovisualizor', $(`#${this.domId} .miniwriter-visualizor`))}
+get oVisualizorContent(){return this._ovisualizorContent||defP(this,'_ovisualizorContent', $(`#${this.domId} .miniwriter-visualizor-content`))}
+get domId(){return this._domId||defP(this,'_domId',`miniwriter-${this.id}`)}
 get fatexte(){return this._fatexte||defP(this,'_fatexte', new FATexte(''))}
 get jqObj(){return this.fwindow.jqObj}
-get fwindow(){return this._fwindow||defP(this,'_fwindow', new FWindow(this, {class:'mini-writer', id:this.domId, y:-20, x:-20}))}
+get fwindow(){return this._fwindow||defP(this,'_fwindow', new FWindow(this, {class:'miniwriter', id:this.domId, y:-20, x:-20}))}
 get selector(){return this._selector||defP(this,'_selector', new Selector(this.textField))}
 
 get jqOwner(){return this._jqOwner||defP(this,'_jqOwner', $(this.owner))}

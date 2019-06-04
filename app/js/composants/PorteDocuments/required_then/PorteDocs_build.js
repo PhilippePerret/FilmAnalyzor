@@ -4,7 +4,7 @@
  */
 
 Object.assign(PorteDocuments, {
-  // what:'Extension de PorteDocuments pour la construction du writer'
+  // what:'Extension de PorteDocuments pour la construction du porte_documents'
 
 // Rappel : appelé par la FWindow
   build(){
@@ -14,16 +14,16 @@ Object.assign(PorteDocuments, {
     attrs[STRdata_type] = STRdocument
 
     var header = DCreate(DIV,{class:STRheader, append:[
-        DCreate(BUTTON, {id:'btn-close-writer', class:'btn-close', type:STRbutton})
-      , DCreate(DIV,{id:'writer-doc-title', append:[
+        DCreate(BUTTON, {id:'btn-close-porte_documents', class:'btn-close', type:STRbutton})
+      , DCreate(DIV,{id:'porte_documents-doc-title', append:[
           DCreate(SELECT, {id: 'document-type', class: 'main'})
-        , DCreate(SPAN, {class:'writer-btn-drop document', attrs:attrs, inner:' ⎆'})
+        , DCreate(SPAN, {class:'porte_documents-btn-drop document', attrs:attrs, inner:' ⎆'})
         ]})
       , DCreate(DIV,{class:'div-modeles right', append:[
             DCreate(LABEL, {class: 'small', inner: 'MODÈLES '})
           , DCreate(SELECT, {id: 'modeles-doc'})
         ]})
-      , DCreate(BUTTON,{id:'writer-btn-new-doc', inner:'+', type:STRbutton})
+      , DCreate(BUTTON,{id:'porte_documents-btn-new-doc', inner:'+', type:STRbutton})
     ]})
 
     var body = DCreate(DIV, {
@@ -35,7 +35,7 @@ Object.assign(PorteDocuments, {
     var themes = {'': 'Thème…', 'real-theme': 'Normal', 'data-theme':'Données', 'musical-theme':'Musical'}
     for(var theme in themes){ opts.push(DCreate(OPTION, {value: theme, inner: themes[theme]}))}
     var selThemes = DCreate(SELECT, {
-      id: 'writer-theme'
+      id: 'porte_documents-theme'
     , append: opts
     })
 
@@ -44,7 +44,7 @@ Object.assign(PorteDocuments, {
       append: [
         DCreate(BUTTON, {id: 'btn-save-doc', class:'fright small main-button', inner: 'Enregistrer', type: STRbutton})
       , DCreate('SPACE') // juste pour éviter le BUTTON + SPAN
-      , DCreate(SPAN, {id: 'writer-message', inner: '...'})
+      , DCreate(SPAN, {id: 'porte_documents-message', inner: '...'})
       , selThemes
       , DCreate(LABEL, {inner: 'Taille du texte'})
       , DCreate(SPAN,  {id: 'text-size', inner: '...'})
@@ -101,7 +101,7 @@ Object.assign(PorteDocuments, {
     $(this.cbVisualize).on(STRchange, my.setAutoVisualize.bind(my))
 
     // On observe le bouton pour créer un nouveau document
-    $('button#writer-btn-new-doc').on(STRclick, FADocument.new.bind(FADocument))
+    $('button#porte_documents-btn-new-doc').on(STRclick, FADocument.new.bind(FADocument))
 
     // On rend le petit bouton pour drag-dropper le document courant
     // draggable

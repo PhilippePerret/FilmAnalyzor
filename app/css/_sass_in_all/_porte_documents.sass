@@ -1,6 +1,6 @@
 // --- DÉFINITION GÉNÉRALE ---
 section#section-porte-documents
-  div#writer.fwindow
+  div#porte_documents.fwindow
     display: flex
     flex-direction: column
     flex-wrap: nowrap
@@ -20,7 +20,7 @@ section#section-porte-documents
   top: 0
 
   // LE WRITER proprement dit
-  div#writer.fwindow
+  div#porte_documents.fwindow
     border: 4px solid grey
     width: 800px
 
@@ -37,19 +37,19 @@ section#section-porte-documents
     padding: 0.2em 1em
     position: relative
 
-    div#writer-doc-title
+    div#porte_documents-doc-title
       margin-bottom: 0.5em
       margin-left: 30px
       position: relative
 
-      .writer-btn-drop
+      .porte_documents-btn-drop
         all: unset
         font-size: 30pt
         vertical-align: sub
 
 
     // Le bouton pour créer un nouveau document
-    button#writer-btn-new-doc
+    button#porte_documents-btn-new-doc
       font-size: 28pt
       width: 46px
       height: 46px
@@ -82,7 +82,7 @@ section#section-porte-documents
       &:after
         all: unset
 
-    span#writer-message
+    span#porte_documents-message
       display: inline-block
       width: 210px
       overflow: hidden
@@ -148,7 +148,7 @@ section#section-porte-documents
   // ---------------------------------------------------------------------
 
   // Le visualiseur de document
-  div#writer-doc-visualizor
+  div#porte_documents-doc-visualizor
     position: fixed
     top: 0
     left: 0

@@ -104,8 +104,8 @@ static newId(){
                     exister.
 **/
 static optionsTypes(typ){
-  isDefined(this._optionsTypes) || ( this._optionsTypes = {} )
-  if(isUndefined(this._optionsTypes[typ])){
+  defaultize(this, '_optionsTypes', {})
+  if ( isUndefined(this._optionsTypes[typ]) ) {
     var p = path.join(APPFOLDER,'app','js','data',`data_${typ}.yaml`)
     if(false == fs.existsSync(p)) return '' // "dépeuplera" le menu
     let dataE = YAML.safeLoad(fs.readFileSync(p,'utf8'))
@@ -500,7 +500,7 @@ get menuSousDecors(){return this._menuSousDecors||defP(this,'_menuSousDecors', t
 
 /**
   Méthode pour éditer les types +typ+ en ouvrant leur fichier
-  dans le writer
+  dans le porte_documents
 
   Note : le nom 'data_<typ>' correspond au nom du fichier
 **/
@@ -800,7 +800,7 @@ get btnSubmit(){return this.jqObj.find('.btn-form-submit')}
 
 // La flying-window contenant le formulaire
 get fwindow(){
-  return this._fwindow || defP(this,'_fwindow', new FWindow(this,{container: document.body, x: this.left, y:80}))
+  return this._fwindow || defP(this,'_fwindow', new FWindow(this,{name:'AEVENTFORM', container: document.body, x: this.left, y:80}))
 }
 // Position left de la fenêtre du formulaire, pour qu'elle soit bien placée
 // à côté de la boite de bouton => Il suffit de déplacer la boite de bouton

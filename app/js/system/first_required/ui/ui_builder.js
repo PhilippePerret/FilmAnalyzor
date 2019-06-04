@@ -61,7 +61,7 @@ const UIBuilder = {
     // La barre d'état en bas de la fenêtre
     UI.stateBar = $('#analyse-state-bar')
 
-    // Le div qui contiendra les writer
+    // Le div qui contiendra les porte_documents
     UI.sectionWriter = $('#section-porte-documents')
 
   }

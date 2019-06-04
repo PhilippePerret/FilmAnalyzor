@@ -11,10 +11,10 @@ Object.defineProperties(PorteDocuments,{
 , visualizeDoc:{get(){return this.cbVisualize.checked}}
 , cbVisualize:{get(){return this._cbvisualize||defP(this,'_cbvisualize',DGet('cb-auto-visualize'))}}
 
-, spanMessage:{get(){ return this._spanmsg || defP(this,'_spanmsg', this.section.find('#writer-message'))}}
+, spanMessage:{get(){ return this._spanmsg || defP(this,'_spanmsg', this.section.find('#porte_documents-message'))}}
 
 , fwindow:{
-    get(){return this._fwindow || defP(this,'_fwindow', new FWindow(this,{id: 'writer', containment: null, container:this.section, draggable:'x', swiping:true, left: 400, top:10}))}
+    get(){return this._fwindow || defP(this,'_fwindow', new FWindow(this,{id: 'porte_documents', containment: null, container:this.section, draggable:'x', swiping:true, left: 400, top:10}))}
   }
   // Pour utiliser `[print] this.formater("le texte")`
 , formater:{
@@ -45,10 +45,10 @@ Object.defineProperties(PorteDocuments,{
 , footer:{ get(){return $('#section-porte-documents .footer')} }
 , docField:{ get(){return $('#section-porte-documents .body textarea#document-contents')} }
 , btnSave: {get(){return this.section.find('.footer button#btn-save-doc')}}
-, btnDrop: {get(){return this.section.find('.header .writer-btn-drop')}}
-, menuThemes: {get(){return this.section.find('#writer-theme')}}
+, btnDrop: {get(){return this.section.find('.header .porte_documents-btn-drop')}}
+, menuThemes: {get(){return this.section.find('#porte_documents-theme')}}
 , menuModeles:{ get(){return $('#section-porte-documents select#modeles-doc')} }
-, visualizor:{ get(){return $('#writer-doc-visualizor')} }
+, visualizor:{ get(){return $('#porte_documents-doc-visualizor')} }
 
 })
 
