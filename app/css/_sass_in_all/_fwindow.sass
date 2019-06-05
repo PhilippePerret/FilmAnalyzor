@@ -46,7 +46,8 @@
   //  .fwindow.helper-window
   &.fwindow-listing-type,
   &.large-edition,
-  &.helper-window
+  &.helper-window,
+  &.event-form
     background-color: white
     border: 1px solid black
 
@@ -122,3 +123,31 @@
         border-bottom: 1px solid #CCCCCC
         margin-bottom: 0.5em
         padding-top: 0.5em
+
+  // La fenêtre pour les formulaires d'édition des events
+  &.event-form
+
+    section.body
+      margin-bottom: 64px // pour les boutons
+
+    &:not(.modified) section.footer,
+    &:not(.modified) section.footer *,
+    &:not(.modified) section.header,
+    &:not(.modified) section.header *
+      background-color: slategrey
+
+    &.modified section.footer,
+    &.modified section.footer *,
+    &.modified section.header,
+    &.modified section.header *
+      background-color: #990022
+
+    section.footer,
+    section.footer *,
+    section.header,
+    section.header *
+      font-size: 11pt
+
+    section.footer,
+    section.footer *
+      color: #CCCCCC

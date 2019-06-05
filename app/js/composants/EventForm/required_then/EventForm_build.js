@@ -37,11 +37,6 @@ Object.assign(EventForm.prototype,{
       dom.push(DCreate(INPUT, {type:STRhidden, id:`${prefid}-${prop}`}))
     }
 
-    dom.push(DCreate(SECTION, {class: 'header no-user-selection', append:[
-        DCreate(BUTTON, {type:BUTTON, class:'btn-close'})
-      , DCreate(SPAN, {class:'event-type', inner: type.toUpperCase()})
-      ]}))
-
     /*  Div supérieur avec temps, durée ou numéro */
     let attrs = {title: 'Pour glisser et déposer l’event et l’associer'}
     attrs[STRdata_type] = STRevent
@@ -226,13 +221,6 @@ Object.assign(EventForm.prototype,{
         DCreate(BUTTON, {type:BUTTON, id:my.fId('destroy'), class:'btn-form-destroy warning small fleft', inner:'Détruire'})
       , DCreate(BUTTON, {inner:'Renoncer', class:'btn-form-cancel cancel small fleft', type:BUTTON})
       , DCreate(BUTTON, {inner:'__SAVE_BUTTON_LABEL__', class:'btn-form-submit main-button', type:BUTTON})
-      ]}))
-
-    /*  PIED DE PAGE */
-    dom.push(DCreate(SECTION, {class:'footer no-user-selection', append:[
-        DCreate(SPAN, {class:'event-type', inner: type.toUpperCase()})
-      , DCreate(SPAN, {class:'event-id', inner: '...'})
-      , DCreate(SPAN, {class:'event-time', inner: '...'})
       ]}))
 
     return (DCreate(FORM, {class:'form', id:'event-__EID__-form', append: dom})).outerHTML

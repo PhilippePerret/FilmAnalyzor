@@ -41,7 +41,6 @@ static editEvent(ev){
   this.currentForm = ev.form
   this.currentForm.activate()
 
-  // (this.currentForm = new EventForm(ev)).toggleForm()
 }
 
 //
@@ -295,13 +294,25 @@ onShow(){
  * Méthode qui construit le formulaire pour l'évènement
  */
 build(){
-  return DCreate(FORM, {
-    id: `form-edit-event-${this.id}`
-  , class: 'form-edit-event'
-  , inner: this.formsByType(this.type)
-            .replace(/__EID__/g, this.id)
-            .replace(/__SAVE_BUTTON_LABEL__/,this.isNew?'CRÉER':'MODIFIER')
-  })
+  let form = DCreate(FORM, {
+      id: `form-edit-event-${this.id}`
+    , class: 'form-edit-event'
+    , inner: this.formsByType(this.type)
+              .replace(/__EID__/g, this.id)
+              .replace(/__SAVE_BUTTON_LABEL__/,this.isNew?'CRÉER':'MODIFIER')
+    })
+  return [
+      DCreate(SECTION,{class:STRheader, append:[
+          DCreate(BUTTON, {type:BUTTON, class:'btn-close'})
+        , DCreate(H3,{class:'event-type', inner:this.type.toUpperCase()})
+        ]})
+    , DCreate(SECTION,{class:`${STRbody} plain`, append:[form]})
+    , DCreate(SECTION,{class:STRfooter, append:[
+        DCreate(SPAN, {class:'event-type', inner:this.type.toUpperCase()})
+      , DCreate(SPAN, {class:'event-id', inner:'...'})
+      , DCreate(SPAN, {class:'event-time', inner:'...'})
+      ]})
+  ]
 }
 afterBuilding(){
   var jqo = this.jqObj
@@ -810,7 +821,7 @@ get btnSubmit(){return this.jqObj.find('.btn-form-submit')}
 
 // La flying-window contenant le formulaire
 get fwindow(){
-  return this._fwindow || defP(this,'_fwindow', new FWindow(this,{name:'AEVENTFORM', container: document.body, x: this.left, y:80}))
+  return this._fwindow || defP(this,'_fwindow', new FWindow(this,{name:'AEVENTFORM', class:'event-form', container: document.body, x: this.left, y:80}))
 }
 // Position left de la fenêtre du formulaire, pour qu'elle soit bien placée
 // à côté de la boite de bouton => Il suffit de déplacer la boite de bouton
