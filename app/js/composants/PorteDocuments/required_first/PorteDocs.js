@@ -36,11 +36,11 @@ const PorteDocuments = {
     this.documents.set(docId, new FADocument(docId))
   }
 
-  /**
-    Fait du document +docId+ le document courant.
+/**
+  Fait du document +docId+ le document courant.
 
-    @param {Number} docId Identifiant du document à ouvrir (ou path)
-   */
+  @param {Number} docId Identifiant du document à ouvrir (ou path)
+ */
 , setDroppableButtonForCurrent() {
     this.btnDrop.attr('data-id',this.currentDocument.id)
   }

@@ -25,7 +25,8 @@ static reset(){
 **/
 static new(){
   var newDoc = new FADocument(this.newId())
-  newDoc.edit(newDoc.id)
+  PorteDocuments.defineDocument(newDoc.id)
+  PorteDocuments.editDocument(newDoc.id)
   newDoc.setContents('# Titre du nouveau document'+RC+RC)
   PorteDocuments.message(T('new-custom-document-created'))
 }
