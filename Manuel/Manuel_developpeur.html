@@ -82,7 +82,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <body>
 <h1 id="film-analyzer">Film-Analyzer</h1>
 <h1 id="manuel-de-développement">Manuel de développement</h1>
-<!-- Dernier numéro de note N0001 -->
+<!-- Dernier numéro de note N0004 -->
 <ul>
 <li><a href="#point_dentree">Point d’entrée</a></li>
 <li><a href="#principes_generaux">Principes généraux</a>
@@ -112,7 +112,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li><a href="#analyse_autres_donnees">Autres données de l’analyse</a>
 <ul>
-<li><a href="#elements_analyse">Éléments propres de l’analyse (Personnages, Brins, etc.)</a></li>
+<li><a href="#elements_analyse">FAElements, éléments propres de l’analyse (Personnages, Brins, etc.)</a></li>
 <li><a href="#get_instance_with_type_and_id">Récupérer une instance par son type et son id</a></li>
 <li><a href="#falisting_elements">FAListing, listing des éléments</a></li>
 <li><a href="#data_editor">DataEditor, l’éditeur de données</a></li>
@@ -198,7 +198,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2 id="loading_modules_folders">Chargement de dossier de modules</h2>
 <p>On peut charger des modules en inscrivant leur balise <code>&lt;script&gt;</code> dans le document grâce à la méthode <code>System.loadJSFolders(mainFolder, subFolders, fn_callback)</code>.</p>
 <p>L’avantage de ce système — contrairement à <code>require</code> —, c’est que tout le contenu du code est exposé à l’application. Si une classe <code>FADocument</code> est définie, elle sera utilisable partout, à commencer par les modules chargés.</p>
-<p>C’est cette formule qu’on utilise par exemple pour charger le <em>FAWriter</em> qui permet de rédiger les textes.</p>
+<p>C’est cette formule qu’on utilise par exemple pour charger le <em>PorteDocuments</em> qui permet de rédiger les textes.</p>
 <h3 id="load_folders_at_launching">Chargement de dossiers JS au lancement de l’application</h3>
 <p>Grâce au module <code>system/App.js</code>, on peut charger des dossiers javascript sans les coder en dur dans le fichier HTML de l’application.</p>
 <p>Il suffit de les inscrire dans la constante <code>AppLoader::REQUIRED_MODULES</code> et ils sont chargés de façon asynchrone.</p>
@@ -518,7 +518,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Définir l’élément qui sera déplaçable (peut-être le même) pour associer l’élément avec un autre élément droppable : <code>$(element).draggable(DATA_ASSOCIATES_DRAGGABLE)</code></li>
 <li>Définir les propriétés obligatoires (requis pour tous les éléments) :
 <ul>
-<li><code>CLASSE#type</code>, propriété d’instance qui retourne le type de l’élément.</li>
+<li><code>CLASSE#type</code>, propriété d’instance qui retourne le type de l’élément (qui doit être le nom minuscule de la classe).</li>
 <li><code>CLASSE#id</code> propriété d’instance qui retourne l’identifiant de l’élément (celui qui permettra de le récupérer en utilisant la méthode de classe <code>get</code> — cf. ci-dessous).</li>
 </ul></li>
 <li>Définir les méthodes obligatoires :
@@ -572,8 +572,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <p>Note : à l’avenir, il faudrait pouvoir décider ce que l’on actualise pour alléger le travail. La méthode <code>actualizeALL</code> ne sert plus qu’à tout actualiser lorsque l’on s’arrête ou qu’on choisit un temps.</p>
 <hr />
-<h2 id="add_global_prefs">Ajout de préférences globales (appelées aussi “options globales”)</h2>
-<p>Ces préférences sont définies dans le menu « Options » jusqu’à définition contraire.</p>
+<h2 id="add_global_prefs">Ajout de préférences globales</h2>
+<p>On distingue les « Préférences », qui sont globales, c’est-à-dire propre à toutes les analyses, et les « Options » qui sont propres à une analyse en particulier et n’affecte pas les autres.</p>
+<p>Ces préférences sont définies dans le menu « Options » jusqu’à définition contraire, bien que ce menu soit confusionnant.</p>
+<p>Pour définir une nouvelle préférences (donc une options globale) :</p>
 <ol type="1">
 <li><p>Définir la valeur par défaut et le nom de l’option dans le fichier <code>./js/system/Options.js:14</code>, dans la constante <code>DEFAULT_DATA</code>. S’inspirer des autres options.</p></li>
 <li><p>Créer un nouveau menu dans le submenu de “Options” (fichier <code>/main-process/menu.js:427</code>) avec les données suivantes :</p></li>
@@ -589,7 +591,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb21-9" title="9">    <span class="op">}</span></a>
 <a class="sourceLine" id="cb21-10" title="10">  <span class="op">}</span></a></code></pre></div>
 <ol start="3" type="1">
-<li>Demander le réglage de l’option, au chargement de l’application, dans le fichier <code>.../main-process/Prefs.js:170</code> :</li>
+<li>Si nécessaire, demander le réglage de la préférence, au chargement de l’application, dans le fichier <code>.../main-process/Prefs.js:170</code> :</li>
 </ol>
 <div class="sourceCode" id="cb22"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb22-1" title="1"></a>
 <a class="sourceLine" id="cb22-2" title="2">  <span class="co">// dans .../main-process/Prefs.js</span></a>
@@ -601,38 +603,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb22-8" title="8">      <span class="co">// En considérant que le menu et l&#39;id de l&#39;option sont identiques, ce</span></a>
 <a class="sourceLine" id="cb22-9" title="9">      <span class="co">// qui est préférable.</span></a>
 <a class="sourceLine" id="cb22-10" title="10">    <span class="op">}</span></a></code></pre></div>
-<p>Si la valeur par défaut doit être false, il n’y a rien d’autres à faire. Sinon, il faut définir sa valeur par défaut dans <code>Prefs</code> (fichier <code>.../main-process/Prefs.js:140</code> comme ci-dessus) :</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb23-1" title="1"></a>
-<a class="sourceLine" id="cb23-2" title="2">  <span class="co">// dans .../js/main-process/Prefs.js</span></a>
-<a class="sourceLine" id="cb23-3" title="3">  loadUserPrefs<span class="op">:</span><span class="kw">function</span>()<span class="op">{</span></a>
-<a class="sourceLine" id="cb23-4" title="4">    <span class="co">//...</span></a>
-<a class="sourceLine" id="cb23-5" title="5">    <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb23-6" title="6">      <span class="kw">this</span>.<span class="at">userPrefs</span> <span class="op">=</span> <span class="op">{</span></a>
-<a class="sourceLine" id="cb23-7" title="7">        <span class="co">//...</span></a>
-<a class="sourceLine" id="cb23-8" title="8">        <span class="st">&#39;&lt;id_indispensable_et_universel&gt;&#39;</span><span class="op">:</span> <span class="kw">true</span></a>
-<a class="sourceLine" id="cb23-9" title="9">      <span class="op">}</span></a>
-<a class="sourceLine" id="cb23-10" title="10">    <span class="op">}</span></a>
-<a class="sourceLine" id="cb23-11" title="11">  }</a></code></pre></div>
+<p>Si la valeur par défaut doit être false, il n’y a rien d’autres à faire. Sinon, il faut définir sa valeur par défaut dans <code>Prefs</code> (fichier <code>.../main-process/Prefs.js:26</code> comme ci-dessous), dans la constante <code>USER_PREFS_DEFAULT</code>.</p>
+<p>Noter que les préférences générales, lorsqu’elles sont modifiées, sont enregistrées dans le fichier <code>$LIBRARY/Application\ Support/Film-Analyzer/user-preferences.json</code> quand on quitte l’application.</p>
 <h3 id="use_global_prefs">Utilisation des préférences globales</h3>
-<p>Pour connaitre la valeur d’une option globale, on utilise la même méthode que pour les options de l’analyse :</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb24-1" title="1"></a>
-<a class="sourceLine" id="cb24-2" title="2"><span class="kw">var</span> opt <span class="op">=</span> <span class="va">current_analyse</span>.<span class="va">options</span>.<span class="at">get</span>(<span class="st">&#39;&lt;id de l’option&gt;&#39;</span>)</a></code></pre></div>
+<p>Pour connaitre la valeur d’une option globale — donc d’une préférence —, on utilise la même méthode que pour les options de l’analyse :</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb23-1" title="1"></a>
+<a class="sourceLine" id="cb23-2" title="2"><span class="kw">var</span> opt <span class="op">=</span> <span class="va">current_analyse</span>.<span class="va">options</span>.<span class="at">get</span>(<span class="st">&#39;&lt;id de l’option&gt;&#39;</span>)</a></code></pre></div>
 <h3 id="add_analyse_pref">Ajout de préférence analyse</h3>
 <ol type="1">
 <li><p>Dans le fichier <code>./app/js/system/Options.js</code>, ajouter l’option à la donnée <code>Options.DEFAULT_DATA</code>.</p></li>
 <li><p>Traiter l’option dans <code>Option#onSetByApp</code> dans le fichier <code>system/first_required/Options.js</code> en s’inspirant des autres options.</p></li>
 <li><p>Implémenter le menu (dans le menu “Options” en général) avec :</p></li>
 </ol>
-<div class="sourceCode" id="cb25"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb25-1" title="1"></a>
-<a class="sourceLine" id="cb25-2" title="2"><span class="op">{</span></a>
-<a class="sourceLine" id="cb25-3" title="3">    <span class="dt">label</span><span class="op">:</span> <span class="st">&quot;&lt;titre de l&#39;option&gt;&quot;</span></a>
-<a class="sourceLine" id="cb25-4" title="4">  <span class="op">,</span> <span class="dt">id</span><span class="op">:</span> <span class="st">&#39;ID-MENU-DE-L-OPTION&#39;</span></a>
-<a class="sourceLine" id="cb25-5" title="5">  <span class="op">,</span> <span class="dt">type</span><span class="op">:</span><span class="st">&#39;checkbox&#39;</span></a>
-<a class="sourceLine" id="cb25-6" title="6">  <span class="op">,</span> <span class="dt">click</span><span class="op">:</span>()<span class="op">=&gt;{</span></a>
-<a class="sourceLine" id="cb25-7" title="7">      <span class="kw">var</span> c <span class="op">=</span> <span class="va">ObjMenus</span>.<span class="at">getMenu</span>(<span class="st">&#39;ID-MENU-DE-L-OPTION&#39;</span>).<span class="at">checked</span> <span class="op">?</span> <span class="st">&#39;true&#39;</span> : <span class="st">&#39;false&#39;</span></a>
-<a class="sourceLine" id="cb25-8" title="8">      <span class="at">execJsOnCurrent</span>(<span class="vs">`options.set(&#39;ID-DE-L-OPTION-REEL&#39;,</span><span class="sc">${</span>c<span class="sc">}</span><span class="vs">)`</span>)</a>
-<a class="sourceLine" id="cb25-9" title="9">    <span class="op">}</span></a>
-<a class="sourceLine" id="cb25-10" title="10"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb24-1" title="1"></a>
+<a class="sourceLine" id="cb24-2" title="2"><span class="op">{</span></a>
+<a class="sourceLine" id="cb24-3" title="3">    <span class="dt">label</span><span class="op">:</span> <span class="st">&quot;&lt;titre de l&#39;option&gt;&quot;</span></a>
+<a class="sourceLine" id="cb24-4" title="4">  <span class="op">,</span> <span class="dt">id</span><span class="op">:</span> <span class="st">&#39;ID-MENU-DE-L-OPTION&#39;</span></a>
+<a class="sourceLine" id="cb24-5" title="5">  <span class="op">,</span> <span class="dt">type</span><span class="op">:</span><span class="st">&#39;checkbox&#39;</span></a>
+<a class="sourceLine" id="cb24-6" title="6">  <span class="op">,</span> <span class="dt">click</span><span class="op">:</span>()<span class="op">=&gt;{</span></a>
+<a class="sourceLine" id="cb24-7" title="7">      <span class="kw">var</span> c <span class="op">=</span> <span class="va">ObjMenus</span>.<span class="at">getMenu</span>(<span class="st">&#39;ID-MENU-DE-L-OPTION&#39;</span>).<span class="at">checked</span> <span class="op">?</span> <span class="st">&#39;true&#39;</span> : <span class="st">&#39;false&#39;</span></a>
+<a class="sourceLine" id="cb24-8" title="8">      <span class="at">execJsOnCurrent</span>(<span class="vs">`options.set(&#39;ID-DE-L-OPTION-REEL&#39;,</span><span class="sc">${</span>c<span class="sc">}</span><span class="vs">)`</span>)</a>
+<a class="sourceLine" id="cb24-9" title="9">    <span class="op">}</span></a>
+<a class="sourceLine" id="cb24-10" title="10"><span class="op">}</span></a></code></pre></div>
 <blockquote>
 <p>Si on veut faciliter les choses, on mettre un id de menu de l’option identique à l’id de l’option elle-même, mais ça n’est pas obligatoire.</p>
 </blockquote>
@@ -649,17 +641,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <p>Noter qu’il faut utiliser la méthode <code>UI.setHorlogeable(&lt;container&gt;, options)</code> ou <code>UI.setDurationable(&lt;container&gt;, options)</code> pour que les observers soient placés. <strong>ATTENTION</strong> de ne pas prendre un container trop grand, qui possèderait des éléments déjà horlogeables ou durationables.</p>
 <p>On peut récupérer les horloges qui sont renvoyées et les régler :</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb26-1" title="1">  <span class="kw">var</span> horloges <span class="op">=</span> <span class="va">UI</span>.<span class="at">setHorlogeable</span>(<span class="op">&lt;</span>container<span class="op">&gt;</span>[<span class="op">,</span> <span class="op">&lt;</span>option<span class="op">&gt;</span>])</a>
-<a class="sourceLine" id="cb26-2" title="2">  <span class="kw">var</span> h <span class="op">=</span> horloges[<span class="op">&lt;</span>id horloge<span class="op">&gt;</span>]</a>
-<a class="sourceLine" id="cb26-3" title="3">  <span class="va">h</span>.<span class="at">dispatch</span>(<span class="op">{</span><span class="dt">time</span><span class="op">:</span> <span class="op">&lt;</span>temps de départ<span class="op">&gt;,</span> ...<span class="op">}</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb25-1" title="1">  <span class="kw">var</span> horloges <span class="op">=</span> <span class="va">UI</span>.<span class="at">setHorlogeable</span>(<span class="op">&lt;</span>container<span class="op">&gt;</span>[<span class="op">,</span> <span class="op">&lt;</span>option<span class="op">&gt;</span>])</a>
+<a class="sourceLine" id="cb25-2" title="2">  <span class="kw">var</span> h <span class="op">=</span> horloges[<span class="op">&lt;</span>id horloge<span class="op">&gt;</span>]</a>
+<a class="sourceLine" id="cb25-3" title="3">  <span class="va">h</span>.<span class="at">dispatch</span>(<span class="op">{</span><span class="dt">time</span><span class="op">:</span> <span class="op">&lt;</span>temps de départ<span class="op">&gt;,</span> ...<span class="op">}</span>)</a></code></pre></div>
 <p>On peut aussi implémenter soi-même l’horloge :</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb27-1" title="1">  <span class="kw">var</span> h <span class="op">=</span> <span class="kw">new</span> <span class="at">DOMHorloge</span>()</a>
-<a class="sourceLine" id="cb27-2" title="2">  <span class="va">h</span>.<span class="at">dispatch</span>(<span class="op">{</span></a>
-<a class="sourceLine" id="cb27-3" title="3">        <span class="dt">time</span><span class="op">:</span> <span class="op">&lt;</span>le temps de départ<span class="op">&gt;</span></a>
-<a class="sourceLine" id="cb27-4" title="4">      <span class="op">,</span> <span class="dt">synchroVideo</span><span class="op">:</span> <span class="kw">true</span>/<span class="kw">false</span></a>
-<a class="sourceLine" id="cb27-5" title="5">      <span class="op">,</span> <span class="dt">parentModifiable</span><span class="op">:</span> <span class="kw">true</span>/<span class="kw">false</span></a>
-<a class="sourceLine" id="cb27-6" title="6">      <span class="op">,</span> <span class="dt">unmodifiable</span><span class="op">:</span> <span class="kw">true</span>/<span class="kw">false</span></a>
-<a class="sourceLine" id="cb27-7" title="7">    <span class="op">}</span>).<span class="at">showTime</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb26-1" title="1">  <span class="kw">var</span> h <span class="op">=</span> <span class="kw">new</span> <span class="at">DOMHorloge</span>()</a>
+<a class="sourceLine" id="cb26-2" title="2">  <span class="va">h</span>.<span class="at">dispatch</span>(<span class="op">{</span></a>
+<a class="sourceLine" id="cb26-3" title="3">        <span class="dt">time</span><span class="op">:</span> <span class="op">&lt;</span>le temps de départ<span class="op">&gt;</span></a>
+<a class="sourceLine" id="cb26-4" title="4">      <span class="op">,</span> <span class="dt">synchroVideo</span><span class="op">:</span> <span class="kw">true</span>/<span class="kw">false</span></a>
+<a class="sourceLine" id="cb26-5" title="5">      <span class="op">,</span> <span class="dt">parentModifiable</span><span class="op">:</span> <span class="kw">true</span>/<span class="kw">false</span></a>
+<a class="sourceLine" id="cb26-6" title="6">      <span class="op">,</span> <span class="dt">unmodifiable</span><span class="op">:</span> <span class="kw">true</span>/<span class="kw">false</span></a>
+<a class="sourceLine" id="cb26-7" title="7">    <span class="op">}</span>).<span class="at">showTime</span>()</a></code></pre></div>
 <p><code>options</code> peut contenir <code>{synchro_video: true}</code> pour que l’horloge soit synchronisée avec la vidéo. Inutile alors de dispatcher cette donnée.</p>
 <p>Si <code>unmodifiable</code> est mis à true, on n’indiquera pas lorsque l’horloge aura changé de temps. C’est le cas par exemple de l’horloge principale.</p>
 <p>On utilise <code>parentModifiable</code> en indiquant le conteneur, qui peut recevoir la classe <code>modified</code> pour indiquer qu’il est modifiable (<em>visuellement</em> modifiable). C’est le cas par exemple pour les horloges des formulaires d’events. Les formulaires sont les « containers modifiables », qui vont recevoir la class <code>modified</code> quand l’horloge sera modifiée, ce qui aura pour effet de mettre l’horloge dans une autre couleur ainsi que le header et le footer du formulaire.</p>
@@ -673,47 +665,47 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </blockquote>
 <h3 id="boutons_close">Boutons de fermeture</h3>
 <p>Pour faire un bouton rouge de fermeture « à la Mac », il suffit de placer dans l’entête de l’élément un <code>button</code> de classe <code>btn-close</code> :</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode html"><code class="sourceCode html"><a class="sourceLine" id="cb28-1" title="1"></a>
-<a class="sourceLine" id="cb28-2" title="2">  <span class="kw">&lt;button</span><span class="ot"> type=</span><span class="st">&quot;button&quot;</span><span class="ot"> class=</span><span class="st">&quot;btn-close&quot;</span><span class="kw">&gt;&lt;/button&gt;</span></a></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode html"><code class="sourceCode html"><a class="sourceLine" id="cb27-1" title="1"></a>
+<a class="sourceLine" id="cb27-2" title="2">  <span class="kw">&lt;button</span><span class="ot"> type=</span><span class="st">&quot;button&quot;</span><span class="ot"> class=</span><span class="st">&quot;btn-close&quot;</span><span class="kw">&gt;&lt;/button&gt;</span></a></code></pre></div>
 <p>Avec les helpers :</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb29-1" title="1">  <span class="kw">var</span> btn <span class="op">=</span> <span class="at">DCreate</span>(<span class="st">&#39;BUTTON&#39;</span><span class="op">,</span> <span class="op">{</span><span class="dt">class</span><span class="op">:</span> <span class="st">&#39;btn-close&#39;</span><span class="op">,</span> <span class="dt">type</span><span class="op">:</span><span class="st">&#39;button&#39;</span><span class="op">}</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb28-1" title="1">  <span class="kw">var</span> btn <span class="op">=</span> <span class="at">DCreate</span>(<span class="st">&#39;BUTTON&#39;</span><span class="op">,</span> <span class="op">{</span><span class="dt">class</span><span class="op">:</span> <span class="st">&#39;btn-close&#39;</span><span class="op">,</span> <span class="dt">type</span><span class="op">:</span><span class="st">&#39;button&#39;</span><span class="op">}</span>)</a></code></pre></div>
 <p>Rien d’autre à faire pour qu’il apparaisse comme un bouton de fermeture et qu’il ferme la fenêtre voulue.</p>
 <p>Si un traitement doit être opéré <em>avant</em> la fermeture de la boite, on peut implémenter la méthode <code>beforeHide</code> qui sera appelée avant. Si cette méthode renvoie <code>false</code>, le processus de fermeture est interrompue. <strong>La méthode doit renvoyer <code>true</code> pour que la fermeture est bien lieu.</strong></p>
 <p>Si une méthode <code>cancel</code> existe dans le propriétaire du bouton, c’est cette méthode qui sera utilisée plutôt que <code>hide</code> dans FWindow suivant de <code>onHide</code> dans le propriétaire.</p>
 <h3 id="boutons_toggle_next">Boutons expand/collapse</h3>
 <p>On appelle les boutons qui permette d’ouvrir et de refermer un container (comme une liste par exemple) des boutons « toggle next » (« next » parce qu’ils s’appliquent par défaut au nœud suivant).</p>
 <p>On implémente ces boutons simplement en inscrivant dans le code :</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode html"><code class="sourceCode html"><a class="sourceLine" id="cb29-1" title="1"></a>
+<a class="sourceLine" id="cb29-2" title="2"><span class="kw">&lt;button</span><span class="ot"> class=</span><span class="st">&quot;toggle-next&quot;</span><span class="kw">&gt;&lt;/button&gt;</span></a>
+<a class="sourceLine" id="cb29-3" title="3"><span class="kw">&lt;ul</span><span class="ot"> id=</span><span class="st">&quot;le-container-suivant&quot;</span><span class="ot"> style=</span><span class="st">&quot;display:none;&quot;</span><span class="kw">&gt;</span></a>
+<a class="sourceLine" id="cb29-4" title="4">  <span class="kw">&lt;li&gt;</span>...<span class="kw">&lt;/li&gt;</span></a>
+<a class="sourceLine" id="cb29-5" title="5"><span class="kw">&lt;/ul&gt;</span></a></code></pre></div>
+<p>… puis en appelant la méthode <code>BtnToggleContainer.observe(cont)</code> où <code>cont</code> est le set jQuery qui contient le bouton en question.</p>
+<p>Si le bouton est le dernier élément, on peut ajouter un div-clear après lui, pour qu’il ne soit pas rogné. Par exemple :</p>
 <div class="sourceCode" id="cb30"><pre class="sourceCode html"><code class="sourceCode html"><a class="sourceLine" id="cb30-1" title="1"></a>
 <a class="sourceLine" id="cb30-2" title="2"><span class="kw">&lt;button</span><span class="ot"> class=</span><span class="st">&quot;toggle-next&quot;</span><span class="kw">&gt;&lt;/button&gt;</span></a>
 <a class="sourceLine" id="cb30-3" title="3"><span class="kw">&lt;ul</span><span class="ot"> id=</span><span class="st">&quot;le-container-suivant&quot;</span><span class="ot"> style=</span><span class="st">&quot;display:none;&quot;</span><span class="kw">&gt;</span></a>
 <a class="sourceLine" id="cb30-4" title="4">  <span class="kw">&lt;li&gt;</span>...<span class="kw">&lt;/li&gt;</span></a>
-<a class="sourceLine" id="cb30-5" title="5"><span class="kw">&lt;/ul&gt;</span></a></code></pre></div>
-<p>… puis en appelant la méthode <code>BtnToggleContainer.observe(cont)</code> où <code>cont</code> est le set jQuery qui contient le bouton en question.</p>
-<p>Si le bouton est le dernier élément, on peut ajouter un div-clear après lui, pour qu’il ne soit pas rogné. Par exemple :</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode html"><code class="sourceCode html"><a class="sourceLine" id="cb31-1" title="1"></a>
-<a class="sourceLine" id="cb31-2" title="2"><span class="kw">&lt;button</span><span class="ot"> class=</span><span class="st">&quot;toggle-next&quot;</span><span class="kw">&gt;&lt;/button&gt;</span></a>
-<a class="sourceLine" id="cb31-3" title="3"><span class="kw">&lt;ul</span><span class="ot"> id=</span><span class="st">&quot;le-container-suivant&quot;</span><span class="ot"> style=</span><span class="st">&quot;display:none;&quot;</span><span class="kw">&gt;</span></a>
-<a class="sourceLine" id="cb31-4" title="4">  <span class="kw">&lt;li&gt;</span>...<span class="kw">&lt;/li&gt;</span></a>
-<a class="sourceLine" id="cb31-5" title="5"><span class="kw">&lt;/ul&gt;</span></a>
-<a class="sourceLine" id="cb31-6" title="6"><span class="kw">&lt;div</span><span class="ot"> style=</span><span class="st">&quot;clear:both&quot;</span><span class="kw">&gt;&lt;/div&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb30-5" title="5"><span class="kw">&lt;/ul&gt;</span></a>
+<a class="sourceLine" id="cb30-6" title="6"><span class="kw">&lt;div</span><span class="ot"> style=</span><span class="st">&quot;clear:both&quot;</span><span class="kw">&gt;&lt;/div&gt;</span></a></code></pre></div>
 <p>Si l’on désire que le container soit ouvert, il suffit de forcer l’attribut <code>data-state</code> du bouton en lui donnant la valeur <code>opened</code> :</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode html"><code class="sourceCode html"><a class="sourceLine" id="cb32-1" title="1"></a>
-<a class="sourceLine" id="cb32-2" title="2"><span class="kw">&lt;button</span><span class="ot"> class=</span><span class="st">&quot;toggle-next&quot;</span><span class="ot"> data-state=</span><span class="st">&quot;opened&quot;</span><span class="kw">&gt;&lt;/button&gt;</span></a>
-<a class="sourceLine" id="cb32-3" title="3"><span class="kw">&lt;ul</span><span class="ot"> id=</span><span class="st">&quot;le-container-suivant&quot;</span><span class="kw">&gt;</span><span class="co">&lt;!-- sera ouvert --&gt;</span></a>
-<a class="sourceLine" id="cb32-4" title="4">  <span class="kw">&lt;li&gt;</span>...<span class="kw">&lt;/li&gt;</span></a>
-<a class="sourceLine" id="cb32-5" title="5"><span class="kw">&lt;/ul&gt;</span></a></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode html"><code class="sourceCode html"><a class="sourceLine" id="cb31-1" title="1"></a>
+<a class="sourceLine" id="cb31-2" title="2"><span class="kw">&lt;button</span><span class="ot"> class=</span><span class="st">&quot;toggle-next&quot;</span><span class="ot"> data-state=</span><span class="st">&quot;opened&quot;</span><span class="kw">&gt;&lt;/button&gt;</span></a>
+<a class="sourceLine" id="cb31-3" title="3"><span class="kw">&lt;ul</span><span class="ot"> id=</span><span class="st">&quot;le-container-suivant&quot;</span><span class="kw">&gt;</span><span class="co">&lt;!-- sera ouvert --&gt;</span></a>
+<a class="sourceLine" id="cb31-4" title="4">  <span class="kw">&lt;li&gt;</span>...<span class="kw">&lt;/li&gt;</span></a>
+<a class="sourceLine" id="cb31-5" title="5"><span class="kw">&lt;/ul&gt;</span></a></code></pre></div>
 <p>On peut viser un autre nœud que le nœud suivant grâce à l’attribut <code>container</code> du bouton :</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode html"><code class="sourceCode html"><a class="sourceLine" id="cb33-1" title="1"></a>
-<a class="sourceLine" id="cb33-2" title="2"><span class="kw">&lt;button</span><span class="ot"> class=</span><span class="st">&quot;toggle-next&quot;</span><span class="ot"> container=</span><span class="st">&quot;#monDiv&quot;</span><span class="kw">&gt;&lt;/button&gt;</span></a>
-<a class="sourceLine" id="cb33-3" title="3"><span class="co">&lt;!-- d&#39;autres éléments ici --&gt;</span></a>
-<a class="sourceLine" id="cb33-4" title="4"><span class="kw">&lt;ol</span><span class="ot"> id=</span><span class="st">&quot;monListing&quot;</span><span class="kw">&gt;</span></a>
-<a class="sourceLine" id="cb33-5" title="5">  <span class="kw">&lt;li&gt;</span>...<span class="kw">&lt;/li&gt;</span></a>
-<a class="sourceLine" id="cb33-6" title="6"><span class="kw">&lt;/ol&gt;</span></a></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode html"><code class="sourceCode html"><a class="sourceLine" id="cb32-1" title="1"></a>
+<a class="sourceLine" id="cb32-2" title="2"><span class="kw">&lt;button</span><span class="ot"> class=</span><span class="st">&quot;toggle-next&quot;</span><span class="ot"> container=</span><span class="st">&quot;#monDiv&quot;</span><span class="kw">&gt;&lt;/button&gt;</span></a>
+<a class="sourceLine" id="cb32-3" title="3"><span class="co">&lt;!-- d&#39;autres éléments ici --&gt;</span></a>
+<a class="sourceLine" id="cb32-4" title="4"><span class="kw">&lt;ol</span><span class="ot"> id=</span><span class="st">&quot;monListing&quot;</span><span class="kw">&gt;</span></a>
+<a class="sourceLine" id="cb32-5" title="5">  <span class="kw">&lt;li&gt;</span>...<span class="kw">&lt;/li&gt;</span></a>
+<a class="sourceLine" id="cb32-6" title="6"><span class="kw">&lt;/ol&gt;</span></a></code></pre></div>
 <h2 id="documents_analyse">Documents de l’analyse</h2>
 <p>Les documents de l’analyse sont entièrement gérés, au niveau de l’écriture, par les modules contenus dans le dossier <code>./app/js/composants/faWriter</code>. Ce dossier est le premier qui a été chargé par la nouvelle méthode <code>System#loadJSFolders</code> (par le biais de <code>FAnalyse.loadWriter</code>) qui travaille avec des balises <code>&lt;script&gt;</code> afin d’exposer facilement tous les objets, constantes et autres.</p>
 <p>Ces documents permettent de construire l’analyse de trois façons différentes :</p>
 <ul>
-<li>en les rédigeant dans le <em>FAWriter</em> (qui s’ouvre grâce au menu « Documents »),</li>
+<li>en les rédigeant dans le <em>PorteDocuments</em> (qui s’ouvre grâce au menu « Documents »),</li>
 <li>en les peuplant grâce à l’<a href="#data_editor">éditeur de données</a>,</li>
 <li>en en créant le code de façon dynamique pour ce qui est des stats, des PFA et autres notes au fil du texte.</li>
 </ul>
@@ -726,67 +718,67 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Les documents de données (snippets, diminutifs, infos du film et de l’analyse)</li>
 </ol>
 <h3 id="edit_any_file">Édition quelconque d’un fichier</h3>
-<p>Le <code>FAWriter</code> permet d’éditer un fichier quelconque, par exemple une liste de valeurs programme, et même, pourquoi pas, un fichier de code.</p>
+<p>Le <code>PorteDocuments</code> permet d’éditer un fichier quelconque, par exemple une liste de valeurs programme, et même, pourquoi pas, un fichier de code.</p>
 <p>On utilise alors la méthode <code>openAnyDoc</code>.</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb34-1" title="1"></a>
-<a class="sourceLine" id="cb34-2" title="2">  <span class="va">FAWriter</span>.<span class="at">openAnyDoc</span>(<span class="st">&#39;&lt;path/absolue/to/document.ext&gt;&#39;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb33-1" title="1"></a>
+<a class="sourceLine" id="cb33-2" title="2">  <span class="va">PorteDocuments</span>.<span class="at">editDocument</span>(<span class="st">&#39;&lt;path/absolue/to/document.ext&gt;&#39;</span>)</a></code></pre></div>
 <h3 id="saving_protected">Sauvegarde protégée des documents</h3>
 <p>La sauvegarde protégée des documents est gérée par <code>system/IOFile.js</code>. L’utilisation est simple : on crée une instance <code>IOFile</code> du document en envoyant son path et on peut le sauver et le charger en utilisant <code>&lt;instance&gt;.save()</code> et <code>&lt;instance&gt;.loadIfExists()</code>.</p>
 <p><span class="citation" data-cites="usage">@usage</span> complet :</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb35-1" title="1"></a>
-<a class="sourceLine" id="cb35-2" title="2">  <span class="kw">let</span> iofile <span class="op">=</span> <span class="kw">new</span> <span class="at">IOFile</span>(<span class="op">&lt;</span>cheminFichier ou objetProprietaire<span class="op">&gt;</span>[<span class="op">,</span> autrePath])</a>
-<a class="sourceLine" id="cb35-3" title="3"></a>
-<a class="sourceLine" id="cb35-4" title="4">  [<span class="va">iofile</span>.<span class="at">code</span> <span class="op">=</span> monCodeFinal <span class="co">// si objetProprietaire n&#39;est pas défini]</span></a>
-<a class="sourceLine" id="cb35-5" title="5">  <span class="va">iofile</span>.<span class="at">save</span>(<span class="op">{</span><span class="dt">after</span><span class="op">:</span> methode_appelee_apres_save<span class="op">}</span>)</a>
-<a class="sourceLine" id="cb35-6" title="6"></a>
-<a class="sourceLine" id="cb35-7" title="7">  <span class="kw">function</span> <span class="at">methode_appelee_apres_load</span>(code)<span class="op">{</span></a>
-<a class="sourceLine" id="cb35-8" title="8">    <span class="co">// ...</span></a>
-<a class="sourceLine" id="cb35-9" title="9">  <span class="op">}</span></a>
-<a class="sourceLine" id="cb35-10" title="10"></a>
-<a class="sourceLine" id="cb35-11" title="11">  <span class="va">iofile</span>.<span class="at">loadIfExists</span>(after<span class="op">:</span> methode_appelee_apres_load_avec_code)</a></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb34-1" title="1"></a>
+<a class="sourceLine" id="cb34-2" title="2">  <span class="kw">let</span> iofile <span class="op">=</span> <span class="kw">new</span> <span class="at">IOFile</span>(<span class="op">&lt;</span>cheminFichier ou objetProprietaire<span class="op">&gt;</span>[<span class="op">,</span> autrePath])</a>
+<a class="sourceLine" id="cb34-3" title="3"></a>
+<a class="sourceLine" id="cb34-4" title="4">  [<span class="va">iofile</span>.<span class="at">code</span> <span class="op">=</span> monCodeFinal <span class="co">// si objetProprietaire n&#39;est pas défini]</span></a>
+<a class="sourceLine" id="cb34-5" title="5">  <span class="va">iofile</span>.<span class="at">save</span>(<span class="op">{</span><span class="dt">after</span><span class="op">:</span> methode_appelee_apres_save<span class="op">}</span>)</a>
+<a class="sourceLine" id="cb34-6" title="6"></a>
+<a class="sourceLine" id="cb34-7" title="7">  <span class="kw">function</span> <span class="at">methode_appelee_apres_load</span>(code)<span class="op">{</span></a>
+<a class="sourceLine" id="cb34-8" title="8">    <span class="co">// ...</span></a>
+<a class="sourceLine" id="cb34-9" title="9">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb34-10" title="10"></a>
+<a class="sourceLine" id="cb34-11" title="11">  <span class="va">iofile</span>.<span class="at">loadIfExists</span>(after<span class="op">:</span> methode_appelee_apres_load_avec_code)</a></code></pre></div>
 <p>Pour fonctionner avec un <code>owner</code> (un propriétaire — une instance, un objet), il faut que ce propriétaire possède les propriétés <code>path</code> définissant le chemin d’accès au fichier — ou que le path soit défini en second argument — ainsi que la propriété <code>contents</code> ou la propriété <code>code</code> définissant son code final à sauver.</p>
 <p>Exemple :</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb36-1" title="1"></a>
-<a class="sourceLine" id="cb36-2" title="2"><span class="kw">class</span> monObjet <span class="op">{</span></a>
-<a class="sourceLine" id="cb36-3" title="3">  get <span class="at">contents</span>()<span class="op">{</span> <span class="cf">return</span> <span class="kw">this</span>.<span class="at">_contents</span> <span class="op">}</span></a>
-<a class="sourceLine" id="cb36-4" title="4">  get <span class="at">path</span>() <span class="op">{</span> <span class="cf">return</span> <span class="st">&#39;chemin/daccess/au/fichier.odt&#39;</span><span class="op">}</span></a>
-<a class="sourceLine" id="cb36-5" title="5">  get <span class="at">iofile</span>()<span class="op">{</span> <span class="cf">return</span> <span class="kw">this</span>.<span class="at">_iofile</span> <span class="op">||</span> <span class="at">defP</span>(<span class="kw">this</span><span class="op">,</span><span class="st">&#39;_iofile&#39;</span><span class="op">,</span> <span class="kw">new</span> <span class="at">IOFile</span>(<span class="kw">this</span>))<span class="op">}</span></a>
-<a class="sourceLine" id="cb36-6" title="6"></a>
-<a class="sourceLine" id="cb36-7" title="7">  <span class="at">saveMe</span>()<span class="op">{</span></a>
-<a class="sourceLine" id="cb36-8" title="8">    <span class="kw">this</span>.<span class="va">iofile</span>.<span class="at">save</span>(<span class="op">{</span><span class="dt">after</span><span class="op">:</span> <span class="kw">this</span>.<span class="va">afterSaving</span>.<span class="at">bind</span>(<span class="kw">this</span>)<span class="op">}</span>)</a>
-<a class="sourceLine" id="cb36-9" title="9">  <span class="op">}</span></a>
-<a class="sourceLine" id="cb36-10" title="10">  <span class="at">afterSaving</span>()<span class="op">{</span></a>
-<a class="sourceLine" id="cb36-11" title="11">    <span class="va">console</span>.<span class="at">log</span>(<span class="st">&quot;Le document est sauvé&quot;</span>)</a>
-<a class="sourceLine" id="cb36-12" title="12">  <span class="op">}</span></a>
-<a class="sourceLine" id="cb36-13" title="13">  <span class="at">loadMe</span>()<span class="op">{</span></a>
-<a class="sourceLine" id="cb36-14" title="14">    <span class="kw">this</span>.<span class="va">iofile</span>.<span class="at">loadIfExists</span>(<span class="op">{</span><span class="dt">after</span><span class="op">:</span> <span class="kw">this</span>.<span class="va">afterLoading</span>.<span class="at">bind</span>(<span class="kw">this</span>)<span class="op">}</span>)</a>
-<a class="sourceLine" id="cb36-15" title="15">  <span class="op">}</span></a>
-<a class="sourceLine" id="cb36-16" title="16">  <span class="at">afterLoading</span>(code)<span class="op">{</span></a>
-<a class="sourceLine" id="cb36-17" title="17">    <span class="kw">this</span>.<span class="at">_contents</span> <span class="op">=</span> code</a>
-<a class="sourceLine" id="cb36-18" title="18">  <span class="op">}</span></a>
-<a class="sourceLine" id="cb36-19" title="19"><span class="op">}</span></a></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb35-1" title="1"></a>
+<a class="sourceLine" id="cb35-2" title="2"><span class="kw">class</span> monObjet <span class="op">{</span></a>
+<a class="sourceLine" id="cb35-3" title="3">  get <span class="at">contents</span>()<span class="op">{</span> <span class="cf">return</span> <span class="kw">this</span>.<span class="at">_contents</span> <span class="op">}</span></a>
+<a class="sourceLine" id="cb35-4" title="4">  get <span class="at">path</span>() <span class="op">{</span> <span class="cf">return</span> <span class="st">&#39;chemin/daccess/au/fichier.odt&#39;</span><span class="op">}</span></a>
+<a class="sourceLine" id="cb35-5" title="5">  get <span class="at">iofile</span>()<span class="op">{</span> <span class="cf">return</span> <span class="kw">this</span>.<span class="at">_iofile</span> <span class="op">||</span> <span class="at">defP</span>(<span class="kw">this</span><span class="op">,</span><span class="st">&#39;_iofile&#39;</span><span class="op">,</span> <span class="kw">new</span> <span class="at">IOFile</span>(<span class="kw">this</span>))<span class="op">}</span></a>
+<a class="sourceLine" id="cb35-6" title="6"></a>
+<a class="sourceLine" id="cb35-7" title="7">  <span class="at">saveMe</span>()<span class="op">{</span></a>
+<a class="sourceLine" id="cb35-8" title="8">    <span class="kw">this</span>.<span class="va">iofile</span>.<span class="at">save</span>(<span class="op">{</span><span class="dt">after</span><span class="op">:</span> <span class="kw">this</span>.<span class="va">afterSaving</span>.<span class="at">bind</span>(<span class="kw">this</span>)<span class="op">}</span>)</a>
+<a class="sourceLine" id="cb35-9" title="9">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb35-10" title="10">  <span class="at">afterSaving</span>()<span class="op">{</span></a>
+<a class="sourceLine" id="cb35-11" title="11">    <span class="va">console</span>.<span class="at">log</span>(<span class="st">&quot;Le document est sauvé&quot;</span>)</a>
+<a class="sourceLine" id="cb35-12" title="12">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb35-13" title="13">  <span class="at">loadMe</span>()<span class="op">{</span></a>
+<a class="sourceLine" id="cb35-14" title="14">    <span class="kw">this</span>.<span class="va">iofile</span>.<span class="at">loadIfExists</span>(<span class="op">{</span><span class="dt">after</span><span class="op">:</span> <span class="kw">this</span>.<span class="va">afterLoading</span>.<span class="at">bind</span>(<span class="kw">this</span>)<span class="op">}</span>)</a>
+<a class="sourceLine" id="cb35-15" title="15">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb35-16" title="16">  <span class="at">afterLoading</span>(code)<span class="op">{</span></a>
+<a class="sourceLine" id="cb35-17" title="17">    <span class="kw">this</span>.<span class="at">_contents</span> <span class="op">=</span> code</a>
+<a class="sourceLine" id="cb35-18" title="18">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb35-19" title="19"><span class="op">}</span></a></code></pre></div>
 <p>Si <strong>le propriétaire n’est pas défini</strong>, il faut explicitement définir le code de l’<code>iofile</code> :</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb37-1" title="1"></a>
-<a class="sourceLine" id="cb37-2" title="2">  <span class="kw">this</span>.<span class="va">iofile</span>.<span class="at">code</span> <span class="op">=</span> <span class="st">&quot;Mon code à enregistrer&quot;</span></a>
-<a class="sourceLine" id="cb37-3" title="3">  <span class="kw">this</span>.<span class="va">iofile</span>.<span class="at">save</span>(<span class="op">{</span><span class="dt">after</span><span class="op">:</span> ...<span class="op">}</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb36-1" title="1"></a>
+<a class="sourceLine" id="cb36-2" title="2">  <span class="kw">this</span>.<span class="va">iofile</span>.<span class="at">code</span> <span class="op">=</span> <span class="st">&quot;Mon code à enregistrer&quot;</span></a>
+<a class="sourceLine" id="cb36-3" title="3">  <span class="kw">this</span>.<span class="va">iofile</span>.<span class="at">save</span>(<span class="op">{</span><span class="dt">after</span><span class="op">:</span> ...<span class="op">}</span>)</a></code></pre></div>
 <blockquote>
 <p>Noter qu’on indique le format que si l’extension du fichier ne correspond pas.</p>
 </blockquote>
-<div class="sourceCode" id="cb38"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb38-1" title="1"><span class="co">// ...</span></a>
-<a class="sourceLine" id="cb38-2" title="2"></a>
-<a class="sourceLine" id="cb38-3" title="3"><span class="kw">function</span> <span class="at">methode_apres_chargement</span>(contenu_document)<span class="op">{</span></a>
-<a class="sourceLine" id="cb38-4" title="4">  <span class="co">// ...</span></a>
-<a class="sourceLine" id="cb38-5" title="5"><span class="op">}</span></a>
-<a class="sourceLine" id="cb38-6" title="6"><span class="co">// Pour récupérer le document</span></a>
-<a class="sourceLine" id="cb38-7" title="7"><span class="va">iofile</span>.<span class="at">loadIfExists</span>(<span class="op">{</span></a>
-<a class="sourceLine" id="cb38-8" title="8">  <span class="dt">after</span><span class="op">:</span> methode_apres_chargement <span class="co">// reçoit en argument le contenu du document</span></a>
-<a class="sourceLine" id="cb38-9" title="9"><span class="op">}</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb37-1" title="1"><span class="co">// ...</span></a>
+<a class="sourceLine" id="cb37-2" title="2"></a>
+<a class="sourceLine" id="cb37-3" title="3"><span class="kw">function</span> <span class="at">methode_apres_chargement</span>(contenu_document)<span class="op">{</span></a>
+<a class="sourceLine" id="cb37-4" title="4">  <span class="co">// ...</span></a>
+<a class="sourceLine" id="cb37-5" title="5"><span class="op">}</span></a>
+<a class="sourceLine" id="cb37-6" title="6"><span class="co">// Pour récupérer le document</span></a>
+<a class="sourceLine" id="cb37-7" title="7"><span class="va">iofile</span>.<span class="at">loadIfExists</span>(<span class="op">{</span></a>
+<a class="sourceLine" id="cb37-8" title="8">  <span class="dt">after</span><span class="op">:</span> methode_apres_chargement <span class="co">// reçoit en argument le contenu du document</span></a>
+<a class="sourceLine" id="cb37-9" title="9"><span class="op">}</span>)</a></code></pre></div>
 <p>Le format du contenu — JSON, YAML, etc. — n’a besoin d’être précisé que s’il ne correspond pas à l’extension du fichier (du <code>path</code>). On l’indique alors dans l’argument :</p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb39-1" title="1"></a>
-<a class="sourceLine" id="cb39-2" title="2">  <span class="kw">this</span>.<span class="va">iofile</span>.<span class="at">save</span>(<span class="op">{</span><span class="dt">after</span><span class="op">:</span> ...<span class="op">,</span> <span class="dt">format</span><span class="op">:</span> <span class="st">&#39;json&#39;</span><span class="op">}</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb38-1" title="1"></a>
+<a class="sourceLine" id="cb38-2" title="2">  <span class="kw">this</span>.<span class="va">iofile</span>.<span class="at">save</span>(<span class="op">{</span><span class="dt">after</span><span class="op">:</span> ...<span class="op">,</span> <span class="dt">format</span><span class="op">:</span> <span class="st">&#39;json&#39;</span><span class="op">}</span>)</a></code></pre></div>
 <p>On peut mettre au format <code>raw</code> lorsque le format est reconnaissable par l’extension du <code>path</code>, mais qu’on ne veut pas que le code soit interprété.</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb40-1" title="1"></a>
-<a class="sourceLine" id="cb40-2" title="2">  <span class="kw">this</span>.<span class="va">iofile</span>.<span class="at">load</span>(<span class="op">{</span><span class="dt">after</span><span class="op">:</span> ...<span class="op">,</span> <span class="dt">format</span><span class="op">:</span> <span class="st">&#39;raw&#39;</span><span class="op">}</span>) <span class="co">// =&gt; code brut du fichier</span></a></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb39-1" title="1"></a>
+<a class="sourceLine" id="cb39-2" title="2">  <span class="kw">this</span>.<span class="va">iofile</span>.<span class="at">load</span>(<span class="op">{</span><span class="dt">after</span><span class="op">:</span> ...<span class="op">,</span> <span class="dt">format</span><span class="op">:</span> <span class="st">&#39;raw&#39;</span><span class="op">}</span>) <span class="co">// =&gt; code brut du fichier</span></a></code></pre></div>
 <hr />
 <h1 id="assemblage_analyse">Assemblage de l’analyse</h1>
 <p>Cette partie traite de l’assemblage de l’analyse côté programmation.</p>
@@ -795,8 +787,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Le « script d’assemblage » définit la façon d’assembler les différents composants de l’analyse pour composer le document final.</p>
 <h2 id="assemblage_messages_suivis">Messages de suivi</h2>
 <p>On peut envoyer des messages de suivi grâce à l’instance <code>report</code> du builder qui construit l’analyse. Cela consiste la plupart du temps à faire :</p>
-<div class="sourceCode" id="cb41"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb41-1" title="1"></a>
-<a class="sourceLine" id="cb41-2" title="2"><span class="kw">this</span>.<span class="va">report</span>.<span class="at">add</span>(<span class="st">&#39;mon message&#39;</span><span class="op">,</span> <span class="st">&#39;mon type de message&#39;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb40-1" title="1"></a>
+<a class="sourceLine" id="cb40-2" title="2"><span class="kw">this</span>.<span class="va">report</span>.<span class="at">add</span>(<span class="st">&#39;mon message&#39;</span><span class="op">,</span> <span class="st">&#39;mon type de message&#39;</span>)</a></code></pre></div>
 <p>Les types de message sont :</p>
 <table>
 <thead>
@@ -849,33 +841,33 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Une liste de <code>checks</code> à faire pour valider l’essai.</li>
 </ul>
 <p>Par exemple :</p>
-<div class="sourceCode" id="cb42"><pre class="sourceCode yaml"><code class="sourceCode yaml"><a class="sourceLine" id="cb42-1" title="1"></a>
-<a class="sourceLine" id="cb42-2" title="2"><span class="ot">---</span></a>
-<a class="sourceLine" id="cb42-3" title="3">  <span class="kw">-</span> <span class="fu">id:</span><span class="at"> mon_premier_test</span></a>
-<a class="sourceLine" id="cb42-4" title="4">    <span class="fu">libele:</span><span class="at"> Libellé de mon premier test, en titre</span></a>
-<a class="sourceLine" id="cb42-5" title="5">    <span class="fu">description:</span><span class="at"> C’est un tout premier test à faire</span></a>
-<a class="sourceLine" id="cb42-6" title="6">    <span class="fu">synopsis:</span></a>
-<a class="sourceLine" id="cb42-7" title="7">      <span class="kw">-</span> ouvrir l<span class="st">&#39;app</span></a>
-<a class="sourceLine" id="cb42-8" title="8"><span class="st">      - ouvrir l&#39;</span>analyse <span class="st">&#39;monAnalyse&#39;</span></a>
-<a class="sourceLine" id="cb42-9" title="9">      <span class="kw">-</span> <span class="fu">check:</span><span class="at"> aucun event</span></a>
-<a class="sourceLine" id="cb42-10" title="10">      <span class="kw">-</span> <span class="fu">check:</span><span class="at"> aucun document</span></a>
-<a class="sourceLine" id="cb42-11" title="11">      <span class="kw">-</span> quitter l<span class="st">&#39;app</span></a>
-<a class="sourceLine" id="cb42-12" title="12"><span class="st">    checks:</span></a>
-<a class="sourceLine" id="cb42-13" title="13"><span class="st">      - tout doit s’être bien passé</span></a>
-<a class="sourceLine" id="cb42-14" title="14"><span class="st">      - l&#39;</span>app ne doit plus être affichée</a>
-<a class="sourceLine" id="cb42-15" title="15">      <span class="kw">-</span> et moi non plus, d’ailleurs…</a></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode yaml"><code class="sourceCode yaml"><a class="sourceLine" id="cb41-1" title="1"></a>
+<a class="sourceLine" id="cb41-2" title="2"><span class="ot">---</span></a>
+<a class="sourceLine" id="cb41-3" title="3">  <span class="kw">-</span> <span class="fu">id:</span><span class="at"> mon_premier_test</span></a>
+<a class="sourceLine" id="cb41-4" title="4">    <span class="fu">libele:</span><span class="at"> Libellé de mon premier test, en titre</span></a>
+<a class="sourceLine" id="cb41-5" title="5">    <span class="fu">description:</span><span class="at"> C’est un tout premier test à faire</span></a>
+<a class="sourceLine" id="cb41-6" title="6">    <span class="fu">synopsis:</span></a>
+<a class="sourceLine" id="cb41-7" title="7">      <span class="kw">-</span> ouvrir l<span class="st">&#39;app</span></a>
+<a class="sourceLine" id="cb41-8" title="8"><span class="st">      - ouvrir l&#39;</span>analyse <span class="st">&#39;monAnalyse&#39;</span></a>
+<a class="sourceLine" id="cb41-9" title="9">      <span class="kw">-</span> <span class="fu">check:</span><span class="at"> aucun event</span></a>
+<a class="sourceLine" id="cb41-10" title="10">      <span class="kw">-</span> <span class="fu">check:</span><span class="at"> aucun document</span></a>
+<a class="sourceLine" id="cb41-11" title="11">      <span class="kw">-</span> quitter l<span class="st">&#39;app</span></a>
+<a class="sourceLine" id="cb41-12" title="12"><span class="st">    checks:</span></a>
+<a class="sourceLine" id="cb41-13" title="13"><span class="st">      - tout doit s’être bien passé</span></a>
+<a class="sourceLine" id="cb41-14" title="14"><span class="st">      - l&#39;</span>app ne doit plus être affichée</a>
+<a class="sourceLine" id="cb41-15" title="15">      <span class="kw">-</span> et moi non plus, d’ailleurs…</a></code></pre></div>
 <h3 id="running_hand_tests">Lancement des hand-tests</h3>
 <p>On lance les hand-tests en activant le menu « Outils &gt; Lancer les tests manuels » (ou item similaire). L’item « Reprendre les tests manuels » (ou similaire) permet de reprendre les tests là où on s’était arrêté la dernière fois.</p>
 <h3 id="astuce-pour-toujours-commencer-par-le-test-en-cours-tip_start_with_current_test">Astuce pour toujours commencer par le test en cours (#tip_start_with_current_test)</h3>
 <p>Quand un test est en cours d’élaboration, ou en cours de jeu pendant le développement du code qu’il concerne, on peut le rejoindre dès le lancement des tests en lui donnant un nom commençant par exemple par un trait plat ou par un 0. Il passera alors toujours avant les tests suivants.</p>
 <p>Il faudra seulement penser à retirer ce trait plat du nom, une fois les choses achevéees, pour pouvoir utiliser l’astuce pour le nouveau test courant.</p>
 <p>Essayer par exemple en implémentant un fichier de tests qui s’appellerait <code>_mon_premier_test.yaml</code> et qui contiendrait :</p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode yaml"><code class="sourceCode yaml"><a class="sourceLine" id="cb43-1" title="1"><span class="kw">-</span> <span class="fu">id:</span><span class="at"> mon_premier_test</span></a>
-<a class="sourceLine" id="cb43-2" title="2">  <span class="fu">libelle:</span><span class="at"> Essai d&#39;un test au-dessus</span></a>
-<a class="sourceLine" id="cb43-3" title="3">  <span class="fu">synopsis:</span></a>
-<a class="sourceLine" id="cb43-4" title="4">    <span class="kw">-</span> ouvrir l<span class="st">&#39;application</span></a>
-<a class="sourceLine" id="cb43-5" title="5"><span class="st">  checks:</span></a>
-<a class="sourceLine" id="cb43-6" title="6"><span class="st">    - Ce test est lancé en premier.</span></a></code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode yaml"><code class="sourceCode yaml"><a class="sourceLine" id="cb42-1" title="1"><span class="kw">-</span> <span class="fu">id:</span><span class="at"> mon_premier_test</span></a>
+<a class="sourceLine" id="cb42-2" title="2">  <span class="fu">libelle:</span><span class="at"> Essai d&#39;un test au-dessus</span></a>
+<a class="sourceLine" id="cb42-3" title="3">  <span class="fu">synopsis:</span></a>
+<a class="sourceLine" id="cb42-4" title="4">    <span class="kw">-</span> ouvrir l<span class="st">&#39;application</span></a>
+<a class="sourceLine" id="cb42-5" title="5"><span class="st">  checks:</span></a>
+<a class="sourceLine" id="cb42-6" title="6"><span class="st">    - Ce test est lancé en premier.</span></a></code></pre></div>
 <h3 id="next_hand_test">Passage au test suivant</h3>
 <p>On peut passer au test suivant du fichier courant (ou le premier du fichier suivant si on est au dernier test du fichier) en cliquant le bouton « Test suivant » en bas de la fenêtre de test.</p>
 <h3 id="next_file_hand_tests">Passage au fichier suivant</h3>
@@ -902,18 +894,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>et les vérifications mineures en cours de synopsis, juste pour savoir si les choses se passent bien avant de poursuivre plus avant. Dans le synopsis, ces vérifications doivent se démarquer avec le préfixe <code>check:</code> (sans espace avant les deux points).</li>
 </ul>
 <p>On peut trouver par exemple :</p>
-<div class="sourceCode" id="cb44"><pre class="sourceCode yaml"><code class="sourceCode yaml"><a class="sourceLine" id="cb44-1" title="1"><span class="kw">-</span> <span class="fu">id:</span><span class="at"> mon_test</span></a>
-<a class="sourceLine" id="cb44-2" title="2">  <span class="fu">libelle:</span><span class="at"> Un test avec check au cours du synopsis</span></a>
-<a class="sourceLine" id="cb44-3" title="3">  <span class="fu">synopsis:</span></a>
-<a class="sourceLine" id="cb44-4" title="4">    <span class="kw">-</span> Vous devez faire ça</a>
-<a class="sourceLine" id="cb44-5" title="5">    <span class="kw">-</span> Et puis faire ça</a>
-<a class="sourceLine" id="cb44-6" title="6">    <span class="fu">check:</span><span class="at"> </span><span class="st">&quot;Première vérification à faire : compter les events affichés dans le reader. Il doit y en avoir 3&quot;</span></a>
-<a class="sourceLine" id="cb44-7" title="7">    <span class="fu">check:</span><span class="at"> 4 events</span></a>
-<a class="sourceLine" id="cb44-8" title="8">    <span class="fu">check:</span><span class="at"> aucun document</span></a>
-<a class="sourceLine" id="cb44-9" title="9">    <span class="kw">-</span> Poursuivre en faisant ça</a>
-<a class="sourceLine" id="cb44-10" title="10">    <span class="kw">-</span> Et terminer en faisant ça</a>
-<a class="sourceLine" id="cb44-11" title="11">  <span class="fu">checks:</span></a>
-<a class="sourceLine" id="cb44-12" title="12">    <span class="kw">-</span> Vous devez être parvenu au bout</a></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode yaml"><code class="sourceCode yaml"><a class="sourceLine" id="cb43-1" title="1"><span class="kw">-</span> <span class="fu">id:</span><span class="at"> mon_test</span></a>
+<a class="sourceLine" id="cb43-2" title="2">  <span class="fu">libelle:</span><span class="at"> Un test avec check au cours du synopsis</span></a>
+<a class="sourceLine" id="cb43-3" title="3">  <span class="fu">synopsis:</span></a>
+<a class="sourceLine" id="cb43-4" title="4">    <span class="kw">-</span> Vous devez faire ça</a>
+<a class="sourceLine" id="cb43-5" title="5">    <span class="kw">-</span> Et puis faire ça</a>
+<a class="sourceLine" id="cb43-6" title="6">    <span class="fu">check:</span><span class="at"> </span><span class="st">&quot;Première vérification à faire : compter les events affichés dans le reader. Il doit y en avoir 3&quot;</span></a>
+<a class="sourceLine" id="cb43-7" title="7">    <span class="fu">check:</span><span class="at"> 4 events</span></a>
+<a class="sourceLine" id="cb43-8" title="8">    <span class="fu">check:</span><span class="at"> aucun document</span></a>
+<a class="sourceLine" id="cb43-9" title="9">    <span class="kw">-</span> Poursuivre en faisant ça</a>
+<a class="sourceLine" id="cb43-10" title="10">    <span class="kw">-</span> Et terminer en faisant ça</a>
+<a class="sourceLine" id="cb43-11" title="11">  <span class="fu">checks:</span></a>
+<a class="sourceLine" id="cb43-12" title="12">    <span class="kw">-</span> Vous devez être parvenu au bout</a></code></pre></div>
 <p>Ici, les vérifications <code>4 events</code> et <code>aucun document</code> sont des checks automatiques définis dans le fichier <code>AUTOMATIC_STEPS.js</code> dont il est question plus haut. En revanche, la vérification “Première verification [etc.]” est une vérification manuelle que le testeur doit accomplir.</p>
 <hr />
 <h3 id="developping_hand_tests">Implémentation des hand-tests</h3>
@@ -1052,5 +1044,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Ne surtout pas tester les overlaps dans la méthode <code>FWindow::setCurrent</code> (avec <code>this.checkOverlaps(wf)</code>) car cette méthode est appelée aussi quand on ferme une fenêtre</p>
 <p>=&gt; Le check du chevauchement doit être invoqué au show de la fenêtre volante.</p>
 <p>Ne surtout pas utiliser <code>e &amp;&amp; stopEvent(e)</code> car, alors, lorsque l’on cliquerait sur un checkbox, rien ne se produirait.</p>
+<h4 id="n0003">N0003</h4>
+<p>Les « flags » des combinaison fléchées (arrows-combinaison) permettent de savoir comment traiter tous les raccourcis clavier qui permettent de se déplacer dans le film à l’aide des combinaisons fonctionnant avec flèche gauche/flèche droite.</p>
+<p>Ces combinaisons étant définissables (avec la touche « g ») il faut les calculer.</p>
+<p>Principe :</p>
+<ul>
+<li>Une combinaison correspond à un flag unique (un nombre) déterminé à partir de :
+<ul>
+<li>la touche flèche gauche ou flèche droite</li>
+<li>l’utilisation ou non de la touche MÉTA,</li>
+<li>l’utilisation ou non de la touche ALT,</li>
+<li>l’utilisation ou non de la touche CTRL,</li>
+<li>l’utilisation ou non de la touche SHIFT,</li>
+</ul></li>
+<li>Le type <code>GOTODATA</code> détermine le nom de l’option, simplement en ajoutant ‘goto-’ devant : <code>next-scene</code> correspond à la préférence globale <code>goto-next-scene</code>.</li>
+<li>Le type dans <code>GOTODATA</code> détermine le nom de la méthode de déplacement à utiliser, en ajoutant <code>goTo</code> et en titleisant le type. Par exemple, <code>next-scene</code> correspond à la méthode <code>goToNextScene</code>, <code>start-film</code> correspond à la méthode <code>goToStartFilm</code>.</li>
+</ul>
+<h4 id="n0004">N0004</h4>
+<p>Au départ, j’avais pensé utiliser les raccourcis des menus. Mais ils sont globaux, et ne peuvent être facilement désactivés (il faudrait utiliser, côté main-process, la méthode <code>globalShortcut.register</code> et ce serait lourd et confusionnant).</p>
+<p>Donc, les raccourcis sont marqués dans les menus, mais dans le label, pas en <code>accelerator</code>, et c’est la gestion normale des shortcuts qui les traite.</p>
 </body>
 </html>

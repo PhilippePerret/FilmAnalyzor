@@ -333,7 +333,6 @@ Object.assign(FAListing,{
       if(it){
         try { res = data.asListItem(it) }
         catch(e){console.error("Erreur en essayant de construire le premier élément :",res, e)}
-        console.log("res:", res)
         res || raise('falist-aslistitem-bad-return')
         isString(res.outerHTML) || raise('falist-aslistitem-bad-return')
         res.tagName === LI || raise('falist-aslistitem-required')

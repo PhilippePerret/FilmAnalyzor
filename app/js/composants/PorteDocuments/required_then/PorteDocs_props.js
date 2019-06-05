@@ -29,12 +29,13 @@ Object.defineProperties(PorteDocuments,{
 , selector:{
    get(){return this._selector || defP(this,'_selector', new Selector(this.docField))}
  }
-// Retourne la liste de tous les documents courants
+// Retourne la table de tous les documents courants (id du document en clé)
 , documents:{get(){return this._documents || defP(this,'_documents',this.getDocuments())}}
 // Retourne la liste des documents personnalisés
 , customDocuments:{
     get(){return this._customDocuments || defP(this,'_customDocuments', this.makeCustomDocumentsList())}
   }
+, listableDocuments:{get(){return this._listableDocuments || defP(this,'_listableDocuments',this.makelistableDocumentsList())}}
 , jqObj: {get(){return this.fwindow.jqObj}}
 , section: {get(){return $('#section-porte-documents')}}
 , menuDocuments:{
@@ -59,10 +60,11 @@ Object.assign(PorteDocuments,{
   **/
   getDocuments(){
     var maxId = 49
-      , tbl   = {}
+      // , tbl   = {}
+      , tbl   = new Map()
     glob.sync(`${this.a.folderFiles}/*.*`).forEach( dpath => {
       var docId = this.docIdFromPath(dpath)
-      tbl[docId] = new FADocument(docId)
+      tbl.set(docId, new FADocument(docId))
       if ( docId > maxId ) maxId = docId
     })
     // On renseigne le dernier identifiant utilisé (ou 49 pour 1er à 50)
@@ -85,4 +87,12 @@ Object.assign(PorteDocuments,{
     }
   }
 
+/**
+  Retourne la liste des documents qui sont "listables", c'est-à-dire qui
+  peuvent être affichés dans la liste des documents (pour association).
+  On retire de la liste des documents ceux qui sont des documents de données.
+**/
+, makelistableDocumentsList(){
+    return Array.from(this.documents.values()).filter( doc => doc.isReal )
+  }
 })

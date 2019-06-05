@@ -21,10 +21,12 @@ const ERRORS = {
 , "export-infos-film-not-defined":"Les informations sur le film ne sont pas définis, je ne peux pas les inscrire. Il faudra absolument le faire pour connaitre le film et pouvoir régler la vidéo."
 
 , "--- DOCUMENTS ---":""
+, "id-or-path-required-for-doc": "Impossible d'instancier un document sans ID ou PATH."
 , "ask-for-save-document-modified": "Le document courant, de type « %{type} », a été modifié. Voulez-vous enregistrer les changements ou les ignorer ?"
 , "new-custom-document-created": "Document créé. Sa première ligne définit son titre."
 , "same-document-no-association": "Un document ne peut pas être associé avec lui-même, désolé."
 , "no-association-event-in-doc": "Pour lier un event à un document, il faut le glisser dans son texte."
+, "docpath-unfound": "Le path \"%{path}\" est introuvable. Je ne peux pas éditer ce document."
 
 , "--- FILES ---": ""
 , "code-to-save-is-empty":"Le code à sauver est vide, malheureusement."

@@ -2,11 +2,11 @@
 
 
 Object.defineProperty(FADocument,'DataFAListing',{get(){return {
-  items: Object.values(PorteDocuments.documents)
+  items: PorteDocuments.listableDocuments
   // items:[]
 , mainTitle: 'Documents'
+, mainProp: 'title'
 , asListItem(item, opts){
-    console.log("Traitement du document : ", item)
     return DCreate(LI,{append:[
         DCreate(DIV,{class:'bar-title', append:[
           , DCreate(DIV, {class: `title document-title`, inner: `Document « ${item.f_title} »`})

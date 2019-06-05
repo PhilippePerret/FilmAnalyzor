@@ -4,7 +4,7 @@
 
 * FADocument extends FAElement
   - tester et corriger la liste des documents
-  
+
 * Pouvoir se déplacer de noeud STT en noeud STT
 
 * Garder toujours le curseur visible dans le banc-timeline (faire l'essai en zoomant et en passant du début à la fin du film)

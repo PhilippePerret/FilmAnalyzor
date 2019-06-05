@@ -66,10 +66,12 @@ FADocument.prototype.getTitle = function(){
     let firstLine = buf.shift()
     if (firstLine.substring(0,2).trim() == '#'){
       tit = firstLine.substring(2, firstLine.length).trim()
-      this._firstContent = buf.join(RC)
     } else {
-      this._firstContent = buf.unshift(firstLine).join(RC)
+      buf.unshift(firstLine)
+      tit = firstLine.substring(0, 50).trim() + ' […]'
     }
+    tit = tit.replace(/\{\#([^\}]*)\}/, '') // on retire l'éventuel id
+    this._firstContent = buf.join(RC)
   } else {
     log.info(`   Le fichier "${this.path}" n'existe pas. Je ne peux pas trouver le titre.`)
     this._firstContent = ''

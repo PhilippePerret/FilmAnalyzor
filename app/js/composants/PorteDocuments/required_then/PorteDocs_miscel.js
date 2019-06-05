@@ -47,7 +47,7 @@ document propres à l'analyse courante)
   `this.customDocuments`)
 **/
 , makeCustomDocumentsList(){
-    return Object.values(this.documents).filter( doc => doc.isCustomDoc )
+    return Array.from(this.documents.values()).filter( doc => doc.isCustomDoc )
   }
 
 })

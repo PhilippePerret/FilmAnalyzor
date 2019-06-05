@@ -19,8 +19,8 @@ const PorteDocuments = {
     // Si le porte-documents est déjà ouvert, il faut vérifier que le
     // document édité ait bien été enregistré
     if ( this.keepCurrentDocument() ) return
-    isDefined(this.documents[docId]) || this.defineDocument(docId)
-    this.currentDocument = this.documents[docId]
+    isDefined(this.documents.get(docId)) || this.defineDocument(docId)
+    this.currentDocument = this.documents.get(docId)
     this.isOpened || this.open()
     this.currentDocument.edit()
     this.visualizeDoc && this.updateVisuDoc()
@@ -32,7 +32,7 @@ const PorteDocuments = {
   Quand il faut définir un document qui n'existe pas encore
 **/
 , defineDocument(docId){
-    this.documents[docId] = new FADocument(docId)
+    this.documents.set(docId, new FADocument(docId))
   }
 
   /**
@@ -49,8 +49,8 @@ const PorteDocuments = {
   Méthode pour boucler sur tous les documents actuels
 **/
 , forEachDocument(fn){
-    for(var docId in this.documents){
-      if ( isFalse(fn(this.documents[docId])) ) break // pour pouvoir interrompre
+    for(var doc of this.documents){
+      if ( isFalse(fn(doc)) ) break // pour pouvoir interrompre
     }
   }
 
@@ -58,7 +58,7 @@ const PorteDocuments = {
 // méthode est utilisée par le dataeditor quand le document a été modifié.
 , resetDocument(docId){
     this.currentDocument && this.currentDocument.id == docId && this.hide()
-    this.documents[docId].reset()
+    this.documents.get(docId).reset()
   }
 
 /**

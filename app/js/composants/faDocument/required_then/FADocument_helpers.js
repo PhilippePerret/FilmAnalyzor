@@ -95,4 +95,5 @@ Object.defineProperties(FADocument.prototype,{
     var idFn = isString(this.id) ? `"${this.id}"` : this.id
     return this._onclickshow||defP(this,'_onclickshow',`showDocument(${idFn})`)}
   }
+, f_title:{get(){return DFormater(this.title)}}
 })

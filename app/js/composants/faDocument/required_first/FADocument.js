@@ -7,7 +7,7 @@
  *
  */
 
-class FADocument {
+class FADocument extends FAElement {
 // ---------------------------------------------------------------------
 //  CLASSE
 
@@ -80,10 +80,10 @@ static newId(){
                           string = nom du fichier système à éditer
 **/
 static get(docId){
-  isDefined(PorteDocuments.documents[docId]) || (
-    PorteDocuments.documents[docId] = new FADocument(docId)
+  isDefined( PorteDocuments.documents.get(docId) ) || (
+    PorteDocuments.documents.set(docId, new FADocument(docId))
   )
-  return PorteDocuments.documents[docId]
+  return PorteDocuments.documents.get(docId)
 }
 
 
@@ -111,19 +111,22 @@ static get count(){
                               entier.
 **/
 constructor(id){
-  if ( isString(id) && id.match(/$[0-9]+^/) ) id = parseInt(id,10)
-  isDefined(id) || raise("Impossible d'instancier un document sans ID ou PATH.")
+  if ( isString(id) && id.match(/^[0-9]+$/) ) id = parseInt(id,10)
+  // console.log("id pour instanciation document :", id, typeof(id))
+  isDefined(id) || raise(T('id-or-path-required-for-doc'))
+  super({})
   this.dtype = isString(id) ? STRsystem : (id < 50 ? STRregular : STRcustom) ;
   // console.log("this.dtype = ", this.dtype)
 
   if ( this.dtype === STRsystem ) {
-    fs.existsSync(id) || raise(`Le path "${id}" est introuvable. Je ne peux pas éditer ce document.`)
+    fs.existsSync(id) || raise(T('docpath-unfound', {path:id}))
     this._path  = id
-    this.id = path.basename(id)
+    this.id = path.basename(id, path.extname(id))
   } else {
     this.id = id
   }
 
+  this.type = STRdocument // pour FAElement
   this.loaded = false
 }
 
@@ -133,7 +136,7 @@ constructor(id){
 toString(){return this._tostring||defP(this,'_tostring',this.defineToString())}
 
 defineToString(){
-  var t = ['Document']
+  var t = [STRDocument]
   if(this._title) t.push(`« ${DFormater(this.title)} »`)
   else t.push(`#${this.id}`)
   return t.join(' ')
@@ -180,6 +183,7 @@ get isRegularDoc(){return this.dtype === STRregular}
 get isCustomDoc(){return this.dtype === STRcustom}
 get isSystemDoc(){return this.dtype === STRsystem}
 get isData(){return this.data && this.data.type === STRdata}
+get isReal(){return this.data && this.data.type === STRreal}
 get isAbsoluteData(){return this.data && this.data.abs === true}
 
 set modified(v){
