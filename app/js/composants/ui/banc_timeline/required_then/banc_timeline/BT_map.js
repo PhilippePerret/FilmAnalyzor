@@ -22,7 +22,6 @@ Object.assign(BancTimeline,{
     let indexSceneRow = BancTimelineElement.SCENE_ROW
     var i = indexSceneRow
     while ( --i > 0 ) busyRows.set(indexSceneRow - i, null)
-    console.log("BancTimelineElement.SCENE_ROW:",BancTimelineElement.SCENE_ROW)
 
     // On peut boucler sur chaque items ({BancTimelineElement})
     for (var item of this.items) {

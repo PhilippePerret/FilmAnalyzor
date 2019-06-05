@@ -25,6 +25,7 @@ const PorteDocuments = {
     this.currentDocument.edit()
     this.visualizeDoc && this.updateVisuDoc()
     this.menuDocuments.val(docId)
+    FWindow.setCurrent(this.fwindow)
     this.setDroppableButtonForCurrent()
   }
 
@@ -42,7 +43,6 @@ const PorteDocuments = {
    */
 , setDroppableButtonForCurrent() {
     this.btnDrop.attr('data-id',this.currentDocument.id)
-    console.log("this.btnDrop:", this.btnDrop)
   }
 
 /**

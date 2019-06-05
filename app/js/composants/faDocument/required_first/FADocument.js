@@ -31,11 +31,11 @@ static new(){
 }
 
 /**
-  For consistency with others elements
+  Appelé par le bouton "edit" dans le listing des documents
 **/
 static edit(docId){
   if ( isUndefined(docId) ) this.new()
-  else this.get(docId).edit()
+  else PorteDocuments.editDocument(docId)
 }
 
 /**

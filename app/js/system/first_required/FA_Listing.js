@@ -28,7 +28,7 @@ constructor(classeFAElement){
 // Pour ouvrir et fermer le panneau
 toggle(force_opened, selected_item){
   if (isUndefined(force_opened)) this.fwindow.toggle()
-  else this.fwindow[force_opened?'show':'hide']()
+  else this.fwindow[force_opened?STRshow:STRhide]()
   selected_item && this.select(selected_item)
 }
 get opened(){return this.fwindow.visible}
@@ -114,7 +114,7 @@ observeListing(){
   // mettre dans leur état par défaut
   if (this.collapsable){
     BtnToggleContainer.observe(this.jqObj)
-    this.jqObj.find('.body .additionnal-infos')[this.collapsed?'hide':'show']()
+    this.jqObj.find('.body .additionnal-infos')[this.collapsed?STRhide:STRshow]()
   }
 
   if(this.associable){
@@ -261,9 +261,9 @@ isNotCurrentWindow(){
 
 // Titre principal de la fenêtre
 get mainTitle() {
-  if(undefined === this._maintitle){
+  isDefined(this._maintitle) || (
     this._maintitle = this.data.mainTitle || `${this.owner.type.toUpperCase()}S`
-  }
+  )
   return this._maintitle
 }
 // Toutes les instances transmises
@@ -283,8 +283,8 @@ get selected(){return this.data.selected}
 get collapsable(){return this.data.collapsable}
 // True si on doit masquer les informations à l'ouverture
 get collapsed(){
-  if(undefined === this._collapsed){
-    if(undefined === this.data.collapsed) this.data.collapsed = true
+  if ( isUndefined(this._collapsed) ){
+    if ( isUndefined(this.data.collapsed) ) this.data.collapsed = true
     this._collapsed = this.data.collapsed
   }
   return this._collapsed
@@ -303,6 +303,7 @@ get displayStatistiques(){
 }
 asListItem(it,ops){return this.data.asListItem(it,ops)}
 get data(){return this._data||defP(this,'_data',this.owner.DataFAListing)}
+get typeElements(){return this._typeelements || defP(this,'_typeelements', `${this.owner.type}s`)}
 
 // ---------------------------------------------------------------------
 
@@ -310,7 +311,7 @@ get listing()   {return this._listing||defP(this,'_listing', this.jqObj.find('.f
 get btnOK()     {return this.fwindow.jqObj.find('.footer .btn-ok')}
 get btnShowAll(){return this.fwindow.jqObj.find('.footer .btn-show-all')}
 get jqObj()     {return this.fwindow.jqObj}
-get fwindow()   {return this._fwindow||defP(this,'_fwindow', new FWindow(this,{name:`${this.owner.name}-FAListing`, class:'fwindow-listing-type images', x:200,y:100}))}
+get fwindow()   {return this._fwindow||defP(this,'_fwindow', new FWindow(this,{name:`${this.owner.name}-FAListing`, class:`fwindow-listing-type ${this.typeElements}`, x:200,y:100}))}
 }
 
 

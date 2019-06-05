@@ -143,7 +143,7 @@ let ASSOCIATES_COMMON_METHODS = {
 , associer(element){
     if (this.addToAssoList(element.type, element.id)){
       ++ this.associatesCounter
-      this.updateInReader()
+      isFunction(this.updateInReader) && this.updateInReader()
     }
   }
 /**
@@ -154,7 +154,7 @@ let ASSOCIATES_COMMON_METHODS = {
 , dissocier(element){
     if (this.remToAssoList(element.type, element.id)){
       -- this.associatesCounter
-      this.updateInReader()
+      isFunction(this.updateInReader) && this.updateInReader()
     }
   }
 
