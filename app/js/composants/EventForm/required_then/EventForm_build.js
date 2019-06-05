@@ -1,6 +1,6 @@
 'use strict'
 
-EventForm.COMMON_HIDDEN_FIELDS = ['id', 'is_new', 'type']
+EventForm.COMMON_HIDDEN_FIELDS = [STRid, 'is_new', STRtype]
 
 Object.assign(EventForm.prototype,{
   /**
@@ -133,7 +133,7 @@ Object.assign(EventForm.prototype,{
       }
     })(type)
 
-    if(undefined !== label){
+    if ( isDefined(label) ) {
       dom.push(DCreate(DIV, {class:'div-form', append:[
           DCreate(LABEL, {inner:label})
         , DCreate(SELECT, {class:'decors', style:`display:${type===STRscene?'block':'none'};`})
@@ -150,7 +150,7 @@ Object.assign(EventForm.prototype,{
       }
     })(type)
 
-    if(undefined!==label){
+    if ( isDefined(label) ) {
       var ds = [DCreate(LABEL,{inner:label})]
       if(type === STRscene) ds.push(DCreate(SELECT, {class:'sous_decors'}))
       ds.push(DCreate(INPUT, {type:'TEXT', id:my.fId('shorttext2')}))
@@ -185,7 +185,7 @@ Object.assign(EventForm.prototype,{
         default:        return
       }
     })(type)
-    if(undefined !== label){
+    if ( isDefined(label) ) {
       dom.push(DCreate(DIV, {class:'div-form', append:[
           DCreate(LABEL, {inner:label})
         , DCreate(TEXTAREA, {id: my.fId('longtext2'), attrs:{rows:'4'}})
@@ -221,7 +221,7 @@ Object.assign(EventForm.prototype,{
         ]}))
     }
 
-    /*  Buttons de pas de page */
+    /*  Buttons de bas de page */
     dom.push(DCreate(DIV, {class:'event-form-buttons no-user-selection', append:[
         DCreate(BUTTON, {type:BUTTON, id:my.fId('destroy'), class:'btn-form-destroy warning small fleft', inner:'Détruire'})
       , DCreate(BUTTON, {inner:'Renoncer', class:'btn-form-cancel cancel small fleft', type:BUTTON})

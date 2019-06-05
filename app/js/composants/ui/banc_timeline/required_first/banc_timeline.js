@@ -5,16 +5,33 @@
 
 const BancTimeline = {
 
-init(){
-  let my = this
 
-  // --- ÉCRITURE DE L'ANALYSE ---
-  this.dispatchElementOnTape()
+  reset(){
+    // Suppression de tous les markers
+    UI.timeRuler.find('span.marker').remove()
+    // Suppression de tous les éléments sur le banc proprement dit
+    this.timelineTape.find('div.banctime-element').remove()
+    // Initialisation de la liste des items
+    BancTimeline.items = []
+    // Initialisation de la map
+    BancTimeline.map = new Map()
+  }
 
-  // On rend tous les éléments sensible au clic pour les éditer
-  this.timelineTape.find('.banctime-element').on(STRclick, this.onClickElement.bind(this))
+, init(){
+    let my = this
 
-}
+    // On transforme toutes les instances Event en élément
+    // BancTimeline
+    this.instancyEvents()
+
+    // On définit la map du banc-timeline, qui permettra de
+    // savoir où sont placés les éléments
+    this.defineMap()
+
+    // On dispatche tous les events sur la timeline
+    this.dispatchElementOnTape()
+
+  }
 
 , positionneMarkFilmStartEnd(){
     log.info('-> BancTimeline::positionneMarkFilmStartEnd()')
@@ -65,29 +82,34 @@ init(){
 //  MÉTHODES GÉNÉRALES DE PRÉPARATION
 
 /**
+  Méthode qui instancie chaque event de banctimeline pour en faire un élément propre
+**/
+, instancyEvents(){
+    this.a.forEachEvent(e => {
+      var bte = new BancTimelineElement(e)
+      this.items.push(bte)
+    })
+  }
+/**
   Méthode qui place les éléments courants sur la "tape" de la timeline
 **/
 , dispatchElementOnTape(){
     log.info("-> BancTimeline::dispatchElementOnTape()")
-    BancTimeline.items = []
-    this.a.forEachEvent(e => {
-       var bte = new BancTimelineElement(e)
-       BancTimeline.items.push(bte)
-       bte.place()
-     })
-   log.info("<- BancTimeline::dispatchElementOnTape()")
+    this.items.map( bte => bte.place() )
+    log.info("<- BancTimeline::dispatchElementOnTape()")
   }
 
-// ---------------------------------------------------------------------
-//  MÉTHODES D'EVENTS
 
 /**
-  Méthode appelée quand on clique sur un event
+  À la création d'un event, on le place sur le banc timeline
 **/
-, onClickElement(e){
-    stopEvent(e)
-    FAEvent.edit($(e.target).data(STRid))
-}
+, append(ev) {
+    var bte = new BancTimelineElement(ev)
+    BancTimeline.items.push(bte) // TODO Il faudrait le placer selon son temps
+    bte.place()
+  }
+// ---------------------------------------------------------------------
+//  MÉTHODES D'EVENTS
 
 /**
   Méthode appelée quand on clique sur la tape d'échelle/temps

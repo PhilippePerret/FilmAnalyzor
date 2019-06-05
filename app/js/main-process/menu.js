@@ -537,7 +537,7 @@ const DATA_MENUS = [
             ]
         }
       , {
-            label: 'Liste des… (CMD+clic btn)'
+            label: 'Liste des…'
           , submenu: [
                 {label: 'Scènes', click: ()=>{listEvent('scene')}}
               , {label: 'Nœuds STT', click: ()=>{listEvent('stt')}}

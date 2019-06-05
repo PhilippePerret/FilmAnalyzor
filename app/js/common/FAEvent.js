@@ -49,7 +49,6 @@ static instanceOf(edata){
 **/
 static edit(event_id){
   var typeOrInstance = isDefined(event_id) ? this.get(event_id) : this.type
-  // console.log("typeOrInstance:",typeOrInstance)
   return EventForm.editEvent.bind(EventForm, typeOrInstance)()
 }
 

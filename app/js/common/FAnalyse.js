@@ -482,8 +482,9 @@ getIndexOfEventAfter(time){
   Retourne l'index de l'event d'identifiant +event_id+
 **/
 indexOfEvent(event_id){
-  isDefined(this.events[i].__index) || PrevNext.prepareListeEvents()
-  return this.events[i].__index
+  let e = FAEvent.get(event_id)
+  isDefined(e.__index) || PrevNext.prepareListeEvents()
+  return e.__index
 }
 
 // --- FONCTIONS I/O ----------------------------------------------

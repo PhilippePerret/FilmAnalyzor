@@ -50,6 +50,7 @@ const TimeMap = {
   la première fois la map
 **/
 , update(){
+    console.log("-> Timeline::update")
     var s // seconde
       , len
 
@@ -93,9 +94,13 @@ const TimeMap = {
       Object.assign(himg,{type:TYPE_IMAGE, id:himg.affixe, phase:PHASE_START})
       this.map[s].push(himg)
       for(var i = 0; i<5;++i){
-        this.map[++s].push(Object.assign({}, himg,{phase:PHASE_CONTINUE}))
+        if ( isArray(this.map[++s]) ) {
+          this.map[s].push(Object.assign({}, himg,{phase:PHASE_CONTINUE}))
+        }
       }
-      this.map[s + 6].push(Object.assign({}, himg,{phase:PHASE_END}))
+      if ( isArray(this.map[s+6]) ) {
+        this.map[s + 6].push(Object.assign({}, himg,{phase:PHASE_END}))
+      }
     })
 
     // Ajout des markers

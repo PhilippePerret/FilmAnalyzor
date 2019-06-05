@@ -120,6 +120,7 @@ load(){
     my.init()
     my.locator.init()
     my.locator.stop_points = my.stopPoints
+    BancTimeline.reset()
     FAProcede.reset().init()
     FABrin.reset().init()
     EventForm.init()
@@ -141,6 +142,13 @@ load(){
 
 , onVideoReady(){
     let my = this
+
+    // On définit la time-map
+    // Tous les events et autres éléments temporels vont être placés
+    // dans une table dont les clés sont les secondes, qui permettront de
+    // connaitre, à un temps donné, tous les éléments qu'on trouve.
+    TimeMap.update()
+
     log.info('-> FAnalyse.onVideoReady')
     try {
       // On peuple la timeline avec les events
@@ -157,12 +165,6 @@ load(){
     // cet endroit (dans la timeline)
     var lastCurTime = new OTime(my.lastCurrentTime)
     lastCurTime && my.locator.setTime(lastCurTime, true)
-
-    // On définit la time-map
-    // Tous les events et autres éléments temporels vont être placés
-    // dans une table dont les clés sont les secondes, qui permettront de
-    // connaitre, à un temps donné, tous les éléments qu'on trouve.
-    TimeMap.update()
 
     // On peuple le reader avec les events et les images
     try {

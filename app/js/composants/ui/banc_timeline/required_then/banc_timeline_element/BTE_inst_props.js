@@ -22,7 +22,7 @@ Object.defineProperties(BancTimelineElement.prototype, {
     Les trois méthodes qui permettent d'obtenir les width, left et top du div
     à placer sur la timeline
   **/
-, top:{get(){return this._top || defP(this,'_top', this.constructor.defineTopDiv(this))}}
+, top:{get(){return this._top || defP(this,'_top', this.defineTopDiv(this))}}
 
 , width:{get(){
     isDefined(this._width) || (
@@ -49,3 +49,7 @@ Object.defineProperties(BancTimelineElement.prototype, {
 , a:{get(){return current_analyse}}
 
 })
+
+BancTimelineElement.prototype.defineTopDiv = function(){
+  return BancTimelineElement.FIRST_TOP_ELEMENT + this.row * BancTimelineElement.HEIGHT_ELEMENT
+}

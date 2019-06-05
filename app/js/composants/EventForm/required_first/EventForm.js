@@ -23,7 +23,26 @@ static reset(){
   this.videoWasPlaying = false
 }
 
-static get videoController(){ return this.a.videoController }
+
+/**
+  Méthode appelée pour éditer un event
+
+  Notes
+    :: on ne conserve plus le formulaire une fois fermé.
+    :: En revanche, on s'assure que l'event n'est pas déjà en mode d'édition.
+
+**/
+static editEvent(ev){
+  isNumber(ev) && ( ev = this.a.ids[ev] )
+  this.playing && this.a.locator.togglePlay()
+  // Soit le formulaire existe déjà (il est ouvert), soit il faut l'instancier.
+  isDefined(ev.form) || ( ev.form = new EventForm(ev))
+  // On le met en formulaire courant et on l'active
+  this.currentForm = ev.form
+  this.currentForm.activate()
+
+  // (this.currentForm = new EventForm(ev)).toggleForm()
+}
 
 //
 static onClickNewEvent(e, eventType){
@@ -79,18 +98,6 @@ static filmHasSceneNearCurrentPos(){
   if (sceneFound) return [sceneFound, Math.abs(curOtime - sceneFound.time)]
 }
 
-/**
-  Méthode appelée pour éditer un event
-  Note : on ne conserve plus le formulaire une fois fermé.
-**/
-static editEvent(ev){
-  isNumber(ev) && ( ev = this.a.ids[ev] )
-  this.playing && this.a.locator.togglePlay()
-  this.currentForm = new EventForm(ev)
-  this.currentForm.toggleForm()
-  // (this.currentForm = new EventForm(ev)).toggleForm()
-}
-
 // Pour obtenir un nouvel identifiant pour un nouvel event
 static newId(){
   isDefined(this.lastId) || ( this.lastId = -1 )
@@ -125,6 +132,8 @@ static optionsTypes(typ){
 **/
 static get lastLeft(){ return this._lastLeft || 200 }
 static set lastLeft(v){ this._lastLeft = v }
+static get videoController(){ return this.a.videoController }
+
 
 // ---------------------------------------------------------------------
 //  INSTANCE
@@ -225,7 +234,7 @@ submit(){
   my = null
 }// /submit
 
-get inited(){ return this._initied || false}   // mis à true à l'initialisation
+get inited(){ return this._inited || false}
 set inited(v){ this._inited = v }
 
 get modified(){return this._modified || false}
@@ -234,19 +243,10 @@ set modified(v){
   this.jqObj[v?'addClass':'removeClass']('modified')
 }
 
-get event(){ return this._event }
-get id(){
-  if(undefined === this._id){this._id = this.event.id}
-  return this._id
-}
-get type(){
-  if(undefined === this._type){this._type = this.event.type}
-  return this._type
-}
-get time(){
-  if(undefined === this._time){this._time = this.event.time}
-  return this._time
-}
+get event() { return this._event }
+get id()    { return this._id || defP(this,'_id', this.event.id) }
+get type()  { return this._type || defP(this,'_type', this.event.type) }
+get time()  { return this._time || defP(this,'_time', this.event.time) }
 
 /**
  * Initialisation de l'objet, appelée quand l'analyse courante est
@@ -254,7 +254,7 @@ get time(){
  */
 init(){
   // console.log("-> EventForm#init")
-  if(this.initied){throw("Je ne dois pas pouvoir initier deux fois le formulaire…")}
+  if(this.inited){throw("Je ne dois pas pouvoir initier deux fois le formulaire…")}
   if(!this.built) this.fwindow.build().observe()
   if (this.isNew){
     if(this.type === STRscene) this.setNumeroScene()
@@ -272,8 +272,17 @@ init(){
    * Pour basculer des boutons d'évènements au formulaire
    */
 toggleForm(){
-  if(!this.inited){this.init()}
+  if ( isFalse(this.inited) ) this.init()
   this.fwindow.toggle.bind(this.fwindow)()
+}
+
+/**
+  Nouvelle méthode appelée par le constructor pour soi construire le formulaire
+  et l'afficher soit le remettre au premier plan.
+**/
+activate(){
+  if ( isFalse(this.inited) ) this.toggleForm()
+  else FWindow.setCurrent(this.fwindow)
 }
 
 onShow(){
@@ -397,7 +406,7 @@ updateMenusProcedes(){
   }
 }
 implementeMenuForProcedes(domMenu, fn_onchange, value){
-  if (undefined === value) value = ''
+  value = value || ''
   let menuproc = this.jqObj.find('.div-proc-types select')
   menuproc.off('change')
   menuproc.replaceWith(domMenu)
@@ -584,6 +593,7 @@ cancel(){
 endEdition(){
   this.fwindow.remove()
   this.videoWasPlaying && this.a.locator.togglePlay()
+  delete this.event.form
   delete EventForm.currentForm
 }
 

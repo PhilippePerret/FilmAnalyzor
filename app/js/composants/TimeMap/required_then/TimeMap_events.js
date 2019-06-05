@@ -12,6 +12,25 @@ Object.assign(TimeMap,{
   }
 
 /**
+  Fait tourner une méthode du temps +fromTime+ au temps +toTime+ dans les
+  éléments de la Timeline.
+**/
+, forEachEvent(options, fn) {
+    let my = this
+    options = options || {}
+    let fromTime  = Math.floor(options.fromTime  || 0)
+      , toTime    = Math.ceil(options.toTime    || this.a.duree)
+    for(var sec = fromTime ; sec <= toTime ; ++ sec) {
+      console.log("Traitement seconde : ", sec)
+      my.map[sec].map(el => {
+        if ( el.realEvent ) {
+          if ( isFalse(fn(el)) ) return // pour pouvoir arrêter
+        }
+      })
+    }
+  }
+
+/**
   Retourne LES events qui commencent au temps +otime+
 
   ATTENTION : contrairement aux autres méthodes, les deux suivantes

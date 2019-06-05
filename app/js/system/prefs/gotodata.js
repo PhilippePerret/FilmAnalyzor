@@ -12,6 +12,8 @@ const GOTODATA = [
   , {hname:'Seconde précédente', type:'prev-second', shortcut:'C', arrowComb:'⌥←', dataArrowComb:{meta:false, alt:true, key:STRArrowLeft}}
   , {hname:'Event suivant', type:'next-event', shortcut:'e', arrowComb:'⇧⌥→', dataArrowComb:{meta:false, alt:true, shift:true, key:STRArrowRight}}
   , {hname:'Event précédent', type:'prev-event', shortcut:'E', arrowComb:'⇧⌥←', dataArrowComb:{meta:false, alt:true, shift:true, key:STRArrowLeft}}
+  , {hname:'Marqueur suivant', type:'next-marker', shortcup:'m', arrowComb:'', dataArrowComb:{meta:true, alt:true, shift:true, key:null}}
+  , {hname:'Marqueur précédent', type:'prev-marker', shortcup:'M', arrowComb:'', dataArrowComb:{meta:true, alt:true, shift:true, key:null}}
   , {hname:'10 secondes après', type:'next-tenseconds', shortcut:'t', arrowComb:'⌃→', dataArrowComb:{meta:false, ctrl:true, key:STRArrowRight}}
   , {hname:'10 secondes avant', type:'prev-tenseconds', shortcut:'T', arrowComb:'⌃←', dataArrowComb:{meta:false, ctrl:true, key:STRArrowLeft}}
   , {hname:'Minute suivante', type:'next-minute', shortcut:'l'}
@@ -22,8 +24,6 @@ const GOTODATA = [
   , {hname:'Nœud STT précédent', type:'prev-sttnode', shortcut:'N', arrowComb:'⇧⌥⌘←', dataArrowComb:{meta:true, alt:true, shift:true, key:STRArrowLeft}}
   , {hname:'Stop-point suivant', type:'next-stoppoint', shortcut:'p'}
   , {hname:'Stop-point précédent', type:'prev-stoppoint', shortcut:'P'}
-  , {hname:'Marqueur suivant', type:'next-marker', shortcup:'m', arrowComb:'', dataArrowComb:{meta:true, alt:true, shift:true, key:null}}
-  , {hname:'Marqueur précédent', type:'prev-marker', shortcup:'M', arrowComb:'', dataArrowComb:{meta:true, alt:true, shift:true, key:null}}
   ]
 
 module.exports = GOTODATA

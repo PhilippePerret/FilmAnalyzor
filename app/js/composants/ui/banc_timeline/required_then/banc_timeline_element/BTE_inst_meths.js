@@ -24,7 +24,11 @@ Object.assign(BancTimelineElement.prototype, {
   Observe l'objet de cet event
 **/
 , observe(){
-
+    this.jqObj.on(STRclick, this.onClick.bind(this))
   }
 
+, onClick(e){
+    stopEvent(e)
+    FAEvent.edit(this.event.id)
+  }
 })

@@ -21,8 +21,11 @@ let addEvent = function(nev){
   this.ids[nev.id] = nev
 
   // C'est une vraie création, pas une instanciation au
-  // rechargement de l'analyse.
-  this.locator.addEvent(nev)
+  // rechargement de l'analyse. Donc on ajoute le nouvel event dans le reader
+  // et sur le banc timeline
+  this.reader.append(nev)
+  BancTimeline.append(nev)
+
   // Si le nouvel event est une scène, il faut peut-être numéroter
   // les suivantes
   if(nev.type === STRscene){

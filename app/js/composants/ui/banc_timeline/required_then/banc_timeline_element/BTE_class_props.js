@@ -1,8 +1,8 @@
 'use strict'
 
-Object.defineProperties(BancTimelineElement, {
-  MAX_ROWS:{get(){return 6}}
-, FIRST_TOP_ELEMENT:{get(){return 20}}
-, HEIGHT_ELEMENT:{get(){return 20}}
-
+Object.assign(BancTimelineElement,{
+  MAX_ROWS:   7
+, SCENE_ROW:  8
+, FIRST_TOP_ELEMENT:  10
+, HEIGHT_ELEMENT:     20
 })
