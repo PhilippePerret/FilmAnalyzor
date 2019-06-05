@@ -124,38 +124,36 @@ otime(time){
 selectMarkerAfter(otime){ this.selectMarker(otime, false) }
 selectMarkerBefore(otime){ this.selectMarker(otime, true) }
 selectMarker(otime, before){
-  var time = this[`item${before?'Before':'After'}Time`](otime.vtime)
-  time && this.a.locator.setTime(this.otime(time))
-  time || F.notify(`Aucun marqueur n'a été trouvé ${before?'avant':'après'} ${otime}.`)
+  var marker = this[`item${before?'Before':'After'}Time`](otime.vtime)
+  if ( isDefined(marker) ) this.a.locator.setTime(marker.otime)
+  else F.notify(`Aucun marqueur n'a été trouvé ${before?'avant':'après'} ${otime}.`)
 }
 
 /**
   Retourne le marker se trouvant après le temps +otime+ (ou undefined)
-
-  En fait, retourne le temps vidéo en seconds
 **/
 itemAfterTime(vtime){
-  var timeFound
+  var markerFound
   this.forEach( marker => {
     if ( Math.floor(marker.time) > vtime ) {
-      timeFound = parseInt(marker.time, 10)
+      markerFound = marker
       return false
     }
   })
-  return timeFound
+  return markerFound
 }
 /**
   Retourne le marker se trouvant avant le temps +otime+ (ou undefined)
 **/
 itemBeforeTime(vtime){
-  var timeFound
+  var markerFound
   this.forEachReverse( marker => {
     if ( Math.ceil(marker.time) < vtime ) {
-      timeFound = parseInt(marker.time,10)
+      markerFound = marker
       return false
     }
   })
-  return timeFound
+  return markerFound
 }
 
 getData(){
