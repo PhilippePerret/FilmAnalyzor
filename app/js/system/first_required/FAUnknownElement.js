@@ -21,10 +21,12 @@ constructor(ref){
 }
 
 as(format,flag,options){
-  if(undefined === options) options = {}
+  options = options || {}
   let div = DCreate(DIV,{class:'warning', inner:`&lt;&lt;&lt;ELEMENT INCONNU @type=${this.type} @id=${this.id}&gt;&gt;&gt;`})
-  if(options.as === 'string') return div.outerHTML
+  if(options.as === STRstring) return div.outerHTML
   return div
 }
 
 }// /class
+
+module.exports = FAUnknownElement
