@@ -50,7 +50,6 @@ const TimeMap = {
   la première fois la map
 **/
 , update(){
-    console.log("-> Timeline::update")
     var s // seconde
       , len
 
@@ -90,17 +89,9 @@ const TimeMap = {
     // Note : on les laisse 5 secondes à l'affichage
     FAImage.forEachByTime( himg => {
       // console.log("Image dans TimeMap:", himg)
-      s = Math.floor(himg.time)
-      Object.assign(himg,{type:TYPE_IMAGE, id:himg.affixe, phase:PHASE_START})
-      this.map[s].push(himg)
-      for(var i = 0; i<5;++i){
-        if ( isArray(this.map[++s]) ) {
-          this.map[s].push(Object.assign({}, himg,{phase:PHASE_CONTINUE}))
-        }
-      }
-      if ( isArray(this.map[s+6]) ) {
-        this.map[s + 6].push(Object.assign({}, himg,{phase:PHASE_END}))
-      }
+      s =
+      Object.assign(himg,{type:TYPE_IMAGE, id:himg.affixe, time:himg.time, phase:PHASE_START})
+      this.addElement(himg, Math.floor(himg.time))
     })
 
     // Ajout des markers
@@ -108,12 +99,7 @@ const TimeMap = {
     // On les laisse 5 secondes à l'affichage dans le reader
     this.a.markers.each( marker => {
       var hmarker = {type:TYPE_MARKER, id:marker.id, time:marker.time, phase:PHASE_START}
-        , s = Math.floor(marker.time)
-      this.map[s].push(hmarker)
-      for(var i = 0; i<5;++i){
-        this.map[++s].push(Object.assign({}, hmarker,{phase:PHASE_CONTINUE}))
-      }
-      this.map[s + 6].push(Object.assign({}, hmarker,{phase:PHASE_END}))
+      this.addElement(hmarker, Math.floor(marker.time))
     })
 
     // Finalisation de la map : on classe dans chaque seconde
@@ -127,6 +113,33 @@ const TimeMap = {
     // console.log("TimeMap.map", TimeMap.map)
     log.info(`    Durée de fabrication de la TimeMap.map: ${endOpe - startOpe}msecs`)
   }
+
+/**
+  Ajout d'un marker ou d'une image
+  (cf. ci-dessus)
+**/
+, addElement(helement, s) {
+    this.map[s].push(helement)
+    var last_s = s
+      , i = 5
+
+    while ( --i >= 0 ) {
+      if ( isDefined(this.map[++s]) ){
+        this.map[s].push(Object.assign({}, helement,{phase:PHASE_CONTINUE}))
+      } else {
+        this.map[last_s][this.map[last_s].length - 1].phase = PHASE_END
+        return
+      }
+      last_s = s
+    }
+    if ( isDefined(this.map[s + 6]) ){
+      this.map[s + 6].push(Object.assign({}, helement,{phase:PHASE_END}))
+    } else {
+      this.map[last_s][this.map[last_s].length - 1].phase = PHASE_END
+    }
+
+  }
+
 }
 Object.defineProperties(TimeMap,{
   a:{get(){return current_analyse}}

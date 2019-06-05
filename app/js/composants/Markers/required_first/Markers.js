@@ -18,6 +18,7 @@ constructor(analyse){
   Pour boucler sur tous les markers
 **/
 each ( fn ) {
+  console.log("this.items:", this.items)
   for ( var idm in this.items ) {
     if ( isFalse( fn(this.items[idm]) ) ) break
   }
@@ -77,6 +78,7 @@ load(){
       this.items[item.id] = new Marker(this.a, item)
     })
   }
+  console.log("items de markers après chargement :", this.items)
   log.info("<- Markers.load")
   return this // chainage
 }
@@ -97,6 +99,7 @@ add(marker){
 reset(){
   delete this._arritems
   delete this._arritemsreverse
+  return this
 }
 
 /**

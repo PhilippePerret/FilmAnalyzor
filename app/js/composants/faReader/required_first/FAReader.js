@@ -62,13 +62,13 @@ revealAndHideElements(){
 
   // On prend les events courants qui commencent et on les affiche
   TimeMap.allStartAt(this.currentTime).map( he => {
-    console.log("Reader revèle : ", he)
+    // console.log("Reader revèle : ", he)
     $(`#reader-${TYP_TIMEMAP_TO_TYP[he.type]}-${he.id}`).show()
   })
 
   // On prend les events courants qui finissent et on les affiche
   TimeMap.allEndAt(this.currentTime).map( he => {
-    console.log("Reader masque : ", he)
+    // console.log("Reader masque : ", he)
     $(`#reader-${TYP_TIMEMAP_TO_TYP[he.type]}-${he.id}`).hide()
   })
 
@@ -87,6 +87,8 @@ stopWatchingItems(){
   permet d'afficher les éléments visibles à un moment M quelconques.
 **/
 revealAndHideElementsAt(curt) {
+  // On commence par tout masquer
+  this.reader.find('> div').hide()
   TimeMap.allAt(curt).map( he => {
     $(`#reader-${TYP_TIMEMAP_TO_TYP[he.type]}-${he.id}`).show()
     if ( he.scene ) {
@@ -131,7 +133,7 @@ peuple(){
     ev.jqReaderObj.hide()
   })
 
-  // Boucle pour écrire toutes les images et tous les markers
+  // Boucle pour écrire toutes les IMAGES et tous les MARKERS
   let aImages   = FAImage.byTimes.map( himg => FAImage.get(himg.id) )
     , aMarkers  = [...this.a.markers.arrayItems]
   var nextImage, nextMarker, o, time
@@ -151,6 +153,8 @@ peuple(){
     }
     if ( nextMarker && time > nextMarker.time ) {
       $(nextMarker.divReader).insertBefore(o)
+      nextMarker.observeInReader()
+      nextMarker.jqReaderObj.hide()
       nextMarker = aMarkers.shift()
     }
   })
@@ -260,6 +264,14 @@ displayAll(){
 get fwindow(){
   return this._fwindow || defP(this,'_fwindow', new FWindow(this, {id:'reader', name:ReaderFWindowName, draggable:false, container:UI.sectionReader, x:0, y:0}))
 }
-get reader(){return this._reader || defP(this,'_reader', this.fwindow.jqObj)}
+get reader(){
+  if ( isUndefined(this._reader) ) {
+    this._reader = this.fwindow.jqObj
+    if ( isEmpty(this._reader) ) {
+      throw new Error("Impossible de trouver le reader… Je dois m'arrêter là.")
+    }
+  }
+  return this._reader
+}
 
 }

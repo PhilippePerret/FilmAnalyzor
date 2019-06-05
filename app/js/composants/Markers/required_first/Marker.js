@@ -76,6 +76,7 @@ remove(){
   // TODO
 }
 
+// Observation du marker dans la timeline
 observe(){
   this.jqObj
     // On peut déplacer ce marker sur l'axe horizontal
@@ -85,6 +86,14 @@ observe(){
     // On peut le sélectionner pour le détruire
     .on(STRclick, this.select.bind(this))
 }
+
+/**
+  Observation du marquer dans le reader
+  (quand on clique dessus, on se rend à la position du marqueur)
+**/
+observeInReader(){
+    this.jqReaderObj.on(STRclick, this.select.bind(this))
+  }
 
 /**
   Construction de la marque à placer dans la timeRuler

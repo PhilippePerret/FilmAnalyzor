@@ -2,13 +2,9 @@
 
 ### Traiter :
 
-* Simplifier la gestion des documents :
-  - Faire de la classe `FADocument` une héritière de `FAElement`
-  de 1 à 49 => les documents "standard"
-  au-dessus de 49 => le documents customisés (custom-<xx>)
-  - Voir les associations qui existent déjà
-  - Voir si les FADocuments sont des FAElement. Il semble que non, il faut les transformer
-
+* FADocument extends FAElement
+  - tester et corriger la liste des documents
+  
 * Pouvoir se déplacer de noeud STT en noeud STT
 
 * Garder toujours le curseur visible dans le banc-timeline (faire l'essai en zoomant et en passant du début à la fin du film)

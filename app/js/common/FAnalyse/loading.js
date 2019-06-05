@@ -120,6 +120,8 @@ load(){
     my.init()
     my.locator.init()
     my.locator.stop_points = my.stopPoints
+    Markers.reset()
+    this.markers.load()
     BancTimeline.reset()
     FAProcede.reset().init()
     FABrin.reset().init()
@@ -130,8 +132,6 @@ load(){
     FAPersonnage.reset().init()
     my.options.setInMenus()
     my.videoController.init()
-    // Les marqueurs
-    Markers.reset()
     // Les raccourcis clavier "universels"
     UI.toggleKeyUpAndDown(/* out texte field */ true)
     // On met en route le timer de sauvegarde
@@ -159,12 +159,7 @@ load(){
     }
 
     BancTimeline.positionneMarkFilmStartEnd()
-    this.markers.load().build()
-
-    // Si un dernier temps était mémorisé, on replace le curseur à
-    // cet endroit (dans la timeline)
-    var lastCurTime = new OTime(my.lastCurrentTime)
-    lastCurTime && my.locator.setTime(lastCurTime, true)
+    this.markers.build()
 
     // On peuple le reader avec les events et les images
     try {
@@ -180,6 +175,11 @@ load(){
     // de nombreuses fois. Il faut revenir à l'état normal.
     this.modified = false
     UI.stopWait()// toujours, au cas où
+
+    // Si un dernier temps était mémorisé, on replace le curseur à
+    // cet endroit (dans la timeline)
+    var lastCurTime = new OTime(my.lastCurrentTime)
+    lastCurTime && my.locator.setTime(lastCurTime, true)
 
     // Si une méthode après le chargement est requise, on
     // l'invoque.
