@@ -55,7 +55,9 @@ let ASSOCIATES_COMMON_METHODS = {
 //  MÉTHODES D'HELPER
 
 , dragHelper(){
-    return `<div class="${this.metaType||this.type} draghelper" data-type="${this.metaType||this.type}" data-id="${this.id}">${this.toString()}</div>`
+    let div = `<div id="draghelper" style="z-index:5000;" class="${this.metaType||this.type} draghelper" data-type="${this.metaType||this.type}" data-id="${this.id}">${this.toString()}</div>`
+    $(document.body).append($(div))
+    return $('#draghelper')
   }
 
 
@@ -312,10 +314,14 @@ const DATA_ASSOCIATES_DRAGGABLE = {
   , cursorAt:{left:40, top:20}
   , start: e => {
       let container = $(e.target).parent()
-      if(container){
+      if ( container ) {
         container.old_overflow = container.css('overflow')
         container.css('overflow',STRvisible)
+        // container.old_zindex = container.css('z-index')
+        // $(e.target).css('z-index', 5000)
+        // $(e.target).parents().css('z-index', 5000)
       }
+      // console.log("Si container, réglage du z-index", container.ancestors)
     }
   , stop: e => {
       let container = $(e.target).parent()
