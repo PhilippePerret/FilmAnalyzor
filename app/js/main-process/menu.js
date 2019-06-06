@@ -445,24 +445,6 @@ const DATA_MENUS = [
       , enabled: true
       , submenu: [
             {
-                label: 'Taille'
-              , submenu: [
-                    {label: 'Petite',   id: 'size-video-small', type:'radio', click:()=>{setVideoSize('small')}}
-                  , {label: 'Moyenne',  id: 'size-video-medium', type:'radio', click:()=>{setVideoSize('medium')}}
-                  , {label: 'Large',    id: 'size-video-large', type:'radio', click:()=>{setVideoSize('large')}}
-                  , {label: 'Personnalisée',    id: 'size-video-custom', type:'radio'}
-                  , {type:'separator'}
-                  , {label: 'Augmenter',  id: 'size-video-aug', click:()=>{
-                      setVideoSize('+')
-                      ObjMenus.getMenu('size-video-custom').checked = true
-                    }}
-                  , {label: 'Diminuer',   id: 'size-video-dim', click:()=>{
-                      setVideoSize('-')
-                      ObjMenus.getMenu('size-video-custom').checked = true
-                    }}
-                ]
-            }
-          , {
                 label: 'Vitesse de lecture'
               , submenu: [
                     {label: 'Image/image', id: 'video-speed-rx0.07', type:'radio', click:()=>{setVideoSpeed(0.07)}}

@@ -57,6 +57,32 @@ const UI = {
   }
 
 /**
+  Pour observer la vidéo (son chargement)
+  Noter qu'il ne faut le faire qu'une seule fois, sinon, ça
+  appelle deux fois la méthode `onVideoLoaded`
+  C'est la raison pour laquelle je préfère la mettre dans UI
+  plutôt que dans l'objet VideoController.
+  
+**/
+, observeVideo(){
+    let my = this
+    if ( isTrue(this.videoObserved) ) return
+    $(UI.video)
+      .on('error', ()=>{
+        log.warn("Une erreur s'est produite au chargement de la vidéo.", err)
+      })
+      .on('loadeddata', () => {
+        UI.showVideoController()
+        current_analyse.onVideoLoaded.bind(current_analyse)()
+      })
+      .on('ended', () => {
+        // Quand on atteint le bout de la vidéo
+        current_analyse.videoController.stop()
+      })
+    this.videoObserved = true
+  }
+
+/**
   Fixe la taille de la section du Reader pour qu'elle ne puisse pas se
   redimensionner suivant son contenu.
   La méthode est appelée au chargement mais aussi au resize de la vidéo.

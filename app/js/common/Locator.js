@@ -52,7 +52,6 @@ togglePlay(ev){
     my.playing = false
     my.actualizeALL() // à l'arrêt, on actualise tout
     my.desactivateFollowers()
-    my.controller.setPlayButton(this.playing)
     my.a.modified = true // pour le temps courant -- (?)
   } else {
     //
@@ -75,13 +74,11 @@ togglePlay(ev){
         my.playing = true
         // On déclenche le suivi de l'horloge, curseur, etc.
         my.activateFollowers()
-        my.controller.setPlayButton(my.playing)
       }).catch(error => {
         // Autoplay was prevented.
         // Show a "Play" button so that user can start playback.
         // Pouvoir mettre cette alerte, en cas de début fort
         console.warn("Autoplay prevented, ok.")
-        my.controller.setPlayButton(my.playing)
       });
     }
   }

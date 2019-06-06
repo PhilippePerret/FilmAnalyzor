@@ -7,6 +7,28 @@ class FAImage extends FAElement {
 
 static get PROPS(){return [STRid,'legend','size','position',STRtime,'path','fname','associates']}
 
+static reset(){
+  log.info("-> FAImages::reset")
+
+  delete this._a
+  delete this._iofile
+  delete this._path
+  delete this._images
+  delete this._byTimes
+  delete this.listing
+  delete this._takeashot
+
+  log.info("<- FAImages::reset")
+}
+
+static init(){
+  log.info("-> FAImages::init")
+
+  this.getAllPictures()
+
+  log.info("<- FAImages::init")
+}
+
 static get positionsValues(){
   if ( isUndefined(this._positionsvalues) ) {
     this._positionsvalues = {
@@ -81,9 +103,6 @@ static execDestroyImage(image_id){
   this.save()
 }
 
-static init(){
-  this.getAllPictures()
-}
 
 /**
   Méthode qui actualise la donnée _byTimes qui présente les images classées
@@ -134,7 +153,7 @@ static get byTimes(){ return this._byTimes ||defP(this,'_byTimes',this.updateByT
 
 // Reçoit un temps et retourne le nom de l'image correspondante
 static time2fname(time){
-  if(!(time instanceof(OTime))) time = new OTime(time)
+  isTrue(time instanceof(OTime)) || ( time = new OTime(time) )
   return `at-${time.vhorloge_simple.replace(/[\:\.]/g,'')}.jpeg`
 }
 
@@ -203,7 +222,6 @@ static getData(){
   this.forEachByTime(img => h[img.id] = this.images[img.id].dataEpured())
   return h
 }
-// static get iofile(){return this._iofile || defP(this,'_iofile', new IOFile(this))}
 static get path(){return this._path || defP(this,'_path', path.join(this.a.folder,'images_data.json'))}
 // ---------------------------------------------------------------------
 //  INSTANCE

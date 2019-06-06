@@ -91,8 +91,6 @@ const UIBuilder = {
 
 , buildSectionVideo(){
     require('./ui_builder/video_controller.js').bind(this)()
-    // On redéfinit les tailles "humaines" de la vidéo (large, medium, vignette)
-    VideoController.redefineVideoSizes()
   }
 , buildSectionReader(){
     // Rien à faire pour le moment

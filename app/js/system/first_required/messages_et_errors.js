@@ -20,6 +20,9 @@ const ERRORS = {
 , "--- FILM ---":""
 , "export-infos-film-not-defined":"Les informations sur le film ne sont pas définis, je ne peux pas les inscrire. Il faudra absolument le faire pour connaitre le film et pouvoir régler la vidéo."
 
+, "--- TIME MAP ---":""
+, "timemap-unknown-second-cant-add-element": "L'élément %{e} ne peut être ajouté à la TimeMap à la seconde %{s}, car cette seconde n'existe pas…"
+
 , "--- DOCUMENTS ---":""
 , "id-or-path-required-for-doc": "Impossible d'instancier un document sans ID ou PATH."
 , "ask-for-save-document-modified": "Le document courant, de type « %{type} », a été modifié. Voulez-vous enregistrer les changements ou les ignorer ?"

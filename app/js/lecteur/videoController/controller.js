@@ -93,10 +93,11 @@ methods:{
     delete this.timerForward
   }
 
-// Réglage du bouton PLAY en fonction de +running+ (qui est locator.playing)
-, setPlayButton(running){
-    this.btnPlay.innerHTML = running ? this.imgPauser : this.imgPlay
-  }
+// // Réglage du bouton PLAY en fonction de +running+ (qui est locator.playing)
+// // NOTE : il n'y a plus de bouton de contrôle (tout-clavier)
+// , setPlayButton(running){
+//     this.btnPlay.innerHTML = running ? this.imgPauser : this.imgPlay
+//   }
 
 }// /methods
 

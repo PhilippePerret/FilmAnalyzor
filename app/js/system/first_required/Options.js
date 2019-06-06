@@ -18,7 +18,6 @@ static get DEFAULT_DATA(){
   return {
       'option_start_when_time_choosed':       true
     , 'option_lock_stop_points':              false
-    , 'video_size':                           "medium"
     , 'video_speed':                          1
     , 'ui.section.reader.width':              null
     , 'ui.section.timeline.height':           null
@@ -95,8 +94,6 @@ change(opid, value, dont_save){
 onSetByApp(opid, value){
   // console.log("Options#onSetByApp", opid, value)
   switch (opid) {
-    case 'video_size':
-      return this.a.videoController.setSize(value)
     case 'video_speed':
       return this.a.videoController.setSpeed(value)
     case 'option_edit_in_mini_writer':
@@ -143,7 +140,6 @@ setInMenus(){
   ipc.send(set_option, {menu_id: 'option_start_3secs_before_event', property:STRchecked, value: this.start3SecondsBefore})
   // Options propres à l'analyse courante
   let midSize = VideoController.VIDEO_SIZES[this.videoSize] ? this.videoSize : 'custom'
-  ipc.send(set_option, {menu_id: `size-video-${midSize}`, property:STRchecked, value: true})
   ipc.send(set_option, {menu_id: `video-speed-rx${this.videoSpeed}`, property:STRchecked, value:true})
   ipc.send(set_option, {menu_id: 'option-locked', property:STRchecked, value: this.appLocked})
   log.info('<- Options#setInMenus')
@@ -156,7 +152,6 @@ set data(v){this._data = v}
 // ---------------------------------------------------------------------
 // Toutes les valeurs, pour raccourcis
 get appLocked(){ return !!this.a.locked }
-get videoSize(){return this.get('video_size')}
 set videoSize(v){this.set('video_size', v)}
 get videoSpeed(){return this.get('video_speed')}
 set videoSpeed(v){this.set('video_speed', v)}

@@ -22,8 +22,9 @@ Object.assign(FAnalyse,{
       this.isDossierAnalyseValid(aFolder) || raise(T('invalid-folder', {fpath: aFolder}))
       this.resetAll()
       window.current_analyse = new FAnalyse(aFolder)
+      FAnalyse.current = window.current_analyse
       isDefined(fn_afterLoading) && (
-        window.current_analyse.methodAfterLoadingAnalyse = fn_afterLoading
+        current_analyse.methodAfterLoadingAnalyse = fn_afterLoading
       )
       current_analyse.load()
       log.info(`<- FAnalyse::load(folder:${aFolder})`)
@@ -42,23 +43,31 @@ Object.assign(FAnalyse,{
 , resetAll(){
     log.info("-> [FAnalyse::resetAll] Réinitialisation complète")
     // On détruit la section vidéo de l'analyse courante
-    if ( window.current_analyse ) {
-      // <= Il y a une analyse courante
-      // => On doit tout initialiser
-      FAReader.reset()
-      EventForm.reset() // notamment destruction des formulaires
-      FAEscene.reset()
-      FABrin.reset()
-      FAPersonnage.reset()
-      FADocument.reset()
-      FAEventer.reset()
-      FATexte.reset()
 
+    FAElement.reset()
+    FAReader.reset()
+    EventForm.reset() // notamment destruction des formulaires
+    FAEscene.reset()
+    FABrin.reset()
+    FAPersonnage.reset()
+    FADocument.reset()
+    FAEventer.reset()
+    FATexte.reset()
+    TimeMap.reset()
+    FAImage.reset()
+    BancTimeline.reset()
+    Markers.reset()
+    FAProcede.reset()
+    FAEqrd.reset()
+    FAPersonnage.reset()
+
+    if ( current_analyse ) {
       delete current_analyse.videoController
       delete current_analyse.locator
       delete current_analyse.reader
       delete current_analyse.stater
     }
+
     log.info("<- [FAnalyse::resetAll] Réinitialisation complète")
   }
 
@@ -120,16 +129,14 @@ load(){
     my.init()
     my.locator.init()
     my.locator.stop_points = my.stopPoints
-    Markers.reset()
     this.markers.load()
-    BancTimeline.reset()
-    FAProcede.reset().init()
-    FABrin.reset().init()
+    FAProcede.init()
+    FABrin.init()
     EventForm.init()
     FAEscene.init()
     FAImage.init()
-    FAEqrd.reset().init()
-    FAPersonnage.reset().init()
+    FAEqrd.init()
+    FAPersonnage.init()
     my.options.setInMenus()
     my.videoController.init()
     // Les raccourcis clavier "universels"

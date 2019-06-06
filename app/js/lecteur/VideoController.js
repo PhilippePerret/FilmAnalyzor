@@ -50,7 +50,6 @@ init(){
 
   // Si l'analyse a enregistré une taille de vidéo, on la règle. Sinon, on
   // met la taille médium. Idem pour la vitesse de lecture de la vidéo.
-  this.setSize(this.a.options.videoSize)
   this.setSpeed(this.a.options.videoSpeed)
 
   this.observe()
@@ -60,21 +59,6 @@ init(){
 
 }
 // /fin init
-
-/**
- * Pour définir la taille de la vidéo (trois formats sont disponibles, pour
- * le moment)
- *
- * Si +save+ est true, la taille doit être enregistrée dans les préférences
- * de l'analyse courante.
- */
-setSize(v, save){
-  isDefined(v) || ( v = this.menuVideoSize.value )
-  UI.video.width = VideoController.VIDEO_SIZES[v] || v // peut-être un nombre
-  isTrue(save) && ( this.a.options.videoSize = v )
-}
-// retourne la taille actuelle de la vidéo
-getSize(){ return UI.video.width }
 
 /**
 * Pour définir la vitesse de la vidéo
@@ -95,34 +79,12 @@ getSpeed(){
 }
 
 /**
- * Pour redéfinir les largeurs de la vidéo en fonction de la largeur
- * de l'écran.
- */
-static redefineVideoSizes(w){
-  isDefined(w) || ( w = UI.sectionVideo.width() )
-  VideoController.VIDEO_SIZES['large']    = w - 10
-  VideoController.VIDEO_SIZES['medium']   = parseInt((w / 3) * 2, 10)
-  VideoController.VIDEO_SIZES['vignette'] = parseInt(w / 2.2, 10)
-}
-
-/**
  * Pour charger la vidéo de path +vpath+
  */
 load(vpath){
   log.info("-> VideoController#load")
   let my = this
-  $(UI.video)
-    .on('error', ()=>{
-      log.warn("Une erreur s'est produite au chargement de la vidéo.", err)
-    })
-    .on('loadeddata', () => {
-      UI.showVideoController()
-      my.a.onVideoLoaded.bind(this.a)()
-    })
-    .on('ended', () => {
-      // Quand on atteint le bout de la vidéo
-      my.stop()
-    })
+  UI.videoObserved || UI.observeVideo()
   UI.video.src = path.resolve(vpath)
   UI.video.load() // la vidéo, vraiment
   log.info("<- VideoController#load")

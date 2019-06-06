@@ -7,17 +7,30 @@ const BancTimeline = {
 
 
   reset(){
+    log.info("-> BancTimeline::reset")
     // Suppression de tous les markers
     UI.timeRuler.find('span.marker').remove()
     // Suppression de tous les éléments sur le banc proprement dit
     this.timelineTape.find('div.banctime-element').remove()
+
+    // Initialisation des propriétés
+    delete this._currenttime
+    delete this._zoom
+    delete this._width
+    delete this._coefp2t
+    delete this._coeft2p
+
     // Initialisation de la liste des items
     BancTimeline.items = []
+
     // Initialisation de la map
     BancTimeline.map = new Map()
+
+    log.info("<- BancTimeline::reset")
   }
 
 , init(){
+    log.info("-> BancTimeline::init")
     let my = this
 
     // On transforme toutes les instances Event en élément
@@ -31,6 +44,7 @@ const BancTimeline = {
     // On dispatche tous les events sur la timeline
     this.dispatchElementOnTape()
 
+    log.info("<- BancTimeline::init")
   }
 
 , positionneMarkFilmStartEnd(){
@@ -85,15 +99,23 @@ const BancTimeline = {
   Méthode qui instancie chaque event de banctimeline pour en faire un élément propre
 **/
 , instancyEvents(){
+    log.info("-> BanTimeline::instancyEvents")
+    let my = this
     this.a.forEachEvent(e => {
       var bte = new BancTimelineElement(e)
-      this.items.push(bte)
+      my.items.push(bte)
     })
+    log.info("<- BanTimeline::instancyEvents")
   }
 /**
   Méthode qui place les éléments courants sur la "tape" de la timeline
 **/
 , dispatchElementOnTape(){
+    // try {
+    //   pourvoirlebacktrace
+    // } catch (e) {
+    //   console.error(e)
+    // }
     log.info("-> BancTimeline::dispatchElementOnTape()")
     this.items.map( bte => bte.place() )
     log.info("<- BancTimeline::dispatchElementOnTape()")
@@ -146,6 +168,7 @@ Object.defineProperties(BancTimeline, {
 
     }
   }
+
 // ---------------------------------------------------------------------
 //
   // zoom courant (défaut = 100)

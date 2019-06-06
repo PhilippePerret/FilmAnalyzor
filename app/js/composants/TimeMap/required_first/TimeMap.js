@@ -119,7 +119,12 @@ const TimeMap = {
   (cf. ci-dessus)
 **/
 , addElement(helement, s) {
+    if ( isUndefined(this.map[s]) /* un cas anormal */) {
+      log.error(T('timemap-unknown-second-cant-add-element',{e: JSON.stringify(helement), s:s}))
+      return
+    }
     this.map[s].push(helement)
+
     var last_s = s
       , i = 5
 

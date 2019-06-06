@@ -27,18 +27,17 @@ Object.assign(BancTimeline,{
 , coefP2T(){
     return this._coefp2t || defP(this,'_coefp2t', this.calcCoefP2T())
   }
+, coefT2P(){ return this._coeft2p || defP(this,'_coeft2p', this.calcCoefT2P())}
+
+// ---------------------------------------------------------------------
+// Méthodes de calculs
+
 , calcCoefP2T(){
     let duree = UI.video.duration
       , coef  = ( duree / this.width ) / this.zoom
-    // console.log({
-    //   operation:'Calcul coef P2T (pixels -> temps)'
-    // , width: this.width
-    // , zoom: this.zoom
-    // , duree: duree
-    // , coefficiant: coef
-    // })
     return coef
   }
+
 , calcCoefT2P(){
     log.info('-> BancTimeline::calcCoefT2P')
     let duree = UI.video.duration
@@ -60,7 +59,6 @@ Object.assign(BancTimeline,{
     // })
     return this._coeft2p
   }
-, coefT2P(){ return this._coeft2p || defP(this,'_coeft2p', this.calcCoefT2P())}
 
 
 })
