@@ -62,6 +62,11 @@ updateHTMLTitle(){
   this.jqObj.attr(STRtitle, this.HTMLTitle)
 }
 
+selectAndGo(e){
+  e && stopEvent(e) // sinon, click sur la timeruler
+  this.select()
+  this.a.locator.setTime(this.otime)
+}
 select(){
   this.a.markers.setCurrent(this)
   this.jqObj.addClass('selected')
@@ -84,7 +89,7 @@ observe(){
     // On peut éditer ce marker en double-cliquant dessus
     .on(STRdblclick, this.edit.bind(this))
     // On peut le sélectionner pour le détruire
-    .on(STRclick, this.select.bind(this))
+    .on(STRclick, this.selectAndGo.bind(this))
 }
 
 /**

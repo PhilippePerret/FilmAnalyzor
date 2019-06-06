@@ -317,11 +317,7 @@ const DATA_ASSOCIATES_DRAGGABLE = {
       if ( container ) {
         container.old_overflow = container.css('overflow')
         container.css('overflow',STRvisible)
-        // container.old_zindex = container.css('z-index')
-        // $(e.target).css('z-index', 5000)
-        // $(e.target).parents().css('z-index', 5000)
       }
-      // console.log("Si container, réglage du z-index", container.ancestors)
     }
   , stop: e => {
       let container = $(e.target).parent()
