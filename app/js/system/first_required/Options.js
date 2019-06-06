@@ -10,8 +10,8 @@ class Options {
 constructor(analyse){
   this.a = this.analyse = analyse
 }
-get class(){return 'Options'}
-get type(){return 'object'}
+get class() {return 'Options' }
+get type()  {return 'object'  }
 
   // Options par défaut
 static get DEFAULT_DATA(){
@@ -20,6 +20,11 @@ static get DEFAULT_DATA(){
     , 'option_lock_stop_points':              false
     , 'video_size':                           "medium"
     , 'video_speed':                          1
+    , 'ui.section.reader.width':              null
+    , 'ui.section.timeline.height':           null
+    , 'ui.section.video.height':              null
+    , 'ui.section.video.width':               null
+    , 'ui.row.c1r1.height':                   null
     , 'option_start_3secs_before_event':      false
     , 'option_edit_in_mini_writer':           false
     , 'option_duree_scene_auto':              true
@@ -48,8 +53,19 @@ get(opid, defValue){
 set(opid, value, dont_save){
   this.data[opid] = value
   this.onSetByApp(opid, value)
-  if(dont_save !== true) this.save() // je préfère sauver tout de suite
-  // this.modified = true
+  isTrue(dont_save) || this.save()
+}
+
+/**
+  Méthode qui mémorise les tailles des sections de l'UI
+**/
+memorizeUIsizes(){
+  this.set('ui.section.reader.width',     UI.sectionReader.width(),     true)
+  this.set('ui.section.timeline.height',  UI.sectionTimeline.height(),  true)
+  this.set('ui.section.video.height',     UI.sectionVideo.height(),     true)
+  this.set('ui.section.video.width',      UI.sectionVideo.width(),      true)
+  this.set('ui.row.c1r1.height',          UI.C1R1.height())
+  // F.notify('Mémorisation des dimensions de l’interface OK.')
 }
 
 /**

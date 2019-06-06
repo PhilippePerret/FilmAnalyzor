@@ -399,9 +399,6 @@ checkSize(){
     let top     = this.jqObj.position().top
       , height  = this.jqObj.outerHeight()
 
-    console.log({
-      top: top, height: height, H:H
-    })
     if ( top + height > H ) {
       this.jqObj.css({top:'0px'})
       if ( isNotEmpty(this.jqObj.find('> .body')) ) {

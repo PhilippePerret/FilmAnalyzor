@@ -46,6 +46,9 @@ const UIBuilder = {
     // Le container principal de toute la page
     UI.wholeUI = $('body > div#whole-ui')
 
+    // La rangée de vidéo et de reader
+    UI.C1R1 = $('div#C1-R1')
+
     // Section Vidéo
     UI.sectionVideo = $('section#C1-R1-C1-section-video')
 
@@ -82,8 +85,6 @@ const UIBuilder = {
     // fenêtre, au-dessus de la barre d'état. Il est recalculé à chaque
     // changement de dimension de la fenêtre
     UI.wholeUI.height(H)
-
-    UI.sectionTimeline.height(200)
 
   }
 //
@@ -154,16 +155,41 @@ const UIBuilder = {
     $('#C1').resizable({
       handles:'e'
     })
-    $('#C1-R1').resizable({
-        handles:'s'
-      , alsoResize: '#section-video-body, #section-video-body-video-1'
+    // $('#C1-R1').resizable({
+    //     handles:'s'
+    //   , alsoResize: '#section-video-body, #section-video-body-video-1'
+    //   , stop: (e) => {
+    //       F.notify("Fin du resize de C1-R1")
+    //       current_analyse.options.memorizeUIsizes()
+    //     }
+    // })
+
+    // UI.sectionTimeline.resizable({
+    //     handles: 'n'
+    //   , alsoResize: 'section#C1-R1-C1-section-video'
+    //   , stop: (e) => {
+    //       F.notify("Fin du resize de la Timeline")
+    //       current_analyse.options.memorizeUIsizes()
+    //     }
+    // })
+
+    UI.C1R1.resizable({
+        handles: 's'
+      , stop: (e) => {
+          F.notify("Fin du resize C1R1")
+          current_analyse.options.memorizeUIsizes()
+        }
     })
 
     UI.sectionForms.resizable({
       handles:'s'
     })
     UI.sectionVideo.resizable({
-      handles:'e'
+        handles:'e'
+      , stop: (e) => {
+          UI.fixeSectionReaderWidth()
+          current_analyse.options.memorizeUIsizes()
+        }
     })
 
     // On enclenche la captation de touches pressées

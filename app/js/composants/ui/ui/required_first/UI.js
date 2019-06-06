@@ -55,6 +55,41 @@ const UI = {
     domObserver.observe(DGet('section-eventers'), domObserverConfig)
 
   }
+
+/**
+  Fixe la taille de la section du Reader pour qu'elle ne puisse pas se
+  redimensionner suivant son contenu.
+  La méthode est appelée au chargement mais aussi au resize de la vidéo.
+
+  @param {Number} size    Width en pixels à donner, ou la taille actuelle.
+**/
+, fixeSectionReaderWidth(size){
+    UI.sectionReader.css('width', `${size || UI.sectionReader.width()}px`)
+  }
+
+/**
+  Met l'interface aux dimensions de l'analyse
+**/
+, setUIsections(){
+    let hc1r1 = this.a.options.get('ui.row.c1r1.height')
+    hc1r1 && UI.C1R1.height(hc1r1)
+    // var htim = this.a.options.get('ui.section.timeline.height') || 200
+    // UI.sectionTimeline.css('height',`${htim}px`)
+    let wrea = this.a.options.get('ui.section.reader.width')
+    wrea && UI.sectionReader.width(wrea)
+    // let hvid = this.a.options.get('ui.section.video.height')
+    let wvid = this.a.options.get('ui.section.video.width')
+    wvid && UI.sectionVideo.width(wvid)
+
+    // console.log({
+    //     'heigth timeline': htim
+    //   , 'width reader': wrea
+    //   , 'height video': hvid
+    //   , 'width video': wvid
+    //   , 'height c1r1': hc1r1
+    // })
+  }
+
 /**
   Les deux méthodes `onFocusTextField` et `onBlurTextField` sont
   appelées par les méthodes implémentées

@@ -143,6 +143,10 @@ load(){
 , onVideoReady(){
     let my = this
 
+    // On règle les sections de l'interface aux dernières dimensions
+    // enregistrées
+    UI.setUIsections()
+
     // On définit la time-map
     // Tous les events et autres éléments temporels vont être placés
     // dans une table dont les clés sont les secondes, qui permettront de
@@ -170,6 +174,11 @@ load(){
       log.error("Impossible de peupler le reader (voir l'erreur ci-dessous)")
       log.error(e)
     }
+
+    // On fixe la taille du reader
+    // TODO: Plus tard on pourra envoyer en argument de cette méthode la
+    // taille en pixels à donner à la section.
+    UI.fixeSectionReaderWidth()
 
     // Au cours du dispatch des données, la méthode modified a été invoquée
     // de nombreuses fois. Il faut revenir à l'état normal.
