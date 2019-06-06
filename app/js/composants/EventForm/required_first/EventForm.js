@@ -239,7 +239,7 @@ set inited(v){ this._inited = v }
 get modified(){return this._modified || false}
 set modified(v){
   this._modified = v
-  this.jqObj[v?'addClass':'removeClass']('modified')
+  this.fwindow.jqObj[v?'addClass':'removeClass']('modified')
 }
 
 get event() { return this._event }
