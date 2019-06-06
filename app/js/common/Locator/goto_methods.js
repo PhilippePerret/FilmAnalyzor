@@ -26,7 +26,14 @@ module.exports = {
     log.info('-> Locator#goToNextScene')
     let nScene = this.nextScene
     if (nScene) this.setTime(nScene.otime)
-    else F.notify('Pas de scène suivante.')
+    else {
+      F.notify('Pas de scène suivante.')
+      // Mais s'il y a une scène courante, on se rend à sa fin
+      let cScene = this.currentScene
+      if ( cScene ) {
+        this.setTime(OTime.vVary(cScene.endAt))
+      }
+    }
     log.info('<- Locator#goToNextScene')
   }
 , goToPrevScene(){

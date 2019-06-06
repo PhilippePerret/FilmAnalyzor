@@ -3,9 +3,12 @@
 Object.assign(TimeMap,{
 /**
   Retourne la scène se trouvant sur la seconde +otime+
+  arrondie à la seconde supérieure
   Ou undefined
 **/
   sceneAt(otime){
+    if ( isNumber(otime) ) otime = OTime.vVary(otime)
+    otime.updateSeconds(Math.ceil(otime.vtime))
     let dMap = this.dataAt(otime)
     let dElement = dMap.filter( e => isTrue(e.scene) )[0]
     if ( isDefined(dElement) ) return FAEvent.get(dElement.id)

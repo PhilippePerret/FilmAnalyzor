@@ -215,7 +215,6 @@ resetAllTimes(){
 
 get currentScene(){ return FAEscene.current}
 set currentScene(s){
-  log.info(`Current scène de Locator mise à ${s} (${s.numero})`)
   FAEscene.current = s
 }
 // Retourne la scène précédente de la position courante
