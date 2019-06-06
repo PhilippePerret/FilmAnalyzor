@@ -220,9 +220,18 @@ function DGet(DOMId){
               Si une valeur est strictement égale à NULL, l'attribut n'est pas
               inscrit (utile par exemple pour les checked)
 
+  Pour obtenir un picto "?" qui doit afficher une aide, on utilise simplement :
+  DCreate(AIDE, "Message d'aide à afficher, sans guillemets doubles droits.")
+
+  Il faut que la méthode qui construit appelle UI.setPictosAide(<container>)
+  
 **/
 function DCreate(typeElement, params){
   // console.log("DCreate params:", params)
+  if ( typeElement === AIDE ) {
+    typeElement = IMG
+    params = {class:'picto-aide', alt:'?', src:'img/picto_info_dark.png', attrs:{'data-message':params}}
+  }
   var e = document.createElement(typeElement)
   if(undefined === params) return e
   if(params.id)     e.id = params.id

@@ -97,7 +97,7 @@ observe(){
   (quand on clique dessus, on se rend à la position du marqueur)
 **/
 observeInReader(){
-    this.jqReaderObj.on(STRclick, this.select.bind(this))
+    this.jqReaderObj.on(STRclick, this.selectAndGo.bind(this))
   }
 
 /**

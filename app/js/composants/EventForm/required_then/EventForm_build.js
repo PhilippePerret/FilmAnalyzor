@@ -52,11 +52,31 @@ Object.assign(EventForm.prototype,{
       ]}))
 
     /*  Pour le type particulier de l'event */
+    let wLabel = 130
     if(type != STRqrd){
       var fieldsType = []
+
+      if ( type === STRstt) {
+        // Pour le type 'stt', on doit proposer un menu pour mettre le noeud dans
+        // un paradigme de field ou un autre. Pour le moment, deux paradigmes sont possibles
+        fieldsType.push(
+            DCreate(DIV,{class:'div-form', append:[
+                DCreate(LABEL, {inner:'Paradigme', style:`width:${wLabel}px;display:inline-block;`})
+              , DCreate(SELECT, {id: my.fId('pfa'), class:`${type}-pfa`, style:'max-width:270px;', append:[
+                    DCreate(OPTION,{inner:'principal', value:'1'})
+                  , DCreate(OPTION,{inner:'secondaire', value:'2'})
+                  , DCreate(OPTION,{inner:'tertiaire', value:'3'})
+                  , DCreate(OPTION,{inner:'quaternaire', value:'4'})
+                ]})
+              , DCreate(AIDE,"On peut composer jusqu'à 4 paradigmes différents pour le film complet. Le premier, par exemple, peut concerner la forme de l'intrigue principale tandis que le second s'intéressera à l'intrigue secondaire.")
+            ]})
+        )
+      }
       fieldsType.push(
-          DCreate(LABEL, {inner:type === STRstt ? 'Type du nœud' : 'Type'})
-        , DCreate(SELECT, {id: my.fId(`${type}Type`), class: `${type}-types`, style:'max-width:270px;'})
+        DCreate(DIV,{class:'div-form', append:[
+            DCreate(LABEL, {inner:type === STRstt ? 'Type du nœud' : 'Type', style:`width:${wLabel}px;display:inline-block;`})
+          , DCreate(SELECT, {id: my.fId(`${type}Type`), class: `${type}-types`, style:'max-width:270px;'})
+        ]})
       )
       if(type !== STRstt){
         fieldsType.push(
@@ -95,6 +115,7 @@ Object.assign(EventForm.prototype,{
         ]}))
     } // si scène
 
+    // Le titre générique de l'event
     dom.push(DCreate(DIV, {class:'div-form', append:[
         DCreate(LABEL, {for: my.fId('titre'), inner: type === STRscene ? 'Pitch' : 'Titre générique (optionnel)'})
       , DCreate(INPUT, {type:'TEXT', id:my.fId('titre'), class:'main-field'})

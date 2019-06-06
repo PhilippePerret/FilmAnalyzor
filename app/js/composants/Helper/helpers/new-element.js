@@ -24,7 +24,7 @@ module.exports = {
     this.close() // on referme la fenêtre après avoir choisi
     return stopEvent(e)
   }
-, title: 'Créer un nouveau…'
+, title: 'Créer un nouvel event de type…'
 , body: function(){
     var divs = [], dev
     this.shortcut2type = {}

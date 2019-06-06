@@ -134,9 +134,7 @@ const Prefs = {
    * Sauver les préférences
    */
 , save(){
-    console.log("Sauvegarde des préférences")
     fs.writeFileSync(this.userPrefsPath, JSON.stringify(this.userPrefs), 'utf8')
-    console.log("Préférences User actualisées.", this.userPrefs)
   }
 
   /**

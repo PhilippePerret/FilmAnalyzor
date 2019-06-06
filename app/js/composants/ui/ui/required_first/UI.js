@@ -62,7 +62,7 @@ const UI = {
   appelle deux fois la méthode `onVideoLoaded`
   C'est la raison pour laquelle je préfère la mettre dans UI
   plutôt que dans l'objet VideoController.
-  
+
 **/
 , observeVideo(){
     let my = this
@@ -259,6 +259,13 @@ const UI = {
   return horloges
 }
 
+, setPictosAide(container){
+    $(container).find('img.picto-aide').on(STRclick, this.showHelp.bind(this))
+  }
+, showHelp(e) {
+    let msg = $(e.target).data('message')
+    F.notify(msg)
+  }
 , setVideoPath(ev){
     current_analyse.setVideoPath(ev)
   }

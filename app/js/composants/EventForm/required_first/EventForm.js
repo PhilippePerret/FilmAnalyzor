@@ -311,7 +311,7 @@ build(){
     , DCreate(SECTION,{class:STRfooter, append:[
         DCreate(SPAN, {class:'event-type', inner:this.type.toUpperCase()})
       , DCreate(SPAN, {class:'event-id', inner:`#${this.id}`})
-      , DCreate(SPAN, {class:'event-time', inner:this.event.otime.horloge})
+      , DCreate(SPAN, {class:'event-time', inner:(this.event ? this.event.otime.horloge : '---')})
       ]})
   ]
 }
@@ -353,6 +353,9 @@ afterBuilding(){
     , synchroVideo: true
     , parentModifiable: this
   }).showTime()
+
+  // Régler les pictos d'aide
+  UI.setPictosAide(jqo)
 
   // Si c'est pour un nœud structurel, il faut peupler le menu des types
   if (typ === STRstt){
@@ -759,7 +762,6 @@ getFormValues(){
 
   my = null
   return all_data // pour le moment
-
 
 }
 //getFormValues

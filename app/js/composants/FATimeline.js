@@ -182,6 +182,6 @@ get coefT2P(){
   return this._coefT2P
 }
 get widthContainer(){return this.jqContainer.width()}
-get dureeVideo(){return this._dureeVideo || defP(this, '_dureeVideo', this.a.videoController.video.duration)}
+get dureeVideo(){return this._dureeVideo || defP(this, '_dureeVideo', UI.video.duration)}
 
 }// /fin de FATimeline

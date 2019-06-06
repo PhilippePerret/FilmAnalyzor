@@ -34,9 +34,10 @@
   * [Utilisation des préférences globales](#use_global_prefs})
 * [Ajout de préférence analyse](#add_analyse_pref)
 * [Horloges et durées](#temporal_fields)
-* [Aspect visuel](#visual_aspect)
+* [UI / Aspect visuel](#visual_aspect)
   * [Boutons de fermeture](#boutons_close)
   * [Boutons expand/collapse](#boutons_toggle_next)
+  * [Boutons d'aide](#boutons_daide)
 * [Documents de l'analyse](#documents_analyse)
   * [Quatre types de documents](#les_types_de_documents)
   * [Édition d'un fichier quelconque](#edit_any_file)
@@ -879,6 +880,19 @@ On peut viser un autre nœud que le nœud suivant grâce à l'attribut `containe
 
 ```
 
+### Boutons d'aide {#boutons_daide}
+
+Pour afficher un picto « ? » cliquable.
+
+```javascript
+
+  DCreate(AIDE, '<message d’aide à afficher>')
+
+```
+
+Pour observer ce bouton (régler le clic souris qui doit ouvrir le message), il faut appeler la méthode `UI.setPictosAide(container)` en envoyant le container du bouton.
+
+---------------------------------------------------------------------
 
 ## Documents de l'analyse {#documents_analyse}
 

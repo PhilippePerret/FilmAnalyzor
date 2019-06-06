@@ -1,6 +1,7 @@
 'use strict'
 
 const STRaction     = 'action'
+const STRAIDE       = 'AIDE'
 const STRany        = 'any'
 const STRassociate  = 'associate'
 const STRauto       = 'auto'
@@ -134,6 +135,7 @@ const EBOOK_CONVERT_CMD = '/Applications/calibre.app/Contents/console.app/Conten
 const REG_DATE = new RegExp("(?<jour>[0-9]?[0-9])\\/(?<mois>[0-9]?[0-9])\\/(?<annee>[0-9]{4,4})")
 
 const A       = 'A'
+const AIDE    = 'AIDE'
 const LI      = 'LI'
 const DIV     = 'DIV'
 const H2      = 'H2'
