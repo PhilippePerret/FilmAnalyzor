@@ -239,11 +239,12 @@ set inited(v){ this._inited = v }
 get modified(){return this._modified || false}
 set modified(v){
   this._modified = v
+  // la fenêtre conteneur (pour le header et le footer)
   this.fwindow.jqObj[v?'addClass':'removeClass']('modified')
 }
 
 get event() { return this._event }
-get id()    { return this._id || defP(this,'_id', this.event.id) }
+get id()    { return this._id   || defP(this,'_id', this.event.id) }
 get type()  { return this._type || defP(this,'_type', this.event.type) }
 get time()  { return this._time || defP(this,'_time', this.event.time) }
 
@@ -309,8 +310,8 @@ build(){
     , DCreate(SECTION,{class:`${STRbody} plain`, append:[form]})
     , DCreate(SECTION,{class:STRfooter, append:[
         DCreate(SPAN, {class:'event-type', inner:this.type.toUpperCase()})
-      , DCreate(SPAN, {class:'event-id', inner:'...'})
-      , DCreate(SPAN, {class:'event-time', inner:'...'})
+      , DCreate(SPAN, {class:'event-id', inner:`#${this.id}`})
+      , DCreate(SPAN, {class:'event-time', inner:this.event.otime.horloge})
       ]})
   ]
 }
