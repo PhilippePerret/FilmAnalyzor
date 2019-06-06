@@ -7,6 +7,8 @@ function FReqGet(name){
   return require(`./js/system/first_required/${name}.js`)
 }
 
+require('./js/system/utils')
+
 const WindowController = FReqGet('ui/WindowController')
 const MessageBox = FReqGet('MessageBox')
 

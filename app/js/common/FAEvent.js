@@ -332,10 +332,7 @@ hide(){
   this.shown = false
 }
 
-get end(){
-  if(isUndefined(this._end)) this._end = this.time + this.duree
-  return this._end
-}
+get end(){ return this._end || defP(this,'_end', this.time + this.duree)}
 
 remove(){
   delete this._div
@@ -345,26 +342,38 @@ remove(){
   this.shown = false
   this.observed = false
 }
+
 /**
- * Après édition de l'event, on peut avoir à updater son affichage dans
- * le reader. On va faire simplement un remplacement de div (le div du
- * contenu, pour ne pas refaire les boutons, etc.).
+  Après édition de l'event, on peut avoir à updater son affichage dans
+  le reader.
+
+  Pour procéder à l'opération, on garde son div dans le reader en changeant
+  son ID, on place le nouveau div avant l'ancien div puis on détruit
+  l'ancien div. Si l'event était visible dans le reader, on le laisse visible,
+  sinon, on le masque.
+
  */
 updateInReader(new_idx){
   log.info(`-> <<FAEvent #${this.id}>>#updateInReader`)
-  // On détruit complètement l'objet reader (ce qui forcera sa reconstruction
-  // et son observation)
-  this.remove()
-  this.a.reader.append(this)
-  this.div.style.opacity = 1
+
+  let isVisible = this.jqReaderObj.is(':visible')
+
+  this.jqReaderObj.attr('id', `${this.domReaderId}-ANCIEN`)
+  let ancien = $(`div#reader #${this.domReaderId}-ANCIEN`)
+  delete this._jqreaderobj
+  delete this._div
+  $(this.div).insertBefore(ancien)
+  this.observe()
+  ancien.remove()
+
+  isVisible || this.hide()
 
   log.info(`<- <<FAEvent #${this.id}>>#updateInReader`)
-
 }
 
 /**
- * Les données "communes" qu'on doit actualiser dans tous l'interface, quel
- * que soit l'élément.
+  Les données "communes" qu'on doit actualiser dans tous l'interface, quel
+  que soit l'élément.
  */
 updateInUI(){
   // Le temps se trouve toujours dans une balise contenant data-time, avec
@@ -543,7 +552,7 @@ observe(container){
     , o = this.jqReaderObj
 
   if(isUndefined(o)){
-    log.warn(`BIZARREMENT, le jqReaderObj de l'event #${this.id} est introuvable dans le reader. recherché avec domReaderId:${this.domReaderId}`)
+    log.warn(`[FAEvent.observe] BIZARREMENT, le jqReaderObj de l'event #${this.id} est introuvable dans le reader. recherché avec domReaderId: '${this.domReaderId}'`)
   } else {
 
     if(o.attr(STRobserved) == STROBSERVED) return

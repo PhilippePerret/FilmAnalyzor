@@ -110,9 +110,11 @@ remove(){ this.fwindow.remove() }
 
 /**
   Vide tout le reader
-  Ne pas la confondre avec la méthode `resetBeyond` suivante
  */
-reset(){ this.reader.html('')}
+reset(){
+  log.info("-> FAReader.reset (vide le reader)")
+  this.reader.html('')
+}
 
 /**
   Lorsqu'une analyse est chargée, on appelle cette méthode pour mettre
@@ -128,7 +130,9 @@ peuple(){
 
   // Boucle pour écrire tous les events
   this.a.forEachEvent(ev => {
-    this.reader.append(ev.div)
+    this.reader.append(ev.div)  // Attention, ici, l'ajout se fait dans le DOM
+                                // Ça n'est pas la méthode `FAReader.append`
+                                // qui est appelée
     ev.observe()
     ev.jqReaderObj.hide()
   })
@@ -162,22 +166,6 @@ peuple(){
 }
 
 /**
- * Vide le reader, mais seulement en supprimant les évènements qui se trouvent
- * avant +from_time+ et après +to_time+
- *
- * Note : les temps sont exprimés en temps par rapport au film, pas par
- * rapport à la vidéo (comme tous les temps normalement)
- */
-resetBeyond(from_time, to_time){
-  var ti, id, my = this
-  this.forEachEventNode(function(o){
-    ti  = parseFloat(o.getAttribute(STRdata_time))
-    id  = parseInt(o.getAttribute(STRdata_id),10)
-    if ( ti < from_time || ti > to_time){my.analyse.ids[id].hide()}
-  })
-}
-
-/**
   Ajout d'un event dans le reader
 
   L'event est placé au bon endroit par rapport à son temps
@@ -185,6 +173,7 @@ resetBeyond(from_time, to_time){
   @param {FAEvent(typé)} ev Event qu'il faut insérer
 **/
 append(ev){
+  log.info("-> FAReader.append")
   let my = this
     , div = ev.div
 
@@ -197,8 +186,8 @@ append(ev){
   var hasBeenInserted = false
   this.forEachEventNode(function(ne){
     if(parseFloat(ne.getAttribute(STRdata_time)) > ev.time){
+      $(div).insertBefore(ne)
       hasBeenInserted = true
-      my.reader.insertBefore(div, ne)
       return false // pour interrompre la boucle
     }
   })
@@ -206,6 +195,7 @@ append(ev){
 
   // Pour observer l'event dans le reader
   ev.observe()
+  log.info("<- FAReader.append")
 }
 
 /**
