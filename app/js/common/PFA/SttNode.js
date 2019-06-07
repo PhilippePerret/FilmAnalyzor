@@ -94,13 +94,13 @@ constructor(nid, pfa){
 * en version absolue, d'après un coefficiant +coef+
 **/
 inAbsPFA(coefT2P, name){
-  console.log(`Pour le calcul de la position du noeud ABSOLU ${this.hname}`, {
-    startAtAbs: this.startAtAbs
-  , endAtAbs: this.endAtAbs
-  , coefT2P: coefT2P
-  , leftAbs: this.leftAbs(coefT2P)
-  , widthAbs: this.widthAbs(coefT2P)
-  })
+  // console.log(`Pour le calcul de la position du noeud ABSOLU ${this.hname}`, {
+  //   startAtAbs: this.startAtAbs
+  // , endAtAbs: this.endAtAbs
+  // , coefT2P: coefT2P
+  // , leftAbs: this.leftAbs(coefT2P)
+  // , widthAbs: this.widthAbs(coefT2P)
+  // })
   return DCreate(SPAN, {
     // Dans la classe, ajouter 'missed', 'near' ou 'unplaced' pour indiquer
     // respectivement que le noeud existe, ou est proche ou est mal placé.
@@ -125,13 +125,13 @@ get markAbsPlacement(){
 
 inRelPFA(coefT2P, name){
   if ( isFalse(this.isDefined) ) return null
-  console.log(`Pour le calcul de la position du noeud RELATIF ${this.hname}`, {
-      startAtRel: this.startAtRel
-    , endAtRel: this.endAtRel
-    , coefT2P: coefT2P
-    , leftRel: this.leftRel(coefT2P)
-    , widthRel: this.widthRel(coefT2P)
-  })
+  // console.log(`Pour le calcul de la position du noeud RELATIF ${this.hname}`, {
+  //     startAtRel: this.startAtRel
+  //   , endAtRel: this.endAtRel
+  //   , coefT2P: coefT2P
+  //   , leftRel: this.leftRel(coefT2P)
+  //   , widthRel: this.widthRel(coefT2P)
+  // })
   let attrs = {}
   attrs[STRdata_id]   = this.event_id
   attrs[STRdata_type] = STRevent

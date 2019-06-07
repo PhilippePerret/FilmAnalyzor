@@ -102,6 +102,7 @@ const BancTimeline = {
     log.info("-> BanTimeline::instancyEvents")
     let my = this
     this.a.forEachEvent(e => {
+      if ( e.isASttNode ) return
       var bte = new BancTimelineElement(e)
       my.items.push(bte)
     })
