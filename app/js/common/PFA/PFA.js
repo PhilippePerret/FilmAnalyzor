@@ -1,82 +1,123 @@
 'use strict'
 
-const PFA = require('./PFA-mini')
-Object.assign(PFA, require('./PFA-calculs'))
-Object.assign(PFA, require('./PFA-calque'))
+const {
+  DATA_STT_NODES
+, MAIN_STT_NODES
+, SUB_STT_NODES
+} = require('./data_PFA')
+
+const PFA_Calque = tryRequire('PFA-calque',__dirname)
+
+
+class PFA {
+/**
+  Instanciation d'un paradigme de Field
+**/
+constructor(index){
+  this.index = index
+
+  this.inited = false
+}
+
+/**
+  Initialisation du PFA
+**/
+init(){
+  var my = this
+  this.load()
+  this.forEachNode(node => {
+    if(node.next) {
+      my.node(node.next)._previous = node.id
+      DATA_STT_NODES[node.next]._previous = node.id
+    }
+    if(node.first){
+      my.node(node.first)._last = node.id
+      DATA_STT_NODES[node.first]._last = node.id
+    }
+  })
+  // console.log("DATA APRES:", Object.assign({}, this.DATA_STT_NODES))
+  this.inited = true
+  my = null
+}
+
+/**
+  Retourne l'instance SttNode du nœud d'identifiant +nid+
+  @param {String} nid   Clé dans DATA_STT_NODES
+**/
+node(nid){
+  isDefined(this.nodes) || ( this.nodes = new Map() )
+  this.nodes.has(nid) || this.nodes.set(nid, new SttNode(nid, DATA_STT_NODES[nid]))
+  return this.nodes.get(nid)
+}
+
+/**
+  Boucle sur tous les noeuds structurels de ce PFA
+**/
+forEachNode(fn){
+  var kstt
+  for(kstt in DATA_STT_NODES){
+    if (isFalse(fn(this.node(kstt)))) break // pour pouvoir interrompre
+  }
+}
+
+/**
+  Chargement des données PFA du paradigme courant
+
+  Si on ne trouve pas les données dans le fichier `pfa-<index>.json` (si le
+  fichier n'existe pas), on va les récupérer éventuellement dans les events
+  de type `stt` définis grâce à la méthode `getDataInEvents`.
+
+**/
+load(){
+  if(fs.existsSync(this.path)){
+    this.data = require(this.path)
+  } else {
+    this.getDataInEvents()
+  }
+}
+
+/**
+  On récupère les données PFA dans les events de type `stt`
+**/
+getDataInEvents(){
+  // console.log("-> PFA.getDataInEvents")
+  var my = this
+    , corrected = false
+    , data = {}
+  this.a.forEachEvent( ev => {
+    // console.log("Traitement de l'ev", ev.id)
+    if(ev.type === STRstt && ev.idx_pfa === this.index ){
+      // <= Un event de type structure a été trouvé
+      // => Il faut le prendre en compte
+      corrected = true
+      data[ev.sttID] = {event_id: ev.id, stt_id: ev.sttID}
+    }
+  })
+  this.data = data
+  corrected && this.save()
+  // console.log("data relevées : ", data)
+  return data
+}
+
+
+saveIfModified(){ this.modified && this.save() }
+save(){
+  var my = this
+  fs.writeFileSync(this.path, JSON.stringify(my.data), 'utf8')
+  this.modified = false
+}
+
+get path(){return this._path || defP(this,'_path',this.a.pathOf(`pfa-${this.index}.json`))}
+get iofile(){return this._iofile || defP(this,'_iofile', new IOFile(this))}
+}
+
+Object.assign(PFA.prototype, require('./PFA-calculs'))
 
 Object.assign(PFA, {
-  class: 'PFA'
-, inited: false
-
-, init(){
-    var my = this
-    this.load()
-    this.forEachNode(node => {
-      if(node.next) {
-        my.node(node.next)._previous = node.id
-        this.DATA_STT_NODES[node.next]._previous = node.id
-      }
-      if(node.first){
-        my.node(node.first)._last = node.id
-        this.DATA_STT_NODES[node.first]._last = node.id
-      }
-    })
-    // console.log("DATA APRES:", Object.assign({}, this.DATA_STT_NODES))
-    this.inited = true
-    my = null
-}
-// ---------------------------------------------------------------------
-//  Méthodes de données
-
-  // /**
-  //  * Retourne l'instance SttNode du noeud d'identifiant +nid+
-  //  *
-  //  * Note : +nid+ est une des clés de DATA_STT_NODES (cf. ci-dessus)
-  //  */
-, node(nid){
-    defaultize(this,'nodes',{})
-    isDefined(this.nodes[nid]) || (
-      this.nodes[nid] = new SttNode(nid, this.DATA_STT_NODES[nid])
-    )
-    return this.nodes[nid]
-  }
-
-  /**
-  * Boucle sur tous les nœuds structurels
-  *
-  * On peut interrompre la boucle en renvoyant false (et très exactement
-  * false)
-  **/
-, forEachNode(method){
-    var kstt
-    for(kstt in this.DATA_STT_NODES){
-      if (isFalse(method(this.node(kstt)))) break // pour pouvoir interrompre
-    }
-}
-
-// ---------------------------------------------------------------------
-//  Méthodes d'entrée sorties
-, saveIfModified(){
-    this.modified && this.save()
-  }
-
-, save(){
-    var my = this
-    fs.writeFileSync(this.a.pfaFilePath, JSON.stringify(my.data), 'utf8')
-    this.modified = false
-  }
-, load(){
-    if(fs.existsSync(this.a.pfaFilePath)){
-      this.data = require(this.a.pfaFilePath)
-      // console.log("data PFA:", this.data)
-    } else {
-      this.getDataInEvents()
-    }
-}
 
 // ---------------------------------------------------------------------
 // Méthodes d'affichage
-, toggle(){
+ toggle(){
     this.fwindow.toggle()
 }
 /**
@@ -99,7 +140,7 @@ Object.assign(PFA, {
 //  Méthodes de construction
 
 /**
- * Méthode principale de construction du PFA du film.
+ * Méthode principale de construction des PFA du film.
  */
 , build(){
     return require('./PFA_building.js').bind(this)()
@@ -127,26 +168,6 @@ Object.assign(PFA, {
         FAEvent.edit.bind(ca, event_id)()
         stopEvent(e)//sinon le pfa est remis au premier plan
       })
-}
-
-, getDataInEvents(){
-    // console.log("-> PFA.getDataInEvents")
-    var my = this
-      , corrected = false
-      , data = {}
-    this.a.forEachEvent( ev => {
-      // console.log("Traitement de l'ev", ev.id)
-      if(ev.type === STRstt){
-        // <= Un event de type structure a été trouvé
-        // => Il faut le prendre en compte
-        corrected = true
-        data[ev.sttID] = {event_id: ev.id, stt_id: ev.sttID}
-      }
-    })
-    this.data = data
-    corrected && this.save()
-    // console.log("data relevées : ", data)
-    return data
 }
 })
 Object.defineProperties(PFA,{
@@ -176,7 +197,7 @@ Object.defineProperties(PFA,{
       this._data = v
       // Il faut les dispatcher dans la donnée générale
       for(var kstt in v){
-        this.DATA_STT_NODES[kstt].event_id = v[kstt].event_id
+        DATA_STT_NODES[kstt].event_id = v[kstt].event_id
       }
     }
 }

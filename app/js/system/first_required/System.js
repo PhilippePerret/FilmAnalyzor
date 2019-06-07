@@ -56,7 +56,7 @@ loadComponant(compName, fn_callback){
         return this.loadNextFolder()
       }
     }
-    if (undefined === folder || !fs.existsSync(folder) ){
+    if ( isUndefined(folder) || isFalse(fs.existsSync(folder)) ){
       // <= On est arrivé à la fin des dossiers à charger
       // => On s'arrête là en appelant la méthode callback.
       log.info(`   Fin des folders. Appel de la fonction callback`)

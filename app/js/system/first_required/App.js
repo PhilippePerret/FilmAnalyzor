@@ -25,7 +25,13 @@ const App = {
   Pour requérir un module dans le dossier ./app/js/ (ne pas mettre ./app/js/)
 **/
 , require(rpath){
-    return require(path.join(APPFOLDER,'app','js',rpath))
+    try {
+      return require(path.join(APPFOLDER,'app','js',rpath))
+    } catch (e) {
+      log.error("ERROR dans App::require avec le path", rpath)
+      log.error(e)
+    }
+
   }
 
 /**

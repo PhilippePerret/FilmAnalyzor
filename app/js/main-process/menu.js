@@ -22,12 +22,13 @@ log.transports.console.level = 'warn'
 const CURRENT_THING_MENUS = [
   'save-analyse', 'save-as-analyse', 'export-as-pdf', 'export-as-epub',
   'export-as-kindle', 'export-as-docbook', 'display-infos-film',
-  'display-full-analyse', 'display-full-analyse-forcer', 'display-pfa',
+  'display-full-analyse', 'display-full-analyse-forcer',
   'display-fondamentales', 'display-statistiques', 'new-eventer', 'open-porte-documents',
   'display-analyse-state', 'display-last-report', 'display-documents',
   'display-protocole', 'option-locked', 'new-version', 'display-brins',
   'goto-last-scene', 'display-decors', 'check-data-validity',
   'display-personnages', 'display-images', 'open-in-finder', 'calc-pfa',
+  'display-pfa-1', 'display-pfa-2', 'display-pfa-3', 'display-pfa-4'
 
 ]
 // Note : les ID des menus de documents seront ajoutés "à la volée"
@@ -352,11 +353,35 @@ const DATA_MENUS = [
             }
           , {type:'separator'}
           , {
-                label: "Paradigme de Field Augmenté"
-              , id: 'display-pfa'
-              , accelerator: 'CmdOrCtrl+Alt+Shift+P'
-              , enabled: false
-              , click: ()=>{execJsOnCurrent('displayPFA')}
+                label: "Paradigmes de Field Augmenté"
+              , enabled: true
+              , submenu:[
+                  {
+                    label: 'PFA principal'
+                  , id: 'display-pfa-1'
+                  , accelerator: 'CmdOrCtrl+Alt+Shift+P'
+                  , enabled: false
+                  , click: ()=>{execJsOnCurrent('displayPFA', 1)}
+                  }
+                , {
+                    label: 'PFA secondaire'
+                  , id: 'display-pfa-2'
+                  , enabled: false
+                  , click: ()=>{execJsOnCurrent('displayPFA', 2)}
+                  }
+                , {
+                    label: 'PFA tertiaire'
+                  , id: 'display-pfa-3'
+                  , enabled: false
+                  , click: ()=>{execJsOnCurrent('displayPFA', 3)}
+                  }
+                , {
+                    label: 'PFA quaternaire'
+                  , id: 'display-pfa-4'
+                  , enabled: false
+                  , click: ()=>{execJsOnCurrent('displayPFA', 4)}
+                  }
+                ]
             }
           , {
                 label: "Fondamentales"

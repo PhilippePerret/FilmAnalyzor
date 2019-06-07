@@ -6,6 +6,7 @@
  */
 
 let SttNode = null
+  , PFA
 
 window.current_analyse = null // définie au ready
 
@@ -135,9 +136,13 @@ goToLastScene(){
 
 get PFA(){
   if ( isUndefined(this._PFA) ) {
-    SttNode   = require('./js/common/PFA/SttNode.js')
-    this._PFA = require('./js/common/PFA/PFA.js')
-    this._PFA.init()
+    SttNode = tryRequire('./js/common/PFA/SttNode.js')
+    PFA     = tryRequire('./js/common/PFA/PFA.js')
+    this._PFA = new Map
+    this._PFA[1] = new PFA(1)
+    this._PFA[2] = new PFA(2)
+    this._PFA[3] = new PFA(3)
+    this._PFA[4] = new PFA(4)
   }
   return this._PFA
 }
@@ -249,8 +254,15 @@ displayLastReport(){
 }
 
 
-displayPFA(){ this.PFA.toggle() }
-displayCalcPFA(){ this.PFA.toggleCalc() }
+displayPFA(index_pfa){
+  this.PFA.get(index_pfa).toggle()
+}
+displayCalcPFA(){
+  if (NONE === typeof PFA_Calque){
+    window.PFA_Calque = App.require('common/PFA/PFA-calque')
+  }
+  PFA_Calque.toggle()
+}
 
 togglePanneauInfosFilm(){
   if(NONE === typeof(InfosFilm)) return this.loadInfosFilm(this.togglePanneauInfosFilm.bind(this))
@@ -730,9 +742,6 @@ get eventsFilePath(){
 }
 get dataFilePath(){
   return this._dataFilePath || defP(this,'_dataFilePath', this.pathOf('data.json'))
-}
-get pfaFilePath(){
-  return this._pfaFilePath || defP(this,'_pfaFilePath', this.pathOf('pfa.json'))
 }
 get fondsFilePath(){
   return this._fondsFilePath || defP(this,'_fondsFilePath', this.filePathOf('fondamentales.yaml'))

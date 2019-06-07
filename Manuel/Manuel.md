@@ -23,11 +23,16 @@
     * [Réglage de la durée](#reglage_de_la_duree)
     * [Réglage de la durée des scènes](#reglage_de_la_duree_des_scenes)
 * [L'Interface](#linterface)
+  * [Les sections principales de l'UI](#main_ui_sections)
+    * [La section vidéo](#ui_section_video)
+    * [La section « lecteur »](#ui_section_reader)
+    * [Le Banc-Timeline](#ui_banc_timeline)
   * [Fonction « One-Key-Pressed »](#one_key_pressed_feature)
   * [Indication des parties et zones courantes](#indication_parties_zones_courantes)
   * [Comportement du bouton STOP](#le_bouton_stop)
   * [Se déplacer rapidement à une scène particulière](#move_to_a_scene)
 * [Définir le Paradigme de Field Augmenté du film](#define_film_pfa)
+  * [Calque du Paradigme de Field Augmenté Absolu](#calque_pfa)
 * [Les Documents](#les_documents)
   * [Quatre types de documents](#types_de_documents)
   * [Diminutifs](#les_diminutifs)
@@ -219,11 +224,29 @@ Si l'option « Calcul automatique de la durée des scènes » est coché dans 
 
 ## Interface {#linterface}
 
+### Les sections principales de l'UI {#main_ui_sections}
+
+### La section vidéo {#ui_section_video}
+
+C'est la section contenant la vidéo du film, s'il est défini, en haut à gauche de l'écran.
+
+On sera peut-être étonné de ne trouver aucun bouton, mais cette application est pensée pour être presque exclusivement pilotable par le clavier. Jouer simplement le raccourci `g` (hors d'un champ d'édition) pour voir les raccourcis à utiliser pour se déplacer. Pour jouer la vidéo, utiliser les touches `j` (pour reculer), `k` (pour stopper) et `l` (pour avancer) plus ou moins vite, en fonction du nombre de pressions.
+
+### La section « lecteur » {#ui_section_reader}
+
+La section « lecteur » (ou section « Reader ») est la section en haut à droite de l'interface. Elle permet de lire les *events*, images et autres marqueurs au fil du visionnage.
+
+Comme partout ou presque dans l'interface, les éléments sont éditables et « draggables » (pour les associer à d'autres éléments) depuis ce lecteur.
+
+#### Le Banc-Timeline {#ui_banc_timeline}
+
+C'est la rangée inférieure, qui affiche la *ligne de temps* du film, depuis le début à gauche jusqu'à la fin à droite, et présente les scènes, les *events* et les marqueurs de façon graphique.
+
 ### Fonction « One-Key-Pressed » {#one_key_pressed_feature}
 
 La fonctionnalité « One Key Pressed » (littéralement « Une touche pressée ») permet de régler un grand nombre de choses en maintenant une touche pressée.
 
-Note : pour le moment (04/2019), cette fonctionnalité n'est utilisée que pour modifier la taille de la vidéo à l'aide de "v" appuyée et les touches flèche haut/bas.
+Par exemple, pour régler le zoom, on presse la touche `z`, puis on utilise les flèches pour choisir une valeur de zoom (pour le [banc timeline](#ui_banc_timeline)).
 
 ### Indication des parties et zones courantes {#indication_parties_zones_courantes}
 
@@ -243,7 +266,7 @@ Le bouton STOP a trois comportement différents, dans l'ordre de priorité :
 
 ### Se déplacer rapidement à une scène particulière {#move_to_a_scene}
 
-Pour se déplacer rapidement à une scène particulière, le mieux est d'utiliser l'*Eventers* qui affiche, par défaut, toutes les scènes :
+Pour se déplacer rapidement à une scène particulière, si ce n'est pas une scène proche, le mieux est d'utiliser l'*Eventers* qui affiche, par défaut, toutes les scènes :
 
 * ouvrir l'*Eventer* par le menu « Events > Nouvel eventer… » (ou faire `CMD MAJ E`),
 * trouver la scène dans le listing qui s'affiche,
@@ -253,10 +276,21 @@ Pour se déplacer rapidement à une scène particulière, le mieux est d'utilise
 
 ## Définir le Paradigme de Field Augmenté du film {#define_film_pfa}
 
-Pour définir le PFA du film, on crée des events de type **Nœud STT**. Il suffit de choisir le type du nœud dans le premier menu et de décrire en quoi le temps courant correspond au nœud concerné.
+On peut définir quatre PFA différent dans **FilmAnalyzor**. Le premier peut concerner l'intrigue principale tandis que le deuxième s'intéressera à l'intrigue amoureuse (secondaire) et un troisième pourra se concentrer sur le parcours d'un autre personnage que le protagoniste.
 
-Une fois suffisamment de nœud définis, on peut demander l'affichage du paradigme en actionnant le menu « Affichage > Paradigme de Field Augmenté ».
+Pour définir ces PFA du film, on crée des events de type **Nœud STT**. Il suffit de choisir le paradigme visé dans le premier menu et le type du nœud dans le second menu, puis de décrire en quoi le temps courant correspond au nœud concerné.
 
+Une fois que suffisamment de nœud ont été définis, on peut demander l'affichage du paradigme en actionnant le menu « Affichage > Paradigme de Field Augmenté > PFA Principal » ou autre paradigme.
+
+Pour afficher le paradigme dans l'assemblage final du livre, il suffit de choisir ce paradigme dans le script d'assemblage.
+
+### Calque du Paradigme de Field Augmenté Absolu {#calque_pfa}
+
+On peut faire apparaitre sur le [banc timeline](#ui_banc_timeline) un calque dessinant le paradigme absolu du film, en tout cas les grandes divisions, pour retrouver les actes, les tiers, les cinquièmes.
+
+On fait apparaitre ce calque avec le menu `Affichage > Calque du PFA` ou avec le raccourci-clavier `CMD MAJ P`.
+
+---------------------------------------------------------------------
 
 ## Les Documents {#les_documents}
 

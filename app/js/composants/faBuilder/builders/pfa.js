@@ -27,7 +27,7 @@ const PFABuilder = {
   this.divergences = []
 
   var nodesMainZonesAbs = []
-  for(var kstt of pfa.MAIN_STTNODES){
+  for(var kstt of pfa.MAIN_STT_NODES){
     nodesMainZonesAbs.push(pfa.node(kstt).inAbsPFA(this.coefT2P, pfa.node(kstt).dim))
   }
 
@@ -51,7 +51,7 @@ const PFABuilder = {
   // === RELATIFS (en fonction des définitions) ===
   var nodesMainZonesRel = []
   var pos
-  for(var kstt of pfa.MAIN_STTNODES){
+  for(var kstt of pfa.MAIN_STT_NODES){
     // console.log("Traitement du noeud:", kstt)
     pos = this.posRelSttNode(kstt)
     if(pos.good == false) this.divergences.push(pos)

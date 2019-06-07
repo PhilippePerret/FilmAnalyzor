@@ -108,17 +108,7 @@ Object.assign(Locator.prototype,{
     générale qui gère toutes les actualisations.
    */
 , actualizeMarkersStt(curt){
-    // console.log("-> actualizeMarkersStt", curt)
-    var vid = this.controller
-    isDefined(curt) || ( curt = this.currentTime )
-    isDefined(this.a.PFA.TimesTables) || this.a.PFA.setTimesTables()
-    // On doit répéter pour les quatre tables, heureusement petites,
-    // pour trouver :
-    //  - la partie absolue
-    //  - la partie relative (if any)
-    //  - la zone absolue
-    //  - la zone relative si elle existe
-    // TODO
+    // TODO Implémenter une fois que les PFA seront mis en place
   }
 
   /**

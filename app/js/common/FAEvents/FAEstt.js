@@ -6,7 +6,7 @@ class FAEstt extends FAEvent {
 //  CLASSE
 
 // Propriétés propres
-static get OWN_PROPS(){return [ ['sttID', 'sttType'] ]}
+static get OWN_PROPS(){return [ ['sttID', 'sttType'], 'pfa' ]}
 
 // ---------------------------------------------------------------------
 //  INSTANCE
@@ -35,7 +35,13 @@ get isValid(){
   return errors.length == 0
 }
 
-get sttNode(){return this._sttNode || defP(this,'_sttNode',this.analyse.PFA.node(this.sttID))}
+get sttNode(){return this._sttNode || defP(this,'_sttNode',this.pfa.node(this.sttID))}
+
+get pfa(){
+  this.a.PFA[this.idx_pfa]
+}
+
+get idx_pfa(){return this._idx_pfa || defP(this,'_idx_pfa',1/* par défaut*/)}
 
 // Mise en forme du contenu propre à ce type d'event
 formateContenu(){

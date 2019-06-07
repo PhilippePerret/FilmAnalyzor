@@ -62,7 +62,7 @@ Object.assign(EventForm.prototype,{
         fieldsType.push(
             DCreate(DIV,{class:'div-form', append:[
                 DCreate(LABEL, {inner:'Paradigme', style:`width:${wLabel}px;display:inline-block;`})
-              , DCreate(SELECT, {id: my.fId('pfa'), class:`${type}-pfa`, style:'max-width:270px;', append:[
+              , DCreate(SELECT, {id: my.fId('idx_pfa'), class:`${type}-pfa`, style:'max-width:270px;', append:[
                     DCreate(OPTION,{inner:'principal', value:'1'})
                   , DCreate(OPTION,{inner:'secondaire', value:'2'})
                   , DCreate(OPTION,{inner:'tertiaire', value:'3'})

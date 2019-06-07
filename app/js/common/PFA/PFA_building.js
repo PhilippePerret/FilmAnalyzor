@@ -1,7 +1,9 @@
 'use strict'
+/**
+  Brique pour la construction des PFA dans le livre
+**/
 
 const DUREE_FILM = current_analyse.duree
-
 
 const PFABuilder = {
     class: 'PFABuilder'
@@ -77,7 +79,7 @@ const PFABuilder = {
       , zoneId
       , span
       , pfa = this.a.PFA
-      , zoneIds = pfa[which === 'top'?'MAIN_STTNODES':'SUB_STTNODES']
+      , zoneIds = pfa[which === 'top'?'MAIN_STT_NODES':'SUB_STTNODES']
       , spans = []
       ;
 

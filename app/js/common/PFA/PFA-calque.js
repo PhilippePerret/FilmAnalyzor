@@ -1,7 +1,6 @@
 'use strict'
 
-const PFA_calque = {
-calque:{
+const PFA_Calque = {
   built: false
 , shown: false
 , toggle(){
@@ -29,22 +28,27 @@ calque:{
     let div = DCreate(DIV, {id:'PFA-CALQUE', append:divs})
     UI.sectionTimeline.append(div)
     this.built = true
-    this.show().hide()
+    this.show(this.hide.bind(this))
   }
-, show(){
+, show(fn){
     this.jqObj.css({top: '30px'})
     this.shown = true
+    isFunction(fn) && fn.call()
     return this // pour le chainage
   }
-, hide(){
-    this.jqObj.css({top: '240px'})
+, hide(fn){
+    this.jqObj.css({top:this.top})
     this.shown = false
+    isFunction(fn) && fn.call()
     return this // pour le chainage
   }
 }
-}
-Object.defineProperties(PFA_calque.calque,{
+
+Object.defineProperties(PFA_Calque,{
   jqObj:{get(){ return $('#PFA-CALQUE') }}
+, top:{
+    get(){return `${UI.sectionTimeline.outerHeight()}px`}
+  }
 })
 
-module.exports = PFA_calque
+module.exports = PFA_Calque

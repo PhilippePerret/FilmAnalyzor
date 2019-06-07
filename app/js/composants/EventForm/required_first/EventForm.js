@@ -1,20 +1,21 @@
 'use strict'
 
 /**
- * Class EventForm
- * ---------------
- * Gère le formulaire d'édition et de création d'un évènement de tout type
- *
- * Note : on part du principe qu'il n'y a qu'un EventForm en tant que classe,
- * qui gère seulement l'analyse courante. Quand il y aura plusieurs analyses
- * étudiées en même temps, on ne pourra plus utiliser cet objet, il faudra
- * en créer un par analyse active.
+  Class EventForm
+  ---------------
+  Gère le formulaire d'édition et de création d'un évènement de tout type
+
+  Note : on part du principe qu'il n'y a qu'un EventForm en tant que classe,
+  qui gère seulement l'analyse courante. Quand il y aura plusieurs analyses
+  étudiées en même temps, on ne pourra plus utiliser cet objet, il faudra
+  en créer un par analyse active.
+
  */
 class EventForm {
 
 static init(){}
 
-static get a(){return current_analyse}
+static get a(){ return current_analyse }
 
 static reset(){
   $('form.form-edit-event').remove()

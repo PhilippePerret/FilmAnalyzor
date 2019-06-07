@@ -1,5 +1,22 @@
 'use strict'
 
+/**
+  Pour requérir un module en ayant un backtrace en cas d'erreur.
+
+  Le mieux est de toujours envoyé `__dirname` en second argument et de définir
+  le +rpath+ en fonction de l'endroit courant.
+      let maConstante = tryRequire('./insamefolder', __dirname)
+      
+**/
+function tryRequire(rpath, folder){
+  try {
+    isDefined(folder) && ( rpath = [folder,rpath].join(path.sep) )
+    return require(rpath)
+  } catch (e) {
+    log.error("ERROR REQUIRE AVEC LE PATH", rpath)
+    log.error(e)
+  }
+}
 
 function confirm(msg, options){
   let mbox = new MessageBox(isString(msg) ? Object.assign(options, {message: msg}) : msg)
@@ -224,7 +241,7 @@ function DGet(DOMId){
   DCreate(AIDE, "Message d'aide à afficher, sans guillemets doubles droits.")
 
   Il faut que la méthode qui construit appelle UI.setPictosAide(<container>)
-  
+
 **/
 function DCreate(typeElement, params){
   // console.log("DCreate params:", params)
