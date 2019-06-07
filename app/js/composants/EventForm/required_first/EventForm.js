@@ -204,7 +204,6 @@ submit(){
   }
   // Et on dispatche les autres données
 
-
   if (this.event.isValid) {
     if(this.isNew){
       // CRÉATION

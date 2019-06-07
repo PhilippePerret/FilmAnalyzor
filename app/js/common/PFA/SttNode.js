@@ -65,12 +65,20 @@ class SttNode {
 // ---------------------------------------------------------------------
 //  INSTANCE
 
-constructor(nid, data){
+constructor(nid, pfa){
   isDefined(nid) || raise("ERREUR: Impossible d'instancier un SttNode sans identifiant de structure")
-  this.id = nid
-  // console.log("data:", data)
-  for(var p in data){this[`_${p}`] = data[p]}
+  this.id   = nid
+  this.pfa  = pfa
+  this.a    = pfa.a
+  // Les données absolues et relatives
+  let absData = DATA_STT_NODES[nid]
+    , relData = pfa.data[nid]
+  // console.log("absData:", absData)
+  // console.log("relData: ", relData)
+  for(var p in absData){this[`_${p}`] = absData[p]}
   // Par exemple, on définit `this._cZone`
+  if ( isDefined(relData) ) for(var p in relData){ this[`_${p}`] = relData[p] }
+  // Par exemple, on définit this._event_id
 
   // Les nœuds dépendants de ce noeud (au niveau des temps). Ils seront
   // définis dans la méthode de classe `calcZone`
@@ -94,46 +102,65 @@ inAbsPFA(coefT2P, name){
   , widthAbs: this.widthAbs(coefT2P)
   })
   return DCreate(SPAN, {
-    class:  `pfa-part-${this.isMainPart?'part':'zone'}`
+    // Dans la classe, ajouter 'missed', 'near' ou 'unplaced' pour indiquer
+    // respectivement que le noeud existe, ou est proche ou est mal placé.
+    class:  `pfa-part-${this.isMainPart?'part':'zone'} ${this.markAbsPlacement}`.trim()
   , style:  `left:${this.leftAbs(coefT2P)};width:${this.widthAbs(coefT2P)};`
   , append: [this.aSpanName(name)]
   })
 }
 
+get markAbsPlacement(){
+  if ( isFalse(this.isDefined) ) return 'missed'
+  switch (true) {
+  case this.isInZone:
+    return ''
+  case this.isNearZone:
+    return 'close'
+  case this.isOutZone:
+    return 'misplaced'
+}
+
+}
+
 inRelPFA(coefT2P, name){
   if ( isFalse(this.isDefined) ) return null
-  // console.log(`Pour le calcul de la position du noeud RELATIF ${this.hname}`, {
-  //     startAtRel: this.startAtRel
-  //   , endAtRel: this.endAtRel
-  //   , coefT2P: coefT2P
-  //   , leftRel: this.leftRel(coefT2P)
-  //   , widthRel: this.widthRel(coefT2P)
-  // })
+  console.log(`Pour le calcul de la position du noeud RELATIF ${this.hname}`, {
+      startAtRel: this.startAtRel
+    , endAtRel: this.endAtRel
+    , coefT2P: coefT2P
+    , leftRel: this.leftRel(coefT2P)
+    , widthRel: this.widthRel(coefT2P)
+  })
   let attrs = {}
   attrs[STRdata_id]   = this.event_id
   attrs[STRdata_type] = STRevent
-  return DCreate(SPAN, {
+  return DCreate(this.isMainPart?DIV:SPAN, {
     class: `${this.classNode} ${this.markGoodPos /* inzone, outzone, nearzone */}`
   , style: `left:${this.leftRel(coefT2P)};width:${this.widthRel(coefT2P)};`
   , append: [this.aSpanName(name)]
-  // , attrs:{onclick: `current_analyse.editEvent(${this.event_id})`}
   , attrs:  attrs
   })
 }
 get classNode(){
-  switch (this.isMainPart) {
-    case true:  return `pfa-part-part`
-    case false: return `pfa-part-zone event EVT${this.event_id}`
-  }
+  return this.isMainPart ? `part part-${this.id.toLowerCase()}` : `pfa-part-zone event EVT${this.event_id}`
 }
 
 leftAbs(coef){return this._leftAbs||defP(this,'_leftAbs', `${Math.round(this.startAtAbs * coef)}px`)}
 widthAbs(coef){return this._widthAbs||defP(this,'_widthAbs', `${Math.round((this.endAtAbs - this.startAtAbs) * coef)}px`)}
 
 leftRel(coef){return this._leftRel||defP(this,'_leftRel', `${Math.round(this.startAtRel * coef)}px`)}
-widthRel(coef){return this._widthRel||defP(this,'_widthRel', `${Math.round((this.endAtRel - this.startAtRel) * coef)}px`)}
+widthRel(coef){return this._widthRel||defP(this,'_widthRel', this.defineWidthRel(coef))}
 
-
+/**
+  Définit la largeur du noeud, en mettant 10px quand le noeud est trop
+  court.
+**/
+defineWidthRel(coef){
+  let w = Math.round((this.endAtRel - this.startAtRel) * coef)
+  if ( w < 10 ) w = 10
+  return `${w}px`
+}
 /**
 * Retourne un SPAN pour le nom du noeud.
 * Noter qu'il faut faire des instances différentes pour chaque partie.
@@ -171,13 +198,14 @@ get startAtAbs(){return this.zoneStart}
 get endAtAbs()  {return this.zoneEnd}
 
 // Début et fin relatifs, en fonction des noeuds définis, s'ils
-// le sont. Cf. defineStartRel et defineEndRel
+// le sont.
 get startAtRel(){
-  return this._startAtRel || defP(this,'_startAtRel', this.defineStartRel())}
+  return this._startAtRel || defP(this,'_startAtRel', this.isDefined && this.event.otime.rtime /* this.event.startAt */)}
+get endAtRel(){
+  return this._endAtRel || defP(this,'_endAtRel', this.isDefined && this.event.otime.rtime /* this.event.endAt */)}
+
 set startAtRel(v){
   this._startAtRel = v ; this.resetDependencies() }
-get endAtRel(){
-  return this._endAtRel || defP(this,'_endAtRel', this.defineEndRel())}
 set endAtRel(v){
   this._endAtRel = v ; this.resetDependencies()
 }
@@ -185,8 +213,6 @@ set endAtRel(v){
 // ---------------------------------------------------------------------
 // Méthodes d'état
 
-// Retourne true si le noeud relatif est défini
-get isDefined(){ return undefined !== this._event_id }
 
 get markGoodPos(){
   switch (true) {
@@ -253,15 +279,6 @@ defineGoodPos(){
 }
 
 // ---------------------------------------------------------------------
-//  Méthodes de données relatives (du film courant)
-
-/**
- * ID de l'event associé, s'il est défini
- */
-// Note : pas de `set`, on utilise `this.event = `
-get event_id(){ return this._event_id}
-
-// ---------------------------------------------------------------------
 //  Méthodes de données absolues
 
 get zone(){return this._zone || defP(this,'_zone',SttNode.calcZone(this))}
@@ -284,17 +301,29 @@ set event(v){
   this.modified = true
 }
 defineEventIfExists(){
-  if(undefined === this._event_id) return undefined
-  else return this.a.ids[this.event_id]
+  if ( this.event_id )  {
+    var e = FAEvent.get(this.event_id)
+    if ( isUndefined(e) ) this.raiseAndCorrectUnfoundEvent()
+    // console.log("event:", e)
+    return e
+  }
+  // if ( this.isDefined ) return FAEvent.get(this.event_id)
 }
 
-get isMainPart(){return this._isMainPart || defP(this,'_isMainPart', this.main === true)}
+raiseAndCorrectUnfoundEvent(){
+  F.error(`Problème avec l'event du nœud "${this.hname}" (#${this.event_id}) qui n'est pas ou plus défini… Je supprime la donnée défectueuse.`)
+  // console.log("this.pfa:", this.pfa)
+  // console.log("this.pfa.data:", this.pfa.data)
+  delete this.pfa.data[this.id]
+  this.pfa.save(true /* forcer */)
+  delete this._event_id
+}
 
 // ---------------------------------------------------------------------
 //  Méthodes fonctionnelles
 
 reset(props){
-  if(undefined===props)props=['zone']
+  props = props || ['zone']
   for(var i=0,len=props.length;i<len;++i){this[`_${props[i]}`] = undefined}
 }
 
@@ -305,25 +334,14 @@ resetDependencies(){
   this.modified = true
 }
 
-// ---------------------------------------------------------------------
-// Méthodes fonctionnelles
+// Retourne true si le noeud relatif est défini
+get isDefined(){ return isDefined(this.event) }
+
 /**
-* Retourne le début et la fin relatives du noeud, si le noeud
-* relatif est défini.
-**/
-defineStartRel(){
-  if(!this.isDefined) return null
-  return this.event.startAt
-}
-defineEndRel(){
-  if(!this.isDefined) return null
-  return this.event.endAt
-
-}
-
-get a(){return current_analyse}
-
-get pfa(){ return this.a.PFA}
+ * ID de l'event associé, s'il est défini
+ */
+get event_id(){ return this._event_id}
+get isMainPart(){return this._isMainPart || defP(this,'_isMainPart', this.main === true)}
 
 }
 

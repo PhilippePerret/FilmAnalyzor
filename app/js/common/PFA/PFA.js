@@ -43,8 +43,9 @@ init(){
   @param {String} nid   Clé dans DATA_STT_NODES
 **/
 node(nid){
+  let my = this
   isDefined(this.nodes) || ( this.nodes = new Map() )
-  this.nodes.has(nid) || this.nodes.set(nid, new SttNode(nid, DATA_STT_NODES[nid]))
+  this.nodes.has(nid) || this.nodes.set(nid, new SttNode(nid, my))
   return this.nodes.get(nid)
 }
 
@@ -99,7 +100,8 @@ getDataInEvents(){
 }
 
 saveIfModified(){ this.modified && this.save() }
-save(){
+save(forcer){
+  if ( isNotTrue(forcer) && this.a.locked ) return F.notify(T('analyse-locked-no-save'))
   var my = this
   fs.writeFileSync(this.path, JSON.stringify(my.data), 'utf8')
   this.modified = false
@@ -130,16 +132,8 @@ Object.defineProperties(PFA.prototype,{
       isUndefined(this._data) && isFalse(this.inited) && this.init()
       return this._data
     }
-  , set(v){
-      this._data = v
-      // Il faut les dispatcher dans la donnée générale
-      for(var kstt in v){
-        isDefined(DATA_STT_NODES[kstt].pfa) || ( DATA_STT_NODES[kstt].pfa = new Map() )
-        DATA_STT_NODES[kstt].pfa.set(this.index, v[kstt].event_id)
-      }
-    }
+  , set(v){ this._data = v }
 }
 })
-
 
 module.exports = PFA

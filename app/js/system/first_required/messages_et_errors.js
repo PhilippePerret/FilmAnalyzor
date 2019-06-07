@@ -63,6 +63,9 @@ const ERRORS = {
 , "idee-setup-required":"L'installation de l'idée est requise"
 , "no-event-with-filter":"Aucun event n'a été trouvé avec le filtre demandé."
 , "explaination-cur-image":"Si cette case est cochée, l'event est lié à l'image de son temps courant, c'est-à-dire que cette image sera affichée en regard de l'affichage de l'event.\n\nOn pourra définir une légende, une taille et une position en éditant l'image depuis le listing des images."
+, "stt-id-structurel-required":"L'ID structurel est indispensable et doit être choisi avec soin."
+, "stt-index-pfa-required":"L'index du Paradigme de Field Augmenté est requis."
+, "stt-noeud-already-exists":"Il existe déjà un nœud structurel « %{name} » défini à %{at} (%{link})"
 
 , "--- FLYING WINDOW ---":""
 , "fwindow-required-owner": "Pour instancier une flying-window (FWindow), le propriétaire est requis en premier argument."

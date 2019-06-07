@@ -17,7 +17,7 @@ const PFA_calculs = {
 * Méthode qui calcule toutes les dimensions d'après la largeur voulue
 **/
   calcDimsFor(larg){
-    console.log(`PFA.calcDimsFor(larg = ${larg})`)
+    // console.log(`PFA.calcDimsFor(larg = ${larg})`)
     this.quart  = this.qu = larg / 4
     this.tiers  = this.ti = larg / 3
     this.moitie = this.mo = larg / 2
@@ -43,8 +43,8 @@ const PFA_calculs = {
     , 'Subs-Rel': []
     }
 
-    for(kstt in this.DATA_STT_NODES){
-      dnode = this.DATA_STT_NODES[kstt]
+    for(kstt in DATA_STT_NODES){
+      dnode = DATA_STT_NODES[kstt]
       node  = this.node(kstt)
       if(dnode.main === true){
         // Les actes
@@ -56,7 +56,6 @@ const PFA_calculs = {
         if (node.event_id) this.TimesTables[`Subs-Rel`].push(NodeTblTimes(node,'Rel'))
       }
     }
-    // console.log("this.TimesTables:", this.TimesTables)
   }
 
 

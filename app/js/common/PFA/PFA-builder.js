@@ -38,7 +38,7 @@ get relativePFA(){
   , append: [
       this.divRelZones(STRbottom)
     , this.divRelZones(STRtop)
-    , this.divRelParts
+    , ...this.divRelParts
   ]})
 }
 
@@ -53,25 +53,22 @@ get divAbsParts(){
   var div = this.divParts('Abs')
   return div
 }
+/**
+  Retourne les divs des parties relatives, en tout cas celles qui sont
+  définies.
+**/
 get divRelParts(){
-  var div = this.divParts('Rel')
-  return div
+  return this.divsParts('Rel')
 }
 
-divParts(dimT /* 'Abs' ou 'Rel'*/ ){
-  var div, zoneId, node, span
-  div = DCreate(DIV, {
-      id:    `pfa-${this.pfa.index}-div-parts-${dimT}`
-    , class: 'pfa-div-parts'
-    , style: `width:${this.totalWidth}px;`
-  })
+divsParts(dimT /* 'Abs' ou 'Rel'*/ ){
+  var divs = [], zoneId, node, div
   for(zoneId of this.partsIds){
     node = this.pfa.node(zoneId)
-    span = node[`in${dimT}PFA`](this.coefT2P)
-    span && div.appendChild(span)
+    div = node[`in${dimT}PFA`](this.coefT2P)
+    div && divs.push(div)
   }
-  node = null
-  return div
+  return divs
 }
 
 /**

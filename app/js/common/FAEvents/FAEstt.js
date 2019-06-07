@@ -15,26 +15,29 @@ constructor(analyse, data){
 }
 
 /**
-  Méthode appelée avant la validation pour faire quelques corrections
+  Quelques opérations à faire avant la validation
 **/
 beforeValidation(){
-  
+
 }
 
 get isValid(){
   var errors = []
-  // console.log("-> isValid")
-  if(!this.sttID){
-    errors.push({msg: "L'ID structurel est indispensable et doit être choisi avec soin.", prop: 'sttType'})
+  this.beforeValidation()
+  if ( isUndefined(this.sttID) ) {
+    errors.push({msg:T('stt-id-structurel-required'), prop: 'sttType'})
+    // Note : normalement, si on se sert du formulaire, ça ne devrait jamais arriver
+  } else if ( isUndefined(this.idx_pfa) ) {
+    errors.push({msg:T('stt-index-pfa-required'), prop:'idx_pfa'})
   } else {
     // On ne peut pas créer une propriété qui existe déjà
-    console.log("idx_pfa:", this.idx_pfa, typeof(this.idx_pfa))
     var nstt = this.pfa.node(this.sttID)
     if (nstt.event_id && nstt.event_id != this.id){
-      errors.push({msg: `Il existe déjà un nœud structurel « ${nstt.hname} » défini à ${nstt.event.horloge} (${nstt.event.link})`})
+      errors.push({msg:T('stt-noeud-already-exists', {name:nstt.hname, at:nstt.event.horloge, link:nstt.event.link})})
     } else {
       // Définir ici les validité
-      this.content || errors.push({msg: "La description du nœud structurel est indispensable.", prop: 'longtext1'})
+      // En fait, pour les noeuds STT, on ne demande rien d'autre que le
+      // paradigme et le noeud.
     }
   }
 

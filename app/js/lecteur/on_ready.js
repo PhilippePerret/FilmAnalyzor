@@ -29,7 +29,7 @@ function WhenAllIsReallyReady(){
   // current_analyse.togglePanneauPersonnages()
 
   // Pour afficher le premier paradigme de Field
-  // current_analyse.displayPFA(1)
+  current_analyse.displayPFA(1)
 
   // // Construire l'analyse
   // current_analyse.displayFullAnalyse(/*forcer update = */true)
