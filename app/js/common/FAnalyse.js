@@ -139,10 +139,10 @@ get PFA(){
     SttNode = tryRequire('./js/common/PFA/SttNode.js')
     PFA     = tryRequire('./js/common/PFA/PFA.js')
     this._PFA = new Map
-    this._PFA[1] = new PFA(1)
-    this._PFA[2] = new PFA(2)
-    this._PFA[3] = new PFA(3)
-    this._PFA[4] = new PFA(4)
+    this._PFA.set(1, new PFA(1))
+    this._PFA.set(2, new PFA(2))
+    this._PFA.set(3, new PFA(3))
+    this._PFA.set(4, new PFA(4))
   }
   return this._PFA
 }
@@ -253,14 +253,11 @@ displayLastReport(){
   FAReport.showLast()
 }
 
-
-displayPFA(index_pfa){
-  this.PFA.get(index_pfa).toggle()
-}
+// Afficher le paradigme de Field d'index +index_pfa+
+displayPFA(index_pfa){ this.PFA.get(index_pfa).toggle() }
+// Afficher le calque du paradigme de Field absolu
 displayCalcPFA(){
-  if (NONE === typeof PFA_Calque){
-    window.PFA_Calque = App.require('common/PFA/PFA-calque')
-  }
+  NONE === typeof PFA_Calque && ( window.PFA_Calque = App.require('common/PFA/PFA-calque') )
   PFA_Calque.toggle()
 }
 
@@ -842,14 +839,14 @@ get folderFiles(){
 }
 
 get folderReports(){
-  if(undefined === this._folderReports) defP(this,'_folderReports', path.join(this.folder,'reports'))
+  isDefined(this._folderReports) || defP(this,'_folderReports', path.join(this.folder,'reports'))
   // On construit le dossier s'il n'existe pas
   if(!fs.existsSync(this._folderReports)) fs.mkdirSync(this._folderReports)
   return this._folderReports
 }
 
 get folderExport(){
-  if(undefined === this._folderExport){
+  if ( isUndefined(this._folderExport) ){
     this._folderExport = path.join(this.folder,'exports')
     if(!fs.existsSync(this._folderExport)){
       fs.mkdirSync(this._folderExport)

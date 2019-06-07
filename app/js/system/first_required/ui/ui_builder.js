@@ -120,6 +120,15 @@ const UIBuilder = {
     // clique pour placer le curseur)
     UI.timeRuler = UI.sectionTimeline.find('div#banctime-timeRuler')
 
+    // Bande de la timeline, sous la timeRuler (réglette de temps), qui va
+    // contenir la "tape" des events ou les pfa.
+    UI.timelineBanc = UI.sectionTimeline.find('section#banctime-banc-timeline')
+    
+    // La bande (tape) sur laquelle sont répartis les events.
+    // Note : c'est cette bande qui sera remplacée par la bande des pfa pour les
+    // voir
+    UI.timelineTape = UI.timelineBanc.find('div#banctime-tape')
+
     // La vidéo proprement dite (attention DOMElement, pas jqSet)
     UI.video = UI.sectionVideo.find('video#section-video-body-video-1')[0]
 

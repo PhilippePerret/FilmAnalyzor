@@ -1,13 +1,11 @@
 'use strict'
 
-const {
-  DATA_STT_NODES
-, MAIN_STT_NODES
-, SUB_STT_NODES
-} = require('./data_PFA')
-
-const PFA_Calque = tryRequire('PFA-calque',__dirname)
-
+// const {
+//   DATA_STT_NODES
+// , MAIN_STT_NODES
+// , SUB_STT_NODES
+// } =
+tryRequire('data_PFA', __dirname)
 
 class PFA {
 /**
@@ -15,8 +13,8 @@ class PFA {
 **/
 constructor(index){
   this.index = index
-
-  this.inited = false
+  this.shown  = false // pas affiché
+  this.inited = false // pas initié
 }
 
 /**
@@ -52,6 +50,7 @@ node(nid){
 
 /**
   Boucle sur tous les noeuds structurels de ce PFA
+  Attention, il faut tenir compte du fait qu'il n'est peut être pas défini.
 **/
 forEachNode(fn){
   var kstt
@@ -99,7 +98,6 @@ getDataInEvents(){
   return data
 }
 
-
 saveIfModified(){ this.modified && this.save() }
 save(){
   var my = this
@@ -108,96 +106,36 @@ save(){
 }
 
 get path(){return this._path || defP(this,'_path',this.a.pathOf(`pfa-${this.index}.json`))}
-get iofile(){return this._iofile || defP(this,'_iofile', new IOFile(this))}
+// get iofile(){return this._iofile || defP(this,'_iofile', new IOFile(this))}
 }
 
-Object.assign(PFA.prototype, require('./PFA-calculs'))
+Object.assign(PFA.prototype, tryRequire('PFA-calculs', __dirname))
+Object.assign(PFA.prototype, tryRequire('PFA-display', __dirname))
 
-Object.assign(PFA, {
-
-// ---------------------------------------------------------------------
-// Méthodes d'affichage
- toggle(){
-    this.fwindow.toggle()
-}
-/**
-  Afficher masquer le calque du PFA
-**/
-, toggleCalc(){ this.calque.toggle() }
-
-, show(){
-    this.fwindow.show()
-  }
-, hide(){
-    this.fwindow.hide()
-}
-, update(){
-    this.fwindow.update()
-    if(this.fwindow.visible) this.show()
-}
-
-// ---------------------------------------------------------------------
-//  Méthodes de construction
-
-/**
- * Méthode principale de construction des PFA du film.
- */
-, build(){
-    return require('./PFA_building.js').bind(this)()
-  }
-// ---------------------------------------------------------------------
-//  Méthodes de calculs
-
-, observe(){
-    // On colle un FATimeline
-    var ca  = this.a
-    var jqo = this.fwindow.jqObj
-    var tml = new FATimeline(jqo[0])
-    tml.init({height: 40, cursorHeight:262, cursorTop: -222, only_slider_sensible: true})
-    // Dans le paradigme, on observe tous les events relatifs
-    // pour pouvoir 1) les dragguer pour les placer dans d'autres
-    // éléments et 2) les éditer en les cliquant.
-    jqo.find('.event')
-      .draggable({
-        containment:STRdocument
-      , helper: 'clone'
-      , revert: true
-      })
-      .on(STRclick, function(e){
-        var event_id = parseInt($(this).attr(STRdata_id),10)
-        FAEvent.edit.bind(ca, event_id)()
-        stopEvent(e)//sinon le pfa est remis au premier plan
-      })
-}
-})
-Object.defineProperties(PFA,{
+Object.defineProperties(PFA.prototype,{
   // Le 24ème de la durée du film, sert pour différentes
   // opérations.
   ieme24:{
-    get(){
-      return this._ieme24 || defP(this,'_ieme24', this.a.duree / 24)
-    }
+    get(){ return this._ieme24 || defP(this,'_ieme24', this.a.duree / 24)}
   }
-, a:{
-    get(){return this.analyse || current_analyse}
-  }
-, fwindow:{
-    get(){return this._fwindow || defP(this,'_fwindow', new FWindow(this, {id: 'pfas'}))}
-  }
-, jqObj:{
-    get(){return this._jqObj||defP(this,'_jqObj',$('#pfas'))}
-  }
+, a:{ get(){return this.analyse || current_analyse} }
+, jqObj:{ get(){return this._jqObj||defP(this,'_jqObj',$(`#${this.domId}`))} }
+, domId:{get(){return this._domid || defP(this,'_domid', `pfa-${this.index}`)}}
 , modified:{
     get(){return this._modified}
   , set(v){this._modified = v}
 }
 , data:{
-    get() { return this._data }
+    get() {
+      isUndefined(this._data) && isFalse(this.inited) && this.init()
+      return this._data
+    }
   , set(v){
       this._data = v
       // Il faut les dispatcher dans la donnée générale
       for(var kstt in v){
-        DATA_STT_NODES[kstt].event_id = v[kstt].event_id
+        isDefined(DATA_STT_NODES[kstt].pfa) || ( DATA_STT_NODES[kstt].pfa = new Map() )
+        DATA_STT_NODES[kstt].pfa.set(this.index, v[kstt].event_id)
       }
     }
 }

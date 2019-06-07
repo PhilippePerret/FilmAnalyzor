@@ -1,82 +1,82 @@
-div#pfas {
-  position:absolute;
-  top:100px;
-  left:50px;
-  padding:2px;
-  border:3px solid orange;
-  background-color:white;
+div.pfas {
+  position: relative;
+  padding: 0;
+  margin: 0;
+  padding-top: 2em;
+  height: calc(100% - 2em);
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: 50% 50%;
 }
-div#pfas section.pfa {
-  display:block;
-  /* background-color:yellowgreen; */
-  min-height:40px;
-  border-bottom:2px solid green;
-  margin-top:8px;
+div.pfas section.pfa-absolute {
+  grid-column: 1;
+  grid-row: 1;
+  background-color: blue;
+  position: relative;
 }
-div#pfas section.pfa div.pfa-div-parts,
-div#pfas section.pfa div.pfa-div-zones,
-div#pfas section.pfa div.pfa-div-events
-{
-  position:relative;
-  height:33px;
-}
-
-div#pfas section.pfa div.pfa-div-parts span.pfa-part-part,
-div#pfas section.pfa div.pfa-div-zones span.pfa-part-zone,
-div#pfas section.pfa div.pfa-div-events span.pfa-part-event
-{
-  position:absolute;
+div.pfas section.pfa-relative {
+  grid-column: 1;
+  grid-row: 2;
+  background-color: green;
+  position: relative;
 }
 
-div#pfas section.pfa div.pfa-div-parts span.pfa-part-part.inzone,
-div#pfas section.pfa div.pfa-div-zones span.pfa-part-zone.inzone,
-div#pfas section.pfa div.pfa-div-events span.pfa-part-event.inzone
-{
-  background-color:green;
+/* Pour toutes les parties, absolues comme relatives */
+div.pfas div.part {
+  font-size: 13pt;
+  font-variant: small-caps;
+  text-align: center;
+  color: #777777;
+  position: absolute;
+  height: 100%;
 }
-div#pfas section.pfa div.pfa-div-parts span.pfa-part-part.nearzone,
-div#pfas section.pfa div.pfa-div-zones span.pfa-part-zone.nearzone,
-div#pfas section.pfa div.pfa-div-events span.pfa-part-event.nearzone
-{
-  background-color:orange;
+div.pfas section.pfa-absolute > div.part {
+  width: 25%;
 }
-div#pfas section.pfa div.pfa-div-parts span.pfa-part-part.outzone,
-div#pfas section.pfa div.pfa-div-zones span.pfa-part-zone.outzone,
-div#pfas section.pfa div.pfa-div-events span.pfa-part-event.outzone
-{
-  background-color:red;
+div.pfas section.pfa-absolute div.part-expo {
+  left: 0;
+  background-color: lightblue;
+}
+div.pfas section.pfa-absolute div.part-dev1 {
+  left: 25%;
+  background-color: skyblue;
+}
+div.pfas section.pfa-absolute div.part-dev2 {
+  left: 50%;
+  background-color: paleturquoise;
+}
+div.pfas section.pfa-absolute div.part-dnou {
+  left: 75%;
+  background-color: lightblue;
 }
 
-/* Marque de partie (absolute/relative) */
-div#pfas section.pfa div.pfa-div-parts span.pfa-part-part {
-  font-size:0.83em;
-  opacity:0.5;
-  border:1px solid;
-  text-align:center;
-  height:210px;
+div.pfas div.div-pfa-zones {
+  position: absolute;
 }
-/* Marque de zone (absolute) */
-div#pfas section.pfa div.pfa-div-zones span.pfa-part-zone {
-  text-align:center;
-  border-radius:1em;
-  height:13.5px;
-  background-color:green;
-  margin-top:18px;
-  /*  Pour les sttnodes, sinon la class .event amène du padding
-      et du border */
-  padding:0;
-  border:0;
+div.pfas div#pfa-1-div-zones-Abs-top {
+  top: 30px;
 }
-div#pfas section.pfa div.pfa-div-zones span.pfa-part-zone span.name {
-  position:absolute;
-  font-size:0.72em;
-  top:-16px;
-  left:0;
-  width:100%;
-  white-space:nowrap;
-  text-align:center;
+div.pfas div#pfa-1-div-zones-Abs-bottom {
+  top: 60px;
 }
-/* Marque d'event précis (relative) */
-div#pfas section.pfa div.pfa-div-events span.pfa-part-event {
+div.pfas div.div-pfa-zones > span {
+  position: absolute;
+  font-size: 9.6pt;
+  text-align: center;
+  color: white;
+}
+div.pfas div.div-pfa-zones > span:not(.missed):not(.unplaced) {
+  background-color: darkgreen;
+  border: 1px solid red;
+}
 
+/* Une zone définie, mais mal placée */
+div.pfas div.div-pfa-zones > span.unplaced {
+  background-color: orange;
+  border: 1px solid red;
+}
+/* Une zone qui manque, qui n'est pas définie */
+div.pfas div.div-pfa-zones > span.missed {
+  background-color: red;
+  border: 1px solid green;
 }

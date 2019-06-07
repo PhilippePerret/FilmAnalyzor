@@ -38,11 +38,12 @@ let addEvent = function(nev){
     // note : le PFA est toujours chargé
     // => On peut placer le nouveau noeud directement
     //    dans les données et les enregistrer
-    var d = this.PFA.data
+    let pfa = this.PFA.get(nev.idx_pfa)
+    var d = pfa.data
     d[nev.sttID] = {event_id: nev.id, stt_id: nev.sttID}
-    this.PFA.data = d
-    this.PFA.save()
-    this.PFA.update() // seulement si déjà ouvert
+    pfa.data = d
+    pfa.save()
+    pfa.update() // seulement si déjà ouvert
   }
 
   // On place tout de suite l'évènement sur le reader

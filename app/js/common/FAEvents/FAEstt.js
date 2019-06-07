@@ -6,12 +6,19 @@ class FAEstt extends FAEvent {
 //  CLASSE
 
 // Propriétés propres
-static get OWN_PROPS(){return [ ['sttID', 'sttType'], 'pfa' ]}
+static get OWN_PROPS(){return [ ['sttID', 'sttType'], 'idx_pfa' ]}
 
 // ---------------------------------------------------------------------
 //  INSTANCE
 constructor(analyse, data){
   super(analyse, data)
+}
+
+/**
+  Méthode appelée avant la validation pour faire quelques corrections
+**/
+beforeValidation(){
+  
 }
 
 get isValid(){
@@ -21,7 +28,8 @@ get isValid(){
     errors.push({msg: "L'ID structurel est indispensable et doit être choisi avec soin.", prop: 'sttType'})
   } else {
     // On ne peut pas créer une propriété qui existe déjà
-    var nstt = this.analyse.PFA.node(this.sttID)
+    console.log("idx_pfa:", this.idx_pfa, typeof(this.idx_pfa))
+    var nstt = this.pfa.node(this.sttID)
     if (nstt.event_id && nstt.event_id != this.id){
       errors.push({msg: `Il existe déjà un nœud structurel « ${nstt.hname} » défini à ${nstt.event.horloge} (${nstt.event.link})`})
     } else {
@@ -37,11 +45,11 @@ get isValid(){
 
 get sttNode(){return this._sttNode || defP(this,'_sttNode',this.pfa.node(this.sttID))}
 
-get pfa(){
-  this.a.PFA[this.idx_pfa]
-}
+// Retourne l'instance PFA du noeud
+get pfa(){ return this._pfa || defP(this,'_pfa',this.a.PFA.get(this.idx_pfa))}
 
 get idx_pfa(){return this._idx_pfa || defP(this,'_idx_pfa',1/* par défaut*/)}
+set idx_pfa(v){this._idx_pfa = parseInt(v,10)}
 
 // Mise en forme du contenu propre à ce type d'event
 formateContenu(){

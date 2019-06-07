@@ -3,7 +3,7 @@
   Données minimales qui peuvent être chargées lorsqu'on ne charge pas
   tout le module.
 **/
-const DATA_STT_NODES = {
+window.DATA_STT_NODES = {
 // cZone définit le calcul de la zone où le noeud peut se trouver
 // Noter qu'on peut indiquer "<identifiant>" pour ne pas préciser un
 // temps mais préciser le noeud qui servira de fin ou de début
@@ -53,8 +53,11 @@ const DATA_STT_NODES = {
 , desine: {hname: 'Désinence',              dim: 'DS', shortHname:'Désin.', cZone:'[duree-iem24,duree]', next: null, first: 'preamb', tolerance:'none', requirity:4}
 }
 
-module.exports = {
-  MAIN_STT_NODES: ['incDec', 'pivot1', 'cledev', 'pivot2', 'climax']
-, SUB_STTNODES: ['preamb', 'incPer', 'zone_r', 'act1d1', 'tiers1', 'act1d2', 'tiers2', 'act1d3', 'crisis', 'desine']
-, DATA_STT_NODES: DATA_STT_NODES
-}
+window.MAIN_STT_NODES = ['incDec', 'pivot1', 'cledev', 'pivot2', 'climax']
+window.SUB_STTNODES = ['preamb', 'incPer', 'zone_r', 'act1d1', 'tiers1', 'act1d2', 'tiers2', 'act1d3', 'crisis', 'desine']
+
+// module.exports = {
+//   MAIN_STT_NODES: ['incDec', 'pivot1', 'cledev', 'pivot2', 'climax']
+// , SUB_STTNODES: ['preamb', 'incPer', 'zone_r', 'act1d1', 'tiers1', 'act1d2', 'tiers2', 'act1d3', 'crisis', 'desine']
+// , DATA_STT_NODES: DATA_STT_NODES
+// }

@@ -15,10 +15,13 @@ const PFABuilder = {
 
 , GRAPH_WIDTH: 688  // Largeur du graphique en pixels
 
-
-/** ---------------------------------------------------------------------
+/**
   Construction du paradigme graphique
-**/
+  À partir de l'instance +pfa+
+
+  @param {PFA} pfa  Le paradigme qu'il faut construire.
+
+ */
 , buildPFAgraph(pfa){
   var x, y, good
 
@@ -37,13 +40,13 @@ const PFABuilder = {
   }
   var partsAndZones = [
       // === ABSOLUES ===
-      DCreate('DIV', {class:'pfa-part-name', inner: 'EXPO.'})
-    , DCreate('DIV', {class:'pfa-part-name', inner: 'DÉV Partie 1'})
-    , DCreate('DIV', {class:'pfa-part-name', inner: 'DÉV Partie 2'})
-    , DCreate('DIV', {class:'pfa-part-name', inner: 'DÉNOU.'})
-    , DCreate('DIV', {id:'pfa-zones-main', class: 'pfa-zones',
+      DCreate(DIV, {class:'pfa-part-name', inner: 'EXPO.'})
+    , DCreate(DIV, {class:'pfa-part-name', inner: 'DÉV Partie 1'})
+    , DCreate(DIV, {class:'pfa-part-name', inner: 'DÉV Partie 2'})
+    , DCreate(DIV, {class:'pfa-part-name', inner: 'DÉNOU.'})
+    , DCreate(DIV, {id:'pfa-zones-main', class: 'pfa-zones',
         append:nodesMainZonesAbs})
-    , DCreate('DIV', {id:'pfa-zones-sub', class: 'pfa-zones',
+    , DCreate(DIV, {id:'pfa-zones-sub', class: 'pfa-zones',
         append:nodesSubZonesAbs})
     // === RELATIFS (en fonction des définitions) ===
   ]
@@ -59,14 +62,14 @@ const PFABuilder = {
     // => On peut définir l'incident déclencheur
     // console.log("Placement du noeud:", kstt, pos)
     nodesMainZonesRel.push(
-      DCreate('DIV', {
+      DCreate(DIV, {
         class: `pfa-main-node-rel${pos.class}`
       , style: `left:${pos.left}px;width:${pos.width}px`
       , append:[ DCreate(SPAN, {inner: pfa.node(kstt).dim}) ]
       })
     )
   }
-  var mainZonesDiv = DCreate('DIV',{id:'pfa-zones-main-rel', class:'pfa-zones',
+  var mainZonesDiv = DCreate(DIV,{id:'pfa-zones-main-rel', class:'pfa-zones',
     append:nodesMainZonesRel
   })
   partsAndZones.push(mainZonesDiv)
@@ -78,7 +81,7 @@ const PFABuilder = {
     if(pos.good == false) this.divergences.push(pos)
     // => On peut définir l'incident déclencheur
     nodesSubZonesRel.push(
-      DCreate('DIV', {
+      DCreate(DIV, {
         class: `pfa-sub-node-rel${pos.class}`
       , style: `left:${pos.left}px;width:${pos.width}px`
       , append:[ DCreate(SPAN, {inner: pfa.node(kstt).dim}) ]
@@ -86,7 +89,7 @@ const PFABuilder = {
     )
   }
 
-  var subZonesDiv = DCreate('DIV',{id:'pfa-zones-sub-rel', class:'pfa-zones',
+  var subZonesDiv = DCreate(DIV,{id:'pfa-zones-sub-rel', class:'pfa-zones',
     append:nodesSubZonesRel
   })
   partsAndZones.push(subZonesDiv)
@@ -97,7 +100,7 @@ const PFABuilder = {
     good = this.expoIsGood()
     if(!good) this.divergences.push(pos)
     partsAndZones.push(
-      DCreate('DIV', {
+      DCreate(DIV, {
         class: `pfa-part-name-rel${good?'':' wrong'}`
       , style: `left:0px;width:${this.leftDev1()}px`
       , inner: 'EXPO.'
@@ -111,7 +114,7 @@ const PFABuilder = {
     good = this.dev1IsGood()
     if(!good) this.divergences.push(pos)
     partsAndZones.push(
-      DCreate('DIV', {
+      DCreate(DIV, {
         class: `pfa-part-name-rel${good?'':' wrong'}`
       , style: `left:${x}px;width:${y-x}px`
       , inner: 'DÉV Partie 1'
@@ -125,7 +128,7 @@ const PFABuilder = {
     good = this.dev2IsGood()
     if(!good) this.divergences.push(pos)
     partsAndZones.push(
-      DCreate('DIV', {
+      DCreate(DIV, {
         class: `pfa-part-name-rel${good?'':' wrong'}`
       , style: `left:${x}px;width:${y-x}px`
       , inner: 'DÉV Partie 2'
@@ -139,14 +142,14 @@ const PFABuilder = {
     good = this.denouIsGood()
     if(!good) this.divergences.push(pos)
     partsAndZones.push(
-      DCreate('DIV', {
+      DCreate(DIV, {
         class: `pfa-part-name-rel${good?'':' wrong'}`
       , style: `left:${x}px;width:${y-x}px`
       , inner: 'DÉNOUE.'
       })
     )
   }
-  var divGraph = DCreate('DIV', {
+  var divGraph = DCreate(DIV, {
     id: 'pfa-graph-container',
     append: partsAndZones
   })
@@ -165,9 +168,9 @@ const PFABuilder = {
   var str
   for(var divergence of this.divergences){
     str = `– Nœud “${divergence.node.hname}” ${divergence.motif}`
-    divergencesListe.push(DCreate('DIV',{inner: str}))
+    divergencesListe.push(DCreate(DIV,{inner: str}))
   }
-  return DCreate('DIV',{
+  return DCreate(DIV,{
     id: 'pfa-divergences'
   , append: divergencesListe
   })
@@ -292,16 +295,16 @@ const PFABuilder = {
 //
 , buildPFAtext(pfa){
   var allDivs = [
-      DCreate('DIV',{class:'pfa-part-name expo', append:[
+      DCreate(DIV,{class:'pfa-part-name expo', append:[
         DCreate(SPAN, {inner:'EXPOSITION'})
       ]})
-    , DCreate('DIV',{class:'pfa-part-name dev1', append:[
+    , DCreate(DIV,{class:'pfa-part-name dev1', append:[
         DCreate(SPAN, {inner:'DÉV 1'})
       ]})
-    , DCreate('DIV',{class:'pfa-part-name dev2', append:[
+    , DCreate(DIV,{class:'pfa-part-name dev2', append:[
         DCreate(SPAN, {inner:'DÉV 2'})
       ]})
-    , DCreate('DIV',{class:'pfa-part-name dnou', append:[
+    , DCreate(DIV,{class:'pfa-part-name dnou', append:[
         DCreate(SPAN, {inner:'DÉNOUEMENT'})
       ]})
   ]
@@ -309,18 +312,18 @@ const PFABuilder = {
   for(var kstt in pfa.DATA_STT_NODES){
     var dstt = pfa.DATA_STT_NODES[kstt]
     if(dstt.main) continue
-    divZone = DCreate('DIV', {
+    divZone = DCreate(DIV, {
         class: `pfa-zone ${kstt}`
       , append: [
-          DCreate('DIV', {class: `pfa-zone-name ${kstt}`, inner: `${dstt.hname}<br>(${dstt.dim})`})
-        , DCreate('DIV', {class: `pfa-zone-desc ${kstt}`, inner: this.descriptionZone(kstt)})
+          DCreate(DIV, {class: `pfa-zone-name ${kstt}`, inner: `${dstt.hname}<br>(${dstt.dim})`})
+        , DCreate(DIV, {class: `pfa-zone-desc ${kstt}`, inner: this.descriptionZone(kstt)})
         ]
     })
     allDivs.push(divZone)
   }
 
   // Le paradigme de field en version textuel
-  return DCreate('DIV', {
+  return DCreate(DIV, {
     id:'pfa-container'
   , append: allDivs
   })
@@ -330,16 +333,16 @@ const PFABuilder = {
 
     this.pfa = pfa
 
-    return DCreate('SECTION', {
-      id: 'pfa'
+    return DCreate(SECTION, {
+      id: STRpfa
     , append:[
-        DCreate('H2', {inner: 'Paradigme de Field graphique'})
-      , DCreate('DIV', {class: 'explication', inner: this.ExplicationPFAGraphique})
+        DCreate(H2, {inner: 'Paradigme de Field graphique'})
+      , DCreate(DIV, {class: 'explication', inner: this.ExplicationPFAGraphique})
       , this.buildPFAgraph(pfa)
-      , DCreate('H2', {inner: 'Divergences avec le paradigme absolu'})
+      , DCreate(H2, {inner: 'Divergences avec le paradigme absolu'})
       , this.buildPFADivergences()
-      , DCreate('H2', {inner: 'Paradigme de Field textuel'})
-      , DCreate('DIV', {class:'explication', inner:this.ExplicationPFATextuel})
+      , DCreate(H2, {inner: 'Paradigme de Field textuel'})
+      , DCreate(DIV, {class:'explication', inner:this.ExplicationPFATextuel})
       , this.buildPFAtext(pfa)
     ]
     })

@@ -255,8 +255,8 @@ get time()  { return this._time || defP(this,'_time', this.event.time) }
  */
 init(){
   // console.log("-> EventForm#init")
-  if(this.inited){throw("Je ne dois pas pouvoir initier deux fois le formulaire…")}
-  if(!this.built) this.fwindow.build().observe()
+  isFalse(this.inited)  || raise("Je ne dois pas pouvoir initier deux fois le formulaire…")
+  isTrue(this.built)    || this.fwindow.build().observe()
   if (this.isNew){
     if(this.type === STRscene) this.setNumeroScene()
   } else {
@@ -360,7 +360,8 @@ afterBuilding(){
 
   // Si c'est pour un nœud structurel, il faut peupler le menu des types
   if (typ === STRstt){
-    var dataStt = (this.a._PFA || require('./js/common/PFA/PFA-mini')).DATA_STT_NODES
+    // isDefined(window.DATA_STT_NODES) || tryRequire('./app/js/common/PFA/data_PFA')
+    var dataStt = DATA_STT_NODES
     var mstt = jqo.find('.stt-types')
     mstt.append(DCreate(OPTION, {value: '', inner: 'Choisir l’ID du nœud'}))
     for(var nid in dataStt){

@@ -38,13 +38,13 @@ class SttNode {
     * 12ième de chaque côté)
     */
     var refNode
-    if('string' === typeof z[0]){
+    if( isString(z[0]) ){
       refNode = this.pfa.node(z[0])
       z[0] = refNode.endAtRel || refNode.endAtAbs
       // On indique la dépendance, pour reseter en cas de redéfinition
       refNode.dependencies.push(sttnode.id)
     }
-    if('string' === typeof z[1]){
+    if( isString(z[1]) ){
       refNode = this.pfa.node(z[1])
       z[1] = refNode.startAtRel || refNode.startAtAbs
       refNode.dependencies.push(sttnode.id)
@@ -66,7 +66,7 @@ class SttNode {
 //  INSTANCE
 
 constructor(nid, data){
-  if(undefined == nid) throw("ERREUR: Impossible d'instancier un SttNode sans identifiant de structure")
+  isDefined(nid) || raise("ERREUR: Impossible d'instancier un SttNode sans identifiant de structure")
   this.id = nid
   // console.log("data:", data)
   for(var p in data){this[`_${p}`] = data[p]}
@@ -86,13 +86,13 @@ constructor(nid, data){
 * en version absolue, d'après un coefficiant +coef+
 **/
 inAbsPFA(coefT2P, name){
-  // console.log(`Pour le calcul de la position du noeud ABSOLU ${this.hname}`, {
-  //   startAtAbs: this.startAtAbs
-  // , endAtAbs: this.endAtAbs
-  // , coefT2P: coefT2P
-  // , leftAbs: this.leftAbs(coefT2P)
-  // , widthAbs: this.widthAbs(coefT2P)
-  // })
+  console.log(`Pour le calcul de la position du noeud ABSOLU ${this.hname}`, {
+    startAtAbs: this.startAtAbs
+  , endAtAbs: this.endAtAbs
+  , coefT2P: coefT2P
+  , leftAbs: this.leftAbs(coefT2P)
+  , widthAbs: this.widthAbs(coefT2P)
+  })
   return DCreate(SPAN, {
     class:  `pfa-part-${this.isMainPart?'part':'zone'}`
   , style:  `left:${this.leftAbs(coefT2P)};width:${this.widthAbs(coefT2P)};`
@@ -101,7 +101,7 @@ inAbsPFA(coefT2P, name){
 }
 
 inRelPFA(coefT2P, name){
-  if(false === this.isDefined) return null
+  if ( isFalse(this.isDefined) ) return null
   // console.log(`Pour le calcul de la position du noeud RELATIF ${this.hname}`, {
   //     startAtRel: this.startAtRel
   //   , endAtRel: this.endAtRel
