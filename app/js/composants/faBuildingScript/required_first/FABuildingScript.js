@@ -83,12 +83,13 @@ const FABuildingScript = {
   courante, sous forme de données d'étape.
 **/
 , customDocumentsAsSteps(){
-    return FADocument.documents.filter(doc => doc.dtype === STRcustom).map(doc => {
+    return PorteDocuments.documents.filter(doc => doc.dtype === STRcustom).map(doc => {
       return {hname: doc.title, id:`doc:custom-${doc.id}`}
     })
   }
 
 } ; /* /FABuildingScript */
+
 Object.defineProperties(FABuildingScript,{
 
 // ---------------------------------------------------------------------

@@ -64,8 +64,10 @@ const PFA_display = {
       , helper: function(e){
           if ( isUndefined(this._draghelper) ){
             let target = $(e.target)
-              , ev = FAEvent.get(parseInt(target.data(STRid),10))
-            this._draghelper = DHelper(ev.toString(), {type: STRevent, id: target.data(STRid)})
+              , evid = parseInt(target.data(STRid),10)
+              , ev = FAEvent.get(evid)
+              , txt = isDefined(ev) ? ev.toString() : `EVENT INDÉFINI (${evid})`
+            this._draghelper = DHelper(txt, {type: STRevent, id: evid})
             // console.log("helper:", this._draghelper)
           }
           return this._draghelper

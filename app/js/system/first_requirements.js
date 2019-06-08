@@ -9,6 +9,8 @@ function FReqGet(name){
 
 require('./js/system/utils')
 
+FReqGet('Map_extension')
+
 const WindowController = FReqGet('ui/WindowController')
 const MessageBox = FReqGet('MessageBox')
 
@@ -16,12 +18,12 @@ const MessageBox = FReqGet('MessageBox')
 const FADrop = FReqGet('FADrop')
 
 const {
-  ASSOCIATES_COMMON_METHODS
-, ASSOCIATES_COMMON_PROPERTIES
-, DATA_ASSOCIATES_DRAGGABLE
-, DATA_ASSOCIATES_DROPPABLE
-, TEXTFIELD_ASSOCIATES_METHS
-, TEXTFIELD_ASSOCIATES_PROPS
+    ASSOCIATES_COMMON_METHODS
+  , ASSOCIATES_COMMON_PROPERTIES
+  , DATA_ASSOCIATES_DRAGGABLE
+  , DATA_ASSOCIATES_DROPPABLE
+  , TEXTFIELD_ASSOCIATES_METHS
+  , TEXTFIELD_ASSOCIATES_PROPS
 } = require('./js/system/first_required/FA_associates.js')
 
 const System = FReqGet('System')

@@ -9,6 +9,15 @@
 
 **/
 
+const EXPO = 'EXPO'
+const DEV1 = 'DEV1'
+const DEV2 = 'DEV2'
+const DNOU = 'DNOU'
+
+const Pivot1 = 'pivot 1'
+const Pfa_part_name = 'pfa-part-name'
+
+
 // Le constructeur de PFA
 const PFABuilder = {
   class: 'PFABuilder'
@@ -30,20 +39,20 @@ const PFABuilder = {
   this.divergences = []
 
   var nodesMainZonesAbs = []
-  for(var kstt of pfa.MAIN_STT_NODES){
+  for(var kstt of MAIN_STT_NODES){
     nodesMainZonesAbs.push(pfa.node(kstt).inAbsPFA(this.coefT2P, pfa.node(kstt).dim))
   }
 
   var nodesSubZonesAbs = []
-  for(var kstt of pfa.SUB_STTNODES){
+  for(var kstt of SUB_STTNODES){
     nodesSubZonesAbs.push(pfa.node(kstt).inAbsPFA(this.coefT2P, pfa.node(kstt).dim))
   }
   var partsAndZones = [
       // === ABSOLUES ===
-      DCreate(DIV, {class:'pfa-part-name', inner: 'EXPO.'})
-    , DCreate(DIV, {class:'pfa-part-name', inner: 'DÉV Partie 1'})
-    , DCreate(DIV, {class:'pfa-part-name', inner: 'DÉV Partie 2'})
-    , DCreate(DIV, {class:'pfa-part-name', inner: 'DÉNOU.'})
+      DCreate(DIV, {class:Pfa_part_name, inner: 'EXPO.'})
+    , DCreate(DIV, {class:Pfa_part_name, inner: 'DÉV Partie 1'})
+    , DCreate(DIV, {class:Pfa_part_name, inner: 'DÉV Partie 2'})
+    , DCreate(DIV, {class:Pfa_part_name, inner: 'DÉNOU.'})
     , DCreate(DIV, {id:'pfa-zones-main', class: 'pfa-zones',
         append:nodesMainZonesAbs})
     , DCreate(DIV, {id:'pfa-zones-sub', class: 'pfa-zones',
@@ -54,10 +63,10 @@ const PFABuilder = {
   // === RELATIFS (en fonction des définitions) ===
   var nodesMainZonesRel = []
   var pos
-  for(var kstt of pfa.MAIN_STT_NODES){
+  for(var kstt of MAIN_STT_NODES){
     // console.log("Traitement du noeud:", kstt)
     pos = this.posRelSttNode(kstt)
-    if(pos.good == false) this.divergences.push(pos)
+    isTrue(pos.good) || this.divergences.push(pos)
 
     // => On peut définir l'incident déclencheur
     // console.log("Placement du noeud:", kstt, pos)
@@ -76,9 +85,9 @@ const PFABuilder = {
   mainZonesDiv = null
 
   var nodesSubZonesRel  = []
-  for(var kstt of pfa.SUB_STTNODES){
+  for(var kstt of SUB_STTNODES){
     pos = this.posRelSttNode(kstt)
-    if(pos.good == false) this.divergences.push(pos)
+    isTrue(pos.good) || this.divergences.push(pos)
     // => On peut définir l'incident déclencheur
     nodesSubZonesRel.push(
       DCreate(DIV, {
@@ -112,7 +121,7 @@ const PFABuilder = {
     x = this.leftDev1()
     y = this.leftDev2()
     good = this.dev1IsGood()
-    if(!good) this.divergences.push(pos)
+    good || this.divergences.push(pos)
     partsAndZones.push(
       DCreate(DIV, {
         class: `pfa-part-name-rel${good?'':' wrong'}`
@@ -126,7 +135,7 @@ const PFABuilder = {
     x = this.leftDev2()
     y = this.posDenou()
     good = this.dev2IsGood()
-    if(!good) this.divergences.push(pos)
+    good || this.divergences.push(pos)
     partsAndZones.push(
       DCreate(DIV, {
         class: `pfa-part-name-rel${good?'':' wrong'}`
@@ -140,7 +149,7 @@ const PFABuilder = {
     x = this.posDenou()
     y = this.leftFin()
     good = this.denouIsGood()
-    if(!good) this.divergences.push(pos)
+    good || this.divergences.push(pos)
     partsAndZones.push(
       DCreate(DIV, {
         class: `pfa-part-name-rel${good?'':' wrong'}`
@@ -190,7 +199,7 @@ const PFABuilder = {
   var motifBad
 
   if(isDefined){
-    if(!isGood) motifBad = 'en dehors de sa zone absolue'
+    isGood || ( motifBad = 'en dehors de sa zone absolue' )
   } else {
     motifBad = 'non défini'
   }
@@ -212,9 +221,9 @@ const PFABuilder = {
 , expoIsGood(){
     // note : on ne passe par ici que si les données sont
     // suffisante pour afficher la partie
-    var ok = this.posDev1().isCloseTo(this.node('DEV1').startAtAbs, this.ieme24)
-    if (ok && this.getEventAtZone('EXPO') && this.getEventAtZone('DEV1')){
-      ok = this.node('EXPO').endAtRel < this.node('DEV1').startAtRel
+    var ok = this.posDev1().isCloseTo(this.node(DEV1).startAtAbs, this.ieme24)
+    if (ok && this.getEventAtZone(EXPO) && this.getEventAtZone(DEV1)){
+      ok = this.node(EXPO).endAtRel < this.node(DEV1).startAtRel
     }
     return ok
   }
@@ -222,10 +231,10 @@ const PFABuilder = {
 , dev1IsGood(){
     // note : on ne passe par ici que si les données sont
     // suffisante pour afficher la partie
-    var ok = this.posDev1().isCloseTo(this.node('DEV1').startAtAbs, this.ieme24)
-    ok = ok && this.posDev2().isCloseTo(this.node('DEV2').startAtAbs, this.ieme24)
-    if(ok && this.getEventAtZone('DEV1') && this.getEventAtZone('DEV2')){
-      ok = this.node('DEV1').endAtRel < this.node('DEV2').startAtRel
+    var ok = this.posDev1().isCloseTo(this.node(DEV1).startAtAbs, this.ieme24)
+    ok = ok && this.posDev2().isCloseTo(this.node(DEV2).startAtAbs, this.ieme24)
+    if(ok && this.getEventAtZone(DEV1) && this.getEventAtZone(DEV2)){
+      ok = this.node(DEV1).endAtRel < this.node(DEV2).startAtRel
     }
     return ok
   }
@@ -233,10 +242,10 @@ const PFABuilder = {
 , dev2IsGood(){
     // note : on ne passe par ici que si les données sont
     // suffisante pour afficher la partie
-    var ok = this.posDev2().isCloseTo(this.node('DEV2').startAtAbs, this.ieme24)
-    ok = ok && this.posDenou().isCloseTo(this.node('DNOU').startAtAbs, this.ieme24)
-    if(ok && this.getEventAtZone('DEV2') && this.getEventAtZone('DNOU')){
-      ok = this.node('DEV2').endAtRel < this.node('DNOU').startAtRel
+    var ok = this.posDev2().isCloseTo(this.node(DEV2).startAtAbs, this.ieme24)
+    ok = ok && this.posDenou().isCloseTo(this.node(DNOU).startAtAbs, this.ieme24)
+    if(ok && this.getEventAtZone(DEV2) && this.getEventAtZone(DNOU)){
+      ok = this.node(DEV2).endAtRel < this.node(DNOU).startAtRel
     }
     return ok
   }
@@ -244,10 +253,10 @@ const PFABuilder = {
 , denouIsGood(){
     // note : on ne passe par ici que si les données sont
     // suffisante pour afficher la partie
-    var ok = this.posDenou().isCloseTo(this.node('DNOU').startAtAbs, this.ieme24)
-    ok = ok && this.node('DNOU').endAtRel <= this.dureeFilm
-    if(ok && this.getEventAtZone('DEV2') && this.getEventAtZone('DNOU')){
-      ok = this.node('DEV2').endAtRel < this.node('DNOU').startAtRel
+    var ok = this.posDenou().isCloseTo(this.node(DNOU).startAtAbs, this.ieme24)
+    ok = ok && this.node(DNOU).endAtRel <= this.dureeFilm
+    if(ok && this.getEventAtZone(DEV2) && this.getEventAtZone(DNOU)){
+      ok = this.node(DEV2).endAtRel < this.node(DNOU).startAtRel
     }
     return ok
   }
@@ -262,8 +271,8 @@ const PFABuilder = {
   }
 , posDev1(){return this._posDev1||defP(this,'_posDev1',this.calcPosDev1())}
 , calcPosDev1(){
-    if(this.getEventOfZone('DEV1')) return this.node('DEV1').startAtRel
-    else if (this.getEventOfZone('pivot1')) return this.node('pivot1').endAtRel
+    if(this.getEventOfZone(DEV1)) return this.node(DEV1).startAtRel
+    else if (this.getEventOfZone(Pivot1)) return this.node(Pivot1).endAtRel
     else return null
 }
 , leftDev2(){return this._leftDev2||defP(this,'_leftDev2',this.calcLeftDev2())}
@@ -272,19 +281,19 @@ const PFABuilder = {
   }
 , posDev2(){return this._posDev2||defP(this,'_posDev2', this.calcPosDev2())}
 , calcPosDev2(){
-    if(this.getEventOfZone('DEV2')) return this.node('DEV2').startAtRel
+    if(this.getEventOfZone(DEV2)) return this.node(DEV2).startAtRel
     else if (this.getEventOfZone('cledev'))return this.node('cledev').endAtRel
     else return null
 }
 , leftDenou(){return this._leftDenou||defP(this,'_leftDenou',this.calcLeftDenou())}
 , calcLeftDenou(){
-  console.log("this.getEventOfZone('DNOU'):", this.getEventOfZone('DNOU'))
+  console.log("this.getEventOfZone(DNOU):", this.getEventOfZone(DNOU))
   console.log("this.posDenou():", this.posDenou())
     if(this.posDenou()) return Math.round(this.posDenou() * this.coefT2P)
   }
 , posDenou(){return this._posDenou||defP(this,'_posDenou', this.calcPosDenou())}
 , calcPosDenou(){
-    if(this.getEventOfZone('DNOU')) return this.node('DNOU').startAtRel
+    if(this.getEventOfZone(DNOU)) return this.node(DNOU).startAtRel
     else if (this.getEventOfZone('pivot2')) return this.node('pivot2').endAtRel
     else return null
 }
@@ -309,8 +318,8 @@ const PFABuilder = {
       ]})
   ]
   var divZone
-  for(var kstt in pfa.DATA_STT_NODES){
-    var dstt = pfa.DATA_STT_NODES[kstt]
+  for(var kstt in DATA_STT_NODES){
+    var dstt = DATA_STT_NODES[kstt]
     if(dstt.main) continue
     divZone = DCreate(DIV, {
         class: `pfa-zone ${kstt}`
@@ -405,16 +414,27 @@ scènes-clés en les décrivant et en les explicitant par rapport au film.</div>
 }}
 })
 
-module.exports = function(options){
+module.exports = function(index_pfa, options){
   var my = this // FABuilder
-
-  // Note : on doit se servir de l'objet PFA pour le faire
+  options = options || {}
   my.log("* Construction du paradigme de Field Augmenté…")
 
-  var pfa = my.a.PFA
+  var pfa = my.a.PFA.get(index_pfa)
 
   let str = ''
-  str += '<h1 id="section-pfa">Paradigme de Field Augmenté du film</h1>'
+  // TODO : il faudra prendre le titre donné au paradigme
+  str += '<h1 id="section-pfa">Paradigme de Field Augmenté du film<br>'
+  switch (index_pfa) {
+    case 1:
+      str += 'Version principale'; break
+    case 2:
+      str += 'Version secondaire'; break
+    case 3:
+      str += 'Version tertiaire'; break
+    case 4:
+      str += 'Version quaternaire'; break
+  }
+  str += '</h1>'
   str += '<!-- TODO : lien version explication -->'
   str += '<section id="pfa">'
   str += my.generalDescriptionOf('pfa')
