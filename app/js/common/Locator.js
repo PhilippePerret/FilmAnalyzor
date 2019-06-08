@@ -124,6 +124,7 @@ setTime(time, options){
   //   throw(e)
   // } finally {
   // }
+  // console.log("-> setTime(time=)", time)
   if ( isBoolean(options) ){
     options = {dontPlay: options}
   } else if ( isUndefined(options) ){

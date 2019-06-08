@@ -123,7 +123,7 @@ const UIBuilder = {
     // Bande de la timeline, sous la timeRuler (réglette de temps), qui va
     // contenir la "tape" des events ou les pfa.
     UI.timelineBanc = UI.sectionTimeline.find('section#banctime-banc-timeline')
-    
+
     // La bande (tape) sur laquelle sont répartis les events.
     // Note : c'est cette bande qui sera remplacée par la bande des pfa pour les
     // voir
@@ -205,8 +205,7 @@ const UIBuilder = {
     // On observe les mutations du DOM
     UI.observeMutations()
 
-    // Observers click et mouseover sur la timeRuler (la réglette
-    // de temps où sont placés les marqueurs par exemple)
+    // Observation de la timeRuler (réglette de temps)
     UI.timeRuler
       // La bande métrée est sensible au clic pour permettre de se
       // déplacer dans le film
@@ -214,7 +213,7 @@ const UIBuilder = {
       // Un survol de la timeRuler modifie l'horloge principale
       .on(STRmouseover, BancTimeline.onMouseOverTimeRuler.bind(BancTimeline))
 
-    // On rend draggable les marques de début et de fin de film
+    // On rend draggable les marques de début et de fin de film sur la timeRuler
     UI.timeRuler.find('.mark-film').draggable({
         axis:'x'
       , drag: (e) => {

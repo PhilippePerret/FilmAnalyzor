@@ -62,19 +62,26 @@ const BancTimeline = {
   souris sur cette réglette (rapide).
 
   Note : ce setTimeout sert à ne pas déclencher les choses si on ne
-  fait que passer sur la réglette
+  fait que passer sur la réglette rapidement
 **/
 , onMouseOverTimeRuler(e){
-  // TODO : REMETTRE CI-DESSOUS, MAIS SANS GÊNER LE DÉPLACEMENT DES MARQUEURS
-    // console.log("-> entrée dans la timeRuler")
-    // this.timerOnTimeRuler = setTimeout(this.observeTimeRuler.bind(this), 750)
-    // return stopEvent(e)
+    // console.log("-> onMouseOverTimeRuler")
+    this.timerOnTimeRuler = setTimeout(this.observeTimeRuler.bind(this), 750)
+    return stopEvent(e)
   }
+
+/**
+  Quand la souris passe sur la réglette de temps (timeRuler) on déclenche les
+  observers de déplacement de souris et de sortie du champ.
+**/
 , observeTimeRuler(){
+    this.timeOnMouseOver = this.a.locator.currentTime
+    console.log("this.timeOnMouseOver:", this.timeOnMouseOver)
     UI.timeRuler
       .on(STRmousemove, this.onMouseMoveTimeRuler.bind(this))
-      .on(STRmouseout,  this.onMouseOutTimeRuler.bind(this))
+      .on(STRmouseout,  this.onMouseOutTimeRuler.bind(this) )
   }
+
 // Quand la souris quitte la réglette de temps, on doit arrêter et
 // détruire le timer qui n'a peut-être pas été mis en route
 , onMouseOutTimeRuler(e){
@@ -82,13 +89,25 @@ const BancTimeline = {
       clearTimeout(this.timerOnTimeRuler)
       delete this.timerOnTimeRuler
     }
+    // Il faut remettre l'horloge et la vidéo dans le temps
+    // initial, qui a pu être changé si on a cliqué sur la timeRuler
+    if ( this.timeOnMouseOver && this.timeOnMouseOver != this.currentTime ) {
+      console.log("this.timeOnMouseOver avant appel de setTime:", this.timeOnMouseOver)
+      this.a.locator.setTime(this.timeOnMouseOver)
+    }
+    delete this.timeOnMouseOver
+    UI.timeRuler
+      .off(STRmousemove)
+      .off(STRmouseout)
     return stopEvent(e)
   }
 
 , onMouseMoveTimeRuler(e) {
     var vtime = this.p2t(e.clientX)
-    var otime = OTime.vVary(vtime)
-    this.a.locator.setTime(otime, {updateOnlyHorloge: true})
+    isDefined(this._mouseotime) || ( this._mouseotime = new OTime(0) )
+    this._mouseotime.updateSeconds(vtime)
+    UI.mainHorloge.html(this._mouseotime.horloge)
+    UI.video.currentTime = vtime
     return stopEvent(e)
   }
 

@@ -6,18 +6,10 @@
 
 * Garder toujours le curseur visible dans le banc-timeline (faire l'essai en zoomant et en passant du début à la fin du film)
 
-* Ré-étudier le survol de la timeline pour que ça ne court-circuite pas le déplacement des marqueurs, marqueurs de début et fin, etc.
-
-* Liste des marqueurs : utiliser une Helper, pas une liste normale d'éléments
-
 * Fenêtres (Helpers) indiquant les raccourcis de base :
   Les ajouter au menu "Raccourcis". S'inspirer des éléments présents
 
-* Dans un champ d'édition, la touche escape doit permettre d'annuler l'édition après confirmation.
-
 * Traiter les observeurs de keyup/keydown différemment en fonction du propriétaire (rappel : l'observer de mutations met dans la propriété "data-owner-id" l'identifiant du DOMElement qui contient le champ de saisie. C'est 'writer' lorsque c'est le writer)
-
-* Traiter la sélection courante de l'interface, qui peut être n'importe quoi, un marqueur, une fiche, un document, etc. Pouvoir agir dessus (supprimer, éditer, déplacer)
 
 Faire un controleur pour chaque partie de l'interface et notamment pour la colonne de droite qui doit s'ouvrir/se refermer, recevoir un élément à afficher, etc.
   - FAIT Il faut maintenant l'utiliser.
