@@ -28,6 +28,7 @@
   * [DataEditor, l'éditeur de données](#data_editor)
   * [Actualisation automatique des éléments affichés lors des modifications](#autoupdate_after_edit)
   * [Association des éléments](#associations_elements)
+    * [Helpers de drag](#assocations_helper_drag)
 * [Vidéo](#la_video)
   * [Actualisation des informations vidéo](#update_infos_video)
 * [Ajout de préférences globales](#add_global_prefs)
@@ -642,6 +643,63 @@ La table `ASSOCIATES_COMMON_METHODS` et la table `ASSOCIATES_COMMON_PROPERTIES` 
       if(!data2save.associates) delete data2save.associates
       ```
 * La propriété `associatesCounter` qui retourne le nombre courant d'associés.
+
+
+### Helpers de drag {#assocations_helper_drag}
+
+Pour ne pas avoir d'helper de drag qui passe sous les autres éléments, entendu que le `z-index` de jQuery est une horreur, on peut utiliser la méthode utile `DHelper(...)` pour produire un helper qui restera toujours au-dessus.
+
+Pour ce faire, on définit les données du drag en mettant :
+
+```javascript
+
+element.draggable({
+  //...
+  , helper: function(e){ // ne pas utiliser (e) => {...}
+      if ( isUndefined(this._draghelper) ) {
+        let target = $(e.target)
+        this._draghelper = DHelper('<inner texte>', {<data>})
+      }
+      return this._draghelper
+    }
+  //...
+  // Pour supprimer l'helper à la fin du drag :
+  , stop: function(e){ // ne pas utiliser (e) => {...}
+      this._draghelper.remove()
+    }
+})
+```
+
+Les `<data>` ci-dessus est une table qui contiendra en clé les `propriétés-data` à définir dans le helper. Par exemple, la commande
+
+```javascript
+
+  DHelper("mon texte", {id: 12, type: 'document'})
+```
+
+produira le code
+
+```HTML
+
+  <div class="draghelper" data-id="12" data-type="document">mon texte</div>
+
+```
+
+Noter que la classe CSS `.draghelper` doit être définie. Une définition possible est :
+
+```CSS
+
+div.draghelper
+  display: inline-block
+  width: auto
+  background-color: darkblue !important
+  color: white
+  white-space: nowrap
+  padding: 1px 8px
+  font-size: 13pt
+  z-index: 5000
+
+```
 
 ---------------------------------------------------------------------
 

@@ -7,6 +7,7 @@ div.pfas {
   display: grid;
   grid-template-columns: 100%;
   grid-template-rows: 50% 50%;
+  -webkit-user-select: none;
 }
 div.pfas section.pfa-absolute {
   grid-column: 1;
@@ -89,10 +90,10 @@ div.pfas section.pfa-absolute div.part-dnou {
 div.pfas div.div-pfa-zones {
   position: absolute;
 }
-div.pfas div#pfa-1-div-zones-Abs-top {
+div.pfas div.pfa-1-div-zones-Abs-top {
   top: 30px;
 }
-div.pfas div#pfa-1-div-zones-Abs-bottom {
+div.pfas div.pfa-1-div-zones-Abs-bottom {
   top: 60px;
 }
 div.pfas div.div-pfa-zones > span {
@@ -111,10 +112,10 @@ div.pfas section.pfa-relative span.pfa-part-zone span.name {
   white-space: nowrap;
 }
 
-div.pfas div#pfa-1-div-zones-Rel-top {
+div.pfas div.pfa-1-div-zones-Rel-top {
   top: 30px;
 }
-div.pfas div#pfa-1-div-zones-Rel-bottom {
+div.pfas div.pfa-1-div-zones-Rel-bottom {
   top: 60px;
 }
 

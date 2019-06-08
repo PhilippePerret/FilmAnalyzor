@@ -102,8 +102,7 @@ divZones(dimT, which){
   }
 
   return DCreate(DIV, {
-    id:     `pfa-${pfa.index}-div-zones-${dimT}-${which}`
-  , class:  'div-pfa-zones'
+    class:  `div-pfa-zones pfa-${pfa.index}-div-zones-${dimT}-${which}`
   , append: spans
   })
 }

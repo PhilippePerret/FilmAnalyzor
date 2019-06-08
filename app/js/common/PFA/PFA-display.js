@@ -13,7 +13,7 @@ const PFABuilder = tryRequire('PFA-builder',__dirname)
 const PFA_display = {
   toggle(){ this.shown ? this.hide() : this.show() }
 , show(){
-    isTrue(this.built) || this.build()
+    isTrue(this.built) || this.build().observe()
     UI.timelineTape.hide()
     this.jqObj.show()
     this.shown = true
@@ -48,28 +48,37 @@ const PFA_display = {
     }))
 
     this.built = true
+
+    return this // pour le chainage
   }
 
 
 , observe(){
-    // On colle un FATimeline
-    var ca  = this.a
     var jqo = this.jqObj
-    var tml = new FATimeline(jqo[0])
-    tml.init({height: 40, cursorHeight:262, cursorTop: -222, only_slider_sensible: true})
     // Dans le paradigme, on observe tous les events relatifs
     // pour pouvoir 1) les dragguer pour les placer dans d'autres
     // éléments et 2) les éditer en les cliquant.
-    jqo.find('.event')
+    jqo.find('.event, .pfa-relative > .part')
       .draggable({
         containment:STRdocument
-      , helper: 'clone'
-      , revert: true
+      , helper: function(e){
+          if ( isUndefined(this._draghelper) ){
+            let target = $(e.target)
+              , ev = FAEvent.get(parseInt(target.data(STRid),10))
+            this._draghelper = DHelper(ev.toString(), {type: STRevent, id: target.data(STRid)})
+            // console.log("helper:", this._draghelper)
+          }
+          return this._draghelper
+        }
+      , revert: false
+      , stop: function(e){
+          this._draghelper.remove()
+        }
       })
       .on(STRclick, function(e){
-        var event_id = parseInt($(this).attr(STRdata_id),10)
-        FAEvent.edit.bind(ca, event_id)()
-        stopEvent(e)//sinon le pfa est remis au premier plan
+        var event_id = parseInt($(this).data(STRid),10)
+        FAEvent.edit.bind(FAEvent, event_id)()
+        stopEvent(e)
       })
 }
 

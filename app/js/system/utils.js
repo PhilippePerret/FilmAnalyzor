@@ -6,7 +6,7 @@
   Le mieux est de toujours envoyé `__dirname` en second argument et de définir
   le +rpath+ en fonction de l'endroit courant.
       let maConstante = tryRequire('./insamefolder', __dirname)
-      
+
 **/
 function tryRequire(rpath, folder){
   try {
@@ -276,6 +276,18 @@ function DCreate(typeElement, params){
   return e
 }
 
+/**
+  Retourne un Helper (de drag) qu'il est sûr de garder au-dessus de tous
+  les autres éléments
+  Cf. le manuel de développement pour l'utilisation car c'est très particulier
+**/
+function DHelper(inner, data) {
+  var hdata = {}
+  for(var k in data){ hdata[`data-${k}`] = data[k]}
+  let helper = DCreate(DIV,{class:'draghelper', inner:inner, attrs:hdata})
+  $(document.body).append(helper)
+  return helper
+}
 /**
   Retourne
 **/
