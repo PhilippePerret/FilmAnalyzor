@@ -202,7 +202,7 @@ get endAtAbs()  {return this.zoneEnd}
 get startAtRel(){
   return this._startAtRel || defP(this,'_startAtRel', this.isDefined && this.event.otime.rtime /* this.event.startAt */)}
 get endAtRel(){
-  return this._endAtRel || defP(this,'_endAtRel', this.isDefined && this.event.otime.rtime /* this.event.endAt */)}
+  return this._endAtRel || defP(this,'_endAtRel', this.isDefined && this.event.otime.rtime + this.event.duree)}
 
 set startAtRel(v){
   this._startAtRel = v ; this.resetDependencies() }

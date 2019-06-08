@@ -32,6 +32,7 @@ div.pfas div.part {
 }
 div.pfas div.part {
   width: 25%;
+  z-index: 2;
 }
 div.pfas div.part-expo:not(.missed):not(.misplaced):not(.close) {
   background-color: lightblue;
@@ -99,6 +100,7 @@ div.pfas div.div-pfa-zones > span {
   font-size: 9.6pt;
   text-align: center;
   color: white;
+  z-index: 10;
 }
 
 div.pfas section.pfa-relative span.pfa-part-zone span.name {
@@ -109,6 +111,12 @@ div.pfas section.pfa-relative span.pfa-part-zone span.name {
   white-space: nowrap;
 }
 
+div.pfas div#pfa-1-div-zones-Rel-top {
+  top: 30px;
+}
+div.pfas div#pfa-1-div-zones-Rel-bottom {
+  top: 60px;
+}
 
 div.pfas div.div-pfa-zones > span:not(.missed):not(.misplaced):not(.close)
 {
