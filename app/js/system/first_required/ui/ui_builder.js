@@ -96,21 +96,7 @@ const UIBuilder = {
     // Rien à faire pour le moment
   }
 , buildSectionTimeline(){
-    // Le banc timeline lui-même
-    UI.sectionTimeline.append(DCreate(SECTION,{id:'banctime-banc-timeline', append:[
-        // bande pour déposer les éléments
-        DCreate(DIV,{id:'banctime-tape',append:[
-          // bande pour positionner le curseur et les marqueurs
-          DCreate(DIV,{id:'banctime-timeRuler', append:[
-              // On place les marques amovibles de début et de fin de film
-              DCreate(SPAN,{class:'mark-film mark-film-start'})
-            , DCreate(SPAN,{class:'mark-film mark-film-end'})
-          ]})
-         // curseur de timeline
-        , DCreate(DIV,{id:'banctime-cursor'})
-        ]})
-      ]}))
-
+    require('./ui_builder/banc_timeline.js').bind(this)()
   }
 //
 

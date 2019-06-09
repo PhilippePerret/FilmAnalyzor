@@ -14,16 +14,9 @@ constructor(analyse, data){
   super(analyse, data)
 }
 
-/**
-  Quelques opérations à faire avant la validation
-**/
-beforeValidation(){
-
-}
 
 get isValid(){
   var errors = []
-  this.beforeValidation()
   if ( isUndefined(this.sttID) ) {
     errors.push({msg:T('stt-id-structurel-required'), prop: 'sttType'})
     // Note : normalement, si on se sert du formulaire, ça ne devrait jamais arriver
@@ -35,7 +28,7 @@ get isValid(){
     if (nstt.event_id && nstt.event_id != this.id){
       errors.push({msg:T('stt-noeud-already-exists', {name:nstt.hname, at:nstt.event.horloge, link:nstt.event.link})})
     } else {
-      // Définir ici les validité
+      // Définir ici les validités
       // En fait, pour les noeuds STT, on ne demande rien d'autre que le
       // paradigme et le noeud.
     }

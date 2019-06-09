@@ -112,6 +112,8 @@ const ERRORS = {
 
 , "--- DIVERS ---":""
 , "otime-arg-required": "Cette méthode requiert un argument temps de type OTime"
+, "settime-time-undefined": "Le temps est indéfini (undefined), dans %{method}."
+
 }
 const MESSAGES = {
   "--- UI ---":""

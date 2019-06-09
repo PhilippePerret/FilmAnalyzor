@@ -88,12 +88,37 @@ module.exports = {
   Pour aller au nœud structurel suivant ou précédent
 **/
 , goToNextSttnode() {
+    // Le noeud relatif
     var node = TimeMap.sttNodeAfter(this.currentTime)
-    node && this.setTime(node.otime)
+    // Le noeud absolu
+    var absNode = this.a.pfa1.absNodeAfter(this.currentTime)
+
+    let closestNat = ((aN, n) => {
+      if ( aN && n )  return aN.startAtAbs < n.event.otime.rtime ?'abs':'rel'
+      else if ( aN )  return 'abs'
+      else if ( n )   return 'rel'
+    })(absNode, node)
+    this.goAndMarkCursor(closestNat, closestNat === 'abs' ? absNode : node)
+
   }
 , goToPrevSttnode() {
-    var node = TimeMap.sttNodeBefore(this.currentTime)
-    node && this.setTime(node.otime)
+    var node    = TimeMap.sttNodeBefore(this.currentTime)
+    var absNode = this.a.pfa1.absNodeBefore(this.currentTime)
+
+    let closestNat = ((aN, n) => {
+      if ( aN && n )  return aN.startAtAbs > n.event.otime.rtime ?'abs':'rel'
+      else if ( aN )  return 'abs'
+      else if ( n )   return 'rel'
+    })(absNode, node)
+
+    this.goAndMarkCursor(closestNat, closestNat === 'abs' ? absNode : node)
+  }
+
+, goAndMarkCursor(nat/* 'abs' ou 'rel' */, node) {
+    if ( isUndefined(nat) ) return
+    let isAbs = nat === 'abs' ? true : false
+    UI.markCursor( isAbs ? `${node.hname}<br>${("ABSOLU"+node.e).toUpperCase()}` : node.hname)
+    this.setTime(isAbs ? new OTime(node.startAtAbs + this.a.filmStartTime) : node.event.otime)
   }
 
 , goToNextMarker(){

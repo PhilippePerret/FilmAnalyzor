@@ -2,6 +2,7 @@
 # Manuel de l’analyste
 
 * [Présentation générale](#presentation_generale)
+  * [Tout clavier](#tout_clavier)
 * [Videos](#concernant_la_video)
   * [Taille de la vidéo](#video_size)
 * [L'analyse de film](#lanalyse)
@@ -46,6 +47,12 @@
 Ce manuel décrit l'utilisation de l'application **FilmAnalyse** qui permet d'effectuer avec confort — et plus que ça — des analyses de films.
 
 ## Présentation générale {#presentation_generale}
+
+### Tout clavier {#tout_clavier}
+
+L'option forte de cette application est de faire un interface « tout clavier », c'est-à-dire contrôlable principalement à l'aide du clavier. On le voit dès le départ avec l'absence de contrôleur de vidéo, de boutons permettant de lancer et d'arrêter la vidéo. On doit s'habituer dès le départ à utiliser les touches `l` — pour mettre en route —, `k` — pour arrêter — et `j` pour revenir en arrière, comme sur un banc de montage.
+
+C'est une condition indispensable pour produire rapidement une analyse de film et particulièrement la collecte de ses informations.
 
 ## Videos {#concernant_la_video}
 

@@ -26,6 +26,29 @@ const PFA_calculs = {
 }
 
 /**
+  Retourne le noeud dramatique absolu qui se trouve avant ou après le temps time
+**/
+, absNodeBefore(time) {
+    return this.absNodeAround(time, false /* node before */)
+  }
+, absNodeAfter(time){
+    return this.absNodeAround(time, true /* => node after */)
+  }
+
+, absNodeAround(time, after) {
+    isFunction(time.updateSeconds) && ( time = time.rtime )
+    time = time.round(2)
+    console.log("Temps courant comparé aux noeuds absolus : ", time)
+    for (var [knode, node] of this.absNodes) {
+      console.log("Comparaison node.startAtAbs", node.startAtAbs)
+      if ( node.startAtAbs > time ) {
+        console.log("LE TEMPS ABSOLU EST SUPÉRIEUR. JE REVOIS LE ", after ? 'NOEUD' : 'NOEUD AVANT', after ? node : node.previous)
+        return after ? node : node.previous
+      }
+    }
+  }
+
+/**
   Méthode qui définit TimesTables qui va
   contenir simplement les temps des parties et des
   zones pour le suivi du film.

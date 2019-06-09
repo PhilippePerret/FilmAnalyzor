@@ -137,6 +137,7 @@ setTime(time, options){
     , updateVideo = isNotTrue(options.updateOnlyHorloge)
     , playVideo   = isNotTrue(options.dontPlay) && updateTimes && updateVideo
 
+  isDefined(time) || raise(T('settime-time-undefined', {method: 'Locator.setTime'}))
   time instanceof(OTime) || raise(T('otime-arg-required'))
 
   updateTimes && this.resetAllTimes()

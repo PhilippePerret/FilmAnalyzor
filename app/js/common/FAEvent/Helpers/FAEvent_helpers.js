@@ -47,6 +47,8 @@ toString(){
   flag = flag || 0
   opts = opts || {}
 
+  // console.log("ev:",this)
+
   // La liste dans laquelle on va mettre tous les DOMElements fabriqués
   var domEls = []
   this.asDomList = []
@@ -220,7 +222,7 @@ asAssociate(opts){
 **/
 , inItsDiv(divs, opts){
     var css = [this.type]
-    if(undefined !== this.metaType) css.push(this.metaType)
+    isDefined(this.metaType) && css.push(this.metaType)
     return DCreate(DIV,{id:this.domId, class:css.join(' '), append:divs})
   }
 
@@ -241,7 +243,9 @@ Object.defineProperties(FAEvent.prototype,{
       if (isUndefined(this._div)){
         // flag pour la méthode 'as'
         var asFlag = FORMATED
-        if(!this.isScene) asFlag = asFlag | LABELLED
+        // Si ce n'est pas une scène ou un noeud dramatique, il faut ajouter
+        // la marque qui indique la nature de l'event et son ID
+        if ( not(this.isScene) && not(this.isASttNode)) asFlag = asFlag | LABELLED
         // L'horloge des outils
         var h = DCreate(SPAN,{
           class:'horloge horloge-event'
@@ -260,7 +264,7 @@ Object.defineProperties(FAEvent.prototype,{
         , attrs: attrs
         , append: [
             DCreate(DIV,{class: 'e-tools', append:[br, be, h]})
-          , DCreate(DIV, {class:'content', inner: this.as(STRfull, asFlag)})
+          , DCreate(DIV, {class:STRcontent, inner: this.as(STRfull, asFlag)})
           ]
         })
       }

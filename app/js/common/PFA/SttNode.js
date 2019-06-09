@@ -15,6 +15,7 @@ class SttNode {
   //
   // +nid+ sert uniquement pour les dépendances
   static calcZone(sttnode){
+    // console.log("Calcul de la zone sttnode:", sttnode)
     var czone = sttnode.cZone
     // Durée et divisions, pour calculer les zones des Nœuds
     var duree = this._duree || this.initDuree('duree', current_analyse.duree)
@@ -57,7 +58,7 @@ class SttNode {
     return z
   }
   static initDuree(kduree, value){
-    this[`_${kduree}`] = Math.round(value)
+    this[`_${kduree}`] = value.round(2) // Math.round(value)
     return this[`_${kduree}`]
   }
 
@@ -174,6 +175,7 @@ aSpanName(name){
 //  Méthodes de données fixes (absolues)
 
 get hname(){ return this._hname }
+get e(){ return this._e }
 get shortHname(){return this._shortHname}
 get cZone(){ return this._cZone }
 get tolerance(){return this._tolerance}
@@ -194,8 +196,8 @@ get first(){return this._first}
 get last(){return this._last}
 
 // Début et fin absolus
-get startAtAbs(){return this.zoneStart}
-get endAtAbs()  {return this.zoneEnd}
+get startAtAbs(){ return this.zoneStart }
+get endAtAbs()  {return this.zoneEnd }
 
 // Début et fin relatifs, en fonction des noeuds définis, s'ils
 // le sont.

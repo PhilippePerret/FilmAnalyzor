@@ -23,7 +23,7 @@ constructor(index){
 init(){
   var my = this
   this.load()
-  this.forEachNode(node => {
+  this.forEachAbsNode(node => {
     if(node.next) {
       my.node(node.next)._previous = node.id
       DATA_STT_NODES[node.next]._previous = node.id
@@ -40,6 +40,7 @@ init(){
 
 /**
   Retourne l'instance SttNode du nœud d'identifiant +nid+
+  et peuple en même temps la map `this.nodes`
   @param {String} nid   Clé dans DATA_STT_NODES
 **/
 node(nid){
@@ -49,14 +50,33 @@ node(nid){
   return this.nodes.get(nid)
 }
 
+get absNodes(){
+  if ( isUndefined(this._absnodes) ) {
+    let my = this
+    this._absnodes = new Map()
+    for (var kstt in DATA_STT_NODES ) {
+      this._absnodes.set(kstt, new SttNode(kstt, my))
+    }
+  }
+  return this._absnodes
+}
+
+forEachAbsNode(fn) {
+  for ( var [knode, node] of this.absNodes ) {
+    if ( isFalse(fn(node)) ) break // pour interrompre
+  }
+}
+
 /**
   Boucle sur tous les noeuds structurels de ce PFA
-  Attention, il faut tenir compte du fait qu'il n'est peut être pas défini.
+  Attention, il faut tenir compte du fait que si le noeud relatif n'est pas
+  défini, il ne sera pas traité par cette méthode.
+  Si on veut tourner sur tous les noeuds, définis ou non, il faut utiliser
+  la méthode `forEachAbsNode`
 **/
 forEachNode(fn){
-  var kstt
-  for(kstt in DATA_STT_NODES){
-    if (isFalse(fn(this.node(kstt)))) break // pour pouvoir interrompre
+  for ( var [knode, node] of this.nodes ) {
+    if ( isFalse(fn(node)) ) break // pour interrompre
   }
 }
 

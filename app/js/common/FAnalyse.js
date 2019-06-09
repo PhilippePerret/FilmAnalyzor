@@ -146,6 +146,10 @@ get PFA(){
   }
   return this._PFA
 }
+get pfa1(){return this._pfa1 || defP(this,'_pfa1', this.PFA.get(1))}
+get pfa2(){return this._pfa2 || defP(this,'_pfa2', this.PFA.get(2))}
+get pfa3(){return this._pfa3 || defP(this,'_pfa3', this.PFA.get(3))}
+get pfa4(){return this._pfa4 || defP(this,'_pfa4', this.PFA.get(4))}
 
 get Fonds(){return this._mainfonds||defP(this,'_mainfonds',new Fondamentales(this.fondsFilePath))}
 

@@ -141,6 +141,28 @@ const UI = {
   }
 
 /**
+  Pour indiquer un texte à côté du curseur de temps dans le banc timeline
+**/
+, markCursor(str) {
+    this.timerMarkCursor && this.killTimerMarkCursor()
+    if ( isNotEmpty(str) ){
+      this.oMarkCursor.html(str)
+      this.oMarkCursor.show()
+      this.timerMarkCursor = setTimeout(this.hideMarkCursor.bind(this), 3000)
+    } else {
+      this.oMarkCursor.hide()
+    }
+  }
+, hideMarkCursor(){
+    this.killTimerMarkCursor()
+    this.oMarkCursor.hide()
+  }
+, killTimerMarkCursor(){
+    clearTimeout(this.timerMarkCursor)
+    delete this.timerMarkCursor
+  }
+
+/**
   Retourne la vraie hauteur de l'élément, border et padding compris
 **/
 , realHeight(o){
@@ -300,8 +322,11 @@ const UI = {
 
 }
 
+
+
 Object.defineProperties(UI,{
   a:{get(){ return current_analyse }}
+, oMarkCursor:{get(){return $('#banctime-cursor-mark')}}
 
   // Note : la plupart des noms des éléments de l'interface
   // sont définis dans system/first_required/ui/ui_builder.js

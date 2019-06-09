@@ -76,7 +76,6 @@ const BancTimeline = {
 **/
 , observeTimeRuler(){
     this.timeOnMouseOver = this.a.locator.currentTime
-    console.log("this.timeOnMouseOver:", this.timeOnMouseOver)
     UI.timeRuler
       .on(STRmousemove, this.onMouseMoveTimeRuler.bind(this))
       .on(STRmouseout,  this.onMouseOutTimeRuler.bind(this) )
@@ -92,7 +91,6 @@ const BancTimeline = {
     // Il faut remettre l'horloge et la vidéo dans le temps
     // initial, qui a pu être changé si on a cliqué sur la timeRuler
     if ( this.timeOnMouseOver && this.timeOnMouseOver != this.currentTime ) {
-      console.log("this.timeOnMouseOver avant appel de setTime:", this.timeOnMouseOver)
       this.a.locator.setTime(this.timeOnMouseOver)
     }
     delete this.timeOnMouseOver

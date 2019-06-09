@@ -685,6 +685,15 @@ const DATA_MENUS = [
         label: 'Raccourcis'
       , submenu: fakeShortcutsIn([
           {
+              label: 'Forcer les raccourcis « out-fields » (INTERFACE)'
+            , click: _ => {execJS('UI.toggleKeyUpAndDown(true)')}
+          }
+        , {
+              label: 'Forcer les raccourcis « in-fields » (TEXTFIELD)'
+            , click: _ => {execJS('UI.toggleKeyUpAndDown(false)')}
+          }
+        , {type:'separator'}
+        , {
               label: 'Raccourcis « Go-To »…'
             , shortcut: 'G'
             , click: _ => {execJS('Helper.open("go-to")')}
