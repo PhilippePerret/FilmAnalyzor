@@ -26,18 +26,14 @@ Object.assign(UI, {
     let target = $(e.target)
       , touche = e.key
     // log.info("-> KeyUp dans un TEXT FIELD")
-    // Comment trouver le sélection (selector), maintenant
-    // que toutes les méthodes sont communes ?
-    // Plus, j'ai utilisé (sel = new Selector($(e.target))) mais ce n'est
-    // pas viable si la méthode est appelée à répitition à chaque touche
-    // pressée
-    var sel
+
+    var sel // = new Selector(target) (dès que c'est utile ci-dessous)
 
     if ( touche === STRArrowLeft || touche === STRArrowRight ) {
       // Quand une des flèches gauche ou droit est pressée, il faut
       // regarder où il faut se rendre en fonction des préférences 'goto-...'
       // Mais ça doit être traité par DOWN_IN
-    } else if(e.keyCode === KESCAPE){
+    } else if(e.key === ESCAPE){
       /**
         // TODO Il faut traiter l annulation quand on est dans un champ
         // de texte.
@@ -63,25 +59,27 @@ Object.assign(UI, {
       // ALT (SANS MÉTA)
 
       if(e.which === K_OCROCHET){ // note : avec altKey
-        return UI.inTextField.insertCrochet(e, this.selector)
+        return UI.inTextField.insertCrochet(e, new Selector(target))
       }
 
     } else if (e.which === K_GUIL_DROIT) { // " => «  »
 
-      return UI.inTextField.insertChevrons(e, this.selector)
+      return UI.inTextField.insertChevrons(e, new Selector(target))
 
-    } else if (e.keyCode === KERASE && ((sel && sel.beforeUpTo(RC,false))||'').match(/^ +$/)){
-
-      // TODO TROUVER COMMENT SAVOIR QUE LE PROPRIÉTAIRE EST LE FAWRITER
-      if ( e.target.data('owner-id') === 'porte_documents') {
-        if(PorteDocuments.currentDocument.isData){
-          // On doit effacer deux espaces
-          sel = PorteDocuments.selector
-          let st = 0 + sel.startOffset
-          sel.startOffset= st - 1
-          sel.remplace('')
-          stopEvent(e)
-          return false
+    } else if (e.key === DELETE ){
+      sel = new Selector(target)
+      if ( ((sel && sel.beforeUpTo(RC,false))||'').match(/^ +$/) ) {
+        // TODO TROUVER COMMENT SAVOIR QUE LE PROPRIÉTAIRE EST LE FAWRITER
+        if ( e.target.data('owner-id') === 'porte_documents') {
+          if(PorteDocuments.currentDocument.isData){
+            // On doit effacer deux espaces
+            sel = PorteDocuments.selector
+            let st = 0 + sel.startOffset
+            sel.startOffset= st - 1
+            sel.remplace('')
+            stopEvent(e)
+            return false
+          }
         }
       }
 
@@ -90,10 +88,10 @@ Object.assign(UI, {
       if(target.data('owner-id') === 'porte_documents'){
         if(PorteDocuments.selector.before() == RC){
           // Si on est en début de ligne, on insert un élément de liste
-          return UI.inTextField.replaceTab(e, this.selector, '* ')
+          return UI.inTextField.replaceTab(e, new Selector(target), '* ')
         }
       }
-      return UI.inTextField.replaceSnippet(e, this.selector)
+      return UI.inTextField.replaceSnippet(e, new Selector(target))
     }
     return true
   }
@@ -101,6 +99,7 @@ Object.assign(UI, {
 , onKey_DOWN_IN_TextField(e){
     let target = $(e.target)
       , touche = e.key
+
     if(e.key === ESCAPE){
       if ( FWindow.currentIsEventForm() ){
         // Fermer la fenêtre d'édition, peut-être sans enregistrer
@@ -123,14 +122,14 @@ Object.assign(UI, {
         return stopEvent(e)
       }
     } else if(e.keyCode === KTAB){
-      return this.inTextField.stopTab(e, this.sel)
+      return this.inTextField.stopTab(e, new Selector(target))
     } else if(e.metaKey){
         if ( e.ctrlKey ) {
           // MÉTA + CTRL
           if ( e.which === ARROW_UP || e.which === ARROW_DOWN){
             // UNE ERREUR CI DESSOUS: sel EST NON DÉFINI
             // IL FAUT PRENDRE LE selector du propriétaire
-            return this.inTextField.moveParagraph(e, sel, e.which === ARROW_UP)
+            return this.inTextField.moveParagraph(e, new Selector(target), e.which === ARROW_UP)
           }
         } else if (e.altKey ){
           // META + ALT
@@ -369,32 +368,29 @@ Object.assign(UI, {
     // Remplace la touche tabulation, dans le selector +sel+,
     // par le texte +remp+
   , replaceTab(e, sel, remp){
-      isDefined(sel) || (sel = new Selector($(e.target)))
+      sel = sel || new Selector($(e.target))
       sel.insert(remp)
       return stopEvent(e)
     }
   , replaceSnippet(e, sel){
-      isDefined(sel) || (sel = new Selector($(e.target)))
+    sel = sel || new Selector($(e.target))
       var snip = sel.beforeUpTo(' ', false, {endRC: true})
       isNull(snip) || Snippets.checkAndReplace(sel, snip)
       // return stopEvent(e)
     }
     // Méthode appelée pour déplacer un paragraphe dans le texte
   , moveParagraph(e, sel, toUp){
-      isDefined(sel) || (sel = new Selector($(e.target)))
+    sel = sel || new Selector($(e.target))
       return UI.doMoveParagraph(e, sel, toUp)
     }
   , toggleComments(e, sel, args){
-      isDefined(sel) || (sel = new Selector($(e.target)))
-      return this.doToggleComments(e, sel, args)
+      return this.doToggleComments(e, sel || new Selector($(e.target)), args)
     }
   , insertCrochet(e, sel){
-      isDefined(sel) || (sel = new Selector($(e.target)))
-      return this.doInsertCrochet(e, sel)
+      return this.doInsertCrochet(e, sel || new Selector($(e.target)))
     }
   , insertChevrons(e, sel){
-      isDefined(sel) || (sel = new Selector($(e.target)))
-      return this.doInsertChevrons(e, sel)
+      return this.doInsertChevrons(e, sel || new Selector($(e.target)))
     }
   }
 

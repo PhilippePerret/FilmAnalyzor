@@ -14,7 +14,6 @@ Object.assign(BancTimelineElement.prototype, {
   en taille et sur l'axe des x.
 **/
 , repositionne(){
-    console.log("-> BTE.repositionne",this.domId)
     let arr = ['_style', '_left', '_width', '_right']
     arr.map(p => delete this[p])
     this.jqObj.attr('style', this.style) // recalcule tout
