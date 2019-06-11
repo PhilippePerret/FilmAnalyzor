@@ -23,7 +23,14 @@ Object.assign(Markers.prototype,{
     this.listingBuilt = true
   }
 , onChooseItem(kmarker){
-    this.items[kmarker].selectAndGo()
+    if ( isDefined(this.items[kmarker]) ) {
+      this.items[kmarker].selectAndGo()
+    } else {
+      log.error("Marker inexistant avec l'id", kmarker)
+      F.notify(`Bizarrement, impossible d'obtenir le marker #${kmarker}… Voir la liste des items dans la console.`, {error: true})
+      console.error("Marker inexistant:", kmarker)
+      console.error("Markers.items:", this.items)
+    }
   }
 , onRemoveItem(kmarker){
     let marker = this.items[kmarker]

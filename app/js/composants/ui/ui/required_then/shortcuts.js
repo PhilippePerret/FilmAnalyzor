@@ -1,6 +1,11 @@
 'use strict'
 /**
   Gestion des combinaisons de touches dans le mode Ban Timeline
+
+  NOTE
+    On modifie les raccourcis en appelant la méthode :
+    UI.toggleKeyUpAndDown(true) // vers INTERFACE (out field)
+
 **/
 
 const GOTODATA = App.require('system/prefs/gotodata')
@@ -12,6 +17,10 @@ Object.assign(UI, {
 /**
   Méthode principale qui reçoit les touches quand on est dans un champ
   de saisie.
+
+  note : on modifie les raccourcis en appelant la méthode :
+  UI.toggleKeyUpAndDown(true) // vers INTERFACE (out field)
+
 **/
   onKey_UP_IN_TextField(e){
     let target = $(e.target)
@@ -92,16 +101,24 @@ Object.assign(UI, {
 , onKey_DOWN_IN_TextField(e){
     let target = $(e.target)
       , touche = e.key
-    if(e.keyCode === KESCAPE){
-      // TODO
-      F.notify("Il faudrait fermer la fenêtre.")
+    if(e.key === ESCAPE){
+      if ( FWindow.currentIsEventForm() ){
+        // Fermer la fenêtre d'édition, peut-être sans enregistrer
+        if ( EventForm.modified ) {
+          F.notify('event-modified-cant-close-form')
+        } else {
+          FWindow.closeCurrent()
+        }
+      } else {
+        F.notify(T('unknown-front-fwindow-cant-close'))
+      }
     } else if ( e.keyCode === KRETURN ) {
       if(e.metaKey){
         // META + RETURN => FINIR L'ÉDITION DE ?…
         if ( FWindow.currentIsEventForm() ) {
           EventForm.currentForm.submit.bind(EventForm.currentForm).call()
         } else {
-          F.notify("Je ne sais pas ce qu'est la fenêtre au premier plan, je ne peux donc pas provoquer l'enregistrement.")
+          F.notify(T('unknown-front-fwindow-cant-close'))
         }
         return stopEvent(e)
       }

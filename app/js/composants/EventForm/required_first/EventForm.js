@@ -611,6 +611,8 @@ endEdition(){
   this.videoWasPlaying && this.a.locator.togglePlay()
   delete this.event.form
   delete EventForm.currentForm
+  // Dans tous les cas on repasse en mode de raccourci out-field
+  UI.toggleKeyUpAndDown(true /* vers OUT */)
 }
 
 // ---------------------------------------------------------------------

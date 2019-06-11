@@ -220,6 +220,9 @@ static unsetCurrent(wf){
 /**
   Méthode appelée par la touche Escape pour fermer la fenêtre
   courante, si elle existe.
+  Noter que si des modifications ont été opérées mais pas enregistrées, il faut
+  le gérer avant l'appel de cette méthode qui se contente seulement de fermer
+  la fenêtre courante.
 **/
 static closeCurrent(){
   if(this.isReaderOrEventBtns(this.current)) return false

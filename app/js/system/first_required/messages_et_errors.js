@@ -11,6 +11,7 @@ const ERRORS = {
 
 , "--- INTERFACE ---":""
 , "ui-init-only-once": "On ne doit initier l'interface qu'une seule fois…"
+, "unknown-front-fwindow-cant-close":"Je ne sais pas ce qu'est la fenêtre au premier plan, je ne peux donc pas la fermer."
 
 , "--- KEYWINDOW ---":""
 , "kwindow-func-after-choose-required": "La fonction à appeler après le choix d'un item est absolument requise et doit être définies dans la propriété `onChoose`."
@@ -70,6 +71,7 @@ const ERRORS = {
 , "stt-id-structurel-required":"L'ID structurel est indispensable et doit être choisi avec soin."
 , "stt-index-pfa-required":"L'index du Paradigme de Field Augmenté est requis."
 , "stt-noeud-already-exists":"Il existe déjà un nœud structurel « %{name} » défini à %{at} (%{link})"
+, "event-modified-cant-close-form": "L'event a été modifié mais pas enregistré. Pour fermer la fenêtre et abandonner les changements, cliquez sur le bouton à la souris. Sinon, faites CMD-S pour enregistrer et fermer."
 
 , "--- FLYING WINDOW ---":""
 , "fwindow-required-owner": "Pour instancier une flying-window (FWindow), le propriétaire est requis en premier argument."
