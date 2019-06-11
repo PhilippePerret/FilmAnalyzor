@@ -193,7 +193,7 @@ Object.assign(UI, {
     }
 
     switch (touche) {
-      case STREscape: // Escape
+      case ESCAPE:
         if ( FWindow.closeCurrent() ) return stopEvent(e)
         else return true
       case STRTab:
@@ -214,11 +214,13 @@ Object.assign(UI, {
         return stopEvent(e)
       case STRM: // M
         log.info('M:show markers list')
-        Markers.displayListing() // pas par le menu cf. N0004
+        current_analyse.markers.showListing() // pas par le menu cf. N0004
         return stopEvent(e)
       case STRn: // n => pour choisir un nouvel élément à créer
         Helper.open('new-element') // pas par le menu cf. N0004
         return stopEvent(e)
+      case STRN: // N majuscule
+        FAEstt.klisting.show(); break
       case ' ':
         touche = this.a.locator.playing ? STRk : STRl
       case STRk: // k
@@ -242,7 +244,8 @@ Object.assign(UI, {
           loc.playing ? vid.setSpeed(vid.getSpeed() + 0.5) : loc.togglePlay()
         }
         return stopEvent(e)
-
+      case STRS: // S majuscule
+        FAEscene.klisting.show(); break
       // La touche "z" permet de ZOOMER/DÉZOOMER
       case STRz:
         this.UI.zoom();break

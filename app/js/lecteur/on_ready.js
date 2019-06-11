@@ -33,6 +33,9 @@ function WhenAllIsReallyReady(){
 
   // // Construire l'analyse
   // current_analyse.displayFullAnalyse(/*forcer update = */true)
+
+  // Afficher la liste des markers
+  // current_analyse.markers.showListing()
 }
 
 $(document).ready(() => {

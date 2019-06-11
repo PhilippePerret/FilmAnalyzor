@@ -106,7 +106,7 @@ class FWindow {
 * Retourne un ID unique (pour la session)
 **/
 static newId(){
-  if (undefined === this.lastId) this.lastId = 0
+  isDefined(this.lastId) || ( this.lastId = 0 )
   return ++this.lastId
 }
 
@@ -287,6 +287,7 @@ toggle(){
 }
 show(){
   log.info(`-> ${this.ref}.show() [built:${this.built}, visible:${this.visible}]`)
+  console.log(`-> ${this.ref}.show() [built:${this.built}, visible:${this.visible}]`)
   isTrue(this.built) || this.build().observe()
   isFunction(this.owner.beforeShow) && this.owner.beforeShow()
   this.jqObj.show()

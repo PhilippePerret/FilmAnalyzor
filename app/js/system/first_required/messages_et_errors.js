@@ -12,6 +12,10 @@ const ERRORS = {
 , "--- INTERFACE ---":""
 , "ui-init-only-once": "On ne doit initier l'interface qu'une seule fois…"
 
+, "--- KEYWINDOW ---":""
+, "kwindow-func-after-choose-required": "La fonction à appeler après le choix d'un item est absolument requise et doit être définies dans la propriété `onChoose`."
+, "kwindow-no-remove-function": "Aucune fonction de destruction n'est défini pour cette liste. Définir la méthode `onRemove` dans les données du second argument le cas échéant."
+
 , "--- ANALYSE ---":""
 , "analyse-locked-no-save": "L'analyse est verrouillée, impossible de la modifier."
 , "invalid-folder": "Le dossier \"%{fpath}\" n’est pas un dossier d’analyse valide."

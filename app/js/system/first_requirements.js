@@ -47,6 +47,7 @@ Object.assign(FAElement.prototype, TEXTFIELD_ASSOCIATES_METHS)
 Object.defineProperties(FAElement.prototype, TEXTFIELD_ASSOCIATES_PROPS)
 
 const FWindow = FReqGet('FlyingWindow')
+const KWindow = FReqGet('KeysWindows')
 
 // Pour le développement
 const Sandbox = FReqGet('Sandbox')

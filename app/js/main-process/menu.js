@@ -714,7 +714,18 @@ const DATA_MENUS = [
             , shortcut: 'Shift M'
             , click: _ => {execJS('current_analyse && Markers.displayListing()')}
           }
-        ])
+        , {type:'separator'}
+        , {
+              label: 'Liste des scènes'
+            , shortcut: 'Shift S'
+            , click: _ => {execJS('current_analyse && FAEscene.klisting.show()')}
+          }
+        , {
+              label: 'Liste des nœuds structurels'
+            , shortcut: 'Shift N'
+            , click: _ => {execJS('current_analyse && FAEstt.klisting.show()')}
+          }
+      ])
     }
 ]
 

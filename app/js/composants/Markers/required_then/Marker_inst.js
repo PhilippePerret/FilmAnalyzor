@@ -1,5 +1,11 @@
 'use strict'
 
+Object.assign(Marker.prototype,{
+  toString(){
+    return `${this.otime.horloge_simple} ${this.title}`
+  }
+})
+
 Object.defineProperties(Marker.prototype,{
   // Retourne le Div pour insertion dans le reader
   divReader:{get(){

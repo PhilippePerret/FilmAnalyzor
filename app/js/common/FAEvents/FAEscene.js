@@ -45,6 +45,7 @@ static reset(){
   delete this._sortedByDuree
   delete this._count
   delete this._current
+  delete this._klisting
 }
 
 /**
@@ -105,6 +106,35 @@ static getByNumero(num){
 //  Les listes de scènes
 
 /**
+  La KWindow affichant les scènes pour les choisir et s'y rendre
+**/
+static get klisting(){return this._klisting || defP(this,'_klisting', this.defineKWindow())}
+static defineKWindow(){
+  return new KWindow(this, {
+      id: 'scenes-list'
+    , title: 'Se rendre à la scène…'
+    , onChoose: this.goToSceneByNumero.bind(this)
+    , items: this.scenesAsValueTitle()
+  })
+}
+/**
+  Méthode permettant de se rendre à la scène de numéro +numero+
+  NOte : utilisé par la KWindow présentant la liste des scènes.
+**/
+static goToSceneByNumero(numero){
+  this.a.locator.setTime(this.getByNumero(numero).otime)
+}
+/**
+  Retourne la liste des scènes sous forme de listes de [clé, valeur] pour
+  la KWindow
+**/
+static scenesAsValueTitle(){
+  var arr = []
+  this.forEachSortedScene( sc => arr.push([sc.numero, sc.pitch]))
+  return arr
+}
+
+/**
   Retourne la table des scènes
   C'est un Hash avec en clé le numéro de la scène et en
   valeur l'instance FAEscene.
@@ -123,7 +153,7 @@ static get decorsCount(){return FADecor.count}
   Private méthode qui établit toutes les listes à savoir :
     FAEscene.byId      Hash avec en clé l'id de l'event
     FAEscene.byNumero  Hash avec en clé le numéro de la scène
-    FAEscene.byTime    Hash avec en clé le temps de la scène
+    FAEscene.byTime    Array des scènes classées par temps
 **/
 static doLists(){
   let fe = new EventsFilter(this, {filter: {eventTypes:[STRscene]}})

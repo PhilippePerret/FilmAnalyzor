@@ -36,6 +36,7 @@ createNew(){
     , methodOnOK: (title, indexButtonClicked) => {
         let m = new Marker(my.a, {time: my.a.locator.currentTime.vtime, title:title})
         m.create()
+        my.listingBuilt = false // forcer update
       }
   })
 }
@@ -80,7 +81,7 @@ load(){
   log.info("<- Markers.load")
   return this // chainage
 }
-// Construction de tous les marqueurs
+// Construction de tous les marqueurs sur le banc timeline
 build(){
   this.arrayItems.forEach(marker => marker.build())
 }
@@ -92,6 +93,20 @@ add(marker){
   this.items[marker.id] = marker
   this.reset()
   this.save()
+}
+
+/**
+  Pour supprimer un marqueur
+  La méthode n'est pas encore implémentée
+**/
+remove(marker){
+  if ( this.current === marker ) delete this.current
+  delete this.items[marker.id]
+  marker.jqReaderObj.remove()
+  marker.jqObj.remove()
+  this.reset()
+  this.save()
+  this.listingBuilt = false // pour forcer l'actualisation de la KeyWindow
 }
 
 reset(){
@@ -121,6 +136,9 @@ otime(time){
   return this._otime
 }
 
+/**
+  Méthode pour sélectionner le marker avant ou après
+**/
 selectMarkerAfter(otime){ this.selectMarker(otime, false) }
 selectMarkerBefore(otime){ this.selectMarker(otime, true) }
 selectMarker(otime, before){
@@ -160,6 +178,9 @@ getData(){
   return this.arrayItems.map( marker => marker.data)
 }
 
+/**
+  Retourne la liste des marqueurs, classée par temps
+**/
 get arrayItems(){
   if ( isUndefined(this._arritems) ) {
      this._arritems = Object.values(this.items)

@@ -26,6 +26,7 @@
   * [Récupérer une instance par son type et son id](#get_instance_with_type_and_id)
   * [FAListing, listing des éléments](#falisting_elements)
   * [DataEditor, l'éditeur de données](#data_editor)
+  * [Les Keys-Windows, choix d'élément par les touches](#les_keyswindows)
   * [Actualisation automatique des éléments affichés lors des modifications](#autoupdate_after_edit)
   * [Association des éléments](#associations_elements)
     * [Helpers de drag](#assocations_helper_drag)
@@ -557,6 +558,43 @@ $('a#<idlien>').on('click', this.constructor.edit.bind(this.constructor,'<id>'))
 
 ```
 
+## KWindows, choix d'élément par les touches {#les_keyswindows}
+
+Les « keys-windows » (class `KWindow`) permettent d'afficher une liste de choses quelconques (comme des marqueurs) et de les sélectionner avec les touches. Elles permettent aussi de supprimer des éléments dans la liste.
+
+Soit un objet `MonObjet` contenant des items.
+
+```javascript
+
+  MonObjet.kwindow = new KWindow(MonObjet, {
+      id:   'identifiant-valide-unique-et-universel'
+    , items: [<liste des items, cf. ci-dessous>]
+    , title: 'TITRE DE LA FENÊTRE' // par exemple "Se rendre au marqueur…"
+    , onChoose: /* methode à appeler quand on choisit un élément
+                    Le premier argument est l'ID de l'item
+                */
+    , onCancel: /* méthode appelée quand on renonce (touche escape) */
+    , onRemove: /* méthode appelée quand on détruit un élément (touche Backspace)
+                   Le premier argument est l'ID de l'item
+                   Note : c'est la Kwindow elle-même qui se charge d'afficher
+                   la confirmation et d'appeler la méthode si la confirmation de
+                   destruction a été donnée.
+                */
+  })
+
+```
+
+La liste des items doit être une liste `Array` de paires `[valeur, titre]`. C'est le `titre` qui sera affiché et c'est la `valeur` (ou identifiant) qui sera envoyé aux méthodes.
+
+Pour afficher la liste, on fait :
+
+```javascript
+
+MonObjet.kwindow.show()
+
+```
+
+Ensuite, il suffit d'utiliser les flèches et la touche retour pour choisir et sélectionner un item en particulier.
 
 ## Actualisation automatique des éléments affichés lors des modifications {#autoupdate_after_edit}
 
