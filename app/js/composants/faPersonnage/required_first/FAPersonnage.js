@@ -74,9 +74,15 @@ static reset(){
   renvoie (souvent pour les diminutifs eux-mêmes)
 **/
 static get diminutifs(){
-  if(!this.exists()) return {}
-  if(isUndefined(this._diminutifs)){
+  if ( not(this.exists() ) ){
+    console.log("Le fichier personnages n'existe pas => pas de diminutifs")
+    return {}
+  }
+  if( isUndefined(this._diminutifs) ){
     this._diminutifs = {}
+    console.log("this.data:", this.data)
+    this.personnages
+    console.log("this.data:", this.data)
     for(var pseudo in this.data){
       if(this.data[pseudo].dim){
         // this._diminutifs[this.data[pseudo].dim] = this.data[pseudo].pseudo
@@ -97,8 +103,8 @@ static get(pseudo){
 static get personnages(){
   if(isUndefined(this._personnages)){
     var ipersonnage
-    this._personnages = []
-    this._hpersonnages = {}
+    this._personnages   = []
+    this._hpersonnages  = {}
     for(var pid in this.data){
       this.data[pid].id = pid
       ipersonnage = new FAPersonnage(current_analyse, this.data[pid])
@@ -110,7 +116,7 @@ static get personnages(){
 }
 
 static get hpersonnages(){
-  if(undefined === this._hpersonnages) this.personnages
+  isDefined(this._hpersonnages) || this.personnages
   return this._hpersonnages
 }
 
@@ -145,8 +151,7 @@ static getPersonnagesIn(str){
 
 // Retourne le nombre de personnages
 static get count(){return this._count||defP(this,'_count', Object.keys(this.data).length)}
-
-static get data(){return this._data || {}}
+static get data(){return this._data || defP(this,'_data', YAML.safeLoad(fs.readFileSync(this.path,'utf8')))}
 static get path(){return this._path||defP(this,'_path',this.a.filePathOf('dpersonnages.yaml'))}
 
 // ---------------------------------------------------------------------
@@ -177,8 +182,8 @@ getData(){
 }
 
 static get PROPS(){
-  if(undefined === this._props){
-    this._props = ['id','pseudo','dim','prenom','nom','dimensions','ages','description','fonctions','associates']
+  if( isUndefined(this._props) ){
+    this._props = [STRid,'pseudo','dim','prenom','nom','dimensions','ages','description','fonctions','associates']
   }
   return this._props
 }
@@ -187,7 +192,7 @@ set modified(v){
   this._modified = v
   this.constructor.modified = v
   if(v) this.onUpdate()
-  if(PanelPersos.opened) PanelPersos.btnOK.html(v ? 'Enregistrer' : OK)
+  if(PanelPersos.opened) PanelPersos.btnOK.html(v ? STREnregistrer : OK)
 }
 
 get pseudo(){return this._pseudo}

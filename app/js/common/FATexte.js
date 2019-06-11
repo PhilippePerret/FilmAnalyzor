@@ -45,6 +45,12 @@ static defineRegexpAndReplacements(){
 
 static reset(){
   delete this._lastIndiceNote
+  delete this._varsPath
+  delete this._dimsPath
+  delete this._table_vars
+  delete this._table_dims
+  delete this.missedVariables
+  delete this._lastIndiceNote
 }
 
 static forEachDim(method){
@@ -54,7 +60,6 @@ static forEachDim(method){
     method(dim, d.regexp, d.value)
   }
 }
-
 
 static get TYPES2HTYPES(){
   let t2h = {
@@ -90,10 +95,12 @@ static htypeFor(type, options){
 }
 
 static deDim(str){
+  // console.log("String au départ :", str)
   if ( isNull(this.dimsData) ) return str // pas de diminutifs
   this.forEachDim(function(dim, regDim, value){
     str = str.replace(regDim, value)
   })
+  // console.log("String après deDim :", str)
   return str
 }
 
@@ -108,12 +115,11 @@ static deVar(str){
   var my = this
     , groups
     , key
-    , tableref
-  // Quand il n'y a pas de variables définies, on fait quand même le
-  // traitement pour signaler à l'analyste qu'il doit définir celles qui
-  // sont utilisées, et lui explique comment le faire.
-  if(my.table_vars === null){ tableref = {} }
-  else tableref = my.table_vars
+    // Quand il n'y a pas de variables définies, on fait quand même le
+    // traitement pour signaler à l'analyste qu'il doit définir celles qui
+    // sont utilisées, et lui explique comment le faire.
+    , tableref = isNull(my.table_vars) ? {} :  my.table_vars
+
   str = str.replace(VAR_REGEXP, function(){
     groups  = arguments[arguments.length-1]
     key     = groups.key
@@ -193,6 +199,7 @@ static defineTableDims(){
     reg = new RegExp(`(^|[^a-zA-Z0-9_])@${dim}([^a-zA-Z0-9_]|$)`, 'g')
     tbl[dim] = {dim: dim, value: `$1<a class="lkshow" onclick="showPersonnage('${this.dimsData[dim].id}',event)">${this.dimsData[dim].pseudo}</a>$2`, regexp: reg}
   }
+  // console.log("this.dimsData:", this.dimsData)
   return tbl
 }
 
@@ -211,6 +218,7 @@ static get dimsData(){
     Object.assign(this._dimsData, FAPersonnage.diminutifs)
 
     isEmpty(this._dimsData) && ( this._dimsData = null )
+    // console.log("this._dimsData:", this._dimsData)
   }
   return this._dimsData
 }
@@ -269,7 +277,7 @@ setFormat(str, format){
       str = CHILD_PROCESS.execSync(`echo "${str.replace(/\"/g,'\\"')}" | pandoc`).toString()
       str = str.replace(/¶/g, '<br>')
       return str
-    case 'raw':
+    case STRraw:
       return str
     default:
       console.error(`Le Format "${format}" est inconnu.`)
