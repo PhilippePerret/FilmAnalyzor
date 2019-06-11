@@ -116,9 +116,7 @@ module.exports = {
 
 , goAndMarkCursor(nat/* 'abs' ou 'rel' */, node) {
     if ( isUndefined(nat) ) return
-    let isAbs = nat === 'abs' ? true : false
-    UI.markCursor( isAbs ? `${node.hname}<br>${("ABSOLU"+node.e).toUpperCase()}` : node.hname)
-    this.setTime(isAbs ? new OTime(node.startAtAbs + this.a.filmStartTime) : node.event.otime)
+    node.goToAndMarkCursor(nat === STRrel)
   }
 
 , goToNextMarker(){

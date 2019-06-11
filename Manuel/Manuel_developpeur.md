@@ -586,6 +586,8 @@ Soit un objet `MonObjet` contenant des items.
 
 La liste des items doit être une liste `Array` de paires `[valeur, titre]`. C'est le `titre` qui sera affiché et c'est la `valeur` (ou identifiant) qui sera envoyé aux méthodes.
 
+Sur chaque rangée, il peut cependant y avoir deux valeurs, la valeur par défaut et une valeur alternative. Par exemple, pour les nœuds structurels, on a à gauche le nœud absolu et à droite le nœud relatif à l'analyse. On définit cette valeur alternative simplement en définissant une troisième valeur dans la paire ci-dessus : `[valeur, titre, titre_alternatif]`.
+
 Pour afficher la liste, on fait :
 
 ```javascript
@@ -594,11 +596,34 @@ MonObjet.kwindow.show()
 
 ```
 
-Ensuite, il suffit d'utiliser les flèches et la touche retour pour choisir et sélectionner un item en particulier.
+Ensuite, il suffit d'utiliser les flèches et la touche retour pour choisir et sélectionner un item en particulier. Tout est géré de façon automatique.
+
+La méthode qui reçoit le `onChoose`, l'item choisi, doit recevoir en premier argument la valeur, c'est-à-dire le premier élément de la paire `[valeur, titre]` :
+
+```javascript
+
+methodeOnChoose(valeur){
+  /* traitement de `valeur` */
+}
+
+```
+
+Si c'est une rangée double — i.e. avec une valeur alternative —, la méthode doit recevoir un second argument qui est `true` lorsque la valeur envoyée doit concerner l'élément alternatif.
+
+```javascript
+
+methodeOnChoose(valeur, forAlt){
+  /* traitement de `valeur` pour l'élément alternatif */
+}
+
+```
+
+Pour les nœuds structurels par exemple, `forAlt` sera `true` ci-dessus si c'est le nœud relatif qu'on veut rejoindre.
+
 
 ## Actualisation automatique des éléments affichés lors des modifications {#autoupdate_after_edit}
 
-Le système adopté pour actualiser automatiquement l'affichage lors de modification est de fonctionner avec une classe qui contienne la définition de ce qu'est l'élément.
+Le système adopté pour actualiser automatiquement l'affichage lors de modifications est de fonctionner avec une classe qui contienne la définition de ce qu'est l'élément.
 
 Un exemple tout simple, avec les personnages. Lorsqu'un personnage est modifié, disons son pseudo, automatiquement, tous les éléments (span essentiellement) possédant la classe `perso-<ID perso>-pseudo` sont modifiés pour refléter le changement.
 

@@ -5,7 +5,6 @@ class KWindow {
 constructor(owner, args){
   this.owner = owner
   this.id = args.id // obligatoire si on veut pour détruire les éléments
-  console.log("Instanciation de fenêtre ", this.id)
   this.indexSelected = args.selected || 0
   this.title = args.title
   this.functionOnChooseItem = args.onChoose
@@ -39,7 +38,7 @@ get selectedItem(){ return this.item(this.indexSelected) }
 **/
 chooseItem(){
   isFunction(this.functionOnChooseItem) || raise(T('kwindow-func-after-choose-required'))
-  this.functionOnChooseItem(this.selectedItem.value)
+  this.functionOnChooseItem(this.selectedItem.value, this.selectedItem.selection === 'right'/* si double*/)
   this.close()
 }
 /**
@@ -104,15 +103,14 @@ observeWindow(){
   UI.markShortcuts.html('KEYWINDOW')
 }
 
-selectPrevItem(){
-  if ( this.indexSelected < 1 ) return
+selectPrevItem(){ this.selectAroundItem(this.indexSelected - 1) }
+selectNextItem(){ this.selectAroundItem(this.indexSelected + 1) }
+selectAroundItem(indexNext){
   this.item(this.indexSelected).deselect()
-  this.item(--this.indexSelected).select()
-}
-selectNextItem(){
-  if ( this.indexSelected == this.countItems - 1 ) return
-  this.item(this.indexSelected).deselect()
-  this.item(++this.indexSelected).select()
+  if ( indexNext < 0 /* => prev */ ) indexNext = this.countItems - 1
+  else if ( indexNext > this.countItems - 1 /* => next */) indexNext = 0
+  this.item(indexNext).select()
+  this.indexSelected = indexNext
 }
 
 get countItems(){ return this.items.size }
@@ -120,11 +118,25 @@ get countItems(){ return this.items.size }
 onKeyUp(e){
   // console.log("e.key (STRErase)", e.key, STRErase)
   switch (e.key) {
-    case STRArrowUp:
-      this.selectPrevItem()
+    // Note : les flèches haut/bas sont gérées par onKeyDown pour pouvoir
+    // tenir compte des répétitions avec touche tenue pressée.
+    // case STRArrowUp:
+    //   this.selectPrevItem()
+    //   break
+    // case STRArrowDown:
+    //   this.selectNextItem()
+    //   break
+    case STRArrowRight:
+      if ( this.selectedItem.isDouble) {
+        // Il faut sélectionner l'item droite
+        this.selectedItem.selectRight()
+      }
       break
-    case STRArrowDown:
-      this.selectNextItem()
+    case STRArrowLeft:
+      if ( this.selectedItem.isDouble) {
+        // Il faut sélectionner l'item gauche
+        this.selectedItem.selectLeft()
+      }
       break
     case ENTER:
       this.chooseItem()
@@ -142,6 +154,14 @@ onKeyUp(e){
   return stopEvent(e)
 }
 onKeyDown(e){
+  switch (e.key) {
+    case STRArrowUp:
+      this.selectPrevItem()
+      break
+    case STRArrowDown:
+      this.selectNextItem()
+      break
+  }
   return stopEvent(e)
 }
 /**
@@ -159,17 +179,66 @@ constructor(owner, paire){
   this.owner = owner
   this.value = paire[0]
   this.title = paire[1]
+  this.title_alt = paire[2] // if any
+  this.isDouble = isDefined(this.title_alt)
+  // Par défaut, si c'est une rangée double, la sélection est l'item gauche
+  this.isDouble && ( this.selection = 'left' )
 }
+selectRight(){
+  if (this.selection === 'right') {
+    this.selectLeft()
+  } else {
+    this.jqItemRight.addClass('selected')
+    this.jqItemLeft.removeClass('selected')
+    this.selection = 'right'
+  }
+}
+selectLeft(){
+  if ( this.selection === 'left') {
+    this.selectRight()
+  } else {
+    this.jqItemRight.removeClass('selected')
+    this.jqItemLeft.addClass('selected')
+    this.selection = 'left'
+  }
+}
+get jqItemRight(){return this.jqObj.find('span.subitem-right')}
+get jqItemLeft(){return this.jqObj.find('span.subitem-left')}
 select(){
   this.jqObj.addClass('selected')
+  // On s'assure qu'il soit toujours visible
+  let o = this.jqObj
+    , parent        = o.parent()
+    , top           = o.position().top // par rapport au parent
+    , height        = o.outerHeight()
+    , bottom        = top + height
+    , offsetStart   = parent.scrollTop()
+    , offsetEnd     = offsetStart + parent.innerHeight()
+
+  if ( top < offsetStart || bottom > offsetEnd) {
+    parent.scrollTop(top - 20)
+  }
 }
 deselect(){
   this.jqObj.removeClass('selected')
 }
 get li(){
-  let obj = DCreate(LI,{class:'item',inner:this.title})
+  let obj = DCreate(LI,{class:`item${this.title_alt?' double':''}`,append:this.spanItems})
   this._jqobj = $(obj)
   return obj
+}
+/**
+  Retourne le ou les spans de la rangée
+  Cf. le manuel de développement, sur les KWindows
+**/
+get spanItems(){
+  let arr = []
+  this.title_alt && arr.push(DCreate(SPAN,{class:'subitem subitem-right', inner:this.title_alt}))
+  arr.push(DCreate(SPAN,{class:'subitem subitem-left selected', inner:this.title}))
+  // Noter que le 'selected', ci-dessus, ne concerne que la rangée, il signifie
+  // que si c'est une rangée à double valeur, c'est celle de gauche qui est
+  // sélectionnée.
+  return arr
 }
 get jqObj(){return this._jqobj}
 }

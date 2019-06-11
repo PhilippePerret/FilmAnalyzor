@@ -8,12 +8,40 @@ class FAEstt extends FAEvent {
 // Propriétés propres
 static get OWN_PROPS(){return [ ['sttID', 'sttType'], 'idx_pfa' ]}
 
+// Instance KWindow qui permet d'afficher les noeuds dramatiques (absolus et
+// relatifs) pour pouvoir s'y rendre.
+static get klisting(){return this._klisting || defP(this,'_klisting', this.defineKListing())}
+// Construction de la KWindow
+static defineKListing(){
+  // Préparation des items
+  var items = [], ter
+  this.a.pfa1.forEachAbsNode( node => {
+    ter = [node.id, node.hname]
+    if ( node.isDefined ) ter.push('RELATIF')
+    items.push(ter)
+  })
+
+  // Instanciation de la KWindow
+  return new KWindow(this,{
+      id: 'noeud-stt-list'
+    , title: 'Se rendre au nœud…'
+    , onChoose: this.goToSttNodeByEventId.bind(this)
+    , items: items
+  })
+}
+
+/**
+  Méthode, utilisée pour le moment exclusivement par la KWindow, pour se
+  rendre au noeud dramatique dont l'event a l'identifiant +evid+
+**/
+static goToSttNodeByEventId(nid, rel){
+  this.a.pfa1.node(nid).goToAndMarkCursor(rel)
+}
 // ---------------------------------------------------------------------
 //  INSTANCE
 constructor(analyse, data){
   super(analyse, data)
 }
-
 
 get isValid(){
   var errors = []

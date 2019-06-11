@@ -2,9 +2,6 @@
 
 ### Traiter :
 
-* Utiliser les KWindows pour :
-  - les scènes
-  - les noeuds structurels
 * Garder toujours le curseur visible dans le banc-timeline (faire l'essai en zoomant et en passant du début à la fin du film)
 
 * Fenêtres (Helpers) indiquant les raccourcis de base :

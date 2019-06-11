@@ -86,7 +86,31 @@ constructor(nid, pfa){
   this.dependencies = []
 
 }
+/**
+  Pour se rendre à ce noeud (absolu ou relatif) et marquer son nom à côté du curseur
 
+  @param {Boolean} relatif    True si on doit se rendre au noeud relatif
+**/
+goToAndMarkCursor(relatif){
+  this.goTo(relatif)
+  this.markCursor(relatif)
+}
+/**
+  Pour se rendre à ce noeud (absolu ou relatif)
+
+  @param {Boolean} relatif    True si on doit se rendre au noeud relatif
+**/
+goTo(relatif){
+  this.a.locator.setTime(relatif ? this.event.otime : new OTime(this.startAtAbs + this.a.filmStartTime))
+}
+/**
+  Pour mettre sur le curseur principal le nom du noeud
+  On se servira plutôt de la méthode `goToAndMarkCursor` ci-dessus
+  @param {Boolean} relatif    True si on doit se rendre au noeud relatif
+**/
+markCursor(relatif){
+  UI.markCursor( relatif ? this.hname : `${this.hname}<br>${("ABSOLU"+this.e).toUpperCase()}`)
+}
 // ---------------------------------------------------------------------
 // Méthodes d'Helper
 

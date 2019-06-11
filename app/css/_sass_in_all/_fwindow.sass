@@ -157,7 +157,6 @@
   &.keywindow
     border-radius: 1em
     background-color: rgba(255,255,255,0.5)
-    max-height: 600px
     width: 400px
 
     > .header
@@ -166,12 +165,31 @@
       text-shadow: black 2px 2px 2px
     > .body
       padding: 1em
+      overflow: auto
+      max-height: 500px
       > li.item
-        border: none
+        all: unset
         list-style: none
+        border: none
+        padding: 0 !important
+        margin: 0 !important
+        background-color: rgba(0,0,0,0.5)
+        display: block
         color: white
         font-size: 11.9pt
-        &:not(.selected)
-          background-color: rgba(0,0,0,0.5)
-        &.selected
+        line-height: 1.6em
+        &.selected:not(.double)
           background-color: rgba(0,60,163,0.9)
+        &.selected.double
+          > span.subitem.selected
+            background-color: rgba(0,60,163,0.9)
+        &:not(.double)
+        > span.subitem
+          padding: 0 8px
+        &.double
+          > span.subitem
+            &.subitem-right
+              float: right
+    // Pied de page des Kwindows
+    > .footer
+      min-height: 1em // pour le moment il n'y a rien dedans
