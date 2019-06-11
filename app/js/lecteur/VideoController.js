@@ -104,60 +104,27 @@ setMarkStt(mainSub, absRel, node, name){
 /**
 * On place les observeurs sur le video-controleur
 **/
-
 observe(){
   var my = this
 
-  return
-
-  var valsRewForw = [0.04, 1, 5]
-  for(var i = 1; i < 4 ; ++ i){
-    var val = valsRewForw.shift()
-      , btnRewind   = this.section.find(`.btn-rewind-${i}`)[0]
-      , btnForward  = this.section.find(`.btn-forward-${i}`)[0]
-    listenMDown(btnRewind,  my, 'startRewind', val)
-    listenMUp(btnRewind,    my, 'stopRewind')
-    listenMDown(btnForward, my, 'startForward', val)
-    listenMUp(btnForward,   my, 'stopForward')
-  }
-
-  // Les « horlogeables »
-  var horloges = UI.setHorlogeable(this.section.find('.video-header')[0], {synchro_video: true})
-  this.locator.oMainHorloge = Object.values(horloges)[0]
-
-  // Boutons pour se déplacer de scène en scène (dans le contrôleur)
-  var btnPrevScene = this.section.find('.btn-prev-scene')[0]
-  var btnNextScene = this.section.find('.btn-next-scene')[0]
-  listenMDown(btnPrevScene, my.locator,'goToPrevScene')
-  listenMUp(btnPrevScene, my.locator,'stopGoToPrevScene')
-  listenMDown(btnNextScene, my.locator,'goToNextScene')
-  listenMUp(btnNextScene, my.locator,'stopGoToNextScene')
-
   // La vidéo elle-même, peut être déplacée pour récupérer un temps
   $(UI.video).draggable({
-    revert: true
-  , cursorAt: {left: 40, top: 10}
-  , helper: (e) => {
-      let otime = this.locator.currentTime
-      var attrs = {'data-value': otime.horloge}
-      attrs[STRdata_type] = STRtime
-      attrs[STRdata_id]   = otime.seconds.round(2)
-      return DCreate(DIV, {
-        inner: otime.horloge
-      , class: 'dropped-time'
-      , attrs:attrs
-      , zindex:1000
-      })
-    }
-  , start:() => {zIndex(UI.sectionVideo, 1000, {deep: true})}
-  , stop:() =>  {zIndex(UI.sectionVideo, 1, {deep: true})}
-})
-
-  // Sur les parties à droite de l'horloge principale
-  this.markMainPartAbs.on(STRclick, this.onClickMarkStt.bind(this, 'Main', 'Abs'))
-  this.markSubPartAbs.on(STRclick, this.onClickMarkStt.bind(this, 'Sub', 'Abs'))
-  this.markMainPartRel.on(STRclick, this.onClickMarkStt.bind(this, 'Main', 'Rel'))
-  this.markSubPartRel.on(STRclick, this.onClickMarkStt.bind(this, 'Sub', 'Rel'))
+      cursorAt: {left: 40, top: 10}
+    , helper: (e) => {
+        let otime = this.locator.currentTime
+        var attrs = {'data-value': otime.horloge}
+        attrs[STRdata_type] = STRtime
+        attrs[STRdata_id]   = otime.seconds.round(2)
+        let div = DCreate(DIV, {
+          inner: otime.horloge
+        , class: 'dropped-time'
+        , attrs:attrs
+        , style:'z-index:1000'
+        })
+        $(document.body).append(div)
+        return div
+      }
+  })
 
   // Pour afficher les scènes, le div est sensible au clic et permet
   // d'éditer la scène
@@ -167,7 +134,6 @@ observe(){
     }
   })
 
-  horloges = null
   my = null
 }
 
