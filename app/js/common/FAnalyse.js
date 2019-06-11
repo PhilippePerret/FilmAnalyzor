@@ -412,13 +412,6 @@ addEvent(nev) {
   FAStater.update()
 }
 
-// Pour éditer le document d'identifiant +doc_id+
-// Note : on pourrait y aller directement, mais c'est pour compatibiliser
-// les choses
-editDocument(dtype, doc_id){
-  return PorteDocuments.editDocument(docId)
-}
-
 /**
  * Procédure de description de l'event
  */
@@ -437,6 +430,7 @@ updateEvent(ev, options){
   log.info("-> FAnalyse#updateEvent")
   var new_idx = undefined
   if (options && options.initTime != ev.time){
+    // Quand le temps initial de l'event est différent de son nouveau temps
     var idx_init      = this.indexOfEvent(ev.id)
     var next_ev_old   = this.events[idx_init + 1]
     var idx_new_next  = this.getIndexOfEventAfter(ev.time)
@@ -453,24 +447,40 @@ updateEvent(ev, options){
     FAEscene.updateAll()
     FADecor.resetAll()
   }
+
+  // Il faut aussi replacer l'event dans le banc-timeline
+  ev.updateInTimeline()
+
   // On actualise tous les autres éléments (par exemple l'attribut data-time)
   ev.updateInUI()
-  // On marque l'analyse modifiée
-  this.modified = true
-  // Enfin, s'il est affiché, il faut updater son affichage dans le
+
+  // S'il est affiché, il faut updater son affichage dans le
   // reader (et le replacer si nécessaire)
   ev.updateInReader(new_idx)
+
   // Et enfin on actualise l'état d'avancement
   FAStater.update()
   next_ev_old = null
   next_ev_new = null
 
+  // On marque l'analyse modifiée
+  this.modified = true
+
   log.info("<- FAnalyse#updateEvent")
 }
 
+/**
+  Retourne l'event d'identifiant +eid+
+**/
 getEventById(eid){
-  console.warn("DEPRECATED: Il vaut mieux utiliser la méthode FAEvent.get() que FAnalyse#getEventById")
   return this.ids[eid]
+}
+
+// Pour éditer le document d'identifiant +doc_id+
+// Note : on pourrait y aller directement, mais c'est pour compatibiliser
+// les choses
+editDocument(dtype, doc_id){
+  return PorteDocuments.editDocument(docId)
 }
 
 getSceneNumeroAt(time){

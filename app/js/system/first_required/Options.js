@@ -98,8 +98,6 @@ onSetByApp(opid, value){
       return this.a.videoController.setSpeed(value)
     case 'option_edit_in_mini_writer':
       return UI.miniWriterizeTextFields(null, value)
-    case 'option_banc_timeline':
-      return UI.toggleModeBancTimeline(value)
   }
 }
 

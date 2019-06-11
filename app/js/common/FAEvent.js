@@ -372,6 +372,14 @@ updateInReader(new_idx){
 }
 
 /**
+  Après édition, on peut avoir à modifier l'event dans le banc-timeline
+  Cela se produit, pour le moment, si on modifie sa position et/ou sa durée
+**/
+updateInTimeline(){
+  this.btelement.repositionne()
+}
+
+/**
   Les données "communes" qu'on doit actualiser dans tous l'interface, quel
   que soit l'élément.
  */

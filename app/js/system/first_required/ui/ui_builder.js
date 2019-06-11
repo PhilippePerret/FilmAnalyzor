@@ -13,11 +13,6 @@ const UIBuilder = {
 
     this.a = this.analyse = current_analyse // peut-être undefined
 
-    // Dorénavant, le mode d'affichage de l'écran est toujours
-    // le mode "banc de montage". On pourra supprimer définitivement
-    // cette propriété lorsqu'elle aura disparu partout.
-    this.ModeBancTimeline = true
-
     // On définit tous les noms des éléments de l'interface,
     // colonnes, rangées, sections principales
     this.defineFirstUIComponants()
@@ -148,28 +143,10 @@ const UIBuilder = {
     $('#C1').resizable({
       handles:'e'
     })
-    // $('#C1-R1').resizable({
-    //     handles:'s'
-    //   , alsoResize: '#section-video-body, #section-video-body-video-1'
-    //   , stop: (e) => {
-    //       F.notify("Fin du resize de C1-R1")
-    //       current_analyse.options.memorizeUIsizes()
-    //     }
-    // })
-
-    // UI.sectionTimeline.resizable({
-    //     handles: 'n'
-    //   , alsoResize: 'section#C1-R1-C1-section-video'
-    //   , stop: (e) => {
-    //       F.notify("Fin du resize de la Timeline")
-    //       current_analyse.options.memorizeUIsizes()
-    //     }
-    // })
 
     UI.C1R1.resizable({
         handles: 's'
       , stop: (e) => {
-          F.notify("Fin du resize C1R1")
           current_analyse.options.memorizeUIsizes()
         }
     })

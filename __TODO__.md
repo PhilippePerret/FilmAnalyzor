@@ -4,9 +4,6 @@
 
 * Garder toujours le curseur visible dans le banc-timeline (faire l'essai en zoomant et en passant du début à la fin du film)
 
-* Fenêtres (Helpers) indiquant les raccourcis de base :
-  Les ajouter au menu "Raccourcis". S'inspirer des éléments présents
-
 * Traiter les observeurs de keyup/keydown différemment en fonction du propriétaire (rappel : l'observer de mutations met dans la propriété "data-owner-id" l'identifiant du DOMElement qui contient le champ de saisie. C'est 'writer' lorsque c'est le writer)
 
 Faire un controleur pour chaque partie de l'interface et notamment pour la colonne de droite qui doit s'ouvrir/se refermer, recevoir un élément à afficher, etc.
@@ -53,50 +50,20 @@ Avec possibilité de boucle pour charger tous les fichiers voulus.
 * BAN TIMELINE
   - Faire le menu "Banc Timeline" en reprenant TOUS les raccourcis
   - Implémenter les méthodes onkeyup et onkeydown lorsque l'on est dans des champs d'édition (reprendre les méthodes utilisées ailleurs et les mettre dans `banc_timeline/observers_methods.js`)
-  - [BUG] Quand on fait CMD-Flèche, ça saute deux scènes
-  - Écrire les infos sur la scène courante quelque part
-    (en fait, il suffit de modifier le style du bloc existant)
-  - pouvoir définir un marqueur avec "m" (comment passer en revue les marqueurs ?)
-    Peut-être : CMD-M pour créer le marqueur (si ça coupe bien le comportement par défaut)
-    et "m" pour aller de marqueur en marqueur et "MAJ-m" pour faire apparaitre la liste des marqueurs
 
 * Script d'assemblage
-  - définir comment on va partir de l'id enregistré dans le fichier script, et
-    arriver à la méthode de construction. Comme avant, avec les BUILD et
-    autre ajout.
-    - Comment le faire, surtout, avec les éléments aléatoires (custom-docs)
   - traiter les brins (pouvoir les glisser depuis la liste)
     + mettre juste un élément, seulement clickable, pour l'explication, dans la liste
   - voir comment on peut faire des "blocs" si nécessaire
   - traiter l'insertion d'images (on doit pouvoir les glisser de puis leur liste, mais alors, pourquoi ne pas faire ça avec le reste ?)
 
-
-* Faire le mode "Mode Ban Timeline" qui permet de transformer l'interface en sorte de ban de montage, avec des fenêtres fixes
-  - placer les scènes sur une ligne unique (en bas), en résorbant les problèmes éventuels de longueur (même si ça n'a pas d'importance puisqu'elles sont placées sur la même rangée)
-  - voir comment "économiser" de la place sur la timeline en imbriquant les éléments qui sont en lien avec d'autres déjà placés. En gros, l'idée, c'est que si une note concerne une information placée (si l'information est son parent) alors on afficher la note seulement lorsqu'on survole l'information.
-    => Il faut bien développer la notion de parent, qui pour le moment n'est pas encore très utilisée
-    => Ne pas inclure les scènes dans ce principe, sinon tous les éléments appartiendraient à ces scènes.
-
+* Banctimeline
   - surveiller onresize de la fenêtre principale et recalculer la taille de l'interface
-    - une méthode isolée pour calculer les tailles.
-  - régler les widths en fonction des durées
-  - rendre les éléments éditables
-  - pouvoir les déplacer et changer leur temps
-  - ligne différente suivant type d'event
-  - une image graduée pour déplacer le curseur
+  - pouvoir déplacer les events (drag) et changer leur temps (resize)
 
-* Dans le mode "ban timeline", il faudrait fonctionner en "tout raccourci". Aucune action souris ne serait possible autre que les déplacements pour mettre les éléments dans les autres
-  - supprimer la nécessité de la touche CMD pour j, k, l => bloquer ce comportement lorsque l'on se trouve dans un champ de texte => focus dans un champs de texte entraine la mise en place des keyup de champs de texte, blur d'un champ de texte entraine la mise en place des keyup hors champ de texte.
   - Raccourci pour passer en revue les stop-points
-  - raccourci pour retourner au début
-  - raccourci pour afficher la liste des raccourcis (+ menu)
-  - combinaison pour passer en revue les events dans la timeline (ENTER => éditer la sélection)
-  - combinaison pour passer de scène en scène (dans la timeline)(ENTER => mettre en route à cette scène)
 
 * Puisque System.loadTruc inscrit des balises <script> dans le document, on peut l'utiliser pour charger tous les scripts, sans avoir à faire de require et toute la complication qui va avec
-
-* Pour les associés qui n'existent plus, utiliser la classe `FAUnknownElement`
-  - Faut-il faire un check régulier, partout ?
 
 - Réimplémenter le check des résolutions des QRD pour qu'il se fasse seulement quand toutes les classes sont chargées — + quand on vient d'en créer une. Il faut appeler `FAEqrd#checkResolution()`. Voir aussi sur les procédés à résolution ?
 
