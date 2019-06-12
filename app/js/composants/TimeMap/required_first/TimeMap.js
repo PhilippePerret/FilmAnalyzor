@@ -64,26 +64,7 @@ const TimeMap = {
 
     // On passe en revue chaque event pour l'entrer dans la map
     var s_end, de, de_
-    this.a.forEachEvent(ev => {
-      s = Math.floor(ev.startAt)
-      de = {type:TYPE_EVENT, id:ev.id}
-
-      // Propriétés supplémentaires en fonction du type de l'event
-      if ( ev.isAScene ) de.scene = true
-      else if ( ev.isASttNode ) de.sttNode = true
-      else de.realEvent = true
-
-      de_ = Object.assign({}, de, {phase:PHASE_START, time: ev.startAt})
-      this.map[s].push(de_)
-      s_end = Math.floor(ev.endAt)
-      de_ = Object.assign({}, de, {phase:PHASE_END, time: ev.endAt})
-      this.map[s_end].push(de_)
-      do {
-        ++ s
-        de_ = Object.assign({}, de, {phase:PHASE_CONTINUE})
-        this.map[s].push(de_)
-      } while ( s < s_end - 1 )
-    })
+    this.a.forEachEvent( ev => this.addEvent(ev) )
 
     // Ajout des images
     // Note : on les laisse 5 secondes à l'affichage
@@ -109,9 +90,40 @@ const TimeMap = {
 
     let endOpe = new Date().getTime()
 
-
     // console.log("TimeMap.map", TimeMap.map)
     log.info(`    Durée de fabrication de la TimeMap.map: ${endOpe - startOpe}msecs`)
+  }
+
+/**
+  Ajout de l'event +ev+ à la map
+**/
+, addEvent(ev){
+    var s = Math.floor(ev.startAt)
+      , de = {type:TYPE_EVENT, id:ev.id}
+      , de_, s_end
+
+    // Propriétés supplémentaires en fonction du type de l'event
+    if ( ev.isAScene ) de.scene = true
+    else if ( ev.isASttNode ) de.sttNode = true
+    else de.realEvent = true
+
+    // On place l'élément de départ
+    de_ = Object.assign({}, de, {phase:PHASE_START, time: ev.startAt})
+    this.map[s].push(de_)
+    s_end = Math.floor(ev.endAt)
+    if ( isUndefined(this.map[s_end]) ) {
+      // Cela se produit lorsqu'on définit la longueur d'un event plus
+      // long que le temps de la vidéo. Dans ce cas, il faut raccourcir
+      // l'event dans la map.
+      s_end = this.map.length - 1
+    }
+    de_ = Object.assign({}, de, {phase:PHASE_END, time: ev.endAt})
+    this.map[s_end].push(de_)
+    do {
+      ++ s
+      de_ = Object.assign({}, de, {phase:PHASE_CONTINUE})
+      this.map[s].push(de_)
+    } while ( s < s_end - 1 )
   }
 
 /**

@@ -40,6 +40,7 @@
   * [Boutons de fermeture](#boutons_close)
   * [Boutons expand/collapse](#boutons_toggle_next)
   * [Boutons d'aide](#boutons_daide)
+  * [Élément toujours visible dans container scrollable](#rend_always_visible)
 * [Documents de l'analyse](#documents_analyse)
   * [Quatre types de documents](#les_types_de_documents)
   * [Édition d'un fichier quelconque](#edit_any_file)
@@ -1014,6 +1015,12 @@ Pour afficher un picto « ? » cliquable.
 ```
 
 Pour observer ce bouton (régler le clic souris qui doit ouvrir le message), il faut appeler la méthode `UI.setPictosAide(container)` en envoyant le container du bouton.
+
+### Élément toujours visible dans container scrollable {#rend_always_visible}
+
+Pour qu'un élément soit toujours visible dans son parent scrollable, on doit utiliser la méthode `UI.rendVisible(element)`.
+
+Ne pas oublier de mettre `position: relative` au container, donc à la liste.
 
 ---------------------------------------------------------------------
 

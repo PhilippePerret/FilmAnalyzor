@@ -20,6 +20,10 @@ let addEvent = function(nev){
   }
   this.ids[nev.id] = nev
 
+  // Puisque c'est une vraie création, on doit ajouter cet élément à la
+  // TimeMap
+  TimeMap.addEvent(nev)
+
   // C'est une vraie création, pas une instanciation au
   // rechargement de l'analyse. Donc on ajoute le nouvel event dans le reader
   // et sur le banc timeline
@@ -49,7 +53,7 @@ let addEvent = function(nev){
   // On place tout de suite l'évènement sur le reader
   nev.show()
   this.modified = true
-  // On ajoute l'event à la liste des modifiés du moment
+  // On ajoute l'event à la liste des modifiés du jour (du moment)
   FAEvent.addModified(nev)
   //  On reset
   nev = null
