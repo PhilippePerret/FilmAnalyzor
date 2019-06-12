@@ -153,6 +153,7 @@ const PorteDocuments = {
   document courant.
 */
 , onContentsChange(){
+    console.log("-> PorteDocs::onContentsChange")
     this.currentDocument.contents = this.docField.val()
   }
 

@@ -11,7 +11,18 @@ Object.assign(PorteDocuments,{
 /**
     Sauvegarde du document courant
  */
-, saveCurrentDoc(){ this.currentDocument.save() }
+, saveCurrentDoc(){
+    console.log("-> PorteDocument::saveCurrentDoc")
+    this.currentDocument.save()
+  }
+/**
+  Prise en compte du contenu et enregistrement du document courant
+  (pour le raccourci CMD-S ou CMD-Enter)
+**/
+, saveContentsAndCurrentDoc(){
+    this.onContentsChange() // simulation du changement de contenu
+    this.currentDocument.save()
+  }
 
 
 /**
@@ -25,7 +36,7 @@ Object.assign(PorteDocuments,{
 
 // Marque que le document courant est modifié
 , setModified(mod){
-    if (this.autoSave) return
+    if ( this.autoSave ) return
     this.jqObj[mod?'addClass':'removeClass'](STRmodified)
   }
 

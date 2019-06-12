@@ -111,7 +111,7 @@ Object.assign(UI, {
       } else {
         F.notify(T('unknown-front-fwindow-cant-close'))
       }
-    } else if ( e.keyCode === KRETURN ) {
+    } else if ( e.key === ENTER ) {
       if(e.metaKey){
         // META + RETURN => FINIR L'ÉDITION DE ?…
         if ( FWindow.currentIsEventForm() ) {
@@ -123,7 +123,7 @@ Object.assign(UI, {
       }
     } else if(e.keyCode === KTAB){
       return this.inTextField.stopTab(e, new Selector(target))
-    } else if(e.metaKey){
+    } else if ( e.metaKey ) {
         if ( e.ctrlKey ) {
           // MÉTA + CTRL
           if ( e.which === ARROW_UP || e.which === ARROW_DOWN){
@@ -144,23 +144,7 @@ Object.assign(UI, {
           }
         } else {
           // MÉTA seule
-
           switch (e.key) {
-            case STRS: // MÉTA + S
-              // Ici, le fonctionnement est différent en fonction de la
-              // cible. Si la cible est le fawrite, on enregistre le
-              // document. Si c'est le formulaire d'event, on enregistre
-              // les données et on sort (mais j'ai le sentiment que c'est
-              // déjà traité ailleurs).
-              F.notify("Il faut définir la cible courants pour savoir quoi faire de ce CMD+S")
-              if (e.target.data('owner-id') === 'porte_documents'){
-                PorteDocuments.currentDocument.getContents()
-                if (PorteDocuments.currentDocument.isModified()){
-                  PorteDocuments.currentDocument.save()
-                }
-                return stopEvent(e)
-              }
-              break
             case STRj:
             case STRk:
             case STRl:
@@ -179,6 +163,28 @@ Object.assign(UI, {
                 // Si la vidéo est déjà en train de jouer, on l'accélère
                 // Si la vidéo n'est pas en train de jouer, on la démarre
                 loc.playing ? vid.setSpeed(vid.getSpeed() + 0.5) : loc.togglePlay()
+                return stopEvent(e)
+              }
+              break
+            case STRs: // MÉTA + s
+              if(target.data('owner-id') === 'porte_documents'){
+                PorteDocuments.saveContentsAndCurrentDoc()
+              } else {
+                F.notify("Je ne connais pas le propriétaire pour exécuter Command + s… Pour y remédier, définir le 'data-owner-id' de la cible, par exemple, ou donner un ID précis au container.")
+              }
+              break
+            case STRS: // MÉTA + S
+              // Ici, le fonctionnement est différent en fonction de la
+              // cible. Si la cible est le fawrite, on enregistre le
+              // document. Si c'est le formulaire d'event, on enregistre
+              // les données et on sort (mais j'ai le sentiment que c'est
+              // déjà traité ailleurs).
+              F.notify("Il faut définir la cible courants pour savoir quoi faire de ce CMD+S")
+              if (e.target.data('owner-id') === 'porte_documents'){
+                PorteDocuments.currentDocument.getContents()
+                if (PorteDocuments.currentDocument.isModified()){
+                  PorteDocuments.currentDocument.save()
+                }
                 return stopEvent(e)
               }
               break
