@@ -549,7 +549,7 @@ saveIfModified(){
  * Méthode appelée pour sauver l'analyse courante
  */
 save() {
-  if(this.locked) return F.notify(T('analyse-locked-no-save'), {error: true})
+  if ( this.locked ) return F.notify(T('analyse-locked-no-save'), {error: true})
   if(this.saveTimer){
     // <= L'enregistrement automatique est activé
     // => Il faut l'interrompre
@@ -562,6 +562,8 @@ save() {
   // des modifiés (seuls les events modifiés à cette session sont
   // enregistrés)
   FAEvent.saveModifieds()
+  // On sauve la liste des personnages si elle a été modifiée
+  FAPersonnage.saveIfModify()
   // On sauve les options toutes seules, ça se fait de façon synchrone
   this.options.saveIfModified()
   this.savers = 0

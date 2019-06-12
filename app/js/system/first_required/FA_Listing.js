@@ -237,9 +237,27 @@ buildEditButton(item){
   return DCreate(A,{id:this.editBtnUID, class:'lkedit lktool fright',inner:'edit',attrs:attrs})
 }
 
+/**
+  Méthode appelée lorsqu'on veut supprimer l'item avec la petite croix
+**/
+onWantRemoveItem(item, e){
+  confirm({
+      message: `Veux-tu vraiment détruire définitivement l'item ${item} ?`
+    , methodOnOK: this.execRemoveItem.bind(this, item.id)
+  })
+  e && stopEvent(e)
+  return false
+}
+// La destruction a été confirmée
+execRemoveItem(item_id){
+  // console.log("this:", this)
+  this.owner.destroy(item_id)
+}
+
 buildRemoveButton(item){
-  let attrs = {onclick:`${item.constructor.name}.destroy('${item.id}')`}
-  return DCreate(A,{class:'lkdel lktool fright',inner:' x ',attrs:attrs})
+  let btn = DCreate(A,{class:'lkdel lktool fright',inner:' x '})
+  $(btn).on(STRclick, this.onWantRemoveItem.bind(this,item))
+  return btn
 }
 buildCollapseButton(item){
   return DCreate(IMG, {class: 'toggle-container', src:'img/folder_closed.png', attrs:{'data-container-id':`${item.domId}-additionnal-infos`}})

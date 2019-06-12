@@ -20,7 +20,7 @@ Object.assign(FAPersonnage,{
 , DECreateItem(dperso){
     defaultize(this, '_data', {})
     this._data[dperso.id] = dperso
-    this.reset()
+    this.update() // reset et actualise le listing si ouvert
     this.DESave()
     return this.get(dperso.id)
   }
@@ -40,7 +40,7 @@ Object.assign(FAPersonnage,{
 **/
 , DERemoveItem(dperso){
     delete this._data[dperso.id]
-    this.reset()
+    this.update()
     this.DESave()
     return true
   }

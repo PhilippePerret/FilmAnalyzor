@@ -12,6 +12,9 @@ class FAPersonnage extends FAElement {
 static get modified(){return this._modified}
 static set modified(v){
   this._modified = v
+  // Si c'est pour marquer modifié, on marque aussi modifié l'analyse pour
+  // produire l'enregistrement
+  v && ( this.a.modified = v )
 }
 
 static show(perso_id){
@@ -21,12 +24,16 @@ static show(perso_id){
 
 static destroy(perso_id){
   delete this.data[perso_id]
+  this.update()
+  this.modified = true
+}
+
+static update() {
   this.reset()
-  if(this.listing){
+  if ( this.listing ) {
     this.listing._items = this.personnages
     this.listing.update()
   }
-  this.modified = true
 }
 
 /**
@@ -35,7 +42,7 @@ static destroy(perso_id){
 **/
 static forEachPersonnage(fn){
   for(var personnage of this.personnages){
-    if(false === fn(personnage)) break
+    if ( isFalse(fn(personnage)) ) break
   }
 }
 
@@ -118,7 +125,7 @@ static get hpersonnages(){
 }
 
 static saveIfModify(){
-  if(!this.modified) return
+  if ( not(this.modified) ) return
   // On doit reconstituer this._data
   var hdata = {}
   this.forEachPersonnage(perso => hdata[perso.id] = perso.getData())
