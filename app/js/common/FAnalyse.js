@@ -408,6 +408,7 @@ forEachEvent(method, options){
 
  */
 addEvent(nev) {
+  if ( this.locked ) return F.notify(T('analyse-locked-no-save'))
   (this._addEvent||requiredChunk(this,'addEvent')).bind(this)(nev)
   FAStater.update()
 }
