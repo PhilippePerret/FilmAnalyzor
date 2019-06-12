@@ -8,6 +8,7 @@ constructor(mainClass, data){
   this.data         = data
   this.items        = data.items
   this.titleProp    = data.titleProp
+  this._id          = data.id
 }
 
 open(){

@@ -9,7 +9,7 @@ Object.assign(DataEditor.prototype,{
     une clé `fd1` qui sera un object définissant 'perso_id'
   **/
   redimFormData(formData){
-    if(!this.dataPanels) return formData
+    if ( not(this.hasPanels) ) return formData
 
     var h = {}, val
     this.dataPanels.map(dpanel => {
@@ -44,5 +44,6 @@ Object.defineProperties(DataEditor.prototype,{
 , menuItems:{get(){return this.jqObj.find(`select#${this.idFor('menu_items')}`)}}
 , jqObj:{get(){return this.fwindow.jqObj}}
 
+, hasPanels:{get(){return !!this.dataPanels}}
 // --- RACCOURCIS ---
 })

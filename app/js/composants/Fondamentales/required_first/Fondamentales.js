@@ -8,8 +8,13 @@
 **/
 
 class Fondamentales {
-static get(fonds_id){
-  console.log("fonds_id:", fonds_id)
+static get(fpath){
+  switch (path.basename(fpath, path.extname(fpath))) {
+    case 'fondamentales':     return this.a.Fonds
+    case 'fondamentales_alt': return this.a.FondsAlt
+    default:
+      raise(`Impossible de renvoyer les fondamentales de path ${fpath}`)
+  }
 }
 static get a(){return current_analyse}
 
@@ -19,20 +24,20 @@ static get a(){return current_analyse}
 **/
 constructor(path){
   this.analyse = this.a = this.constructor.a
-  this._path = path
+  this._path  = path
+  this.loaded = false
   this.init()
 }
 
 init(analyse){
-  this.loaded = false
   if ( this.exists() ) this.load()
   else this.loaded = true // pas de fondamentales
 }
 
 save(options){
   this.saving = true
-  if(undefined === options)options = {}
-  if(undefined === options.after) options.after = this.afterSave.bind(this)
+  options = options || {}
+  isDefined(options.after) || ( options.after = this.afterSave.bind(this) )
   this.iofile.save(options)
 }
 afterSave(){
@@ -45,10 +50,11 @@ afterSave(){
 load(){
   this.iofile.load({after: this.afterLoading.bind(this)})
 }
-
 afterLoading(ydata){
   this.yaml_data = ydata
   this.loaded = true
+  log.info("<- fin du chargement des fondamentales de", this.path)
+  isFunction(this.methodAfterLoaded) && this.methodAfterLoaded.call()
 }
 
 /**
@@ -73,17 +79,25 @@ exists(){return fs.existsSync(this.path)}
     fd1, fd2, etc.
 **/
 get fds(){
-  if(undefined === this._fds){
-    this._fds = {
-      fd1: new PersonnageFondamental(this, this.yaml_data.fd1)
-    , fd2: new QuestionDramatiqueFondamentale(this, this.yaml_data.fd2)
-    , fd3: new OppositionFondamentale(this, this.yaml_data.fd3)
-    , fd4: new ReponseDramatiqueFondamentale(this, this.yaml_data.fd4)
-    , fd5: new ConceptFondamental(this, this.yaml_data.fd5)
+  if ( isUndefined(this._fds) ) {
+    let my = this
+    my._fds = {
+      fd1: new PersonnageFondamental(my, my.yaml_data.fd1)
+    , fd2: new QuestionDramatiqueFondamentale(my, my.yaml_data.fd2)
+    , fd3: new OppositionFondamentale(my, my.yaml_data.fd3)
+    , fd4: new ReponseDramatiqueFondamentale(my, my.yaml_data.fd4)
+    , fd5: new ConceptFondamental(my, my.yaml_data.fd5)
     }
   }
   return this._fds
 }
+// 5 méthodes utiles pour le data-editor
+get fd1(){ return this.fds.fd1 }
+get fd2(){ return this.fds.fd2 }
+get fd3(){ return this.fds.fd3 }
+get fd4(){ return this.fds.fd4 }
+get fd5(){ return this.fds.fd5 }
+
 
 get id(){return this.affixe}
 get iofile(){return this._iofile||defP(this,'_iofile', new IOFile(this))}

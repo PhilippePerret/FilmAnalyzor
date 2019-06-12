@@ -5,14 +5,16 @@ const PanelFonds = {
 
 , build(){
     return [
-      DCreate('DIV', {class: STRheader, append:[
+      DCreate(DIV, {class: STRheader, append:[
           DCreate(BUTTON, {type:STRbutton, class:'btn-close'})
-        , DCreate('H3', {inner: `Fondamentales`})
+        , DCreate(H3, {inner: `Fondamentales`})
         ]})
-    , DCreate('DIV', {class:STRbody, append: [DCreate('DIV', {inner:"ICI LA LISTE DES FONDAMENTALES"})]})
-    , DCreate('DIV', {class:STRfooter, append:[
-        DCreate(BUTTON, {type:STRbutton, inner: OK, class: 'btn-ok'})
-      ]})
+    , DCreate(DIV, {class:STRbody, append: [
+          DCreate(DIV, {inner:"ICI LA LISTE DES FONDAMENTALES"})
+        ]})
+    , DCreate(DIV, {class:STRfooter, append:[
+          DCreate(BUTTON, {type:STRbutton, inner: OK, class: 'btn-ok'})
+        ]})
     ]
   }
 

@@ -25,14 +25,14 @@ constructor(grpFonds, ydata){
 **/
 export(options){
   let appends = [
-    DCreate('H2', {class:'title', inner: this.hname})
+    DCreate(H2, {class:STRtitle, inner: this.hname})
   ]
   appends = this.addElementsTo(appends)
   this.facteurO_formated  && appends.push(this.divFacteurO)
   this.facteurU_formated  && appends.push(this.divFacteurU)
   this.scenes_formated    && appends.push(this.divScenes)
 
-  let div = DCreate('DIV', {id: `fond${this.id}`, append: appends})
+  let div = DCreate(DIV, {id: `fond${this.id}`, append: appends})
   if(options && options.as === 'dom'){
     return div
   } else {
@@ -55,16 +55,16 @@ libvalDiv(prop, libelle, options){
   let ghostProp = `_div${prop}`
   if(undefined === this[ghostProp] && this[prop]){
     if(undefined === libelle) libelle = prop.titleize()
-    this[ghostProp] = DCreate('DIV', {class: 'libval normal', append:[
-        DCreate('LABEL', {inner: libelle})
-      , DCreate(SPAN, {class:'value', inner: this.formater(this[prop])})
+    this[ghostProp] = DCreate(DIV, {class: 'libval normal', append:[
+        DCreate(LABEL, {inner: libelle})
+      , DCreate(SPAN, {class:STRvalue, inner: this.formater(this[prop])})
     ]})
   }
   return this[ghostProp]
 }
 
 get formater(){
-  if(undefined === this._formater){
+  if ( isUndefined(this._formater) ){
     let fatexte = new FATexte('')
     this._formater = fatexte.formate.bind(fatexte)
   }
@@ -83,7 +83,7 @@ get divScenes(){return this.libvalDiv('scenes_formated', 'Scènes associées')}
 
 get description(){return this.ydata.description}
 get facteurO_formated(){
-  if(undefined === this._facteurO_formated && (this.facteurO || this.description_factO)){
+  if(isUndefined(this._facteurO_formated) && (this.facteurO || this.description_factO)){
     let fa = this.facteurO
       , df = this.descFacteurO
     this._facteurO_formated = `${fa?fa + ' ': ''}${df?(fa?'. ':'')+df:''}`.trim()
@@ -91,7 +91,7 @@ get facteurO_formated(){
   return this._facteurO_formated
 }
 get facteurU_formated(){
-  if(undefined === this._facteurU_formated && (this.facteurU || this.description_factU)){
+  if(isUndefined(this._facteurU_formated) && (this.facteurU || this.description_factU)){
     let fa = this.facteurU
       , df = this.descFacteurU
     this._facteurU_formated = `${fa?fa + ' ': ''}${df?(fa?'. ':'')+df:''}`.trim()
@@ -100,7 +100,7 @@ get facteurU_formated(){
 }
 
 get scenes_formated(){
-  if(undefined === this._scenes_formated && this.scenes.length){
+  if(isUndefined(this._scenes_formated) && this.scenes.length){
     let arr = []
     this.scenes.forEach(scene_id => arr.push(`{{scene:${scene_id}}}`))
     this._scenes_formated = arr.join(', ')
@@ -110,14 +110,14 @@ get scenes_formated(){
 // ---------------------------------------------------------------------
 //  Méthodes/données
 get facteurO(){
-  if(undefined === this._facteurO){
+  if ( isUndefined(this._facteurO) ) {
     if(this.ydata.facteurO === 'x/5') this._facteurO = null
     else this._facteurO = this.ydata.facteurO
   }
   return this._facteurO
 }
 get facteurU(){
-  if(undefined === this._facteurU){
+  if ( isUndefined(this._facteurU) ) {
     if(this.ydata.facteurU === 'x/5') this._facteurU = null
     else this._facteurU = this.ydata.facteurU
   }

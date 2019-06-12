@@ -2,14 +2,15 @@
 
 ### Traiter :
 
+* Ajouter la propriété "enjeu" à la deuxième fondamentale
+  - peut-être aussi la propriété "obstacles (principaux)" à la troisième fondamentale
+
 * Garder toujours le curseur visible dans le banc-timeline (faire l'essai en zoomant et en passant du début à la fin du film)
 
 * Traiter les observeurs de keyup/keydown différemment en fonction du propriétaire (rappel : l'observer de mutations met dans la propriété "data-owner-id" l'identifiant du DOMElement qui contient le champ de saisie. C'est 'writer' lorsque c'est le writer)
 
 Faire un controleur pour chaque partie de l'interface et notamment pour la colonne de droite qui doit s'ouvrir/se refermer, recevoir un élément à afficher, etc.
   - FAIT Il faut maintenant l'utiliser.
-
-
 
 * Documenter la façon de charger un tool complexe (ou même n'importe quel objet) en utilisant la technique de mode_banc_timeline.js : on définit l'objet (const BancTimeline = {...}) puis on requiert tous les éléments du dossier en faisant :
   Object.assign(BancTimeline, require('./dossier/fichier'))

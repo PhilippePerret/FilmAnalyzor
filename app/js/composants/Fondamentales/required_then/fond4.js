@@ -11,10 +11,10 @@ class ReponseDramatiqueFondamentale extends Fondamentale {
   Pour ajouter les éléments DOM à la méthode `export` principale
 **/
 addElementsTo(els){
-  this.reponse && els.push(this.divReponse)
-  this.typeR && els.push(this.divTypeR)
+  this.reponse        && els.push(this.divReponse)
+  this.typeR          && els.push(this.divTypeR)
   this.divDescription && els.push(this.divDescription)
-  this.signification && els.push(this.divSignification)
+  this.signification  && els.push(this.divSignification)
   return els
 }
 // ---------------------------------------------------------------------
@@ -26,7 +26,7 @@ get divTypeR(){return this.libvalDiv('typeR_formated', 'Type')}
 // Données propres
 get reponse() {return this.ydata.reponse}
 get typeR_formated(){
-  if(undefined === this._typeR_formated){
+  if ( iUndefined(this._typeR_formated) ) {
     this._typeR_formated = this.typeR
     if(this.typeR.match(/MAIS/)) this._typeR_formated += ' (paradoxale)'
   }
@@ -34,6 +34,10 @@ get typeR_formated(){
 }
 get typeR()   {return this.ydata.typeR}
 get signification(){return this.ydata.signification}
+get paradoxe(){return this.ydata.paradoxe}
+get paradoxale(){return this.ydata.paradoxale}
+get Ufactor(){return this.ydata.Ufactor}
+get Ofactor(){return this.ydata.Ofactor}
 
 // ---------------------------------------------------------------------
 // Données générales

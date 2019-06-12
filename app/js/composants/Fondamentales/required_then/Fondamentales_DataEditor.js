@@ -2,20 +2,20 @@
 
 Object.assign(Fondamentales,{
 
-    DESave(){} // pour ne pas générer l'erreur lors du check
+  DESave(){} // pour ne pas générer l'erreur lors du check
 
- , DEUpdateItem(ditem){
+, DEUpdateItem(ditem){
     let fpath = ditem.fd1.path
-    let iFonds = new Fondamentales(fpath)
+    let iFonds = Fondamentales.get(fpath)
     delete ditem.fd1.path
     iFonds.contents = ditem // pour l'IOFile
     iFonds.save({after: this.DEAfterUpdateItem.bind(this)})
-    PorteDocuments.resetDocument(iFonds.affixe)
     return iFonds
   }
 , DEAfterUpdateItem(){
-    F.notify("Fondamentales enregistrées avec succès.")
+    // F.notify("Fondamentales enregistrées avec succès.")
   }
+
 /**
   [1] Il y a seulement deux fichiers fondamentales, et ce sont ces deux
   fichiers-là qu'on peut éditer
@@ -28,12 +28,10 @@ Object.defineProperties(Fondamentales,{
 
   DataEditorData:{get(){
     return {
-      type: 'fondamentales'
-    , title: 'FONDAMENTALES'
-    , items:[
-        new Fondamentales(this.a.fondsFilePath)
-      , new Fondamentales(this.a.fondsAltFilePath)
-      ]
+      type:   'fondamentales'
+    , id:     'FWFONDAMENTALES'
+    , title:  'FONDAMENTALES'
+    , items:[this.a.Fonds , this.a.FondsAlt]
     , no_new_item: true // pas d'ajout possible
     , no_del_item: true // pas de suppression possible
     , checkOnDemand: true // on ne checke pas d'office (=> bouton "Check")
@@ -72,12 +70,13 @@ Object.defineProperties(Fondamentales,{
                 }
               , checkValueMethod:(v) => {
                 let qrd = FAEvent.get(parseInt(v,10))
-                if(undefined===qrd || qrd.type != STRqrd) return "requiert impérativement un identifiant de QRD existante"
+                if ( isUndefined(qrd) || qrd.type != STRqrd ) return "requiert impérativement un identifiant de QRD existante"
               }
               , editLink:(v)=>{FAEvent.edit.bind(FAEvent)(v)}
             }
           , {label:'Objectif', type:STRtext, prop:'objectif'}
           , {label:'Description', type:STRtextarea, prop:'description', validities:REQUIRED}
+          , {label:'Enjeux', type:STRtextarea, prop:'enjeux', validities:REQUIRED}
           , {label:'Facteur U', type:STRtextarea, prop:'Ufactor', aide:'universalité de cette fondamentale'}
           , {label:'Facteur O', type:STRtextarea, prop:'Ofactor', aide:'originalité de cette fondamentale'}
           ]
@@ -103,9 +102,10 @@ Object.defineProperties(Fondamentales,{
             }
           }
         , {label:'Description', type:STRtextarea, prop:'description', validities:REQUIRED}
+        , {label:'Obstacles (principaux)', type:STRtextarea, prop:'obstacles', validities:REQUIRED}
         , {label:'Facteur U', type:STRtextarea, prop:'Ufactor', aide:'universalité de cette fondamentale'}
-          , {label:'Facteur O', type:STRtextarea, prop:'Ofactor', aide:'originalité de cette fondamentale'}
-          ]
+        , {label:'Facteur O', type:STRtextarea, prop:'Ofactor', aide:'originalité de cette fondamentale'}
+        ]
         }
 
         // Panneau de la RÉPONSE DRAMATIQUE FONDAMENTALE
@@ -114,18 +114,6 @@ Object.defineProperties(Fondamentales,{
         , id: 'fd4'
         , title: 'RDF'
         , dataFields: [
-            {label:'RD (id)', type:STRtext, class:STRshort, prop:'reponse-id', validities:REQUIRED
-              , observe:{
-                  'drop':{accept:'.qrd', tolerance:'intersect', classes:{'ui-droppable-hover':'survoled'}
-                          , drop:(e,ui) => $(e.target).val(ui.helper.attr(STRdata_id))
-                        }
-                  }
-              , checkValueMethod:(v) => {
-                let qrd = FAEvent.get(parseInt(v,10))
-                if(undefined===qrd || qrd.type != STRqrd) return "requiert impérativement un identifiant de QRD existante"
-              }
-              , editLink:(v)=>{FAEvent.edit.bind(FAEvent)(v)}
-            }
           , {label:'Réponse', type:STRselect, prop:'reponse', values:{oui:'Positive',non:'Négative'}, validities:REQUIRED}
           , {label:'Paradoxale', type:STRcheckbox, prop:'paradoxale'}
           , {label:'Paradoxe', type:STRtextarea, prop:'paradoxe', exemple:'Seulement si réponse paradoxale'}

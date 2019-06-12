@@ -20,7 +20,7 @@ const DATA_DOCUMENTS = {
 
 , separatorInfos: 'separator'
 
-, infos:            {id:20, hname: 'Infos film et analyse', format: 'yaml', type:'data', dataeditor: true, menu:false}
+, infos:            {id:20, hname: 'Infos film et analyse', format: 'yaml', type:'data', dataeditor: true, menu:false, accelerator:'CmdOrCtrl+Alt+Shift+I'}
 
 , separator2: 'separator'
 
@@ -30,9 +30,9 @@ const DATA_DOCUMENTS = {
 
 , separator3: 'separator'
 
-, dpersonnages:     {id:11, hname: 'Personnages', format:'yaml', type:'data', dataeditor: true}
-, dbrins:           {id:12, hname: 'Brins', format:'yaml', type:'data', dataeditor: true}
-, fondamentales:    {id:13, hname: 'Fondamentales', format: 'yaml', type:'data', dataeditor: true}
+, dpersonnages:     {id:11, hname: 'Personnages', format:'yaml', type:'data', dataeditor: true, accelerator:'CmdOrCtrl+Alt+Shift+C'}
+, dbrins:           {id:12, hname: 'Brins', format:'yaml', type:'data', dataeditor: true, accelerator:'CmdOrCtrl+Alt+Shift+B'}
+, fondamentales:    {id:13, hname: 'Fondamentales', format: 'yaml', type:'data', dataeditor: true, accelerator:'CmdOrCtrl+Alt+Shift+F'}
 , fondamentales_alt:{id:14, hname: 'Fondamentales (Alt)', format: 'yaml', type:'data', dataeditor: true}
 , recompenses:      {id:15, hname: 'Récompenses (data)', format: 'yaml', type:'data'}
 
@@ -43,7 +43,7 @@ const DATA_DOCUMENTS = {
 , au_fil_du_film:   {id: 3, hname: 'Commentaires au fil du film', type: 'real'}
 , personnages:      {id: 4, hname: 'Les personnages', type: 'real'}
 , themes:           {id: 5, hname: 'Les thèmes', type: 'real'}
-, comments_stats:   {id:10, hname: 'Commentaires sur stats', type:'real'}
+, comments_stats:   {id:10, hname: 'Commentaires sur stats', type:'real', accelerator:'CmdOrCtrl+Alt+Shift+S'}
 , lecon_tiree:      {id: 6, hname: 'La leçon tirée du film', type: 'real'}
 , conclusion:       {id: 7, hname: 'Conclusion', type: 'real'}
 , annexes:          {id: 8, hname: 'Annexes', type: 'real'}

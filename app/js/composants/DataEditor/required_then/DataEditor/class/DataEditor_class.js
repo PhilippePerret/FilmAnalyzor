@@ -18,6 +18,20 @@ Méthode appelée par les menus
 
 **/
 , openDocument(docId, argCurrent){
+    // Quelques cas particulier. par exemple, pour les fondamentales, avant
+    // de les éditer il faut s'assurer qu'elles aient été chargée
+    switch (docId) {
+      case 13:
+        if ( isNotTrue(this.a.Fonds.loaded) ){
+          console.log("Les données de fondamentales principales ne sont pas encore chargées")
+          this.a.Fonds.methodAfterLoaded = this.openDocument.bind(this, docId, argCurrent)
+          return
+        } else {
+          console.log("Les données de fondamentales principales sont chargées")
+          console.log("this.a.Fonds.yaml_data:", this.a.Fonds.yaml_data)
+        }
+        break
+    }
     let [owner, current] = (id => {
       switch(id){
         case 11: return [FAPersonnage]
@@ -77,4 +91,7 @@ Méthode appelée par les menus
     }
     return true
   }
+})
+Object.defineProperties(DataEditor,{
+  a:{get(){return current_analyse}}
 })

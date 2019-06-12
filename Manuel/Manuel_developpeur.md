@@ -559,6 +559,19 @@ $('a#<idlien>').on('click', this.constructor.edit.bind(this.constructor,'<id>'))
 
 ```
 
+### Fonctionnement en panneaux {#data_editor_panels}
+
+Le data-editeur peut aussi fonctionner en panneaux mais, dans ce cas, les données et les méthodes sont beaucoup plus complexes. On ne le fera que si c'est vraiment nécessaire. Ça l'est, par exemple, pour les fondamentales.
+
+#### Définition des panneaux
+
+Les panneaux sont définis comme des `dataField`s normaux mais ils possèdent la propriété `type` réglée à `panel`. Ils définissent aussi une sous-propriété `dataFields` qui définit les champs.
+
+Chaque panneau doit impérativement correspondre à un object/une classe qui sera traitée comme un item particulier possédant les propriétés définies.
+
+Dans ce cas, notamment, chaque `id` de panneau doit correspondre à une méthode de l'item qui retournera l'élément à modifier. Par exemple, pour l'objectif dans les Fondamentales, il appartient à la deuxième fondamentale. Le panneau a pour id `fd2`, qui permet de récupérer la deuxième fondamentale, et c'est dans cette deuxième fondamentale qu'on définit `get/set objectif`.
+
+
 ## KWindows, choix d'élément par les touches {#les_keyswindows}
 
 Les « keys-windows » (class `KWindow`) permettent d'afficher une liste de choses quelconques (comme des marqueurs) et de les sélectionner avec les touches. Elles permettent aussi de supprimer des éléments dans la liste.

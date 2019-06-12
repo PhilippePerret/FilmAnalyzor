@@ -39,7 +39,7 @@ const PorteDocumentsSubmenus = [
       {
           label: "Ouvrir/fermer le Porte-documents"
         , id: 'open-porte-documents'
-        , accelerator: 'CmdOrCtrl+Shift+W'
+        , accelerator: 'CmdOrCtrl+Alt+Shift+W'
         , enabled: false
         , click: () => {execJsOnCurrent('editDocumentInPorteDocuments')}
       }
@@ -64,7 +64,7 @@ for(var docDim in DATA_DOCS){
   var ddoc = DATA_DOCS[docDim]
   var menu_id = `open-doc-${docDim}`
   // CURRENT_THING_MENUS.push(menu_id) // ça ne marche plus…
-  var method    = editDocumentInPorteDocuments.bind(null, ddoc.id)
+  var method  = editDocumentInPorteDocuments.bind(null, ddoc.id)
   if ( ddoc.dataeditor ) {
     // CURRENT_THING_MENUS.push(`${menu_id}-de`)  // ça ne marche plus…
     var deMethod  = openDocInDataEditor.bind(null, ddoc.id)
@@ -75,6 +75,7 @@ for(var docDim in DATA_DOCS){
               label: "Éditeur de données"
             , id:     `${menu_id}-de`
             , enabled: true
+            , accelerator: ddoc.accelerator
             // , enabled: false// ça ne marche plus…
             , click: deMethod
             }
@@ -230,7 +231,6 @@ const DATA_MENUS = [
               label: 'Enregistrer sous…'
             , id: 'save-as-analyse'
             , enabled: false
-            , accelerator: 'CmdOrCtrl+Shift+S'
             , click: () => { mainW.webContents.send('save-as-analyse')}
           }
         , {type:'separator'}
@@ -347,7 +347,7 @@ const DATA_MENUS = [
           , {
                 label: "Informations sur le film"
               , id: 'display-infos-film'
-              , accelerator: 'CmdOrCtrl+Alt+Shift+I'
+              , accelerator: 'CmdOrCtrl+Shift+I'
               , enabled: false
               , click: () => {execJsOnCurrent('togglePanneauInfosFilm')}
             }
@@ -386,49 +386,49 @@ const DATA_MENUS = [
           , {
                 label: "Fondamentales"
               , id: 'display-fondamentales'
-              , accelerator: 'CmdOrCtrl+Alt+Shift+F'
+              , accelerator: 'CmdOrCtrl+Shift+F'
               , enabled: false
               , click: ()=>{execJsOnCurrent('togglePanneauFondamentales')}
             }
           , {
                 label: "Personnages"
               , id: 'display-personnages'
-              , accelerator: 'CmdOrCtrl+Alt+Shift+C'
+              , accelerator: 'CmdOrCtrl+Shift+C'
               , enabled: false
               , click: ()=>{execJsOnCurrent('togglePanneauPersonnages')}
             }
           , {
                 label: "Brins"
               , id: 'display-brins'
-              , accelerator: 'CmdOrCtrl+Alt+Shift+B'
+              , accelerator: 'CmdOrCtrl+Shift+B'
               , enabled: false
               , click: ()=>{execJsOnCurrent('togglePanneauBrins')}
             }
           , {
                 label: 'Documents'
               , id: 'display-documents'
-              , accelerator: 'CmdOrCtrl+Alt+Shift+W'
+              , accelerator: 'CmdOrCtrl+Shift+W'
               , enabled: false
               , click: _ => {execJsOnCurrent('togglePanneauDocuments')}
             }
           , {
                 label: "Décors"
               , id: 'display-decors'
-              , accelerator: 'CmdOrCtrl+Alt+Shift+D'
+              , accelerator: 'CmdOrCtrl+Shift+D'
               , enabled: false
               , click: ()=>{execJsOnCurrent('togglePanneauDecors')}
             }
           , {
                 label: "Images"
               , id: 'display-images'
-              , accelerator: 'CmdOrCtrl+Alt+Shift+G'
+              , accelerator: 'CmdOrCtrl+Shift+G'
               , enabled: false
               , click: ()=>{execJsOnCurrent('togglePanneauImages')}
             }
           , {
                 label: "Statistiques"
               , id: 'display-statistiques'
-              , accelerator: 'CmdOrCtrl+Alt+Shift+S'
+              , accelerator: 'CmdOrCtrl+Shift+S'
               , enabled: false
               , click: ()=>{execJsOnCurrent('togglePanneauStatistiques')}
             }

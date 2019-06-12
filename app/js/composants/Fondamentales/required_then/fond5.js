@@ -12,12 +12,15 @@ constructor(fonds, ydata){
 **/
 addElementsTo(els){
 
-  this.divDescription && els.push(this.divDescription)
+  this.description && els.push(this.divDescription)
   return els
 }
 
 // ---------------------------------------------------------------------
 // Données propres
+get concept(){return this.ydata.concept}
+get Ufactor(){return this.ydata.Ufactor}
+get Ofactor(){return this.ydata.Ofactor}
 
 // ---------------------------------------------------------------------
 // Données générales
