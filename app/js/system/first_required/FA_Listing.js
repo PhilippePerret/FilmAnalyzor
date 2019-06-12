@@ -135,12 +135,16 @@ onOK(){
 
 /**
   Pour sélectionner un élément en particulier
+
+  Fonctionnement : tous les items sont affichés dans la fenêtre, donc on les
+  masque (hide), puis on affiche (show) celui dont le 'data-id' correspond à
+  l'item recherché.
 **/
 select(item_id){
   let item = this.owner.get(item_id)
   this.jqObj.find('.body .falisting > LI').hide()
-  this.jqObj.find(`.body > LI[data-id="${item_id}"]`).show()
-  this.btnShowAll.css('visibility',STRvisible)
+  this.jqObj.find(`.body .falisting > LI[data-id="${item_id}"]`).show()
+  this.btnShowAll.css('visibility', STRvisible)
 }
 
 showAll(){

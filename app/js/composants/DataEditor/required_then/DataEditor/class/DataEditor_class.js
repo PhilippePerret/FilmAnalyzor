@@ -23,12 +23,8 @@ Méthode appelée par les menus
     switch (docId) {
       case 13:
         if ( isNotTrue(this.a.Fonds.loaded) ){
-          console.log("Les données de fondamentales principales ne sont pas encore chargées")
           this.a.Fonds.methodAfterLoaded = this.openDocument.bind(this, docId, argCurrent)
           return
-        } else {
-          console.log("Les données de fondamentales principales sont chargées")
-          console.log("this.a.Fonds.yaml_data:", this.a.Fonds.yaml_data)
         }
         break
     }

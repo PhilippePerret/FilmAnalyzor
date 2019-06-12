@@ -39,7 +39,7 @@ const App = {
 **/
 , loadTool(affixe){
     if(!affixe.endsWith('.js')) affixe += '.js'
-    return require(`${APPFOLDER}/app/js/tools/${affixe}`)
+    return tryRequire(`${APPFOLDER}/app/js/tools/${affixe}`)
   }
 
 , runHandTests(options){
