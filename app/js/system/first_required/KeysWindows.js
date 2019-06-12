@@ -10,6 +10,7 @@ constructor(owner, args){
   this.functionOnChooseItem = args.onChoose
   this.functionOnChooseNone = args.onCancel
   this.functionOnRemoveItem = args.onRemove
+  this.width = args.width || 400
   this.items = new Map()
   for ( var i = 0, len = args.items.length ; i < len ; ++ i){
     this.items.set(i, new KWindowItem(this, args.items[i]))
@@ -171,7 +172,7 @@ unobserveWindow(){
   UI.toggleKeyUpAndDown(/* out-text-field = */ true)
 }
 
-get fwindow(){return this._fwindow || defP(this,'_fwindow', new FWindow(this, {id: this.id, class:'keywindow', x:400, y:100}))}
+get fwindow(){return this._fwindow || defP(this,'_fwindow', new FWindow(this, {id: this.id, class:'keywindow', width:this.width, x:400, y:100}))}
 }
 
 class KWindowItem {
@@ -204,20 +205,11 @@ selectLeft(){
 }
 get jqItemRight(){return this.jqObj.find('span.subitem-right')}
 get jqItemLeft(){return this.jqObj.find('span.subitem-left')}
+
 select(){
   this.jqObj.addClass('selected')
-  // On s'assure qu'il soit toujours visible
-  let o = this.jqObj
-    , parent        = o.parent()
-    , top           = o.position().top // par rapport au parent
-    , height        = o.outerHeight()
-    , bottom        = top + height
-    , offsetStart   = parent.scrollTop()
-    , offsetEnd     = offsetStart + parent.innerHeight()
-
-  if ( top < offsetStart || bottom > offsetEnd) {
-    parent.scrollTop(top - 20)
-  }
+  // On s'assure qu'il soit toujours visible et si ce n'est pas le cas
+  UI.rendVisible(this.jqObj)
 }
 deselect(){
   this.jqObj.removeClass('selected')

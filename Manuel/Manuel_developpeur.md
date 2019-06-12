@@ -570,6 +570,8 @@ Soit un objet `MonObjet` contenant des items.
       id:   'identifiant-valide-unique-et-universel'
     , items: [<liste des items, cf. ci-dessous>]
     , title: 'TITRE DE LA FENÊTRE' // par exemple "Se rendre au marqueur…"
+    , width:    XXX // largeur de la fenêtre (400 par défaut)
+                // Unité : pixel
     , onChoose: /* methode à appeler quand on choisit un élément
                     Le premier argument est l'ID de l'item
                 */

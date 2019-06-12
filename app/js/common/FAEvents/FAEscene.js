@@ -115,6 +115,7 @@ static defineKWindow(){
     , title: 'Se rendre à la scène…'
     , onChoose: this.goToSceneByNumero.bind(this)
     , items: this.scenesAsValueTitle()
+    , width: 500
   })
 }
 /**
@@ -130,7 +131,7 @@ static goToSceneByNumero(numero){
 **/
 static scenesAsValueTitle(){
   var arr = []
-  this.forEachSortedScene( sc => arr.push([sc.numero, sc.pitch]))
+  this.forEachSortedScene( sc => arr.push([sc.numero, sc.fullPitch]))
   return arr
 }
 

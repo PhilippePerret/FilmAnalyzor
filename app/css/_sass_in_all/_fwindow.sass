@@ -152,21 +152,27 @@
     section.footer *
       color: #CCCCCC
 
+
+  // ---------------------------------------------------------------------
+
   // Les Key-Windows, fenêtre qui affichent une liste qu'on peut choisir
   // avec les flèches ou les touches
   &.keywindow
     border-radius: 1em
     background-color: rgba(255,255,255,0.5)
-    width: 400px
+    // width: 400px // défini dans la construction
+    z-index: 100
 
     > .header
       padding: 1em 0 0 1em
       color: whitesmoke
       text-shadow: black 2px 2px 2px
     > .body
-      padding: 1em
+      position: relative
+      padding: 1px
       overflow: auto
       max-height: 500px
+      // border: 1px solid red
       > li.item
         all: unset
         list-style: none

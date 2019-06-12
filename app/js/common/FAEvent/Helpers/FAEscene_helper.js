@@ -114,4 +114,11 @@ Object.defineProperties(FAEscene.prototype,{
       return this._f_pitch
     }
   }
+, fullPitch:{get(){
+    return this._fullpitch || defP(this,'_fullpitch', `${this.fullpitchNumero}${DFormater(this.pitch)}`)
+  }}
+, fullpitchNumero:{get(){
+    var n = `${this.numero}`
+    return `<span class="mono">${n.padStart(3)}. </span>`
+  }}
 })

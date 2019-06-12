@@ -72,7 +72,6 @@ const UI = {
         log.warn("Une erreur s'est produite au chargement de la vidéo.", err)
       })
       .on('loadeddata', () => {
-        UI.showVideoController()
         current_analyse.onVideoLoaded.bind(current_analyse)()
       })
       .on('ended', () => {
@@ -231,11 +230,81 @@ const UI = {
 
 // ---------------------------------------------------------------------
 //  Méthode d'affichage
-, showVideoController(){
-    VideoController.current.navButtons.show()
+
+/**
+  Méthode qui rend visible l'élément +o+ dans son container scrollable en
+  scrollant le conteneur.
+  Si l'élément se trouve caché au-dessus il est mis en haut de l'espace
+  visible et s'il se trouve caché en dessous il est mis en bas de l'espace
+  visible.
+
+  NOTE IMPORTANTE
+    Pour pouvoir fonctionner, il faut absolument que le container possède
+    la classe `position: relative`. Dans le cas contraire, les positions
+    seront mal calculées.
+
+**/
+, rendVisible(o) {
+    o = $(o)[0]
+    let parent = o.parentNode
+
+    // Pour ne pas avoir à tout recalculer chaque fois (par rapport au container)
+    // on enregistre les données statiques qui serviront chaque fois.
+    if ( isUndefined(this._containersRendVisible) ) this._containersRendVisible = new Map()
+
+    var h
+    if ( this._containersRendVisible.has(parent) ) {
+      h = this._containersRendVisible.get(parent)
+    } else {
+      let pBounds = parent.getBoundingClientRect()
+        , parentStyle = window.getComputedStyle(parent)
+        , oneTiers = pBounds.height / 3
+        , twoTiers = 2 * oneTiers
+
+      h = {
+          pBounds: pBounds
+        , pHeight: pBounds.height
+        , pBorderTop: parseInt(parentStyle['borderTopWidth'],10)
+        , pPaddingTop: parseInt(parentStyle['paddingTop'],10)
+        , oneTiers: oneTiers
+        , twoTiers: twoTiers
+      }
+      h.soust = h.pBorderTop + h.pPaddingTop
+      this._containersRendVisible.set(parent, h)
+    }
+
+    let oBounds       = o.getBoundingClientRect()
+
+    // let oTop =  oBounds.top - (pBounds.top + soust)
+    let oTop    = o.offsetTop - h.soust
+      , pScroll = parent.scrollTop
+      , oSpace  = {from:oTop, to: oTop + oBounds.height}
+      , pSpace  = {from:pScroll, to:h.pHeight + pScroll}
+
+    // console.log({
+    //   oBounds: oBounds
+    // , hdata: h
+    // , oSpace: oSpace
+    // , pSpace: pSpace
+    // })
+
+    if ( oSpace.from < pSpace.from || oSpace.to > pSpace.to ) {
+      var tscrol
+      if ( oSpace.from < pSpace.from ) {
+      //   // <= On est en train de monter et l'item se trouve au-dessus
+      //   // => Il faut placer l'item en bas
+      //   tscroll = oSpace.from + pBounds.height - oBounds.height
+      tscrol = Math.round(oSpace.from - h.twoTiers)
+      } else {
+      //   // <= On est en train de descendre et l'item se trouve en dessous
+      //   // => Il faut placer l'item en haut
+      //   tscroll = oSpace.from
+      tscrol = Math.round(oSpace.from - h.oneTiers)
+      }
+      // console.log("L'item est en dehors, il faut le replacer. Scroll appliqué :", tscrol)
+      parent.scrollTo(0, tscrol)
+    }
   }
-
-
 /**
   Méthode qui règle les inputs champs texte pour définir si les
   textes doivent être édités dans le miniwriter ou dans leur

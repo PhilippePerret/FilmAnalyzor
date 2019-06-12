@@ -75,14 +75,11 @@ static reset(){
 **/
 static get diminutifs(){
   if ( not(this.exists() ) ){
-    console.log("Le fichier personnages n'existe pas => pas de diminutifs")
+    // console.log("Le fichier personnages n'existe pas => pas de diminutifs")
     return {}
   }
   if( isUndefined(this._diminutifs) ){
     this._diminutifs = {}
-    console.log("this.data:", this.data)
-    this.personnages
-    console.log("this.data:", this.data)
     for(var pseudo in this.data){
       if(this.data[pseudo].dim){
         // this._diminutifs[this.data[pseudo].dim] = this.data[pseudo].pseudo
