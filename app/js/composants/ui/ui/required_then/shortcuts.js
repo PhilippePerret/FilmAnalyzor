@@ -116,6 +116,10 @@ Object.assign(UI, {
         // META + RETURN => FINIR L'ÉDITION DE ?…
         if ( FWindow.currentIsEventForm() ) {
           EventForm.currentForm.submit.bind(EventForm.currentForm).call()
+        } else if(target.data('owner-id') === 'porte_documents'){
+          // Enregistrer le document couramment édité
+          PorteDocuments.saveContentsAndCurrentDoc()
+          return stopEvent(e)
         } else {
           F.notify(T('unknown-front-fwindow-cant-close'))
         }
@@ -169,23 +173,9 @@ Object.assign(UI, {
             case STRs: // MÉTA + s
               if(target.data('owner-id') === 'porte_documents'){
                 PorteDocuments.saveContentsAndCurrentDoc()
+                return stopEvent(e)
               } else {
                 F.notify("Je ne connais pas le propriétaire pour exécuter Command + s… Pour y remédier, définir le 'data-owner-id' de la cible, par exemple, ou donner un ID précis au container.")
-              }
-              break
-            case STRS: // MÉTA + S
-              // Ici, le fonctionnement est différent en fonction de la
-              // cible. Si la cible est le fawrite, on enregistre le
-              // document. Si c'est le formulaire d'event, on enregistre
-              // les données et on sort (mais j'ai le sentiment que c'est
-              // déjà traité ailleurs).
-              F.notify("Il faut définir la cible courants pour savoir quoi faire de ce CMD+S")
-              if (e.target.data('owner-id') === 'porte_documents'){
-                PorteDocuments.currentDocument.getContents()
-                if (PorteDocuments.currentDocument.isModified()){
-                  PorteDocuments.currentDocument.save()
-                }
-                return stopEvent(e)
               }
               break
           }

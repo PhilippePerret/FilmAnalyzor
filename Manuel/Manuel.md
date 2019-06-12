@@ -301,7 +301,7 @@ On fait apparaitre ce calque avec le menu `Affichage > Calque du PFA` ou avec le
 
 ## Les Documents {#les_documents}
 
-Une analyse, en plus des [events][] qui permettent de définir des éléments précis du film, est composée de [documents](#types_de_documents) de types différents. On peut tous les atteindre depuis le menu « Documents » de l'application **Film-Analyzer**.
+Une analyse, en plus des [events][] qui permettent de définir des éléments précis du film, est composée de [documents](#types_de_documents) de types différents. On peut tous les atteindre depuis le menu « Documents » de l'application **Film-Analyzor**.
 
 ### Quatre types de documents {#types_de_documents}
 
@@ -388,13 +388,21 @@ Les snippets se définissent dans le document de même nom, qu'on peut atteindre
 
 ### Rédaction des documents {#redaction_documents}
 
-Le `Writer` de l'application permet de rédiger tous les documents de l'analyse. Il suffit de le choisir dans le menu « Documents » et il s'ouvre en édition. Tous les [types de documents](#types_de_documents) peuvent s'ouvrir de cette manière.
+Le `PorteDocument` de l'application permet de rédiger tous les documents de l'analyse. Il suffit de le choisir dans le menu « Documents » et il s'ouvre en édition. Tous les [types de documents](#types_de_documents) peuvent s'ouvrir de cette manière.
 
 On utilisera des [variables](#variables_dans_les_documents) les [diminutifs](#les_diminutifs) et les [snippets](#les_snippets) pour se faciliter l'écriture et éviter certaines erreurs.
 
 Pour faire référence à des *events* de tout type, il suffit de prendre ces *events* et de les glisser dans le texte. Une référence sera écrite au curseur. La nature et l'aspect de cette référence est fonction du type de l'*event* et peut varier beaucoup d'un type à l'autre. On reconnait les balises à leur forme `{{event: <id de l'event>}}`. Si l'*event* est une scène, il apparaitra de cette manière : `{{scene: <id event>}}` (noter que ça n'est pas le *numéro de la scène*, mais bien l'*identifiant de l'event* qui est inscrit).
 
 ASTUCE : On peut voir tout de suite l'aspect que prendra la référence — et la modifier au besoin — en demandant la visualisation en direct du texte (case à cocher « Visualiser » dans le pied de page du `Writer`).
+
+#### Enregistrement du document édité
+
+Pour enregistrer le document édité, on a plusieurs solutions :
+
+* exécuter la combinaison `CMD-s` ou `CMD-Return` lorsque l'on se trouve dans le champ de texte (c'est la méthode privilégiée)
+* cocher la case d'enregistrement automatique en bas de la fenêtre du porte-documents,
+* cliquer sur le bouton « Enregistrer » au bas de la fenêtre du porte-documents (mais selon le principe du « tout clavier », c'est la méthode la moins conseillée),
 
 #### Retours à la ligne forcés {#force_return_newline}
 
