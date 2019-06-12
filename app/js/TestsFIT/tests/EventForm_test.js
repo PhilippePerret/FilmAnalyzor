@@ -23,7 +23,7 @@ t.case("Création, enregistrement et modification d'un event de type note", func
   })
 
   action("On se rend au temps voulu où mettre une note", ()=>{
-    current_analyse.locator.setTime(300)
+    current_analyse.locator.setTime(new OTime(300))
   })
   cliqueBoutonNewNote()
   return assert_DomExists(jqFormId, {failure: "Le formulaire devrait exister", success: "Le formulaire de création de l'event est affiché"})

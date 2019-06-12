@@ -272,7 +272,7 @@ Object.defineProperties(FAEvent.prototype,{
     }
   }
 , link:{
-    get(){return `-&gt; <a onclick="current_analyse.locator.setTime(${this.otime.vtime})">E #${this.id}</a>`}
+    get(){return `-&gt; <a onclick="current_analyse.locator.setTime(new OTime(${this.otime.vtime}))">E #${this.id}</a>`}
   }
 
 })

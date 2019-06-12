@@ -24,7 +24,7 @@ function showScene(numero){
   current_analyse.locator.setTime(FAEscene.getByNumero(numero).otime)
 }
 
-// Permet de voir le brin (en fait, toute la liste)
+// Permet de voir le brin
 function showBrin(brin_id){
   current_analyse.displayBrins(brin_id/*TODO : mettre en exergue ce brin-là*/)
 }
