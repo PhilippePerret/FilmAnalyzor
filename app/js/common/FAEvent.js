@@ -183,6 +183,7 @@ reset(){
   delete this._asLink
   delete this._endAt
   delete this._otime
+  delete this._hduree
   delete this._horl
   delete this._div
   delete this._contenu
@@ -235,6 +236,7 @@ set duree(v){
   }
 }
 get duree(){return this._duree || (this.type === STRscene ? 60 : 10)}
+get hduree(){return this._hduree || defP(this,'_hduree', new OTime(this.duree).hduree)}
 
 // Alias
 get description(){return this.content}

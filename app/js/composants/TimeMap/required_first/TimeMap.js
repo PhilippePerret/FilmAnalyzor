@@ -115,10 +115,17 @@ const TimeMap = {
       // Cela se produit lorsqu'on définit la longueur d'un event plus
       // long que le temps de la vidéo. Dans ce cas, il faut raccourcir
       // l'event dans la map.
-      s_end = this.map.length - 1
+      s_end = Object.keys(this.map).length - 1
     }
     de_ = Object.assign({}, de, {phase:PHASE_END, time: ev.endAt})
-    this.map[s_end].push(de_)
+    try {
+      this.map[s_end].push(de_)
+    } catch (e) {
+      console.error(e)
+      console.error("s_end, this.map", s_end, this.map)
+      console.error("Pour l'event : ", ev)
+      return
+    }
     do {
       ++ s
       de_ = Object.assign({}, de, {phase:PHASE_CONTINUE})

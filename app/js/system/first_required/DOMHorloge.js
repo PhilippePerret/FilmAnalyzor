@@ -281,7 +281,7 @@ changeDuree(newDuree){
   get endTime(){ return this.startTime + this.time }
 
   get duree(){
-    return this._duree || defP(this,'_duree',parseFloat(this.domObj.getAttribute(STRvalue)))
+    return parseFloat(this.domObj.getAttribute(STRvalue))
   }
   set duree(v){
     // console.log("-> set duree", v)

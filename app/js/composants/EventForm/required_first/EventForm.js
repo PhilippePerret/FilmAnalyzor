@@ -327,7 +327,7 @@ afterBuilding(){
   this.jqf('is_new').val(this.isNew?'1':'0')
   this.jqf('destroy').css('visibility',this.isNew?STRhidden:STRvisible)
   this.jqf(STRtime).html(this.a.locator.currentTime.seconds)
-  this.jqf('duree').html(this.duree)
+  this.jqf(STRduree).html(this.duree)
   jqo.find('.footer .event-id').html(`event #${eid}`)
   jqo.find('.footer .event-time').html(new OTime(this.time).horloge)
 
@@ -630,27 +630,27 @@ setFormValues(){
     // elle-même (donc un string), soit par un duet avec en première valeur
     // le nom de la propriété, et en seconde valeur le nom du champ qui doit
     // recevoir la valeur de cette propriété
-    if('string' === typeof(prop)){ // cf. la définition des OWN_PROPS
+    if( isString(typeof(prop)) ){ // cf. la définition des OWN_PROPS
       fieldSufid = prop
     } else {
       [prop, fieldSufid] = prop
     }
 
-    if(null === this.event[prop] || undefined === this.event[prop]) continue
+    if( isNullish(this.event[prop]) ) continue
 
     switch(prop){
       case 'tps_reponse':
-        // Note : contrairement à 'duree' et STRtime, qui sont des 'horlogeables'
+        // Note : contrairement à STRduree et STRtime, qui sont des 'horlogeables'
         // tps_reponse est un simple input-text pour entrer une horloge.
         otime = new OTime(this.event[prop])
         this.jqf(fieldSufid).val(otime.horloge_simple)
         break
-      case 'duree':
+      case STRduree:
       case STRtime:
         try {
           otime = new OTime(this.event[prop])
-          this.jqf(fieldSufid).html(prop == 'duree' ? this.event.hduree : otime.horloge)
-          this.jqf(fieldSufid).attr('value', this.event[prop].round(2))
+          this.jqf(fieldSufid).html(prop == STRduree ? this.event.hduree : otime.horloge)
+          this.jqf(fieldSufid).attr(STRvalue, this.event[prop].round(2))
         } catch (e) {
           log.error(`[setFormValues] Problème en essayant de régler une valeur dans le formulaire de l'event`, {
             prop: prop, otime: otime, fieldSufid:fieldSufid, error: e,
@@ -714,7 +714,7 @@ getFormValues(){
             return parseInt(val,10)
           // // Tout ce qui doit être transformé en flottant
           // case STRtime:
-          // case 'duree':
+          // case STRduree:
           //   return parseFloat(val).round(2)
           case 'is_new':
             return val == '1'
@@ -730,7 +730,7 @@ getFormValues(){
       // console.log({id:id, prop:prop, val: val})
     })
     // Les temps
-    for(prop of [STRtime, 'duree']){
+    for(prop of [STRtime, STRduree]){
       var o = $(`form#form-edit-event-${this.id} #event-${this.id}-${prop}`)
       // Si ce champ existe, on prend la valeur, qui se trouve dans l'attribut
       // HTML `value`
