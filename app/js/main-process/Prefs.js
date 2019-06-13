@@ -22,6 +22,7 @@ const {app} = require('electron')
 const path  = require('path')
 const fs    = require('fs')
 const ipc   = electron.ipcMain
+console.log("ipc:", ipc)
 
 const GOTODATA = require('../system/prefs/gotodata')
 
@@ -190,7 +191,6 @@ ipc.on('get-pref', (ev, data) => {
 ipc.on('set-pref', (ev, data) => {
   ev.returnValue = Prefs.set(data)
 })
-
 
 
 module.exports = Prefs

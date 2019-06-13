@@ -64,6 +64,13 @@ static string2seconds(str){
     n = Math.round(members[0] + (members[1]||0) * 60 + (members[2]||0) * 3600) + frs
     // console.log("n final:", n)
     return n
+  } else if ( str.match(/\./) ) {
+    // <= le string contient un point mais pas de virgule, comme dans 20.12
+    members = str.split('.')
+    frs = (parseInt(members.pop(),10) * 100/24) / 100 // 24 -> 100  => 1 = 100/24
+    n = 0
+    members.map( m => n += this.string2seconds(m))
+    return n + frs
   }
 
   if ( str.match(/\*/) ) {

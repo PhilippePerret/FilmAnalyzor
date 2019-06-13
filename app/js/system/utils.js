@@ -131,10 +131,14 @@ function requiredChunk(bindee, methodName){
     this._propriete || defP(this, '_propriete', valeur)
     return this._propriete
   */
-function defP(obj, prop, val){
+window.defP = function(obj, prop, val){
   obj[prop] = val
   return val
 }
+// function defP(obj, prop, val){
+//   obj[prop] = val
+//   return val
+// }
 
 /**
   Remplace la tournure :
@@ -351,7 +355,7 @@ function listenMDown(cible, objet, method, param){listen(cible,'mousedown',objet
 function listenMUp(cible, objet, method, param){listen(cible,'mouseup',objet,method, param)}
 
 
-
+const $ = require('jquery')
 $.fn.extend({
   insertAtCaret: function(myValue) {
     if(undefined === myValue || null === myValue) return
