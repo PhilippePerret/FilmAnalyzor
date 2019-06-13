@@ -14,10 +14,10 @@ Object.assign(FAEstt.prototype,{
 
 , asShort(options){
     var divs = [], divsDescription = []
-    divs.push(DCreate(DIV,{inner:`${this.sttNode.hname}`}))
+    divs.push(DCreate(DIV,{class:STRbold, inner:`<span class="tiny">[PFA ${this.idx_pfa}]</span> ${this.sttNode.hname}`}))
     // Dans tous les cas on met les spans pour le titre et la description,
     // qui pourraient être définis plus tard.
-    divs.push(DCreate(DIV,{class:'node-description',append:[
+    divs.push(DCreate(DIV,{class:'node-description small',append:[
         DCreate(SPAN,{class:`stt-${this.id}-title`
           , inner:this.title && DFormater(this.title)})
       , DCreate(SPAN,{class:`stt-${this.id}-description`

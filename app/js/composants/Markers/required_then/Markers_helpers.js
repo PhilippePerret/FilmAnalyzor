@@ -7,8 +7,7 @@
 **/
 Object.assign(Markers.prototype,{
   showListing(){
-    isTrue(this.listingBuilt) || this.buildListing()
-    this.kwindow.show()
+    (this.kwindow || this.buildListing()).show()
   }
 , buildListing(){
     if (isNotEmpty($('#markers-list'))) $('#markers-list').remove()
@@ -20,7 +19,7 @@ Object.assign(Markers.prototype,{
       , onChoose: this.onChooseItem.bind(this)
       , onRemove: this.onRemoveItem.bind(this)
     })
-    this.listingBuilt = true
+    return this.kwindow
   }
 , onChooseItem(kmarker){
     if ( isDefined(this.items[kmarker]) ) {
@@ -28,20 +27,21 @@ Object.assign(Markers.prototype,{
     } else {
       log.error("Marker inexistant avec l'id", kmarker)
       F.notify(`Bizarrement, impossible d'obtenir le marker #${kmarker}… Voir la liste des items dans la console.`, {error: true})
-      console.error("Marker inexistant:", kmarker)
-      console.error("Markers.items:", this.items)
+      log.error("Marker inexistant:", kmarker)
+      log.error("Markers.items:", this.items)
     }
   }
 , onRemoveItem(kmarker){
+    console.log("kmarker = ", kmarker)
     let marker = this.items[kmarker]
-    // Destruction du marqueur (dans la liste, sur le banc-timeline, dans le
-    this.remove(marker)
-    // Actualisation de la liste si elle est affichée
-    if ( isNotEmpty($('#markers-list')) ) {
-      $('#markers-list').remove()
-      this.listingBuilt = false
-      this.showListing()
+    if ( isUndefined(marker) ) {
+      F.notify("Impossible de trouver le marker " + kmarker + 'dans la liste…',{error:true})
+      console.log("Liste des markers (Markers.items)", this.items)
+      console.log("ID marker :", kmarker)
+      return false
     }
+    // Destruction du marqueur (dans la liste, sur le banc-timeline)
+    return this.remove(marker)
   }
 
 })

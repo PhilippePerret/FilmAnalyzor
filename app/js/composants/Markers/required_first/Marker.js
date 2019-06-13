@@ -6,8 +6,8 @@
 
 class Marker {
   constructor(analyse, data){
-    this.a = analyse
-    this.id     = this.constructor.newId()
+    this.a      = analyse
+    this.id     = data.id
     this.time   = data.time
     this.title  = data.title || `Marqueur #${this.id}`
   }

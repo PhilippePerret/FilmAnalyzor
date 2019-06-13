@@ -16,6 +16,7 @@ const ERRORS = {
 , "--- KEYWINDOW ---":""
 , "kwindow-func-after-choose-required": "La fonction à appeler après le choix d'un item est absolument requise et doit être définies dans la propriété `onChoose`."
 , "kwindow-no-remove-function": "Aucune fonction de destruction n'est défini pour cette liste. Définir la méthode `onRemove` dans les données du second argument le cas échéant."
+, "kwindown-no-item-to-show": "Aucun élément n'est à afficher. Il faut en créer au moins un."
 
 , "--- ANALYSE ---":""
 , "analyse-locked-no-save": "L'analyse est verrouillée, impossible de la modifier."

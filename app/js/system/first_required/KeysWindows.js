@@ -11,23 +11,31 @@ constructor(owner, args){
   this.functionOnChooseNone = args.onCancel
   this.functionOnRemoveItem = args.onRemove
   this.width = args.width || 400
-  this.items = new Map()
+  console.log("items envoyés : ", args.items)
+  this.items = []
   for ( var i = 0, len = args.items.length ; i < len ; ++ i){
-    this.items.set(i, new KWindowItem(this, args.items[i]))
+    this.items.push(new KWindowItem(this, args.items[i]))
   }
 }
-show(){ this.fwindow.show() }
-onShow(){ this.observeWindow() }
+show(){
+  if ( this.countItems ) this.fwindow.show()
+  else F.notify(T('kwindown-no-item-to-show'))
+}
+onShow(){ this.countItems && this.observeWindow() }
 hide(){ this.fwindow.hide() }
 onHide(){this.unobserveWindow()}
 // Alias
 close(){return this.hide()}
+remove(){
+  this.fwindow.remove()
+  delete this._fwindow
+}
 
 /**
   Retourne l'itemp d'index +idx+
 **/
 item(idx){
-  return this.items.get(idx)
+  return this.items[idx]
 }
 /**
   Retourne l'instance KWindowItem de l'item actuellement sélectionné
@@ -71,12 +79,32 @@ onRemove(){
   }
 }
 execRemoveItem(){
-  this.functionOnRemoveItem(this.selectedItem.value)
-  this.fwindow.remove() // pour forcer sa reconstruction
+  console.log("this.selectedItem:",this.selectedItem)
+  if ( isDefined(this.selectedItem.value) ) {
+    if ( isNotFalse(this.functionOnRemoveItem(this.selectedItem.value)) ) {
+      // On doit détruire l'élément dans la liste et dans la fenêtre
+      this.selectedItem.jqObj.remove()
+      this.items.splice(this.indexSelected,1)
+      // On doit sélectionner le suivant ou le précédent, ou refermer
+      // la fenêtre
+      if ( this.indexSelected > 0 ) {
+        this.selectPrevItem()
+      } else if ( this.countItem > 0 ) {
+        // <= L'index était zéro et la liste n'est pas vide
+        // => On sélectionne le nouveau premier
+        this.item(this.indexSelected).select()
+      } else {
+        // <= La liste est vide
+        // => On ferme en détruisant la liste
+        this.remove()
+      }
+    }
+  } else {
+    F.notify("L'item sélectionné est mal défini.", {error: true})
+  }
 }
 
 build(){
-  this.listingBuilt = true
   return [
       DCreate(DIV,{class:STRheader, inner: this.title})
     , DCreate(DIV,{class:STRbody, append:this.itemsAsLIList()})
@@ -89,9 +117,7 @@ afterBuilding(){
 
 
 itemsAsLIList(){
-  var arr = []
-  this.items.forEach( item => arr.push(item.li))
-  return arr
+  return this.items.map( item => item.li )
 }
 
 /**
@@ -114,19 +140,11 @@ selectAroundItem(indexNext){
   this.indexSelected = indexNext
 }
 
-get countItems(){ return this.items.size }
+get countItems(){ return this.items.length }
 
 onKeyUp(e){
   // console.log("e.key (STRErase)", e.key, STRErase)
   switch (e.key) {
-    // Note : les flèches haut/bas sont gérées par onKeyDown pour pouvoir
-    // tenir compte des répétitions avec touche tenue pressée.
-    // case STRArrowUp:
-    //   this.selectPrevItem()
-    //   break
-    // case STRArrowDown:
-    //   this.selectNextItem()
-    //   break
     case STRArrowRight:
       if ( this.selectedItem.isDouble) {
         // Il faut sélectionner l'item droite

@@ -23,26 +23,7 @@ each ( fn ) {
   }
 }
 /**
-  Pour créer un nouveau marker
-**/
-createNew(){
-  let my = this
-  prompt("Nom du nouveau marqueur :", {
-      defaultAnswer: ''
-    , buttons:['Renoncer','Créer le marqeur']
-    , defaultButtonIndex:1
-    , cancelButtonIndex:0
-    , okButtonIndex:1
-    , methodOnOK: (title, indexButtonClicked) => {
-        let m = new Marker(my.a, {time: my.a.locator.currentTime.vtime, title:title})
-        m.create()
-        my.listingBuilt = false // forcer update
-      }
-  })
-}
-
-/**
-  Pour faire une boucle sur les marqueurs
+  Pour faire une boucle sur les marqueurs classés par temps
 **/
 forEach(fn){
   for( const marker of this.arrayItems ){
@@ -54,6 +35,29 @@ forEachReverse(fn){
     if ( isFalse(fn(marker) ) ) break // pour interrompre
   }
 }
+/**
+  Pour créer un nouveau marker
+**/
+createNew(){
+  let my = this
+  prompt("Nom du nouveau marqueur :", {
+      defaultAnswer: ''
+    , buttons:['Renoncer','Créer le marqeur']
+    , defaultButtonIndex:1
+    , cancelButtonIndex:0
+    , okButtonIndex:1
+    , methodOnOK: (title, indexButtonClicked) => {
+        let m = new Marker(my.a, {id:this.newId(), time: my.a.locator.currentTime.vtime, title:title})
+        m.create()
+        delete this.kwindow
+      }
+  })
+}
+// Retourne un nouvel ID unique pour un marqueur
+newId(){
+  isDefined(this.lastId) || ( this.lastId = 0 )
+  return ++ this.lastId
+}
 
 /**
   Sauvegarde des marqueurs de l'analyse
@@ -63,7 +67,7 @@ save(noMessage){
   this.iofile.save({after: this.afterSave.bind(this, noMessage)})
 }
 afterSave(noMessage){
-  noMessage || F.notify("Marqueurs enregistrés.")
+  // noMessage || F.notify("Marqueurs enregistrés.")
 }
 
 /**
@@ -71,13 +75,17 @@ afterSave(noMessage){
 **/
 load(){
   log.info("-> Markers.load")
-  this.items = {}
+  this.items  = {}
+  this.lastId = 0
   delete this._arritems
   if ( this.iofile.exists() ) {
     this.iofile.loadSync().forEach( item => {
       this.items[item.id] = new Marker(this.a, item)
+      if ( item.id > this.lastId ) this.lastId = item.id
     })
   }
+  // console.log("this.items:", this.items)
+  // console.log("this.lastId:", this.lastId)
   log.info("<- Markers.load")
   return this // chainage
 }
@@ -97,7 +105,6 @@ add(marker){
 
 /**
   Pour supprimer un marqueur
-  La méthode n'est pas encore implémentée
 **/
 remove(marker){
   if ( this.current === marker ) delete this.current
@@ -106,7 +113,7 @@ remove(marker){
   marker.jqObj.remove()
   this.reset()
   this.save()
-  this.listingBuilt = false // pour forcer l'actualisation de la KeyWindow
+  return true
 }
 
 reset(){
