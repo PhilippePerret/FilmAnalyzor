@@ -242,6 +242,10 @@ static closeCurrent(){
 static currentIsEventForm(){
   return this.current.name === 'AEVENTFORM'
 }
+// Retourne TRUE si la fenêtre courante est le porte-documents
+static currentIsPorteDocuments(){
+  return this.current.name === 'PORTEDOCUMENT'
+}
 
 static get current()  {return this._current}
 static set current(w) {this._current = w}

@@ -106,8 +106,11 @@ Object.assign(UI, {
         if ( EventForm.modified ) {
           F.notify('event-modified-cant-close-form')
         } else {
+          if ( PorteDocuments.keepCurrentDocument() ) return stopEvent(e)
           FWindow.closeCurrent()
         }
+      } else if ( FWindow.currentIsPorteDocuments() ) {
+        FWindow.closeCurrent()
       } else {
         F.notify(T('unknown-front-fwindow-cant-close'))
       }

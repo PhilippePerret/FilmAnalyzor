@@ -14,7 +14,7 @@ Object.defineProperties(PorteDocuments,{
 , spanMessage:{get(){ return this._spanmsg || defP(this,'_spanmsg', this.section.find('#porte_documents-message'))}}
 
 , fwindow:{
-    get(){return this._fwindow || defP(this,'_fwindow', new FWindow(this,{id: 'porte_documents', containment: null, container:this.section, draggable:'x', swiping:true, left: 400, top:10}))}
+    get(){return this._fwindow || defP(this,'_fwindow', new FWindow(this,{id:'porte_documents', name:'PORTEDOCUMENT', containment:null, container:this.section, draggable:'x', swiping:true, left: 400, top:10}))}
   }
   // Pour utiliser `[print] this.formater("le texte")`
 , formater:{

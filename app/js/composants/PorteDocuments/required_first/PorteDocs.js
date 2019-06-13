@@ -99,6 +99,7 @@ const PorteDocuments = {
     })
     switch (choix) {
       case 0:
+        this.onContentsChange() // On est peut-être dans un champ de texte
         this.currentDocument.save()
         return false
       case 1: // annulation
@@ -152,8 +153,13 @@ const PorteDocuments = {
   document courant.
 */
 , onContentsChange(){
-    console.log("-> PorteDocs::onContentsChange")
-    this.currentDocument.contents = this.docField.val()
+    // console.log("-> PorteDocs::onContentsChange")
+    if (isDefined(this.currentDocument)) {
+      this.currentDocument.contents = this.docField.val()
+    } else {
+      // F.notify("Pas de document courant.")
+      console.log("Bizarrement, this.currentDocument n'est pas défini, avec this = ", this)
+    }
   }
 
 /**

@@ -191,7 +191,12 @@ set modified(v){
   PorteDocuments.setModified(v)
   this._modified = v
 }
-isModified(){return this._modified === true}
+// Retourne true si le document est modifié. Mais maintenant, ça compare
+// vraiment la valeur courante avec la valeur dans le champ
+isModified(){
+  return this.contents != PorteDocuments.docField.val()
+  // return this._modified === true
+}
 
 // Remettre l'ancien contenu
 retreiveLastContents(){
@@ -217,6 +222,7 @@ endLoading(code){
 
 // Pour sauver le document
 save(){
+  console.log(`Je sauve le document ${this}`)
   if(this.a.locked && isFalse(this.isAbsoluteData) && isFalse(this.isSystemDoc)){
    return F.notify(T('analyse-locked-no-save'))
   }
