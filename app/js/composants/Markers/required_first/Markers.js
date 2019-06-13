@@ -53,6 +53,31 @@ createNew(){
       }
   })
 }
+/**
+  Pour éditer le marker d'identifiant +marker_id+. L'éditer consiste simplement
+  à pouvoir changer son nom. Pour régler son temps, il suffit de le déplacer
+  sur la TimeRuler.
+
+  @param {Number} marker_id ID du marker à éditer
+**/
+edit(marker_id) {
+  let marker = this.items[marker_id]
+  isDefined(marker) || raise(T('marker-undefined', {id:marker_id}))
+  prompt({
+      message: 'Nouveau nom du marker :'
+    , defaultAnswer: marker.title
+    , methodOnOK: this.execModification.bind(this, marker)
+  })
+}
+execModification(marker, newTitle) {
+  // F.notify(`Modifier le marker "${marker}" avec le titre "${newTitle}"`)
+  newTitle = newTitle.trim()
+  if ( marker.title !== newTitle) {
+    marker.title = newTitle
+    this.save()
+    if ( this.kwindow ) this.kwindow.update(this.kwindowItems())
+  }
+}
 // Retourne un nouvel ID unique pour un marqueur
 newId(){
   isDefined(this.lastId) || ( this.lastId = 0 )

@@ -9,12 +9,14 @@ Object.assign(Markers.prototype,{
   showListing(){
     (this.kwindow || this.buildListing()).show()
   }
+, kwindowItems(){
+    return this.arrayItems.map( marker => [marker.id, marker.toString()])
+  }
 , buildListing(){
     if (isNotEmpty($('#markers-list'))) $('#markers-list').remove()
-    let items = this.arrayItems.map( marker => [marker.id, marker.toString()])
     this.kwindow = new KWindow(this, {
         id: 'markers-list'
-      , items: items
+      , items: this.kwindowItems()
       , title:'Se rendre au marqueur…'
       , onChoose: this.onChooseItem.bind(this)
       , onRemove: this.onRemoveItem.bind(this)

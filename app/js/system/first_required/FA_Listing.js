@@ -173,7 +173,7 @@ update(){
   this.listing.html('')
   this.divsItems().map(div => this.listing.append(div))
   this.observeListing()
-  F.notify("Liste actualisée.")
+  // F.notify("Liste actualisée.")
 }
 
 divsItems(){

@@ -11,11 +11,8 @@ constructor(owner, args){
   this.functionOnChooseNone = args.onCancel
   this.functionOnRemoveItem = args.onRemove
   this.width = args.width || 400
-  console.log("items envoyés : ", args.items)
-  this.items = []
-  for ( var i = 0, len = args.items.length ; i < len ; ++ i){
-    this.items.push(new KWindowItem(this, args.items[i]))
-  }
+  // console.log("items envoyés : ", args.items)
+  this.update(args.items)
 }
 show(){
   if ( this.countItems ) this.fwindow.show()
@@ -29,6 +26,29 @@ close(){return this.hide()}
 remove(){
   this.fwindow.remove()
   delete this._fwindow
+}
+
+/**
+  Actualisation de la fenêtre avec les items +newItems+
+**/
+update(newItems){
+  let oldIndexSelected = this.indexSelected
+  if ( isDefined(this.items) ) {
+    this.items.map( item => item.remove() )
+    delete this.items
+  }
+  this.items = []
+  for ( var i = 0, len = newItems.length ; i < len ; ++ i){
+    this.items.push(new KWindowItem(this, newItems[i]))
+  }
+  if ( isTrue(this.built) ) {
+    this.fwindow.jqObj.find('.body')
+      .html('')
+      .append(this.itemsAsLIList())
+    if ( oldIndexSelected < newItems.length ) {
+      this.item(oldIndexSelected).select()
+    }
+  }
 }
 
 /**
@@ -49,6 +69,19 @@ chooseItem(){
   isFunction(this.functionOnChooseItem) || raise(T('kwindow-func-after-choose-required'))
   this.functionOnChooseItem(this.selectedItem.value, this.selectedItem.selection === 'right'/* si double*/)
   this.close()
+}
+/**
+  Quand on veut éditer l'item (avec la touche "e")
+**/
+editItem(){
+  if ( isFunction(this.owner.edit) ) {
+    this.owner.edit(this.selectedItem.value)
+  } else {
+    let isAClasse = isDefined(this.owner.name)
+      , classeName = isAClasse ? this.owner.name : this.owner.constructor.name
+      , sep = isAClasse ? '::' : '.'
+    raise(T('kwindow-edit-fn-required', {sep:sep, classe:classeName}))
+  }
 }
 /**
   Appelée quand on ne choisit aucun item (cancel) avec la touche Escape
@@ -79,7 +112,7 @@ onRemove(){
   }
 }
 execRemoveItem(){
-  console.log("this.selectedItem:",this.selectedItem)
+  // console.log("this.selectedItem:",this.selectedItem)
   if ( isDefined(this.selectedItem.value) ) {
     if ( isNotFalse(this.functionOnRemoveItem(this.selectedItem.value)) ) {
       // On doit détruire l'élément dans la liste et dans la fenêtre
@@ -113,6 +146,7 @@ build(){
 }
 afterBuilding(){
   this.item(this.indexSelected).select()
+  this.built = true
 }
 
 
@@ -145,6 +179,9 @@ get countItems(){ return this.items.length }
 onKeyUp(e){
   // console.log("e.key (STRErase)", e.key, STRErase)
   switch (e.key) {
+    case STRe: // touche "e" => édition
+      this.editItem()
+      break
     case STRArrowRight:
       if ( this.selectedItem.isDouble) {
         // Il faut sélectionner l'item droite
@@ -203,6 +240,9 @@ constructor(owner, paire){
   // Par défaut, si c'est une rangée double, la sélection est l'item gauche
   this.isDouble && ( this.selection = 'left' )
 }
+toString(){
+  return `&lt;&lt;KWindowItem @value=${this.value} @title="${this.title}" @double=${this.isDouble}&gt;&gt;`
+}
 selectRight(){
   if (this.selection === 'right') {
     this.selectLeft()
@@ -232,6 +272,7 @@ select(){
 deselect(){
   this.jqObj.removeClass('selected')
 }
+remove(){ this.jqObj.remove() }
 get li(){
   let obj = DCreate(LI,{class:`item${this.title_alt?' double':''}`,append:this.spanItems})
   this._jqobj = $(obj)
