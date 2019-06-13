@@ -89,6 +89,16 @@
     .body
       height: 458px
       max-height: 458px
+      overflow: hidden
+      padding: 1em
+
+      .falisting
+        position: relative
+        height: inherit // pour être aussi haut que .body
+        overflow: auto
+        > LI
+          &.selected
+            background-color: #EEEEFF
 
 
   // ---------------------------------------------------------------------

@@ -172,10 +172,14 @@ const STRArrowRight = 'ArrowRight'
 const STRArrowUp    = 'ArrowUp'
 const STRArrowDown  = 'ArrowDown'
 
-const DELETE    = 'Delete'
-const BACKSPACE = 'Backspace'
-const ESCAPE    = 'Escape'
-const ENTER     = 'Enter'
+const LEFTARROW   = 'ArrowLeft'
+const RIGHTARROW  = 'ArrowRight'
+const UPARROW     = 'ArrowUp'
+const DOWNARROW   = 'ArrowDown'
+const DELETE      = 'Delete'
+const BACKSPACE   = 'Backspace'
+const ESCAPE      = 'Escape'
+const ENTER       = 'Enter'
 
 // ---------------------------------------------------------------------
 

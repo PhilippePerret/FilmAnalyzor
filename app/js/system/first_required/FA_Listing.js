@@ -30,6 +30,11 @@ toggle(force_opened, selected_item){
   if (isUndefined(force_opened)) this.fwindow.toggle()
   else this.fwindow[force_opened?STRshow:STRhide]()
   selected_item && this.select(selected_item)
+  if ( this.fwindow.isOpened ) {
+    this.observeKeysPressed()
+  } else {
+    this.unobserveKeysPressed()
+  }
 }
 get opened(){return this.fwindow.visible}
 
@@ -37,6 +42,9 @@ get opened(){return this.fwindow.visible}
 forEachItem(fn){
   for(var el of this.items){if(false === fn(el)) break}
 }
+
+// Retourne l'item quelconque d'identifiant +item_id+
+item(item_id){return this.owner.get(item_id)}
 
 // ---------------------------------------------------------------------
 //  MÉTHODES DE DOM
@@ -87,14 +95,17 @@ observe(){
 
   this.observeListing()
 
+  // Le bouton '+' doit être surveillé, pour créer un nouvel item
   if(this.data.creatable){
-    // Le bouton '+' doit être surveillé, pour créer un nouvel item
     this.jqObj.find('.header .btn-add').on(STRclick, this.createItem.bind(this))
   }
+
+  // Le bouton pour ouvrir les détails doit être actif
   if(this.data.collapsable){
     this.jqObj.find('.body .btn-collapse-all').on(STRclick, this.setCollapseAll.bind(this,true))
     this.jqObj.find('.body .btn-uncollapse-all').on(STRclick, this.setCollapseAll.bind(this,false))
   }
+
   // Le bouton OK doit être surveillé
   this.btnOK.on(STRclick, this.onOK.bind(this))
   // Le bouton pour actualiser la liste
@@ -103,11 +114,22 @@ observe(){
   this.btnShowAll.on(STRclick, this.showAll.bind(this))
 
 }
+// Observation des touches clavier
+observeKeysPressed(){
+  window.onkeyup    = this.onKeyUp.bind(this)
+  window.onkeydown  = this.onKeyDown.bind(this)
+  UI.markShortcuts.html('FA-LISTING')
+}
+unobserveKeysPressed(){
+  UI.toggleKeyUpAndDown(true /* out fields */)
+}
+
 setCollapseAll(collapsed, e){
   if(e) stopEvent(e) // cf. note N0001
   // this.jqObj.find('.body .additionnal-infos')[collapsed?'hide':'show']()
   BtnToggleContainer[collapsed?'closeAll':'openAll'](this.jqObj)
 }
+
 observeListing(){
 
   // Si les infos supplémentaires sont masquables/affichables, il faut les
@@ -128,20 +150,96 @@ observeListing(){
 // ---------------------------------------------------------------------
 //  Méthodes d'évènement
 
+onKeyUp(e){
+  switch (e.key) {
+    case STRn: // n => nouvel item
+      return this.createItem(e)
+    case STRe: // e => edit item
+      return this.editCurrentItem(e)
+    case DELETE: //
+    case BACKSPACE:
+      return this.removeCurrentItem(e)
+  }
+  return stopEvent(e) // dans tous les cas
+}
+onKeyDown(e){
+  switch (e.key) {
+    case DOWNARROW:
+      this.selectNextItem()
+      break
+    case UPARROW:
+      this.selectPrevItem()
+      break
+  }
+  return stopEvent(e) // dans tous les cas
+}
 onOK(){
   this.owner.modified && this.owner.save()
   this.toggle()
 }
 
+// Pour sélectionner l'item suivant
+// note : contrairement à d'autres listes, FAListing n'a pas de sélection
+// par défaut
+selectNextItem(){
+  isDefined(this.selectedIndex) || ( this.selectedIndex = -1 )
+  ++ this.selectedIndex
+  if ( this.selectedIndex > this.itemCount - 1 ) this.selectedIndex = 0
+  this.selectItem(this.selectedIndex)
+}
+selectPrevItem(){
+  isDefined(this.selectedIndex) || ( this.selectedIndex = 1 )
+  -- this.selectedIndex
+  if ( this.selectedIndex < 0 ) this.selectedIndex = this.itemCount - 1
+  this.selectItem(this.selectedIndex)
+}
+editCurrentItem(e){
+  if ( isDefined(this.selectedIndex) ) {
+    this.editItem(this.selectedId)
+  } else {
+    F.notify(T('no-selected-item-user-arrow'))
+  }
+  return e && stopEvent(e)
+}
+removeCurrentItem(e){
+  if ( isDefined(this.selectedIndex) ) {
+    this.onWantRemoveItem(this.selectedItem)
+  } else {
+    F.notify(T('no-selected-item-user-arrow'))
+  }
+  return e && stopEvent(e)
+}
+get selectedItem(){return this.item(this.selectedId) }
+selectItem(idx){
+  this.jqObj.find(`.body .falisting > LI.selected`).removeClass('selected')
+  let o = this.jqObj.find(`.body .falisting > LI:nth-child(${idx + 1})`)
+  o.addClass('selected')
+  UI.rendVisible(o)
+}
+get selectedId(){
+  return this.selectedJqObj.data('id')
+}
+get selectedJqObj(){ return this.jqObj.find(`.body .falisting > LI:nth-child(${this.selectedIndex + 1})`) }
+get itemCount(){
+  if ( isUndefined(this._itemcount) ){
+    this._itemcount = this.jqObj.find(`.body .falisting > LI`).length
+  }
+  return this._itemcount
+}
+
 /**
   Pour sélectionner un élément en particulier
+
+  ATTENTION : cette méthode n'affiche que l'élément dont il est question, elle
+  n'est pas à confondre avec les méthodes qui sélectionne des éléments pour
+  agir dessus, avec toute la liste affichée (cf. les méthodes above).
 
   Fonctionnement : tous les items sont affichés dans la fenêtre, donc on les
   masque (hide), puis on affiche (show) celui dont le 'data-id' correspond à
   l'item recherché.
 **/
 select(item_id){
-  let item = this.owner.get(item_id)
+  let item = this.item(item_id)
   this.jqObj.find('.body .falisting > LI').hide()
   this.jqObj.find(`.body .falisting > LI[data-id="${item_id}"]`).show()
   this.btnShowAll.css('visibility', STRvisible)
@@ -163,6 +261,13 @@ createItem(e){
   if(this.isNotCurrentWindow()) return
   if(e) stopEvent(e) // cf. note N0001
   this.owner.edit()
+}
+/**
+  Méthode appelée pour éditer l'item d'id +item_id+
+  Appelée par le bouton "edit" ou par la touche 'e' sur l'item sélectionné.
+**/
+editItem(item_id){
+  this.owner.edit(item_id)
 }
 
 /**
@@ -233,8 +338,9 @@ setHeight(){
 // ---------------------------------------------------------------------
 // MÉTHODES DE CONSTRUCTION POUR LES ITEMS
 buildEditButton(item){
-  let attrs = {onclick:`${item.constructor.name}.edit('${item.id}', event)`}
-  return DCreate(A,{id:this.editBtnUID, class:'lkedit lktool fright',inner:'edit',attrs:attrs})
+  let o = DCreate(A,{id:this.editBtnUID, class:'lkedit lktool fright',inner:'edit'})
+  $(o).on(STRclick, this.editItem.bind(this, item.id))
+  return o
 }
 
 /**

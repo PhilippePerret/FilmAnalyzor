@@ -285,7 +285,8 @@ constructor(owner, data){
   this.UUID = this.constructor.newUUID()
   if(data.id) this._domId = data.id
   if(data.name) this.name = data.name
-  this.built = false
+  this.built    = false
+  this.isOpened = false
 
 }
 
@@ -298,6 +299,7 @@ show(){
   isFunction(this.owner.beforeShow) && this.owner.beforeShow()
   this.jqObj.show()
   this.visible = true
+  this.isOpened = this.visible
   FWindow.setCurrent(this)
   isTrue(this.draggable) && FWindow.checkOverlaps(this)
   this.checkSize()
@@ -314,6 +316,7 @@ hide(){
   this.constructor.unstack(this)
   this.jqObj.hide()
   this.visible = false
+  this.isOpened = this.visible
   isFunction(this.owner.onHide) && this.owner.onHide()
 }
 

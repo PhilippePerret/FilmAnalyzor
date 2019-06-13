@@ -41,6 +41,7 @@
   * [Les snippets](#les_snippets)
   * [Rédaction des documents](#redaction_documents)
     * [Retours à la ligne forcés](#force_return_newline)
+* [Listings d'élément](#listings_ditems)
 * [Assemblage de l'analyse finale](#assemblage_analyse)
 * [Publication online](#publication_online)
 
@@ -408,6 +409,21 @@ Pour enregistrer le document édité, on a plusieurs solutions :
 
 Pour forcer un retour à la ligne dans un document Markdown, il faut utiliser le caractère `¶` qui s'obtient, sur Mac, avec `ALT 6`.
 
+---------------------------------------------------------------------
+
+### Listings d'élément {#listings_ditems}
+
+On peut afficher la plupart des listes d'éléments — personnages, brins, documents, etc. — à l'aide de raccourcis clavier commençant par `CMD+MAJ`. Il suffit de regarder dans le menu « Affichage » pour trouver la liste des listes possibles.
+
+Lorsque la fenêtre du listing est ouverte, et selon le principe du « tout clavier », des raccourcis permettent de commander la liste :
+
+* les flèches permettent de sélectionner et se déplacer l'item en item,
+* la touche `e` permet d'éditer l'item sélectionné,
+* les touches `Backspace` ou `Delete` permettent de détruire l'item,
+* la touche `o` permet de déployer tous les éléments,
+* la touche `o` permet de les rassembler,
+* la flèche droite permet de déployer l'élément sélectionné,
+* la flèche gauche permet de rassembler l'élément.
 
 ---------------------------------------------------------------------
 

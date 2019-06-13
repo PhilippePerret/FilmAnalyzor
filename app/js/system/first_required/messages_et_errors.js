@@ -112,6 +112,7 @@ const ERRORS = {
 , "faliste-owner-save-required": "REQUIS : %{classe}::save(item_id)\n\nLa méthode `save` doit exister, qui permettra de sauver les associations, notamment."
 , "faliste-destroy-fct-require": "REQUIS : %{classe}::destroy(item_id)\n\nPour être destructible, la classe de l'item doit répondre à la méthode `destroy` qui recevra en premier et seul argument l'identifiant de l'item."
 , "confirm-destroy-brin": "Voulez-vous vraiment détruire à tout jamais le %{ref} ?"
+, "no-selected-item-user-arrow": "Aucun élément n'est sélectionné. Utilisez les flèches."
 
 , "--- IMAGES ---":""
 , "explication-images-listing": "Pour ajouter des images, se placer à l'endroit voulu dans le film et utiliser le menu « Vidéo > Prendre l'image courante »."
