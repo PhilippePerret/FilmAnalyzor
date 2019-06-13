@@ -140,7 +140,6 @@ const PorteDocuments = {
    * Méthode qui applique le thème +theme+ à l'interface
    */
 , applyTheme(theme){
-    console.log("-> applyTheme", theme)
     this.body.removeClass(this.currentTheme).addClass(theme)
     this.docField.removeClass(this.currentTheme).addClass(theme)
     this.menuThemes.val(theme)

@@ -27,40 +27,32 @@ section#section-porte-documents
     // Quand le document a été modifié, on le passe
     // en quelque chose qui ressemble à du rouge.
     &.modified
-      div.header, div.header *,
-      div.footer, div.footer *
+      div.header, div.header *, div.footer, div.footer *
         background-color: #990022
         color: white
 
-  div.header
-    background-color: #DFDFDF
-    padding: 0.2em 1em
-    position: relative
-
-    div#porte_documents-doc-title
-      margin-bottom: 0.5em
-      margin-left: 30px
+    div.header
+      background-color: #DFDFDF
+      padding: 0.2em 1em
       position: relative
 
-      .porte_documents-btn-drop
-        all: unset
-        font-size: 30pt
-        vertical-align: sub
+      div#porte_documents-doc-title
+        margin-bottom: 0.5em
+        margin-left: 30px
+        position: relative
+
+        .porte_documents-btn-drop
+          all: unset
+          font-size: 30pt
+          vertical-align: sub
 
 
-    // Le bouton pour créer un nouveau document
-    button#porte_documents-btn-new-doc
-      font-size: 28pt
-      width: 46px
-      height: 46px
-      line-height: 42px
-      position: absolute
-      top: 0
-      right: 0
+      // Le bouton pour créer un nouveau document
+      // REMETTRE ICI
 
-    // Le div pour afficher le menu des modèles
-    div.modeles
-      text-align: right
+      // Le div pour afficher le menu des modèles
+      div.modeles
+        text-align: right
 
   div.body
     padding: 1em
@@ -160,3 +152,12 @@ section#section-porte-documents
 
     &, & *
       font-size: 0.91em
+
+button#porte_documents-btn-new-doc
+  font-size: 28pt
+  width: 46px
+  height: 46px
+  line-height: 42px
+  position: absolute
+  top: 0
+  right: 0

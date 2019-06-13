@@ -23,7 +23,7 @@ Object.assign(PorteDocuments, {
             DCreate(LABEL, {class: 'small', inner: 'MODÈLES '})
           , DCreate(SELECT, {id: 'modeles-doc'})
         ]})
-      , DCreate(BUTTON,{id:'porte_documents-btn-new-doc btn', inner:'+', type:STRbutton})
+      , DCreate(BUTTON,{id:'porte_documents-btn-new-doc', inner:'+', type:STRbutton})
     ]})
 
     var body = DCreate(DIV, {
