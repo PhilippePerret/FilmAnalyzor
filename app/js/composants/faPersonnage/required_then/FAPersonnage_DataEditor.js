@@ -9,7 +9,6 @@ Object.assign(FAPersonnage,{
     this.contents = YAML.dump(this.data)
     // console.log("Dans DESave, this.contents = ", this.contents)
     this.iofile.save({after: this.DEAfterSave.bind(this)})
-    PorteDocuments.resetDocument(11 /* dpersonnages */)
   }
 , DEAfterSave(){
     this.modified = false
