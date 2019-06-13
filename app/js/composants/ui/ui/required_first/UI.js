@@ -337,18 +337,22 @@ const UI = {
     return horloges
   }
 
+/**
+  Rendre les horloges de durée du container +container+ "durationnable" c'est-
+  à-dire qu'on peut en régler la durée.
+**/
 , setDurationable(container){
-  var my = this
-  var hrs = container.querySelectorAll('duree')
-  var horloges = {}
-  // console.log("horloges trouvées : ", hrs)
-  for(var i = 0, len=hrs.length; i<len; ++i){
-    var h = new DOMDuration(hrs[i])
-    horloges[h.id] = h
-    h.observe()
+    var my = this
+    var hrs = container.querySelectorAll('duree')
+    var horloges = {}
+    // console.log("horloges trouvées : ", hrs)
+    for(var i = 0, len=hrs.length; i<len; ++i){
+      var h = new DOMDuration(hrs[i])
+      horloges[h.id] = h
+      h.observe()
+    }
+    return horloges
   }
-  return horloges
-}
 
 , setPictosAide(container){
     $(container).find('img.picto-aide').on(STRclick, this.showHelp.bind(this))

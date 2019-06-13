@@ -252,6 +252,29 @@ Object.assign(EventForm.prototype,{
   **/
 , observe(){
     let my = this
+      , jqo = this.jqObj
+      , eid = this.id
+
+    // On rend les champs horlogeable et dureeables
+    let horloges = UI.setHorlogeable(jqo[0])
+    // L'horloge de position de l'évènement
+    this.horlogePosition = horloges[`event-${eid}-time`]
+    this.horlogePosition.dispatch({
+        time: this.time
+      , synchroVideo: true
+      , parentModifiable: this
+    }).showTime()
+
+    let hdurees = UI.setDurationable(jqo[0])
+    // L'horloge de durée de l'évènement
+    this.horlogeDuration = hdurees[`event-${eid}-duree`]
+    this.horlogeDuration.dispatch({
+        duree: this.duree || 10
+      , startTime: parseFloat(this.time)
+      , synchroVideo: true
+      , parentModifiable: this
+    }).showTime()
+
     this.jqObj.find('.btn-form-cancel').on(STRclick, my.cancel.bind(my))
     this.btnSubmit.on(STRclick, my.submit.bind(my))
     this.jqObj.find('.btn-form-destroy').on(STRclick, my.destroy.bind(my))
@@ -263,7 +286,7 @@ Object.assign(EventForm.prototype,{
     // Quand le type de l'event est scene et que le résumé est vide,
     // on synchronise le pitch avec le résumé
     if(this.type === STRscene && this.isNew){
-      this.jqField('titre').on('keyup', my.synchronizePitchAndResume.bind(my))
+      this.jqField(STRtitre).on('keyup', my.synchronizePitchAndResume.bind(my))
       this.jqField('longtext1').on('keyup', my.checkIfSynchronizable.bind(my))
     }
 

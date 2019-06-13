@@ -334,26 +334,6 @@ afterBuilding(){
   // On règle les boutons Play (mais seulement si l'event est défini)
   this.isNew || BtnPlay.setAndWatch(jqo, eid)
 
-  // On rend les champs horlogeable et dureeables
-  let horloges = UI.setHorlogeable(jqo[0])
-  // L'horloge de position de l'évènement
-  this.horlogePosition = horloges[`event-${eid}-time`]
-  this.horlogePosition.dispatch({
-      time: this.time
-    , synchroVideo: true
-    , parentModifiable: this
-  }).showTime()
-
-  let hdurees = UI.setDurationable(jqo[0])
-  // L'horloge de durée de l'évènement
-  this.horlogeDuration = hdurees[`event-${eid}-duree`]
-  this.horlogeDuration.dispatch({
-      duree: this.duree || 10
-    , startTime: parseFloat(this.time)
-    , synchroVideo: true
-    , parentModifiable: this
-  }).showTime()
-
   // Régler les pictos d'aide
   UI.setPictosAide(jqo)
 
