@@ -48,10 +48,6 @@ build(){
 , buildToolBox(){
     return DCreate(DIV,{id:'bt-video-toolbox', append:[
         DCreate(SPAN, {class:'video-horloge horloge tiny fleft discret block', inner: '0:00:00.0'})
-      , DCreate(SPAN,{id:'mode-shortcuts-span', append:[
-          DCreate(LABEL,{inner:'Mode raccourcis'})
-        , DCreate(SPAN,{id:'banctime-mode-shortcuts',inner:'INTERFACE'})
-        ]})
       ]})
 
 }

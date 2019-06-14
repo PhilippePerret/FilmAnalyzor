@@ -122,8 +122,11 @@ const UIBuilder = {
     UI.msgWaitingLoop = $('span#waiting-loop-message')
     UI.divWaitingLoop = $('div#waiting-loop')
 
+    // La barre d'état (pour le moment, elle est construite en dur)
+    UI.stateBar = $('div#analyse-state-bar')
+
     // La marque des raccourcs courants
-    UI.markShortcuts = UI.sectionVideo.find('#banctime-mode-shortcuts')
+    UI.markShortcuts = UI.stateBar.find('#mode-shortcuts')
 
     // Les marques de début et de fin de film
     UI.markFilmStart  = UI.timeRuler.find('span.mark-film-start')
