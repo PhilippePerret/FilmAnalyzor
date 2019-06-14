@@ -2,8 +2,8 @@
 
 const Tests = {
     tests: []
-  , MAINFOLDER: './app/js/TestsFIT'
   , ARGV: null
+  , MAINFOLDER: null // doit être défini par l'application
   , nombre_failures:  0
   , nombre_success:   0
   , nombre_pendings:  0
@@ -12,30 +12,33 @@ const Tests = {
   // ---------------------------------------------------------------------
 
   , initAndRun:function(){
-
+      // Charger la configuration
+      Object.assign(this,require(path.join(this.MAINFOLDER,'config.js')))
       this.ARGV = remote.process.argv
       this.ARGV.shift()
       this.ARGV.shift()
 
       this.sys_errors = []
       this.init()
+      this.loadSysAndTestsFiles() // ça lancera les tests
     }
   , init:function(){
       // Base de l'application (sert notamment pour les paths des tests)
       this.appPath = path.resolve('.')
-
+      // console.log("this.appPath:", this.appPath)
       // On charge tous les fichiers système
-      var sysFirstRequired = this.JsFilesOf('system_first')
-
-      // Nombre de chargements attendus
-      this.expected_loadings = 0
-      this.expected_loadings += sysFirstRequired.length
-      // console.log("Nombre de scripts requis :", this.expected_loadings)
-
-      this.methode_suite_loading = this.loadSysAndTestsFiles.bind(this)
-      for(var relpath of sysFirstRequired){
-        this.createScript(relpath)
-      }
+      // NON : MAINTENANT, C'EST FAIT AVEC LE CHARGEMENT DU COMPOSANT
+      // // var sysFirstRequired = this.JsFilesOf('system_first')
+      //
+      // // Nombre de chargements attendus
+      // this.expected_loadings = 0
+      // this.expected_loadings += sysFirstRequired.length
+      // // console.log("Nombre de scripts requis :", this.expected_loadings)
+      //
+      // this.methode_suite_loading = this.loadSysAndTestsFiles.bind(this)
+      // for(var relpath of sysFirstRequired){
+      //   this.createScript(relpath)
+      // }
     }
 
     /**
@@ -43,43 +46,48 @@ const Tests = {
      * d'un filtre défini en argument
      */
   , getTestFileList:function(){
-      if(!this.ARGV){return this.JsFilesOf('tests')}
-      else {
+      console.log("-> TestsFIT.getTestFileList")
+      // if(!this.ARGV){return this.JsFilesOf('tests')}
+      // else {
         var filtre    = this.ARGV[0]
         var searched, liste
-        if (filtre && filtre.match(/\.js$/)){
+        if ( undefined === filtre ) {
+          searched = '**/*.js'
+        } else if (filtre && filtre.match(/\.js$/)){
           searched = filtre
         } else { // un dossier
           searched = `${filtre}/**/*.js`
         }
-        liste = glob.sync(`${this.MAINFOLDER}/tests/${searched}`)
+        // console.log("Dossier tests:", `${this.appPath}/${this.config.TEST_FOLDER}/${searched}`)
+        liste = glob.sync(`${this.appPath}/${this.config.TEST_FOLDER}/${searched}`)
         if (liste.length == 0){
           // En dernier recours, on filtre la liste des tous les tests
-          liste = []
-          var allfiles = glob.sync(`${this.MAINFOLDER}/tests/**/*.js`)
-          var reg = new RegExp(filtre)
-          for(var fp of allfiles){
-            if (fp.match(reg)) liste.push(fp)
-          }
+          throw new Error("Aucun test !")
+          // liste = []
+          // var allfiles = glob.sync(`${this.MAINFOLDER}/tests/**/*.js`)
+          // var reg = new RegExp(filtre)
+          // for(var fp of allfiles){
+          //   if (fp.match(reg)) liste.push(fp)
+          // }
         }
-
+        console.log("Liste des tests : ", liste)
         return liste
-      }
+      // }
 
     }
   , loadSysAndTestsFiles:function(){
 
-      var sysFiles  = this.JsFilesOf('system')
+      // var sysFiles  = this.JsFilesOf('system')
       var supFiles  = this.JsFilesOf('support')
 
       this.expected_loadings = 0
-      this.expected_loadings += sysFiles.length
+      // this.expected_loadings += sysFiles.length
       this.expected_loadings += supFiles.length
 
       // La méthode qui devra être appelée après le chargement
       this.methode_suite_loading = this.loadTestFiles.bind(this)
 
-      for(var filesFolder of [sysFiles, supFiles]){
+      for(var filesFolder of [supFiles]){
         // console.log("Fichiers du dossier :", filesFolder, sysFiles)
         for(var relpath of filesFolder){
           this.createScript(relpath)
@@ -134,5 +142,7 @@ const Tests = {
     }
 
 }
+
+// Object.assign(Tests,require.resolve('../config.js'))
 
 module.exports = Tests

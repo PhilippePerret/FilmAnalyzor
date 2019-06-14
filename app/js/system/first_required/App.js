@@ -6,16 +6,33 @@ const App = {
 , type: 'object'
 , allComponantsLoaded: false
 , ready: false
+, runtests(){
+    if ( NONE === typeof(Tests) ) {
+      return System.loadComponant('TestsFIT', this.runtests.bind(this))
+    } else {
+      Tests.MAINFOLDER = path.join(APPFOLDER,'app','js','composants','TestsFIT')
+    }
+    Tests.initAndRun()
+  }
 
   // Quand App est prête
 , onReady(){
+
+    if ( MODE_TEST ) {
+      if ( NONE === typeof(Tests) ) {
+        return System.loadComponant('TestsFIT', this.onReady.bind(this))
+      } else {
+        Tests.MAINFOLDER = path.join(APPFOLDER,'app','js','composants','TestsFIT')
+      }
+    }
 
     const UIBuilder = require('./ui/ui_builder')
     UIBuilder.init()
 
     log.info("--- APP READY ---")
-    if (MODE_TEST) {
-      Tests.initAndRun()
+    log.info("    MODE_TEST = ", MODE_TEST || 'false')
+    if ( MODE_TEST ) {
+      // Tests.initAndRun()
     } else {
       FAnalyse.checkLast()
     }

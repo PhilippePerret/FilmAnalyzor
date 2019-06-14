@@ -18,7 +18,6 @@ global.screenHeight  = null
 global.ObjMenus   = require('./app/js/main-process/menu.js')
 global.FAWindows  = require('./app/js/main-process/windows.js')
 
-
 global.mainW          = null
 global.pubW           = null // fenêtre de publication
 global.userPrefsPath  =

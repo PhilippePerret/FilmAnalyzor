@@ -8,13 +8,18 @@
       let maConstante = tryRequire('./insamefolder', __dirname)
 
 **/
-function tryRequire(rpath, folder){
+window.tryRequire = function(rpath, folder){
   try {
     isDefined(folder) && ( rpath = [folder,rpath].join(path.sep) )
     return require(rpath)
   } catch (e) {
-    log.error("ERROR REQUIRE AVEC LE PATH", rpath)
-    log.error(e)
+    if ( NONE !== typeof(log) ) {
+      log.error("[LOG] ERROR REQUIRE AVEC LE PATH", rpath)
+      log.error(e)
+    } else {
+      console.error("[CONSOLE] ERROR REQUIRE AVEC LE PATH", rpath)
+      console.error(e)
+    }
   }
 }
 

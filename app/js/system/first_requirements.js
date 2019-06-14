@@ -4,7 +4,8 @@ const MODE_TEST = process.env.MODE_TEST == "true"
 
 // Pour requérir un élément du dossier
 function FReqGet(name){
-  return require(`./js/system/first_required/${name}.js`)
+  // return tryRequire(`js/system/first_required/${name}`, __dirname)
+  return require(`./js/system/first_required/${name}`)
 }
 
 require('./js/system/utils')

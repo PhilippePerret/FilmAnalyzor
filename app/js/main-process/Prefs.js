@@ -21,8 +21,6 @@ const electron = require('electron')
 const {app} = require('electron')
 const path  = require('path')
 const fs    = require('fs')
-const ipc   = electron.ipcMain
-console.log("ipc:", ipc)
 
 const GOTODATA = require('../system/prefs/gotodata')
 
@@ -185,6 +183,7 @@ const Prefs = {
 /**
  * Pour les préférences
  */
+const ipc   = electron.ipcMain
 ipc.on('get-pref', (ev, data) => {
   ev.returnValue = Prefs.get(data)
 })

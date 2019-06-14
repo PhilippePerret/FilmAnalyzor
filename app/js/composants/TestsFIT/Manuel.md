@@ -16,33 +16,40 @@
 
 # Introduction {#introduction}
 
-Pour utiliser les tests (persos) comme ici, on doit :
+Pour utiliser les FIT-Tests (persos) comme ici, on doit :
 
-* copier-coller le fichier `app/js/system/Tests.js` dans l'application,
-* le charger dans la page principale (balise script à la fin du body)
-* copier coller tout le contenu du dossier `app/js/tests` (on peut supprimer les tests du dossier `tests/tests`, qui sont propres à l'application, ou les mettre de côté pour s'en inspirer)
-* dans le onready de l'application (`$(document).ready` ou autre), on doit ajouter :
-    ```javascript
-      ...
-      MODE_TEST && Tests.initAndRun()
-    ```
+* mettre le dossier `TestsFIT` dans un dossier librairie de l'application,
+* le charger (charger l'objet `Tests`) en définissant son `MAINFOLDER` qui doit être le path absolu au dossier `TestsFIT`. Ici, par exemple, on se sert de `System.loadComponant` qui inscrit des balises `script` dans le code HTML.
+* définir dans le fichier `TestsFIT/config.js` la configuration et notamment le dossier qui contient les tests.
 * Dans `package.json` de l'application, on ajoute :
   ```javascript
   "scripts":{
     //...
-    "test": "MODE_TEST=true npm start"
+    "testsfits": "MODE_TEST=true npm start"
     //...
   }
   ```
-* On peut définir dans `./app/js/tests/support/` les fichiers et méthodes utiles aux tests de l'application courante.
+* On peut définir dans `./support/` les fichiers et méthodes utiles aux tests de l'application courante.
+* On définit la méthode `App.runtests()` de cette manière (on peut définir une autre méthode dans un autre objet, mais alors il devra être accessible et utilisé pour lancer les tests) :
+  ```javascript
+  App.runtests = function(){
+      if ( NONE === typeof(Tests) ) {
+        return System.loadComponant('TestsFIT', this.runTests.bind(this))
+      } else {
+        Tests.MAINFOLDER = path.join(APPFOLDER,'app','js','composants','TestsFIT')
+      }
+      Tests.initAndRun()
+    }
+  ```
+* On définit les tests dans le dossier désigné dans les `config.js`.
 
-Tout le reste se passe automatiquement en lançant les scripts du dossier `./app/js/tests/tests/`.
+#### Pour lancer les tests :
 
-Pour lancer les tests :
+On lance l'application et on ouvre la console dev dans laquelle on tape :
 
 ```bash
 
-  > npm test
+  App.runtests()
 
 ```
 

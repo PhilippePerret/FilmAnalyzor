@@ -7,7 +7,7 @@
 
 // Pour remplir un formulaire d'event (modification ou création)
 window.fillEventFormWith = function(eventId, data, options){
-  if(undefined===options) options = {}
+  options = options || {}
   var formId = `#form-edit-event-${eventId}`
   var formData = {}
   for(var prop in data){
