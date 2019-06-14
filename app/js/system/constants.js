@@ -144,7 +144,7 @@ const STRsystem     = 'system'
 const STRt          = 't'
 const STRT          = 'T'
 const STRTab        = 'Tab' // la touche e.key tabulation
-const TABULATION    = 'Tabulation'
+const STRTabulation = 'Tabulation'
 const STRtext       = 'text'
 const STRtextarea   = 'textarea'
 const STRtime       = 'time'
@@ -207,6 +207,8 @@ const STRArrowRight = 'ArrowRight'
 const STRArrowUp    = 'ArrowUp'
 const STRArrowDown  = 'ArrowDown'
 
+const TABULATION  = STRTab
+const ENTER       = 'Enter'
 const LEFTARROW   = 'ArrowLeft'
 const RIGHTARROW  = 'ArrowRight'
 const UPARROW     = 'ArrowUp'
@@ -214,7 +216,6 @@ const DOWNARROW   = 'ArrowDown'
 const DELETE      = 'Delete'
 const BACKSPACE   = 'Backspace'
 const ESCAPE      = 'Escape'
-const ENTER       = 'Enter'
 
 // ---------------------------------------------------------------------
 

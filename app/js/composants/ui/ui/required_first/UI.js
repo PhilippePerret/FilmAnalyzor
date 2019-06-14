@@ -285,21 +285,12 @@ const UI = {
       console.log("META + ", e.key)
       switch (e.key) {
         case STRr: // Recharger, mais il ne faut le faire qu'en mode développement
-          console.log("process.env:", process.env)
-          console.log("process.env.NODE_ENV:", process.env.NODE_ENV)
           if (process.env.NODE_ENV === 'development') return true
           else return false
-        // case STRC: // Liste des personnages
-        // case STRB: // Liste des brins
-        // case STRD: // Liste des décors
-        // case STRF: // Les fondamentales
-        // case STRG: // Lites des images
-        // case STRP: // Calque du PFA
         case STRq: // Quitter
-          F.notify("Quitter l'application, mais il faut vérifier")
-          return false
-        // case STRW: // Liste des documents
-        // case STRX: // Script d'assemblage (il faudrait mieux avec ALT)
+          if ( current_analyse && current_analyse.modified ) {
+            return App.confirmQuit() // false ou true
+          }
           return true
         default:
       }

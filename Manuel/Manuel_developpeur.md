@@ -37,6 +37,7 @@
 * [Ajout de préférence analyse](#add_analyse_pref)
 * [Horloges et durées](#temporal_fields)
 * [UI / Aspect visuel](#visual_aspect)
+  * [Boites de dialogue](#dialog_boxes)
   * [Boutons de fermeture](#boutons_close)
   * [Boutons expand/collapse](#boutons_toggle_next)
   * [Boutons d'aide](#boutons_daide)
@@ -941,6 +942,52 @@ Appliquer la classe `main-button` aux `button`s principaux, qui est défini dans
 Utiliser la classe CSS `no-user-selection` pour empêcher un élément de l'interface d'être sélectionné lorsque l'on glisse la souris.
 
 > Note : une fois cette classe appliquée, les textes contenus ne peuvent pas être sélectionnés par l'user.
+
+### Boites de dialog {#dialog_boxes}
+
+Des boites de dialogue asynchrone permettent de confirmer des opérations ou de demander des valeurs. On les utilise avec les méthodes `confirm` et `prompt`.
+
+Définition et utilisation :
+
+```javascript
+
+// Demander une confirmation avant d'utiliser une méthode
+confirm({
+    message: 'Le message de confirmation ?'
+  , defaultAnswer: 'Si défini, c’est une prompt'
+  , buttons: ['bouton defaut 0', 'bouton OK 1', 'bouton 2']
+  , defaultButtonIndex: 0
+  , okButtonIndex: 1 // celui qui lancera methodOnOK
+  , cancelButtonIndex: 2 // celui qui lancera methodOnCancel
+  , methodOnOK: Ma.methode.bind(Ma)
+  , methodOnCancel: Ma.cancelMethod.bind(Ma)
+
+})
+```
+
+La méthode `prompt` est un alias de `confirm`, en fait, mais elle requiert de définir `defaultAnswer` qui sera la réponse affichée par défaut. De la même manière, alors que la méthode `methodOnOK` n'attend aucun argument pour `confirm`, elle reçoit la réponse donnée par l'utilisateur pour `prompt`.
+
+```javascript
+class Ma {
+  static okMethod(uvalue /* la valeur est reçue ici */) {
+    uvalue = parseInt(uvalue,10)
+    if ( uvalue > 0 && uvalue < 11) console.log("Bien !")
+    else console.log("C'est un raté")
+  }
+}
+prompt({
+    message: "Donne-moi un message entre 1 et 10"
+  , defaultAnswer: "0"
+  , buttons: ["Renoncer", "OK"]
+  , methodOnOK: Ma.okMethod.bind(Ma)
+})
+
+```
+
+Les méthodes ont des valeurs par défaut, donc il suffit bien souvent de définir le `message` et la `methodOnOK`.
+
+> Note : pour que la touche `Return` active le bouton OK, il faut faire coïncider `okButtonIndex` et `defaultButtonIndex` (mettre le même index, celui du bouton correspondant à « OK »). Pour que la touche `Escape` active le bouton d'annulation (appelé traditionnellement Cancel), il faut faire coïncider `cancelButtonIndex` et `defaultButtonIndex` (mettre le même index, celui du bouton correspondant à « Cancel »).
+
 
 ### Boutons de fermeture {#boutons_close}
 

@@ -132,6 +132,20 @@ const App = {
     return fs.statSync(referent).mtime > fs.statSync(actual).mtime
   }
 
+, confirmQuit(){
+    confirm({
+        message: "L'analyse a été modifiée mais pas sauvée. Confirmez-vous la perte des nouvelles données ?"
+      , buttons:['Quitter quand même', 'Renoncer']
+      , okButtonIndex: 0
+      , defaultButtonIndex: 1
+      , cancelButtonIndex: 1
+      , methodOnOK: this.execQuit.bind(this)
+    })
+  }
+, execQuit(){
+    F.notify("Je ne sais pas encore provoquer le quit de l'application.", {error:true})
+  }
+
 }// /fin App
 
 const AppLoader = {
