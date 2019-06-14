@@ -132,6 +132,7 @@ static setCurrent(wf, e){
     }
     this.current = wf
     this.current.bringToFront().activeShortcutsModeIfAny()
+    this.current.show()
     this.stack(wf)
   }
   // console.log("Fenêtre courante = ", wf.UUID)

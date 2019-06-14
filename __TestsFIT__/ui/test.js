@@ -1,8 +1,8 @@
 'use strict'
 
-var t = new Test("L'UI…")
+var test = new Test("L'UI…")
 
-t.case("…doit contenir tous les éléments requis à l'interface", () => {
+test.case("…doit contenir tous les éléments requis à l'interface", () => {
   return assert_DomExists('div#whole-ui', {success:'un div principal (whole-ui)'})
   .then(()=>{
   return assert_DomExists('div#whole-ui > div#C1', {success:'une première colonne (C1)'})
@@ -17,11 +17,11 @@ t.case("…doit contenir tous les éléments requis à l'interface", () => {
   .then(() => {
   return assert_DomExists('div#whole-ui > div#C1 > section#C1-R2-banc-timeline > section#banctime-banc-timeline', {success:'la section banc-timeline elle-même'})
   .then(() => {
-  return assert_DomExists('div#whole-ui > div#C1 > section#C1-R2-banc-timeline > section#banc-timeline-timeline > div#banctime-tape', {success:'la bande de timeline'})
+  return assert_DomExists('div#whole-ui > div#C1 > section#C1-R2-banc-timeline > section#banctime-banc-timeline > div#banctime-tape', {success:'la bande de timeline'})
   .then(() => {
-  return assert_DomExists('div#whole-ui > div#C1 > section#C1-R2-banc-timeline > section#banc-timeline-timeline > div#banctime-tape > div#banctime-timeRuler', {success:'la réglette de temps dans le banc-timeline'})
+  return assert_DomExists('div#whole-ui > div#C1 > section#C1-R2-banc-timeline > section#banctime-banc-timeline > div#banctime-tape > div#banctime-timeRuler', {success:'la réglette de temps dans le banc-timeline'})
   .then(() => {
-  return assert_DomExists('div#whole-ui > div#C1 > section#C1-R2-banc-timeline > section#banc-timeline-timeline > div#banctime-tape > div#banctime-cursor', {success:'le curseur principal du banc-timeline'})
+  return assert_DomExists('div#whole-ui > div#C1 > section#C1-R2-banc-timeline > section#banctime-banc-timeline > div#banctime-tape > div#banctime-cursor', {success:'le curseur principal du banc-timeline'})
   .then(() => {
   return assert_DomExists('div#whole-ui > div#C2', {success:'une seconde colonne (C2)'})
   .then(() => {
@@ -38,3 +38,5 @@ t.case("…doit contenir tous les éléments requis à l'interface", () => {
   })
   })
 })
+
+module.exports = test

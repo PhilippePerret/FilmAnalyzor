@@ -18,15 +18,39 @@ Tests.beforeTestsFunction = undefined
 Tests.afterTestsFunction  = undefined
 
 Tests.relativePathOf = function(fpath){
-  var reg = new RegExp(`\/?\/\/${Tests.appPath}\/`)
+  // Avant require
+  // var reg = new RegExp(`\/?\/\/${Tests.appPath}\/`)
+  // Avec require
+  var reg = new RegExp(`${Tests.appPath}/${Tests.config.TEST_FOLDER}\/`)
   return fpath.replace(reg,'./').trim()
 }
+
+/**
+  Méthode qui boucle sur tous les tests
+**/
 Tests.nextTest = function(){
-  if (this.tests.length){
-    this.tests.shift().run()
+  if ( this.testFilesList.length ) {
+    var testFile = this.testFilesList.shift()
+    try {
+      var test = require(testFile)
+      if ( test instanceof(Test) ) {
+        test.run()
+      } else {
+        console.error("Ne renvoie pas de test (vérifier qu'il termine bien par `module.exports = t // ou test`) : ", testFile)
+        this.nextTest()
+      }
+    } catch (e) {
+      console.error(e)
+    }
   } else {
     this.termine()
   }
+  //
+  // if (this.tests.length){
+  //   this.tests.shift().run()
+  // } else {
+  //   this.termine()
+  // }
 }
 
 Tests.assert = function(trueValue, msg_success, msg_failure, options){

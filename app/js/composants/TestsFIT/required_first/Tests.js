@@ -2,7 +2,8 @@
 
 const Tests = {
     tests: []
-  , ARGV: null
+  , inited: false
+  , ARGV: undefined
   , MAINFOLDER: null // doit être défini par l'application
   , nombre_failures:  0
   , nombre_success:   0
@@ -12,33 +13,44 @@ const Tests = {
   // ---------------------------------------------------------------------
 
   , initAndRun:function(){
-      // Charger la configuration
-      Object.assign(this,require(path.join(this.MAINFOLDER,'config.js')))
-      this.ARGV = remote.process.argv
-      this.ARGV.shift()
-      this.ARGV.shift()
-
-      this.sys_errors = []
-      this.init()
-      this.loadSysAndTestsFiles() // ça lancera les tests
+      console.clear()
+      defaultize(this,'ARGV',[])
+      if ( not(this.inited) ) {
+        // Charger la configuration
+        Object.assign(this,require(path.join(this.MAINFOLDER,'config.js')))
+        this.ARGV = remote.process.argv
+        this.ARGV.shift()
+        this.ARGV.shift()
+        this.sys_errors = []
+        return this.loadSupportFiles() // ça appellera init()
+        this.init()
+      } else {
+        this.run2()
+      }
     }
+
+  , run2(){
+      this.init()
+      console.log("Je runne de l'autre manière.")
+      this.testFilesList = this.getTestFileList()
+      this.nextTest()
+      // console.log("Liste des tests : ", this.testFilesList)
+      // var testFile
+      // while (testFile = testsList.shift() ) {
+      //   this.run2next(testFile)
+      // }
+    }
+  , run2next(testFile) {
+      require(testFile)
+      this.tests[0].run()
+    }
+
+
   , init:function(){
       // Base de l'application (sert notamment pour les paths des tests)
       this.appPath = path.resolve('.')
-      // console.log("this.appPath:", this.appPath)
-      // On charge tous les fichiers système
-      // NON : MAINTENANT, C'EST FAIT AVEC LE CHARGEMENT DU COMPOSANT
-      // // var sysFirstRequired = this.JsFilesOf('system_first')
-      //
-      // // Nombre de chargements attendus
-      // this.expected_loadings = 0
-      // this.expected_loadings += sysFirstRequired.length
-      // // console.log("Nombre de scripts requis :", this.expected_loadings)
-      //
-      // this.methode_suite_loading = this.loadSysAndTestsFiles.bind(this)
-      // for(var relpath of sysFirstRequired){
-      //   this.createScript(relpath)
-      // }
+      this.inited = true
+      return
     }
 
     /**
@@ -47,35 +59,24 @@ const Tests = {
      */
   , getTestFileList:function(){
       console.log("-> TestsFIT.getTestFileList")
-      // if(!this.ARGV){return this.JsFilesOf('tests')}
-      // else {
-        var filtre    = this.ARGV[0]
-        var searched, liste
-        if ( undefined === filtre ) {
-          searched = '**/*.js'
-        } else if (filtre && filtre.match(/\.js$/)){
-          searched = filtre
-        } else { // un dossier
-          searched = `${filtre}/**/*.js`
-        }
-        // console.log("Dossier tests:", `${this.appPath}/${this.config.TEST_FOLDER}/${searched}`)
-        liste = glob.sync(`${this.appPath}/${this.config.TEST_FOLDER}/${searched}`)
-        if (liste.length == 0){
-          // En dernier recours, on filtre la liste des tous les tests
-          throw new Error("Aucun test !")
-          // liste = []
-          // var allfiles = glob.sync(`${this.MAINFOLDER}/tests/**/*.js`)
-          // var reg = new RegExp(filtre)
-          // for(var fp of allfiles){
-          //   if (fp.match(reg)) liste.push(fp)
-          // }
-        }
-        console.log("Liste des tests : ", liste)
-        return liste
-      // }
-
+      var filtre    = this.ARGV[0]
+      var searched, liste
+      if ( undefined === filtre ) {
+        searched = '**/*.js'
+      } else if (filtre && filtre.match(/\.js$/)){
+        searched = filtre
+      } else { // un dossier
+        searched = `${filtre}/**/*.js`
+      }
+      // console.log("Dossier tests:", `${this.appPath}/${this.config.TEST_FOLDER}/${searched}`)
+      liste = glob.sync(`${this.appPath}/${this.config.TEST_FOLDER}/${searched}`)
+      if (liste.length == 0){
+        throw new Error("Aucun test !")
+      }
+      // console.log("Liste des tests : ", liste)
+      return liste
     }
-  , loadSysAndTestsFiles:function(){
+  , loadSupportFiles:function(){
 
       // var sysFiles  = this.JsFilesOf('system')
       var supFiles  = this.JsFilesOf('support')
@@ -85,7 +86,8 @@ const Tests = {
       this.expected_loadings += supFiles.length
 
       // La méthode qui devra être appelée après le chargement
-      this.methode_suite_loading = this.loadTestFiles.bind(this)
+      // this.methode_suite_loading = this.loadTestFiles.bind(this)
+      this.methode_suite_loading = this.run2.bind(this)
 
       for(var filesFolder of [supFiles]){
         // console.log("Fichiers du dossier :", filesFolder, sysFiles)

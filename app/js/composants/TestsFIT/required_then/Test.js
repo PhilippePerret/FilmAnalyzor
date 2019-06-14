@@ -2,10 +2,16 @@
 
 class Test {
   constructor(testName){
+    console.log("-> instanciation du test: ", testName)
     try {
       pourObtenirPathTest // produit l'error pour récupérer le path
     } catch (e) {
-      var src = e.stack.split("\n").reverse()[0].split(':')[1]
+      // Avant le require
+      // var src = e.stack.split("\n").reverse()[0].split(':')[1]
+      // Avec le require
+      var src = e.stack.split("\n")[2]
+      src = src.substring(src.indexOf('(') + 1, src.indexOf(')'))
+      src = src.split(':')[0]
       src = Tests.relativePathOf(src)
       this.srcRelPath = src
     }

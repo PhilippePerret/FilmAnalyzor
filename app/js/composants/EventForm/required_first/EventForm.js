@@ -44,6 +44,8 @@ static editEvent(ev){
 
 }
 
+static get current(){return this.currentForm}
+
 //
 static onClickNewEvent(e, eventType){
   // Quand c'et le noeud qui est envoyé

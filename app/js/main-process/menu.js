@@ -642,6 +642,13 @@ const DATA_MENUS = [
       label: 'Outils'
     , submenu:[
         {
+            label: 'Jouer les Tests FIT'
+          , enabled:true // TODO: plus tard, seulement en développement
+          , id: 'test-fit'
+          , accelerator:'Cmd+Alt+Ctrl+T'
+          , click: () => {execJS('App.runtests()')}
+        }
+      , {
             label: 'Test manuel de l’application'
           , enabled: true // TODO: plus tard, seulement en développement
           , id:'test-manuel-app'
