@@ -116,10 +116,13 @@ observe(){
 }
 // Observation des touches clavier
 observeKeysPressed(){
-  UI.setKeyUpAndDown('FA-LISTING', {up: this.onKeyUp.bind(this), down: this.onKeyDown.bind(this)})
+  UI.setKeyUpAndDown(this.shortcuts_mode, {name:'FA-LISTING', up: this.onKeyUp.bind(this), down: this.onKeyDown.bind(this)})
 }
 unobserveKeysPressed(){
-  UI.toggleKeyUpAndDown(true /* out fields */)
+  // TODO il faudrait pouvoir éviter ça, c'est fwindow qui regarderait la nouvelle
+  // fenêtre courante et déterminerait les raccourcis qu'il faut mettre. Si
+  // aucune fenêtre courante, c'est cette méthode qui serait appelée.
+  // UI.toggleKeyUpAndDown(true /* out fields */)
 }
 
 setCollapseAll(collapsed, e){
@@ -433,11 +436,12 @@ get typeElements(){return this._typeelements || defP(this,'_typeelements', `${th
 
 // ---------------------------------------------------------------------
 
+get shortcuts_mode(){ return this._shortcutsmode || defP(this,'_shortcutsmode', `FA-LISTING-${this.owner.name}`)}
 get listing()   {return this._listing||defP(this,'_listing', this.jqObj.find('.falisting'))}
 get btnOK()     {return this.fwindow.jqObj.find('.footer .btn-ok')}
 get btnShowAll(){return this.fwindow.jqObj.find('.footer .btn-show-all')}
 get jqObj()     {return this.fwindow.jqObj}
-get fwindow()   {return this._fwindow||defP(this,'_fwindow', new FWindow(this,{name:`${this.owner.name}-FAListing`, type:'FALISTING', class:`fwindow-listing-type ${this.typeElements}`, x:200,y:100}))}
+get fwindow()   {return this._fwindow||defP(this,'_fwindow', new FWindow(this, {name:`${this.owner.name}-FAListing`, type:'FALISTING', shortcuts_mode:this.shortcuts_mode, class:`fwindow-listing-type ${this.typeElements}`, x:200,y:100}))}
 }
 
 

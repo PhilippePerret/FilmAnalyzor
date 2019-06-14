@@ -177,37 +177,52 @@ const UI = {
   fonctionnement des raccourcis universels qui doivent fonctionner dans tous
   les cas.
 
-  @param {String} modeName    Le nom du mode, par exemple 'FA-LISTING'
+  @param {String} modeName    Le nom du mode, par exemple 'FA-LISTING-FAPersonnage'
+                              Il permet de consigner le mode pour le remettre
+                              plus tard, lorsque la fenêtre qui l'utilise
+                              redevient active.
   @param {Object} args        Définition des raccourcis :
+                      name:   Nom à mettre dans la barre d'état
                       up:     méthode pour keyUp
                       down:   méthode pour keyDown
                       not_universel   Si true, on ne met pas les raccourcis
                               universels.
 **/
 , setKeyUpAndDown(modeName, args) {
-  var res
-  window.onkeyup = ((e) => {
-    res = this.universalKeyUp(e)
-    if ( isDefined(res) ){
-      if ( isTrue(res) ) return true // comportement par défaut
-      else return stopEvent(e)
+
+    isDefined(this.ShortcutsMap) || ( this.ShortcutsMap = new Map() )
+    if ( this.ShortcutsMap.has(modeName) ) {
+      console.log(`Le mode de shortcuts "${modeName}" m'est connu, je le reprends`)
+      args = this.ShortcutsMap.get(modeName)
+    } else {
+      console.log(`Le mode de shortcuts "${modeName}" m'est inconnu, je le consigne`)
+      isDefined(args.name) || ( args.name = modeName )
+      this.ShortcutsMap.set(modeName, args)
     }
-    res = args.up(e)
-    stopEvent(e)
-    return res
-  })
-  window.onkeydown = ((e) => {
-    res = this.universalKeyDown(e)
-    if ( isDefined(res) ){
-      if ( isTrue(res) ) return true
-      else return stopEvent(e)
-    }
-    res = args.down(e)
-    stopEvent(e)
-    return res
-  })
-  this.markShortcuts.html(modeName)
-}
+
+    var res
+    window.onkeyup = ((e) => {
+      res = this.universalKeyUp(e)
+      if ( isDefined(res) ){
+        if ( isTrue(res) ) return true // comportement par défaut
+        else return stopEvent(e)
+      }
+      res = args.up(e)
+      stopEvent(e)
+      return res
+    })
+    window.onkeydown = ((e) => {
+      res = this.universalKeyDown(e)
+      if ( isDefined(res) ){
+        if ( isTrue(res) ) return true
+        else return stopEvent(e)
+      }
+      res = args.down(e)
+      stopEvent(e)
+      return res
+    })
+    this.markShortcuts.html(args.name)
+  }
 /**
   Méthodes universelles
 

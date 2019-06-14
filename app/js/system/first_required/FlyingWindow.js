@@ -131,7 +131,7 @@ static setCurrent(wf, e){
       log.info(`    ${this.current.UUID} en arrière plan.`)
     }
     this.current = wf
-    this.current.bringToFront()
+    this.current.bringToFront().activeShortcutsModeIfAny()
     this.stack(wf)
   }
   // console.log("Fenêtre courante = ", wf.UUID)
@@ -373,6 +373,7 @@ bringToFront(){
   this.current = true
   isFunction(this.owner.onFocus) && this.owner.onFocus.bind(this.owner)()
   log.info(`<- ${this.ref}.bringToFront`)
+  return this // pour le chainage
 }
 // Pour remettre la Flying window en arrière plan
 bringToBack(){
@@ -381,6 +382,25 @@ bringToBack(){
   this.current = false
   isFunction(this.owner.onBlur) && this.owner.onBlur.bind(this.owner)()
   log.info(`<- ${this.ref}.bringToBack`)
+  return this // pour le chainage
+}
+
+activeShortcutsModeIfAny(){
+  let modeName
+  if ( this.shortcuts_mode ) {
+    if ( UI.ShortcutsMap && UI.ShortcutsMap.has(this.shortcuts_mode) ) {
+      // Mode de raccourci défini et déjà connu de UI
+      modeName = this.shortcuts_mode
+    } else {
+      // Mode de raccourci défini et mais pas encore connu de UI
+      return
+    }
+  } else {
+    // Pas de mode de raccourci propre à la fenêtre, on remet les raccourcis
+    // par défaut
+    modeName = 'INTERFACE'
+  }
+  UI.setKeyUpAndDown(modeName)
 }
 
 isCurrent(){ return isTrue(this.current) }
@@ -392,11 +412,14 @@ build(){
   isDefined(this.position) || ( this.position = {} )
   // console.log("position:", this.position)
   // console.log("Construction de la FWindow ", this.domId)
+  let attrs = {}
+  if ( isDefined(this.shortcuts_mode) ) attrs['data-shortcuts-mode'] = this.shortcuts_mode
   var div = DCreate(DIV, {
     id: this.domId
   , class: `fwindow ${this.class || ''}`.trim()
   , append: this.owner.build()
   , style: `top:${this.position.top||this._y||0}px;left:${this.position.left||this._x||0}px;`
+  , attrs:attrs
   })
   $(this.container).append(div)
   // Si le propriétaire possède une méthode d'après construction,
@@ -532,6 +555,11 @@ get y(){return this._y || 100}
 // Par exemple, pour les falistings, le type est 'FALISTING' et le name contient
 // le type de listing (personnages, brins, etc.).
 get type(){return this._type}
+// Le mode de raccourcis que la fenêtre doit utiliser. La donnée est mise dans
+// l'attribut `data-shortcuts-mode` du div de la fenêtre et sera utilisé par
+// la classe pour ré-activer le mode de raccourcis utilisé quand la fenêtre
+// reprendra la place frontale.
+get shortcuts_mode(){ return this._shortcuts_mode }
 // Référence pour logs
 get ref(){
   if(isUndefined(this._ref)){this._ref = `<<fwindow ${this.name || '#'+this.id}>>` }
