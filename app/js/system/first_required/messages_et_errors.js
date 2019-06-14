@@ -101,6 +101,7 @@ const ERRORS = {
 , "deditor-must-have-prop-dataEditor": "La classe %{classe} devrait avoir une propriété objet `dataEditor` (qui définira tout)."
 , "deditor-fields-undefined": "`%{classe}.dataEditor.dataFields` doit définir les champs permettant d'éditer un élément."
 , "deditor-function-required": "La classe %{classe} devrait définir la fonction `%{function}()`?"
+, "deditor-item-modified-cant-close": "Il faut enregistrer les modifications ou fermer la fenêtre à la souris pour renoncer à ces changements."
 
 , "--- FA LISTING ---":""
 , "falist-data-required": "REQUIS : %{classe}.DataFAListing\n\nLa classe propriétaire doit définir la propriété `DataFAListing`."

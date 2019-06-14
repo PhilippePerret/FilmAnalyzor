@@ -101,19 +101,7 @@ Object.assign(UI, {
       , touche = e.key
 
     if(e.key === ESCAPE){
-      if ( FWindow.currentIsEventForm() ){
-        // Fermer la fenêtre d'édition, peut-être sans enregistrer
-        if ( EventForm.modified ) {
-          F.notify('event-modified-cant-close-form')
-        } else {
-          if ( PorteDocuments.keepCurrentDocument() ) return stopEvent(e)
-          FWindow.closeCurrent()
-        }
-      } else if ( FWindow.currentIsPorteDocuments() ) {
-        FWindow.closeCurrent()
-      } else {
-        F.notify(T('unknown-front-fwindow-cant-close'))
-      }
+      // Traité par les raccourcis universels
     } else if ( e.key === ENTER ) {
       if(e.metaKey){
         // META + RETURN => FINIR L'ÉDITION DE ?…
@@ -208,9 +196,6 @@ Object.assign(UI, {
     }
 
     switch (touche) {
-      case ESCAPE:
-        if ( FWindow.closeCurrent() ) return stopEvent(e)
-        else return true
       case STRTab:
         // Si une fwindow est courante, il faut focusser dans son
         // premier champ de texte (en s'assurer qu'on bascule bien dans l'autre

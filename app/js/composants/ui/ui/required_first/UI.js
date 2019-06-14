@@ -170,6 +170,146 @@ const UI = {
 , realWidth(o){
     return $(o).outerWidth()
   }
+
+/**
+  Méthode pour définir les obersers des touches up and down
+  Cette méthode doit impérativement être appelée pour conserver le
+  fonctionnement des raccourcis universels qui doivent fonctionner dans tous
+  les cas.
+
+  @param {String} modeName    Le nom du mode, par exemple 'FA-LISTING'
+  @param {Object} args        Définition des raccourcis :
+                      up:     méthode pour keyUp
+                      down:   méthode pour keyDown
+                      not_universel   Si true, on ne met pas les raccourcis
+                              universels.
+**/
+, setKeyUpAndDown(modeName, args) {
+  var res
+  window.onkeyup = ((e) => {
+    res = this.universalKeyUp(e)
+    if ( isDefined(res) ){
+      if ( isTrue(res) ) return true // comportement par défaut
+      else return stopEvent(e)
+    }
+    res = args.up(e)
+    stopEvent(e)
+    return res
+  })
+  window.onkeydown = ((e) => {
+    res = this.universalKeyDown(e)
+    if ( isDefined(res) ){
+      if ( isTrue(res) ) return true
+      else return stopEvent(e)
+    }
+    res = args.down(e)
+    stopEvent(e)
+    return res
+  })
+  this.markShortcuts.html(modeName)
+}
+/**
+  Méthodes universelles
+
+  @return {Boolean} true on doit adopter le traitement par défaut, sans aller
+                    plus loin
+                    false si on doit stopper l'event, sans aller plus loin
+                    undefined si on doit continuer en testant avec les méthodes
+                    particulières.
+**/
+, universalKeyUp(e) {
+    switch (e.key) {
+      case ESCAPE: // fermeture de la fenêtre au premier plan
+        console.log("Fermeture fenêtre par raccourcis universels.")
+        if (
+              FWindow.currentIsEventFormAndCanClose()
+          ||  FWindow.currentIsPorteDocumentsAndCanClose()
+          ||  FWindow.currentIsFaListing()
+          ||  FWindow.currentIsDataEditorAndCanClose()
+        ) {
+          FWindow.closeCurrent()
+          return false
+        } else if ( FWindow.currentIsEventForm() ){
+          F.notify(T('event-modified-cant-close-form'))
+        } else if ( FWindow.currentIsDataEditor() ){
+          F.notify(T('deditor-item-modified-cant-close'))
+        } else {
+          F.notify(T('unknown-front-fwindow-cant-close'))
+        }
+        return false
+      case STRl: // partout, hors champ, la touche "l" démarre la video
+        if ( this.isOutTextField ) {
+          F.notify("Je dois démarrer la vidéo.")
+          return false
+        } else {
+          F.notify("Je suis dans un champ de saisie, je ne démarre pas la vidéo.")
+        }
+    }
+    return // non traité = undefined
+  }
+, universalKeyDown(e) {
+    if ( e.metaKey && e.shiftKey && e.altKey) {
+      // CMD + ALT + SHIFT => Édition
+      console.log("CMD+SHIFT+ALT et ", e.key)
+      switch (e.key) {
+        case '¢': // ALT C Édition personnages
+        case '∫': // ALT B Édition des brins
+        case '∆': // ALT D Édition des décors
+        // case ' ': // Les fondamentales
+        case 'ﬂ': // ALT G Lites des images
+        case '∏': // ALT P Calque du PFA
+        case '∑': // ALT S Les statistiques
+        case '›': // ALT W Édition des documents
+        case '⁄': // ALT X Script d'assemblage (il faudrait mieux avec ALT)
+          return true
+        default:
+      }
+    } else if ( e.metaKey && e.shiftKey) {
+      // CMD + SHIFT => Listes
+      switch (e.key) {
+        case STRC: // Liste des personnages
+        case STRB: // Liste des brins
+        case STRD: // Liste des décors
+        case STRF: // Les fondamentales
+        case STRG: // Lites des images
+        case STRP: // Calque du PFA
+        case STRS: // Les statistiques
+        case STRW: // Liste des documents
+        // case STRX: // Script d'assemblage (il faudrait mieux avec ALT)
+          return true
+        default:
+      }
+      return
+    } else if ( e.metaKey ) {
+      // META key seule (p.e. CMD+R) pour recharger
+      console.log("META + ", e.key)
+      switch (e.key) {
+        case STRr: // Recharger, mais il ne faut le faire qu'en mode développement
+          console.log("process.env:", process.env)
+          console.log("process.env.NODE_ENV:", process.env.NODE_ENV)
+          if (process.env.NODE_ENV === 'development') return true
+          else return false
+        // case STRC: // Liste des personnages
+        // case STRB: // Liste des brins
+        // case STRD: // Liste des décors
+        // case STRF: // Les fondamentales
+        // case STRG: // Lites des images
+        // case STRP: // Calque du PFA
+        case STRq: // Quitter
+          F.notify("Quitter l'application, mais il faut vérifier")
+          return false
+        // case STRW: // Liste des documents
+        // case STRX: // Script d'assemblage (il faudrait mieux avec ALT)
+          return true
+        default:
+      }
+    }
+    switch (e.key) {
+
+      default:
+    }
+    return
+  }
 /**
   Méthode qui fait basculer la captation des touches du mode "out" champs de
   texte au mode "in" (dans un champ de texte).
@@ -183,14 +323,18 @@ const UI = {
     // comme : `onKey_UP_${versOut?'OUT':'IN'}TextField`, mais je préfère pouvoir
     // les retrouver explicitement par leur nom.
     if ( versOut ) {
-      window.onkeyup    = this.onKey_UP_OUT_TextField.bind(this)
-      window.onkeydown  = this.onKey_DOWN_OUT_TextField.bind(this)
+      this.setKeyUpAndDown('INTERFACE', {
+          up:   this.onKey_UP_OUT_TextField.bind(this)
+        , down: this.onKey_DOWN_OUT_TextField.bind(this)
+      })
+      this.isOutTextField = true
     } else {
-      window.onkeyup    = this.onKey_UP_IN_TextField.bind(this)
-      window.onkeydown  = this.onKey_DOWN_IN_TextField.bind(this)
+      this.setKeyUpAndDown('TEXT FIELD', {
+          up:   this.onKey_UP_IN_TextField.bind(this)
+        , down: this.onKey_DOWN_IN_TextField.bind(this)
+      })
+      this.isOutTextField = false
     }
-    // La marque du type de shortcut
-    this.markShortcuts.html(versOut?'INTERFACE':'TEXT FIELD')
   }
 
 

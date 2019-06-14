@@ -242,9 +242,28 @@ static closeCurrent(){
 static currentIsEventForm(){
   return this.current.name === 'AEVENTFORM'
 }
+// Retourne TRUE si le formulaire d'event est au premier plan et qu'on
+// peut le fermer.
+static currentIsEventFormAndCanClose(){
+  return this.currentIsEventForm() && not(EventForm.current.modified)
+}
 // Retourne TRUE si la fenêtre courante est le porte-documents
 static currentIsPorteDocuments(){
   return this.current.name === 'PORTEDOCUMENT'
+}
+// Retourne TRUE si la fenêtre courante est le porte documents et qu'on
+// peut la fermer
+static currentIsPorteDocumentsAndCanClose(){
+  return this.currentIsPorteDocuments() && not(PorteDocuments.keepCurrentDocument())
+}
+static currentIsFaListing(){
+  return this.current.type === 'FALISTING'
+}
+static currentIsDataEditor(){
+  return this.current.type === 'DATAEDITOR'
+}
+static currentIsDataEditorAndCanClose(){
+  return this.currentIsDataEditor() // && not(DataEditor.current.modified)
 }
 
 static get current()  {return this._current}
@@ -509,6 +528,10 @@ get class(){return this._class}
 // Position x/y de la fenêtre
 get x(){return this._x || 100}
 get y(){return this._y || 100}
+// Un type peut être défini, lorsque le name est utilisé pour autre chose
+// Par exemple, pour les falistings, le type est 'FALISTING' et le name contient
+// le type de listing (personnages, brins, etc.).
+get type(){return this._type}
 // Référence pour logs
 get ref(){
   if(isUndefined(this._ref)){this._ref = `<<fwindow ${this.name || '#'+this.id}>>` }

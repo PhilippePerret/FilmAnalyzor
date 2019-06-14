@@ -16,7 +16,7 @@
  */
 const DATA_DOCUMENTS = {
 
-  building_script:  {id:9, hname: 'Script d’assemblage', format:'md', type:'data', accelerator:'CmdOrCtrl+Shift+X'}
+  building_script:  {id:9, hname: 'Script d’assemblage', format:'md', type:'data', accelerator:'CmdOrCtrl+Alt+Shift+X'}
 
 , separatorInfos: 'separator'
 
