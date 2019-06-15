@@ -192,10 +192,10 @@ const UI = {
 
     isDefined(this.ShortcutsMap) || ( this.ShortcutsMap = new Map() )
     if ( this.ShortcutsMap.has(modeName) ) {
-      console.log(`Le mode de shortcuts "${modeName}" m'est connu, je le reprends`)
+      // console.log(`Le mode de shortcuts "${modeName}" m'est connu, je le reprends`)
       args = this.ShortcutsMap.get(modeName)
     } else {
-      console.log(`Le mode de shortcuts "${modeName}" m'est inconnu, je le consigne`)
+      // console.log(`Le mode de shortcuts "${modeName}" m'est inconnu, je le consigne`)
       isDefined(args.name) || ( args.name = modeName )
       this.ShortcutsMap.set(modeName, args)
     }

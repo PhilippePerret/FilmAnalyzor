@@ -2,7 +2,7 @@
 
 class Test {
   constructor(testName){
-    console.log("-> instanciation du test: ", testName)
+    // console.log("-> instanciation du test: ", testName)
     try {
       pourObtenirPathTest // produit l'error pour récupérer le path
     } catch (e) {

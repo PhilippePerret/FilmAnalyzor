@@ -1,0 +1,12 @@
+{
+  "who": "config"
+, "TEST_FOLDER": "__TestsFIT__"
+, "onlyFolders": ["PorteDocument"]
+, "regFiles": "only"
+, "exemple regFiles": "only.test.js"
+, "regNames": "Dans le titre"
+, "exemple regNames": "dans le titre du tests"
+, "regCases": "Dans le case"
+, "exemple regCases": "Dans le case"
+, "random": true
+}

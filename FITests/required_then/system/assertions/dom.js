@@ -2,7 +2,6 @@
 
 const MAX_TIMEOUT = 5000 // 5 secondes
 
-
 const DOMTEST = {
     MAX_TIMEOUT: 10000
   , exists: function(domId){

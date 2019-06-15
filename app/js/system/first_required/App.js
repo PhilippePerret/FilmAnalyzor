@@ -1,5 +1,6 @@
 'use strict'
 
+const Tests = {}
 
 const App = {
   class: 'App'
@@ -7,23 +8,20 @@ const App = {
 , allComponantsLoaded: false
 , ready: false
 , runtests(){
-    if ( NONE === typeof(Tests) ) {
-      return System.loadComponant('TestsFIT', this.runtests.bind(this))
-    } else {
-      Tests.MAINFOLDER = path.join(APPFOLDER,'app','js','composants','TestsFIT')
-    }
-    Tests.initAndRun()
+    isNotEmpty(Tests) || Object.assign(Tests, require(path.join(APPFOLDER,'FITests')))
+    Tests.initAll().runAll()
   }
 
   // Quand App est prête
 , onReady(){
 
     if ( MODE_TEST ) {
-      if ( NONE === typeof(Tests) ) {
-        return System.loadComponant('TestsFIT', this.onReady.bind(this))
-      } else {
-        Tests.MAINFOLDER = path.join(APPFOLDER,'app','js','composants','TestsFIT')
-      }
+      return this.runtests()
+      // if ( NONE === typeof(Tests) ) {
+      //   return System.loadComponant('TestsFIT', this.onReady.bind(this))
+      // } else {
+      //   Tests.MAINFOLDER = path.join(APPFOLDER,'app','js','composants','TestsFIT')
+      // }
     }
 
     const UIBuilder = require('./ui/ui_builder')

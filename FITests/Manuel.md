@@ -41,9 +41,11 @@ Pour utiliser les FIT-Tests (persos) comme ici, on doit :
       Tests.initAndRun()
     }
   ```
-* On définit les tests dans le dossier désigné dans les `config.js`.
+* On définit les tests dans le dossier `TEST_FOLDER` désigné dans les `config.js`.
 
 #### Pour lancer les tests :
+
+Le plus simple est de faire une menu qui appelle la méthode `App.runtests()`.
 
 On lance l'application et on ouvre la console dev dans laquelle on tape :
 
@@ -53,6 +55,7 @@ On lance l'application et on ouvre la console dev dans laquelle on tape :
 
 ```
 
+Note : le fichier `config.js` va permettre de filtrer les tests à passer. Cf. [Liste des tests à lancer](#tests_list) pour le détail.
 
 ## Définition d'une feuille de test {#define_test_sheet}
 
@@ -220,38 +223,13 @@ Attend qu'une condition soit vraie (premier argument) avant de poursuivre.
 
 ## Liste des tests à lancer {#tests_list}
 
-Pour lancer toute la suite des tests, si `"scripts":"test"` est défini comme voulu dans le `package.json`, il suffit de jouer :
+Pour filtrer les tests à lancer, on se sert du fichier `config.js`
 
-```
-  > npm test
-```
+La propriété `config.onlyFolders` permet de définir les seuls dossiers à traiter. C'est une liste de chemins relatifs depuis le `TEST_FOLDER`.
 
-On peut filtrer les tests à jouer à l'aide d'un deuxième argument. Ce filtre peut être le dossier à jouer, à partir de `./app/js/testsFIT/tests/`. Par exemple
+La propriété `{RegExp} config.regFiles` permet de définir une expression régulière pour filtrer les noms de fichiers.
 
-```
-  > npm test dossier/dans/test
-```
-
-Ça peut être le path relatif du fichier, dans le même dossier des tests. Par exemple, pour jouer le test se trouvant à `./app/js/testsFIT/tests/mon/dossier/montests.js`, on joue :
-
-```
-  > npm test mon/dossier/montests.js
-```
-
-On peut enfin donner un filtre qui sera appliqué à tous les paths des tests. Par exemple :
-
-```
-  > npm tests "(Event|scene)(.*)_test"
-```
-
-Le filtre ci-dessous prendra en compte :
-
-    ./app/js/TestsFIT/tests/dans/folder/EventForm_tests.js
-    ./app/js/TestsFIT/tests/autre/current_scene_tests.js
-
-Mais pas :
-
-    ./app/js/TestsFIT/tests/autre/autre_tests.js
+La propriété `{RegExp} config.regNames` permet de définir une expression régulière pour filtrer les noms de tests (définis quand on instancie un nouveau test avec `new Test("<nom du test>")`).
 
 
 ## Exécutions avant et après la suite entière de tests {#before_and_after_tests}
