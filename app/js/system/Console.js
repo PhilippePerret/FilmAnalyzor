@@ -12,16 +12,27 @@ const BLUEBOLD   = 'color:blue;font-weight:bold;'
 const GREENBOLD  = 'color:darkgreen;font-weight:bold;'
 
 global.Console = class {
-static maintitle(msg){this.w(msg,STYLE1)}
-static framedTitle(msg){this.w(msg,STYLE2)}
-static subtitle(msg){this.w(msg,STYLE3)}
-static redbold(msg){this.w(msg,REDBOLD)}
-static bluebold(msg){this.w(msg,BLUEBOLD)}
-static path(msg){this.w(msg,PATHSTYLE)}
-static success(msg){this.w(`${INDENT}${msg}`, 'color:#00AA00;')}
-static failure(msg){this.w(`${INDENT}${msg}`, 'color:red;')}
+static space(nombre_lignes){
+  var sp = ''
+  while(nombre_lignes--) sp += RC
+  console.log(sp)
+}
+static mainTitle(msg,opts){this.w(msg,opts,STYLE1)}
+static framedTitle(msg,opts){this.w(msg,opts,STYLE2)}
+static subtitle(msg,opts){this.w(msg,opts,STYLE3)}
+static redbold(msg,opts){this.w(msg,opts,REDBOLD)}
+static bluebold(msg,opts){this.w(msg,opts,BLUEBOLD)}
+static path(msg,opts){this.w(msg,opts,PATHSTYLE)}
+static error(msg,opts){this.w(msg,opts,REDBOLD)}
+static success(msg,opts){this.w(`${INDENT}${msg}`,opts, 'color:#00AA00;')}
+static failure(msg,opts){this.w(`${INDENT}${msg}`,opts, 'color:red;')}
 
-static w(msg, style){
+static w(msg, opts, style){
+  opts = opts || {}
+  if ( opts.time ) {
+    let d = new Date()
+    msg = `${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}.${d.getMilliseconds()} ${msg}`
+  }
   console.log(`%c${msg}`,style)
 }
 

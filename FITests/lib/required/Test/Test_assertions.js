@@ -2,11 +2,11 @@
 
 module.exports = {
 
-addSuccess(){
-
+  addSuccess(assertion){
+    this.successes.push(assertion)
   }
 
-, addFailure(){
-  
-}
+, addFailure(assertion){
+    this.failures.push(assertion)
+  }
 }

@@ -1,6 +1,7 @@
 # Manuel des tests
 
 * [Introduction](#introduction)
+* [Configurer les tests](#configurer_les_tests)
 * [Définition d'une feuille de test](#define_test_sheet)
 * [Liste des tests à lancer](#tests_list)
 * [Exécutions avant et après les tests](#before_and_after_tests)
@@ -19,8 +20,8 @@
 Pour utiliser les FIT-Tests (persos) comme ici, on doit :
 
 * mettre le dossier `TestsFIT` dans un dossier librairie de l'application,
-* le charger (charger l'objet `Tests`) en définissant son `MAINFOLDER` qui doit être le path absolu au dossier `TestsFIT`. Ici, par exemple, on se sert de `System.loadComponant` qui inscrit des balises `script` dans le code HTML.
-* définir dans le fichier `TestsFIT/config.js` la configuration et notamment le dossier qui contient les tests.
+* le requérir avec `require("./path/to/fitests/folder/")`.
+* définir dans le fichier `TestsFIT/config.json` la configuration et notamment le dossier qui contient les tests. cf. [Configurer les tests](#configurer_les_tests)
 * Dans `package.json` de l'application, on ajoute :
   ```javascript
   "scripts":{
@@ -57,6 +58,41 @@ On lance l'application et on ouvre la console dev dans laquelle on tape :
 
 Note : le fichier `config.js` va permettre de filtrer les tests à passer. Cf. [Liste des tests à lancer](#tests_list) pour le détail.
 
+---------------------------------------------------------------------
+
+## Configurer les tests {#configurer_les_tests}
+
+On configure les tests dans le fichier `FITests/config.json`.
+
+`TEST_FOLDER`
+: Dossier général contenant tous les tests de l'application.
+: Par défaut c'est un dossier `__TestsFIT__` à la racine de l'application.
+
+`onlyFolders`
+: Liste des seuls dossiers, dans `TEST_FOLDER`, qu'il faut traiter.
+: Ou null.
+
+`random`
+: Si true, les tests et les cas sont traités en ordre aléatoire.
+: Noter que pour les cas, ce sont seulement les cas d'un même test qui sont mélangés.
+
+`fail-fast`
+: Si true, les tests s'arrêtent à la première failure rencontrée. Sinon, on va jusqu'au bout des tests.
+
+`regFiles`
+: Expression régulière à utiliser pour filtrer les fichiers de test.
+: Elle sera escapée, dont inutile de le faire.
+
+`regNames`
+: Expression régulière à utiliser pour filtrer les tests à jouer.
+
+`regCases`
+: Expression régulière à utiliser pour filtrer les cas à jouer.
+: On peut utiliser par exemple "ONLY" et ajouter « ONLY » au seul cas qu'on veut traiter pour ne traiter que lui.
+
+
+---------------------------------------------------------------------
+
 ## Définition d'une feuille de test {#define_test_sheet}
 
 On appelle « feuille de test » un fichier `js` définissant le ou les tests à exécuter pour un cas particulier (ou toute l'application, si elle est simplissime).
@@ -68,7 +104,7 @@ La structure de ce fichier est :
 
 var t = new Test("Le titre du test (affiché en titre)")
 
-t.case("Un cas particulier du test", () => {
+t.case("Un cas particulier du test", async () => {
   // ici les tests et assertions
 })
 
@@ -76,28 +112,25 @@ t.case("Un autre cas particulier du test, asynchrone", () => {
   // Ici les tests des autres cas
 
   // Pour gérer l'asynchronicité
-  return assert_DomExists(domId, {success: "Le truc existe", failure: "Le truc devrait exister"})
-  .then(function(){
-    // ... on poursuit les tests avec ça.
-  })
-  .catch(()=>{
-    // On s'arrête ici
-  })
+  await expect(domId).toExistsInDom({success: 'Le truc existe', onlySuccess:true})
+  // ... on poursuit les tests avec…
+
 })
 
-t.case("Un cas avec une attente", ()=>{
+t.case("Un cas avec une attente", async () => {
 
-  return wait(2000)
-  .then(()=>{
-    // Le code à exécuter 2 secondes plus tard
-  })
+  await wait(2000)
+  // Le code à exécuter 2 secondes plus tard
+
 })
 
 // etc.
 
+module.exports = [t]
+
 ```
 
-Noter, dans le deuxième et le troisième cas, comment on retourne le dernier cas asynchrone pour pouvoir attendre avant de passer au test suivant.
+Noter, dans le deuxième et le troisième cas, l'utilisation d'une fonction `async` pour pouvoir utiliser `await`.
 
 ## Les Assertions {#les_assertions}
 
@@ -105,31 +138,24 @@ Les assertions s'utilisent de cette manière :
 
 ```javascript
 
-  assert_<type>(<argument>[<option>])
-  )
+  expect(<sujet>).<to be|have|...>(<quelque chose>)
+
 ```
 
 Par exemple, pour tester qu'une fonction existe pour un objet :
 
 ```javascript
 
-  assert_function('function_name', objet)
+  expect(object).toHaveFunction('functionName')
 ```
 
-Toutes les assertions utilisables sont définies dans le dossier `tests/system/`, dans des fichiers dont le nom commence par `assertions`.
+Toutes les assertions utilisables sont définies dans le dossier `required/Expect/`, dans des fichiers dont le nom commence par `assertions`.
 
 On peut définir dans le fichier `assertions_app.js` les assertions propres à l'application testée.
 
 ### Création d'assertions {#create_new_assertions}
 
-Les assertions définies pour l'application se place dans un fichier `assertions_app.js` ou un dossier `tests/system/app/assertions/`.
 
-On peut s'inspirer des assertions système pour créer ses assertions. De façon générale :
-
-* une nouvelle assertion porte un nom commençant par `assert_`,
-* c'est une fonction
-* qui possède autant d'arguments qu'on le souhaite,
-* dans une première partie elle définit une condition qui devra être vrai (true) ou fausse (false),
 * dans sa dernière partie elle invoque la méthode générique `assert` qui attend ces arguments :
     ```javascript
     assert(
@@ -145,7 +171,7 @@ Par exemple, si je veux définir :
 
 ```javascript
 
-  assert_equal( expected, actual )
+  expect(actual).toEqual(expected)
 
 ```
 
@@ -153,12 +179,8 @@ J'implémente :
 
 ```javascript
 
-window.assert_equal = function(expected, actual, options){
-  if (undefined === options) options = {}
-  var conditionTrue = function(strictMode){
-    if(strictMode) return expected === actual
-    else return expected == actual
-  }(options.strict)
+
+TODO : À FAIRE
 
   assert(
       conditionTrue
@@ -171,10 +193,10 @@ window.assert_equal = function(expected, actual, options){
 
 ### Options des assertions {#options_of_assert_function}
 
-onlyFailure
+`onlyFailure`
 : si `true`, le succès reste silencieux, seul la failure écrit un message.
 
-onlySuccess
+`onlySuccess`
 : si `true`, la failure reste silencieuse, seul le succès écrit un message.
 
 On peut aussi mettre explicitement `success:false` ou `failure:false` dans les options (dernier argument de l'assertion) pour indiquer de ne pas écrire de message.
@@ -188,13 +210,12 @@ Permet d'attendre avant de poursuite.
 
 ```javascript
 
-t.case("Un cas d'attente", function(){
+t.case("Un cas d'attente", async function(){
   // ...
 
-  return wait(3000, "J'attends 3 secondes")
-  .then(()=>{
-    //... on peut poursuivre 3 secondes plus tard
-  })
+  await wait(3000, "J'attends 3 secondes")
+  //... on peut poursuivre 3 secondes plus tard
+
 })
 
 ```

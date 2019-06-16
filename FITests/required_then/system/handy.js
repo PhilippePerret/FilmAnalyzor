@@ -17,11 +17,6 @@ window.push_failure = function(arr, sujet, expected, actual){
 };
 
 
-window.wait = function(wTime, wMsg){
-  if(undefined !== wMsg) Tests.log(wMsg)
-  return new Promise(ok => {setTimeout(ok, wTime)})
-}
-
 Tests.testIfTrue = function(condition){
   var my = Tests
   // console.log("-> testIfTrue", this.optionsWaitFor)

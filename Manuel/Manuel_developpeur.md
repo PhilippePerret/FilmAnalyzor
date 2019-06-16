@@ -50,6 +50,7 @@
   * [Script d'assemblage](#script_assemblage_analyse)
   * [Messages de suivi](#assemblage_messages_suivis)
 * [Test de la l'application](#test_application)
+* [Les FITests](#les_fitests)
 * [Les « Hand-Tests », test manuels de l'application](#tests_manuels)
   * [Lancement des hand-tests](#running_hand_tests)
     * [Astuce pour toujours commencer par le test en cours](#tip_start_with_current_test)
@@ -1248,6 +1249,10 @@ Les types de message sont :
 Pour tester l'application en la programmant, le plus simple est d'utiliser les `Tests manuels`. Ce sont des tests qui sont semi-automatiques, c'est-à-dire que certaines opérations peuvent s'exécuter et se tester toutes seules, tandis que d'autres nécessitent une action réelle (jusqu'à ce que tout puisse être pris en charge, ce qui est le but à long terme).
 
 ---------------------------------------------------------------------
+
+## Les FITests {#les_fitests}
+
+Cf. le manuel dans le dossier `./FITests`.
 
 ## Les « Hand-Tests », test manuels de l'application {#tests_manuels}
 

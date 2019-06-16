@@ -58,42 +58,8 @@ module.exports = {
 //     this.run()
 //   }
 // }
-//
-// Tests.run = function(){
-//   this.log(RC+RC+RC+'%c============ DÉBUT DES TESTS ==============', STYLE1)
-//   this.nextTest()
-// }
-// /**
-//  * Méthode pour "terminer" les tests, c'est-à-dire pour afficher les
-//  * résultats.
-//  */
-// Tests.termine = function(){
-//   if(undefined !== this.afterTestsFunction){
-//     this.afterTestsFunction()
-//   }
-//   var color = this.failure_count > 0 ? 'red' : (this.pending_count > 0 ? 'orange' : '#00BB00') ;
-//   var str = `${this.success_count} success ${this.failure_count} failures ${this.pending_count} pendings`
-//   $('#tags').html(`<div style="color:${color};font-weight:bold;padding:1em;">${str}</div><div style="padding:1em;font-style:italic;">Open the console to see the details.</div>`);
-//   console.log(RC+RC+RC+'%c' + str, `color:${color};font-weight:bold;font-size:1.2em;`);
-//   this.log(RC+RC+RC+'%c============ FIN DES TESTS ==============', STYLE1)
-//   if(this.sys_errors.length){
-//     console.log(RC+RC+'%cDes erreurs systèmes se sont produites :', REDBOLD+'font-size:1.1em;');
-//     console.log('%c'+this.sys_errors[0], REDBOLD+'font-size:1.1em;');
-//     console.error(this.sys_errors[0])
-//   };
-// }
-//
-// // ---------------------------------------------------------------------
-//
-// Tests.log = function(msg, style){
-//   console.log(msg, style)
-// }
-//
-// //  Méthodes fonctionnelles
-// Tests.addTest = function(itest){
-//   this.tests.push(itest)
-// }
-//
+
+
 // Tests.add_sys_error = function(tcase, err) {
 //   this.sys_errors.push([tcase, err]);
 // }

@@ -4,6 +4,11 @@
 // value
 global.expect = function(){return new FITExpectation(...arguments)}
 
+global.wait = function(wTime, wMsg){
+  undefined === wMsg || console.log(wMsg)
+  return new Promise(ok => {setTimeout(ok, wTime)})
+}
+
 class FITExpectation {
 constructor(voulu, options){
   this.voulu    = voulu

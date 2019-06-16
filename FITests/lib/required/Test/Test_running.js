@@ -8,19 +8,19 @@ module.exports = {
     // appelée.
     // this.cases = []
     this.srcRelPath =  Tests.relativePathOf(this.path)
-    // Avant de lancer les tests, si on doit les lancer dans le désordre,
-    // on mélange la liste
-    if ( Tests.config.random ) { this.cases = Array.shuffle(this.cases) }
+    // Pour mettre les assertions
+    this.successes  = []
+    this.failures   = []
     // OK
     return this // chainage
   }
 /**
   Jouer le test
 **/
-, run(){
+, async run(){
     Console.framedTitle(this.name)
     Console.path(this.srcRelPath)
-    return this.runNextCase()
+    await this.runNextCase()
   }
 
 }
