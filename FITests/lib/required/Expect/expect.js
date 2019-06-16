@@ -1,14 +1,10 @@
 'use strict'
 
-// const DOM = require('../Tests/Dom.js')
-
 // voulu
 // value
-window.expect = function(voulu, options){
-  return new Expectation(voulu, options)
-}
+global.expect = function(){return new FITExpectation(...arguments)}
 
-class Expectation {
+class FITExpectation {
 constructor(voulu, options){
   this.voulu    = voulu
   this.value    = undefined

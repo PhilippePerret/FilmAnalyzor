@@ -1,15 +1,11 @@
 'use strict'
 
-const Tests = {
-    config: {}
-  , appPath: path.resolve('.')
-  , MAINFOLDER: null
-  , inited: false
-  , ARGV: undefined
-  , nombre_failures:  0
-  , nombre_success:   0
-  , nombre_pendings:  0
-  , loadings: 0
+global.Tests = {
+  appPath: path.resolve('.')
+, config: {}
+, inited: false
+, ARGV: undefined
+, MAINFOLDER: null
 
 // ---------------------------------------------------------------------
 
@@ -18,6 +14,10 @@ const Tests = {
       this.MAINFOLDER = path.join(this.appPath,'FITests')
       this.requireFolder('./lib/required/divers', window)
       this.requireFolder('./lib/required/Tests', this)
+      this.requireFolder('./lib/required/Test', Test.prototype)
+      this.requireFolder('./lib/required/FITCase', FITCase.prototype)
+      this.requireFolder('./lib/required/Expect')
+      this.requireFolder('./lib/required/FITAssertion')
       this.initTestsMethods() // pour exposer 'pending', 'tester' etc.
     }
     this.initTests()
@@ -39,33 +39,28 @@ const Tests = {
     if ( this.config.regFiles ) this.config.regFiles = new RegExp(RegExp.escape(this.config.regFiles))
     if ( this.config.regNames ) this.config.regNames = new RegExp(RegExp.escape(this.config.regNames))
     if ( this.config.regCases ) this.config.regCases = new RegExp(RegExp.escape(this.config.regCases))
+    // Liste Array des instances Test des tests joués (et seulement les tests joués)
+    this.tests = []
     this.loadSupportFiles()
     this.buildTestsFilesList()
-  }
-
-, runAll(){
-    if ( isEmpty(this.testsFiles) ) {
-      console.log(`%cAucun fichier test n'est à jouer. Merci de les définir ou de rectifier le filtrage.`, REDBOLD)
-      return
-    }
-    console.log(`%cFichiers à jouer : ${this.testsFiles.length}` , REDBOLD)
-    // So we start!
-    this.runNextTestFile()
+    this.success_count  = 0
+    this.failure_count  = 0
+    this.pending_count  = 0
   }
 
 /**
   Chargement des fichiers de support propres à l'application
 **/
 , loadSupportFiles(){
-    console.log("%cLe dossier support est à charger", REDBOLD)
+    Console.redbold("Le dossier support est à charger")
   }
 
-  /**
-    Définit la liste des fichiers tests, en fonction éventuellement
-    d'un filtre défini dans le fichier config.json
+/**
+  Définit la liste des fichiers tests, en fonction éventuellement
+  d'un filtre défini dans le fichier config.json
 
-    Définit la propriété this.testsFiles
-   */
+  Définit la propriété this.testsFiles
+ */
 , buildTestsFilesList(){
     let files = [], p, arr
     if ( this.config.onlyFolders ) {
@@ -97,22 +92,15 @@ const Tests = {
   }
 
 , initTestsMethods(){
-    console.log("%cLes méthodes générales sont à exposer", REDBOLD)
+    Console.redbold("Les méthodes générales sont à exposer")
     return // pour le moment
-    window.assert       = this.assert.bind(this) // obsolète, normalement
-    window.given        = this.given.bind(this)
-    window.pending      = this.pending.bind(this)
-    window.tester       = this.tester.bind(this)
-    window.action       = this.action.bind(this)
-    window.beforeTests  = this.beforeTests.bind(this)
-    window.afterTests   = this.afterTests.bind(this)
-  }
-
-/**
- * Retourne tous les fichiers javascript du dossier FITest +relPath+
- */
-, JsFilesOf(relPath){
-    return glob.sync(`${this.MAINFOLDER}/${relPath}/**/*.js`)
+    global.assert       = this.assert.bind(this) // obsolète, normalement
+    global.given        = this.given.bind(this)
+    global.pending      = this.pending.bind(this)
+    global.tester       = this.tester.bind(this)
+    global.action       = this.action.bind(this)
+    global.beforeTests  = this.beforeTests.bind(this)
+    global.afterTests   = this.afterTests.bind(this)
   }
 
 /**
@@ -124,16 +112,30 @@ const Tests = {
     glob.sync(path.join(this.MAINFOLDER,pfolder,'**','*.js')).map( file => {
       // console.log("Requérir:", file)
       try {
-        Object.assign( owner, require(file) )
-      } catch (e) {
+        if ( owner ) Object.assign( owner, require(file) )
+        else require(file)
+      }
+      catch (e) {
         console.error("Problème avec le fichier :", file)
         console.error(e)
       }
     })
   }
-
 }
 
+global.Test = class {
+  constructor(name){ this.name = name }
+}
+global.FITestExpectation = class {
+  constructor(data){}
+}
+global.FITCase = class {
+  constructor(test, name, fn){
+    this.test = test  // {Test}
+    this.name = name  // {String}
+    this.fn   = fn    // {Function}
+  }
+}
 
 
 module.exports = Tests

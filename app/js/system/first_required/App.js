@@ -1,14 +1,12 @@
 'use strict'
 
-const Tests = {}
-
 const App = {
   class: 'App'
 , type: 'object'
 , allComponantsLoaded: false
 , ready: false
 , runtests(){
-    isNotEmpty(Tests) || Object.assign(Tests, require(path.join(APPFOLDER,'FITests')))
+    if ( NONE === typeof(Tests) ) require(path.join(APPFOLDER,'FITests'))
     Tests.initAll().runAll()
   }
 

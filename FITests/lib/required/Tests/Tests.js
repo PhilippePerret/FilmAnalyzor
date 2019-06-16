@@ -14,60 +14,22 @@ module.exports = {
     return fpath.replace(reg,'./').trim()
   }
 
-// //
-// /**
-//   Méthode qui boucle sur tous les tests
-// **/
-// Tests.nextTest = function(){
-//   if ( this.testFilesList.length ) {
-//     var testFile = this.testFilesList.shift()
-//     try {
-//       var test = require(testFile)
-//       if ( test instanceof(Test) ) {
-//         test.run()
-//       } else {
-//         console.error("Ne renvoie pas de test (vérifier qu'il termine bien par `module.exports = t // ou test`) : ", testFile)
-//         this.nextTest()
-//       }
-//     } catch (e) {
-//       console.error(e)
-//     }
-//   } else {
-//     this.termine()
-//   }
-  //
-  // if (this.tests.length){
-  //   this.tests.shift().run()
-  // } else {
-  //   this.termine()
-  // }
-}
-//
-// Tests.assert = function(trueValue, msg_success, msg_failure, options){
-//   options = options || {}
-//   if (trueValue === true){
-//     if(!(options.onlyFailure || false === options.success)) this.onSuccess(options.success || msg_success)
-//   } else {
-//     // En cas d'échec de l'assertion
-//     if(!(options.onlySuccess || false === options.failure)) this.onFailure(options.failure || msg_failure)
-//     throw new Error('TEST FAILURE')
-//   }
-// }
-//
-// Tests.onSuccess = function(msg){
-//   this.nombre_success ++ ;
-//   this.log(INDENT + '%c… ' + msg, 'color:#00AA00;') ;
-// }
-//
-// Tests.onFailure = function(msg){
-//   this.nombre_failures ++ ;
-//   this.log(INDENT + '%c… ' + msg, 'color:red;') ;
-// }
-//
+/**
+  Ajouter un succès ou une failure
+**/
+, addSuccess(assertion){
+    this.currentTest.addSuccess(assertion)
+    ++ this.success_count
+  }
+, addFailure(assertion){
+    this.currentTest.addFailure(assertion)
+    ++ this.failure_count
+  }
+
 // Tests.tester  = function(str){console.log(RC+'%cÀ TESTER : '+str, REDBOLD)}
 // Tests.given   = function(str){console.log(RC+INDENT+'%c'+str+'…', BLUEBOLD)}
 // Tests.pending = function(str){
-//   this.nombre_pendings ++ ;
+//   this.pending_count ++ ;
 //   this.log(RC+'%c'+(str||'TODO')+'…', 'color:orange;font-weight:bold;');
 // }
 // Tests.action  = function(msg, fn_action){
@@ -80,17 +42,8 @@ module.exports = {
 //   }
 // }
 //
-// // ---------------------------------------------------------------------
-//
-// Tests.showTestTitle = function(str, relPath){
-//   this.log('%c'+str, STYLE2)
-//   this.log('%c'+relPath, PATHSTYLE)
-// }
-//
+
 // Tests.initBeforeRun = function(){
-//   this.nombre_success   = 0
-//   this.nombre_failures  = 0
-//   this.nombre_pendings  = 0
 //
 //   // Le code à jouer avant le début des tests
 //   // Si c'est une promesse, on attend qu'il lance
@@ -118,8 +71,8 @@ module.exports = {
 //   if(undefined !== this.afterTestsFunction){
 //     this.afterTestsFunction()
 //   }
-//   var color = this.nombre_failures > 0 ? 'red' : (this.nombre_pendings > 0 ? 'orange' : '#00BB00') ;
-//   var str = `${this.nombre_success} success ${this.nombre_failures} failures ${this.nombre_pendings} pendings`
+//   var color = this.failure_count > 0 ? 'red' : (this.pending_count > 0 ? 'orange' : '#00BB00') ;
+//   var str = `${this.success_count} success ${this.failure_count} failures ${this.pending_count} pendings`
 //   $('#tags').html(`<div style="color:${color};font-weight:bold;padding:1em;">${str}</div><div style="padding:1em;font-style:italic;">Open the console to see the details.</div>`);
 //   console.log(RC+RC+RC+'%c' + str, `color:${color};font-weight:bold;font-size:1.2em;`);
 //   this.log(RC+RC+RC+'%c============ FIN DES TESTS ==============', STYLE1)
@@ -180,3 +133,4 @@ module.exports = {
 //     throw(err_msg)
 //   }
 // }
+}

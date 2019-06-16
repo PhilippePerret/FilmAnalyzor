@@ -155,7 +155,7 @@ window.assert_position = function(nodes, hposition, tolerance){
   }//fin de boucle sur les nodes
   if (!asserted){
     console.error('LE TEST NE S’EST PAS FAIT : aucun node trouvé sans doute.');
-    Tests.nombre_failures ++ ;
+    Tests.failure_count ++ ;
   }
 };
 // Inverse de la précédente
@@ -189,7 +189,7 @@ for(i,len=nodes.length;i<len;++i){
 }//fin de boucle sur les nodes
 if (!asserted){
   console.error('LE TEST NE S’EST PAS FAIT : aucun node trouvé sans doute.');
-  Tests.nombre_failures ++ ;
+  Tests.failure_count ++ ;
 }
 };
 

@@ -1,31 +1,6 @@
 'use strict'
 
 class Test {
-  constructor(testName){
-    // console.log("-> instanciation du test: ", testName)
-    try {
-      pourObtenirPathTest // produit l'error pour récupérer le path
-    } catch (e) {
-      // Avant le require
-      // var src = e.stack.split("\n").reverse()[0].split(':')[1]
-      // Avec le require
-      var src = e.stack.split("\n")[2]
-      src = src.substring(src.indexOf('(') + 1, src.indexOf(')'))
-      src = src.split(':')[0]
-      src = Tests.relativePathOf(src)
-      this.srcRelPath = src
-    }
-    this.title = testName
-    this.cases = []
-    Tests.addTest(this)
-  }
-
-  /**
-   * Création d'un nouveau cas
-   */
-  case(caseName, caseFonction){
-    this.cases.push(new TCase(caseName, caseFonction));
-  }
 
   nextCase(){
     // console.log("-> Test#nextCase")
@@ -58,26 +33,4 @@ class Test {
 
   beforeTest(v) { this.codeBeforeTest = v }
   afterTest(v)  { this.codeAfterTest = v }
-}
-
-const TCase = function(intitule, fn_test){
-  this.intitule = intitule;
-  this.fn       = fn_test;
-};
-TCase.prototype.run = function(){
-  var my = this ;
-  Tests.log(`%c---> Cas : ${my.intitule}`, STYLE3);
-  return new Promise(function(ok,ko){
-    try{
-      var res = my.fn()
-      if(res && res.constructor.name == 'Promise'){
-        res.then(ok)
-      } else {
-        ok()
-      };
-    } catch(err){
-      ok()
-      Tests.add_sys_error(my, err)
-    }
-  })
 }

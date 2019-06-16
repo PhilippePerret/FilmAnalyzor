@@ -8,7 +8,7 @@
       let maConstante = tryRequire('./insamefolder', __dirname)
 
 **/
-window.tryRequire = function(rpath, folder){
+global.tryRequire = function(rpath, folder){
   try {
     isDefined(folder) && ( rpath = [folder,rpath].join(path.sep) )
     return require(rpath)

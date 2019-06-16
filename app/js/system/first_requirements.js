@@ -8,6 +8,8 @@ function FReqGet(name){
   return require(`./js/system/first_required/${name}`)
 }
 
+require('./js/system/Console')
+
 require('./js/system/utils')
 
 FReqGet('Map_extension')

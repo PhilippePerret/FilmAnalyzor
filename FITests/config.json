@@ -4,7 +4,7 @@
 , "onlyFolders": ["PorteDocument"]
 , "regFiles": "only"
 , "exemple regFiles": "only.test.js"
-, "regNames": "Dans le titre"
+, "regNames": "le filtrage"
 , "exemple regNames": "dans le titre du tests"
 , "regCases": "Dans le case"
 , "exemple regCases": "Dans le case"
