@@ -6,6 +6,7 @@ global.expect = function(){return new FITExpectation(...arguments)}
 
 global.wait = function(wTime, wMsg){
   undefined === wMsg || console.log(wMsg)
+  Tests.dureeWaits += wTime
   return new Promise(ok => {setTimeout(ok, wTime)})
 }
 

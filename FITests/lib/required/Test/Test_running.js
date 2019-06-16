@@ -14,13 +14,5 @@ module.exports = {
     // OK
     return this // chainage
   }
-/**
-  Jouer le test
-**/
-, async run(){
-    Console.framedTitle(this.name)
-    Console.path(this.srcRelPath)
-    await this.runNextCase()
-  }
 
 }

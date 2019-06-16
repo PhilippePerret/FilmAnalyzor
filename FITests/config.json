@@ -2,11 +2,11 @@
   "TEST_FOLDER": "__TestsFIT__"
 , "onlyFolders": ["PorteDocument"]
 , "random": true
-, "fail-fast": true
+, "fail-fast": false
 , "regFiles": "only"
-, "regNames": "le filtrage"
-, "regCases": "un wait"
+, "regNames": null
+, "regCases": null
 , "exemple regFiles": "only.test.js"
-, "exemple regNames": "dans le titre du tests"
-, "exemple regCases": "Dans le case"
+, "exemple regNames": "le filtrage"
+, "exemple regCases": "un wait"
 }

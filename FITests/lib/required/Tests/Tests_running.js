@@ -20,8 +20,16 @@ module.exports = {
     this.startAll()
 
     for (var cas of this.allCases ) {
-      await this.simuleCase(cas)
-      // await case.run()
+      if ( this.config.random ) {
+        this.currentTest = cas.test
+      } else {
+        if ( this.currentTest != cas.test ) {
+          this.currentTest = cas.test
+          this.showCurrentTestTitle(this.title, this.srcRelPath)
+        }
+      }
+      // await this.simuleCase(cas)
+      await cas.run()
     }
 
     this.termineAll()

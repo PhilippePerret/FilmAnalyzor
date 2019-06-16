@@ -1,23 +1,23 @@
 'use strict'
 
 class Test {
-
-  nextCase(){
-    // console.log("-> Test#nextCase")
-    var my = this
-    var tcase = this.cases.shift()
-    if(!tcase){ return Tests.nextTest() }
-    // On joue le test et on passe au suivant
-    try {
-      tcase.run().then(my.nextCase.bind(my));
-    } catch (e) {
-      console.log(`ERROR TEST: ${e}`)
-      return my.nextCase.bind(my)()
-      // return Tests.nextTest()
-    } finally {
-      my = null
-    }
-  }
+  //
+  // nextCase(){
+  //   // console.log("-> Test#nextCase")
+  //   var my = this
+  //   var tcase = this.cases.shift()
+  //   if(!tcase){ return Tests.nextTest() }
+  //   // On joue le test et on passe au suivant
+  //   try {
+  //     tcase.run().then(my.nextCase.bind(my));
+  //   } catch (e) {
+  //     console.log(`ERROR TEST: ${e}`)
+  //     return my.nextCase.bind(my)()
+  //     // return Tests.nextTest()
+  //   } finally {
+  //     my = null
+  //   }
+  // }
 
   /**
    * Pour jouer le test

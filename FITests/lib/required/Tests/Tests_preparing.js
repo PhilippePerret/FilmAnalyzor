@@ -10,6 +10,9 @@ module.exports = {
     // Liste qui va conserver tous les cas à jouer
     this.allCases = []
 
+    // Nombre de millisecondes d'attente forcée
+    this.dureeWaits = 0
+
     // On boucle sur chaque fichier de test qui a déjà été filtré
     while ( file = this.testsFiles.shift() ) {
 

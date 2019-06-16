@@ -23,7 +23,9 @@ module.exports = {
     console.log(`Nombre de files  : ${this.files_count}`)
     console.log(`Nombre de tests  : ${this.tests_count}`)
     console.log(`Nombre de cases  : ${this.cases_count}`)
-    console.log(`Durée            : ${(this.endTime - this.startTime)/1000} secs`)
+    console.log(`Durée totale     : ${(this.endTime - this.startTime)/1000} secs`)
+    console.log(`Durée des waits  : ${this.dureeWaits/1000} secs`)
+    console.log(`Durée hors waits : ${(this.endTime - this.startTime - this.dureeWaits)/1000} secs`)
   }
 
 , resultatMessage(){
@@ -37,5 +39,17 @@ module.exports = {
     } else {
       return '#00BB00'
     }
-}
+  }
+
+/**
+  Méthode qui écrit en console le titre du test courant
+
+  Noter que la méthode n'est pas utilisée si les tests sont joués en ordre
+  aléatoire.
+**/
+, showCurrentTestTitle(){
+    Console.framedTitle(this.currentTest.name)
+    Console.path(this.currentTest.srcRelPath)
+  }
+
 }
