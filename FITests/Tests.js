@@ -7,6 +7,12 @@ global.Tests = {
 , ARGV: undefined
 , MAINFOLDER: null
 
+/**
+  La méthode qui peut être appelée de l'extérieure avec `Tests.run()`
+**/
+, run(){
+    this.initAll().runAll()
+  }
 // ---------------------------------------------------------------------
 
 , initAll(){
@@ -15,9 +21,12 @@ global.Tests = {
       this.requireFolder('./lib/required/divers', window)
       this.requireFolder('./lib/required/Tests', this)
       this.requireFolder('./lib/required/Test', Test.prototype)
-      this.requireFolder('./lib/required/FITCase', FITCase.prototype)
-      this.requireFolder('./lib/required/Expect')
-      this.requireFolder('./lib/required/FITAssertion')
+      global.FITCase = this.require('lib/required/FITCase')
+      this.require('./lib/required/FITAssertion') // => function assert
+      this.require('./lib/required/FITExpectation') // => function expect
+      // toutes les assertions
+      this.requireFolder('./lib/required/Assertions')
+
       this.initTestsMethods() // pour exposer 'pending', 'tester' etc.
     }
     this.initTests()
@@ -33,7 +42,7 @@ global.Tests = {
 **/
 , initTests(){
     // La configuration doit être chargée chaque fois
-    Object.assign(this.config, JSON.parse(fs.readFileSync(path.join(this.MAINFOLDER,'config.json'),'utf8')))
+    Object.assign(this.config, JSON.parse(fs.readFileSync(path.join(this.testsFolder,'config.json'),'utf8')))
     // Si des expressions régulières doivent être utilisées pour filtrer les fichiers ou les noms
     // de tests on les prépare.
     if ( this.config.regFiles ) this.config.regFiles = new RegExp(RegExp.escape(this.config.regFiles))
@@ -69,23 +78,34 @@ global.Tests = {
  */
 , buildTestsFilesList(){
     let files = [], p, arr
-    if ( this.config.onlyFolders ) {
+    if ( this.config.onlyFolders && this.config.onlyFolders.length) {
       // On ne recherche que dans certains dossiers
       this.config.onlyFolders.map( rfolder => {
-        p = path.join(this.appPath,this.config.TEST_FOLDER,rfolder,'**','*.js')
+        p = path.join(this.testsFolder,rfolder,'**','*.js')
         files.push(...glob.sync(p))
       })
     } else {
-      p = path.join(this.appPath,this.config.TEST_FOLDER,'**','*.js')
+      p = path.join(this.testsFolder,'**','*.js')
       files = glob.sync(p)
     }
     console.log("Fichiers après filtrage ou non par les dossiers : ", files)
+
+    const systemFiles = ['before_tests.js', 'after_tests.js']
+    files = files.filter( file => {
+      var fname = path.basename(file)
+      if ( systemFiles.indexOf(fname) > -1 ) {
+        return false
+      } else {
+        return true
+      }
+    })
+    console.log("Fichiers après filtrage par les fichiers système : ", files)
 
     if ( this.config.regFiles ) {
       // Si une expression régulière est définie pour les noms de fichier,
       // on l'applique
       files = files.filter( file => file.match(this.config.regFiles) )
-      console.log("Fichiers après filtrage par l'expression régulière sur le path : ", files)
+      console.log(`Fichiers après filtrage par l'expression régulière ${this.config.regFiles} sur le path : `, files)
     }
 
     // Si les tests doivent être joués au hasard
@@ -109,6 +129,19 @@ global.Tests = {
   }
 
 /**
+  Pour requérir un module du dossier des FITests
+  @return le module requis
+**/
+, require(relPath){
+    try {
+      return require(path.join(this.MAINFOLDER,relPath))
+    } catch (err) {
+      Console.error(`Problème avec le fichier "${this.MAINFOLDER}/${relPath}"`)
+      Console.error(`Chemin complet : ${path.join(this.MAINFOLDER,relPath)}`)
+      console.error(err)
+    }
+  }
+/**
   Pour requérir tous les modules .js du dossier +pfolder+ et étendre (mixin)
   l'objet +owner+
 **/
@@ -127,19 +160,26 @@ global.Tests = {
     })
   }
 }
+Object.defineProperties(Tests,{
+  beforeTestsFile:{get(){
+    return path.join(this.testsFolder,'before_tests.js')
+  }}
+, afterTestsFile:{get(){
+    return path.join(this.testsFolder,'after_tests.js')
+  }}
+, testsFolder:{get(){
+    return path.join(this.appPath,'__TestsFIT__')
+  }}
+})
 
 global.Test = class {
-  constructor(name){ this.name = name }
+  constructor(name){
+    this.name   = name
+    this.cases  = []
+  }
 }
 global.FITestExpectation = class {
   constructor(data){}
-}
-global.FITCase = class {
-  constructor(test, name, fn){
-    this.test = test  // {Test}
-    this.name = name  // {String}
-    this.fn   = fn    // {Function}
-  }
 }
 
 module.exports = Tests

@@ -11,6 +11,7 @@ constructor(pass, success_msg, failure_msg, options){
   this.failure_message = failure_msg
   this.options = options || {}
 }
+
 /**
   Méthode pour ajouter ce résultat aux tests
 **/
@@ -30,10 +31,31 @@ writeSuccess(){
 }
 writeFailure(){
   if ( this.options.onlySuccess ) return
-  Console.failure(this.options.failure || this.failure_message)
+  Console.failure(this.finalFailureMessage)
 }
+/**
+  Retourne le message final en fonction de :
+    - la posivité de l'assertion (not or not)
+    - le résultat de l'assertion ()
+
+  Cette méthode est utile pour l'erreur produite en cas d'erreur
+**/
+get finalFailureMessage() {
+  return this.options.failure || this.failure_message
 }
 
+}// /class
+
+/**
+  Méthode assert utilisée par tous les matchers et assertion pour ajouter
+  un success ou une failure.
+  C'est aussi cette méthode qui throw une erreur pour interrompre le case en
+  cas d'échec.
+**/
 global.assert = function(){
-  (new FITAssertion(...arguments)).add()
+  let a = new FITAssertion(...arguments)
+  a.add()
+  if ( false === a.pass ) {
+    throw new ExpectationError(a.finalFailureMessage)
+  }
 }

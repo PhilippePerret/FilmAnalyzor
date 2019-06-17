@@ -17,6 +17,7 @@ static space(nombre_lignes){
   while(nombre_lignes--) sp += RC
   console.log(sp)
 }
+static clear(){console.clear()}
 static mainTitle(msg,opts){this.w(msg,opts,STYLE1)}
 static framedTitle(msg,opts){this.w(msg,opts,STYLE2)}
 static subtitle(msg,opts){this.w(msg,opts,STYLE3)}

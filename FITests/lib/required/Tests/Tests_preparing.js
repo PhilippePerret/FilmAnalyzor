@@ -25,7 +25,9 @@ module.exports = {
         //  - undefini => erreur de programmation des tests
         //  - une instance Test => un test unique dans le fichier
         //  - un Array de Test => une liste de tests
-        if ( undefined === tests ) throw new Error(`Le fichier ${file} n'exporte rien…`)
+        if ( 'object' === typeof(tests) && Object.keys(tests).length == 0 ){
+          throw new TestExportationError(file)
+        }
         else if ( ! Array.isArray(tests) ) tests = [tests]
         ++ this.files_count
         // On va relever tous les cases valides de chaque test
@@ -39,7 +41,7 @@ module.exports = {
         }
 
       } catch (e) {
-
+        Console.error(e.message)
       }
     }
   }

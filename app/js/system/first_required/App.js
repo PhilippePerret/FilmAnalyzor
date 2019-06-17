@@ -7,7 +7,7 @@ const App = {
 , ready: false
 , runtests(){
     if ( NONE === typeof(Tests) ) require(path.join(APPFOLDER,'FITests'))
-    Tests.initAll().runAll()
+    Tests.run()
   }
 
   // Quand App est prête

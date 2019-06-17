@@ -1,6 +1,7 @@
 # Manuel des tests
 
 * [Introduction](#introduction)
+* [Utilisation des FITests](#utilisation)
 * [Configurer les tests](#configurer_les_tests)
 * [Définition d'une feuille de test](#define_test_sheet)
 * [Liste des tests à lancer](#tests_list)
@@ -17,11 +18,16 @@
 
 # Introduction {#introduction}
 
+Les « FITests » (« From Inside Tests ») permettent de lancer des tests de l'intérieur même de l'application. De ce fait, leur utilisation est simplissime en regard des autres tests qui, pour les tests unitaires, d'intégration et fonctionnels nécessite toujours des réglages particuliers.
+
+# Utilisation des FITests {#utilisation}
+
 Pour utiliser les FIT-Tests (persos) comme ici, on doit :
 
 * mettre le dossier `TestsFIT` dans un dossier librairie de l'application,
 * le requérir avec `require("./path/to/fitests/folder/")`.
-* définir dans le fichier `TestsFIT/config.json` la configuration et notamment le dossier qui contient les tests. cf. [Configurer les tests](#configurer_les_tests)
+* créer un dossier `__TestsFIT__` à la racine de l'application pour définir les tests,
+* définir dans le fichier `./__TestsFIT__/config.json` la configuration des tests. cf. [Configurer les tests](#configurer_les_tests)
 * Dans `package.json` de l'application, on ajoute :
   ```javascript
   "scripts":{
@@ -30,53 +36,38 @@ Pour utiliser les FIT-Tests (persos) comme ici, on doit :
     //...
   }
   ```
-* On peut définir dans `./support/` les fichiers et méthodes utiles aux tests de l'application courante.
+* On peut définir dans `./__TestsFIT__/support/` les fichiers et méthodes utiles aux tests de l'application courante.
 * On définit la méthode `App.runtests()` de cette manière (on peut définir une autre méthode dans un autre objet, mais alors il devra être accessible et utilisé pour lancer les tests) :
   ```javascript
   App.runtests = function(){
-      if ( NONE === typeof(Tests) ) {
-        return System.loadComponant('TestsFIT', this.runTests.bind(this))
-      } else {
-        Tests.MAINFOLDER = path.join(APPFOLDER,'app','js','composants','TestsFIT')
-      }
-      Tests.initAndRun()
+      NONE === typeof(Tests) && ( global.Tests = require('./path/to/folder/fitests') )
+      Tests.run()
     }
   ```
-* On définit les tests dans le dossier `TEST_FOLDER` désigné dans les `config.js`.
+* On définit les tests dans le dossier `./__TestsFIT__/`.
 
 #### Pour lancer les tests :
 
-Le plus simple est de faire une menu qui appelle la méthode `App.runtests()`.
+* Le plus simple est de faire un menu qui appelle la méthode `App.runtests()` (ou directement la méthode `Tests.run()` si l'objet `Tests` est déjà requis).
+* On peut aussi lancer l'application et ouvrir la `console dev` dans laquelle on tape `App.runtests()`.
 
-On lance l'application et on ouvre la console dev dans laquelle on tape :
-
-```bash
-
-  App.runtests()
-
-```
-
-Note : le fichier `config.js` va permettre de filtrer les tests à passer. Cf. [Liste des tests à lancer](#tests_list) pour le détail.
+Note : le fichier `config.json` va permettre de filtrer les tests à passer. Cf. [Liste des tests à lancer](#tests_list) pour le détail. Pour le moment, on ne peut pas le faire en ligne de commande.
 
 ---------------------------------------------------------------------
 
 ## Configurer les tests {#configurer_les_tests}
 
-On configure les tests dans le fichier `FITests/config.json`.
-
-`TEST_FOLDER`
-: Dossier général contenant tous les tests de l'application.
-: Par défaut c'est un dossier `__TestsFIT__` à la racine de l'application.
+On configure les tests dans le fichier `./__TestsFIT__/config.json`.
 
 `onlyFolders`
-: Liste des seuls dossiers, dans `TEST_FOLDER`, qu'il faut traiter.
+: Liste des seuls dossiers, dans `./__TestsFIT__/`, qu'il faut traiter.
 : Ou null.
 
 `random`
 : Si true, les tests et les cas sont traités en ordre aléatoire.
 : Noter que pour les cas, ce sont seulement les cas d'un même test qui sont mélangés.
 
-`fail-fast`
+`fail_fast`
 : Si true, les tests s'arrêtent à la première failure rencontrée. Sinon, on va jusqu'au bout des tests.
 
 `regFiles`
@@ -104,11 +95,12 @@ La structure de ce fichier est :
 
 var t = new Test("Le titre du test (affiché en titre)")
 
-t.case("Un cas particulier du test", async () => {
+t.case("Un cas particulier du test", async /* [1] */ () => {
   // ici les tests et assertions
+  // [1] Si le cas contient des assertions asynchrones ou des waits.
 })
 
-t.case("Un autre cas particulier du test, asynchrone", () => {
+t.case("Un autre cas particulier du test, asynchrone", async () => {
   // Ici les tests des autres cas
 
   // Pour gérer l'asynchronicité
@@ -130,7 +122,8 @@ module.exports = [t]
 
 ```
 
-Noter, dans le deuxième et le troisième cas, l'utilisation d'une fonction `async` pour pouvoir utiliser `await`.
+Noter l'utilisation d'une fonction `async` pour pouvoir utiliser `await`.
+
 
 ## Les Assertions {#les_assertions}
 
@@ -138,7 +131,7 @@ Les assertions s'utilisent de cette manière :
 
 ```javascript
 
-  expect(<sujet>).<to be|have|...>(<quelque chose>)
+  expect(<sujet|valeur>).<methode d’expectation>(<quelque chose>)
 
 ```
 
@@ -146,15 +139,16 @@ Par exemple, pour tester qu'une fonction existe pour un objet :
 
 ```javascript
 
-  expect(object).toHaveFunction('functionName')
+  expect(object).responds_to('functionName')
+
 ```
 
-Toutes les assertions utilisables sont définies dans le dossier `required/Expect/`, dans des fichiers dont le nom commence par `assertions`.
+Toutes les assertions utilisables sont définies dans le dossier `required/Assertions/`.
 
-On peut définir dans le fichier `assertions_app.js` les assertions propres à l'application testée.
+On peut définir dans le dossier `support/assertions` les assertions propres à l'application testée.
+
 
 ### Création d'assertions {#create_new_assertions}
-
 
 * dans sa dernière partie elle invoque la méthode générique `assert` qui attend ces arguments :
     ```javascript
@@ -165,13 +159,13 @@ On peut définir dans le fichier `assertions_app.js` les assertions propres à l
       [, options]
     )
     ```
-Les options peuvent déterminer par exemple que le message ne doit s'afficher que si la condition est `false`.
+Les options peuvent déterminer si le message ne doit s'afficher que si la condition est `false`.
 
 Par exemple, si je veux définir :
 
 ```javascript
 
-  expect(actual).toEqual(expected)
+  expect(actual).equals(expected)
 
 ```
 
@@ -179,13 +173,14 @@ J'implémente :
 
 ```javascript
 
+equals(voulu){
 
-TODO : À FAIRE
-
+  const pass = this.positive === Object.is(valeur, voulu)
+  const msgs = this.positivise('est', 'égal à')
   assert(
       conditionTrue
-    , options.success || `${actual} est bien égal à ${expected}`
-    , options.failure || `${actual} devrait être égal à ${expected}`
+    , `${actual} ${msgs.success} ${expected}`
+    , `${actual} ${msgs.failure} ${expected}`
     , options
   )
 }
@@ -210,7 +205,7 @@ Permet d'attendre avant de poursuite.
 
 ```javascript
 
-t.case("Un cas d'attente", async function(){
+t.case("Un cas d'attente", async () => {
   // ...
 
   await wait(3000, "J'attends 3 secondes")
@@ -226,9 +221,7 @@ Attend qu'une condition soit vraie (premier argument) avant de poursuivre.
 
 ```javascript
 
-  waitFor(this_condition_must_be_true[, options])
-  .then(fn_poursuivre)
-  .catch(fn_error)
+  await waitFor(this_condition_must_be_true[, options])
 
 ```
 
@@ -244,43 +237,48 @@ Attend qu'une condition soit vraie (premier argument) avant de poursuivre.
 
 ## Liste des tests à lancer {#tests_list}
 
-Pour filtrer les tests à lancer, on se sert du fichier `config.js`
-
-La propriété `config.onlyFolders` permet de définir les seuls dossiers à traiter. C'est une liste de chemins relatifs depuis le `TEST_FOLDER`.
-
-La propriété `{RegExp} config.regFiles` permet de définir une expression régulière pour filtrer les noms de fichiers.
-
-La propriété `{RegExp} config.regNames` permet de définir une expression régulière pour filtrer les noms de tests (définis quand on instancie un nouveau test avec `new Test("<nom du test>")`).
+Pour filtrer les tests à lancer, on se sert du [fichier de configuration `config.json`](#configurer_les_tests).
 
 
 ## Exécutions avant et après la suite entière de tests {#before_and_after_tests}
 
+Avant de voir ce sujet, noter la simplicité du nommage :
+
+* `before_tests` concerne le code à jouer avant tous les tests (`tests` au pluriel)
+* `before_test` concerne le code à jouer avant un test particulier (`test` au singulier)
+* `before_case` concerne le code à jouer avant les cas (correspond au `before_each` des autres frameworks de test).
+
 Pour le code à évaluer avant le test courant, voir [exécution avant et après le test courant](#before_and_after_testseul)
 
-Pour définir le code à jouer avant ou après l'ensemble de la suite de **tous les tests**, on utilise, *dans n'importe quel fichier test*, la méthode `beforeTests` et `afterTests`.
+Pour définir le code à jouer avant ou après l'ensemble de la suite de **tous les tests**, on implémente les méthodes `beforeTests` et `afterTests` respectivement dans les fichiers `./__TestsFIT__/before_tests.js` et `./__TestsFIT__/after_tests.js`.
 
 Par exemple :
 
 ```javascript
+
+// Dans before_tests.js
 'use strict'
 
-// Mon premier test
-
-beforeTests(function(){
-  // ... ici le code à exécuter avant tous les tests
-})
-afterTests(()=>{
-  // ... ici le code à exécuter après la suite de tous les tests
-})
+module.exports = async /* ou pas */ () => {
+  alert("Je dois afficher ça.")
+}
 ```
 
-Noter que si la méthode est appelée à deux endroits différents, une exception sera levée pour prévenir les comportements inattendus.
+Les deux méthodes, par défaut, sont considérées comme asynchrones.
 
-Si la méthode `beforeTests` retourne une promesse, les tests ne seront lancés qu'à l'exécution de ce code beforeTests. Cela permet, par exemple, de charger de grosses données avant de commencer (un film par exemple).
+Par exemple, pour attendre deux secondes avant de lancer les tests, permettant au testeur de mettre l'application au premier plan :
 
-> Noter que si le fichier définissant ces codes n'est pas chargé car filtré, les méthodes ne seront pas invoquées. Cf. l'astuce ci-dessous pour palier cet inconvénient.
+```javascript
+// Dans ./__TestsFIT__/before_tests.js
 
-Astuce : le plus simple est de définir ces méthodes dans un fichier du dossier `TestsFIT/support`, car ces fichiers sont toujours chargés.
+'use strict'
+module.exports = function(){
+  Console.bluebold("Merci d'activer l'application")
+  return new Promise((ok,ko)=> {setTimeout(ok,2000)})
+}
+
+```
+
 
 ## Exécution avant et après le test courant {#before_and_after_testseul}
 

@@ -1,9 +1,8 @@
 {
-  "TEST_FOLDER": "__TestsFIT__"
-, "onlyFolders": ["PorteDocument"]
-, "random": true
-, "fail-fast": false
-, "regFiles": "only"
+  "onlyFolders": []
+, "random":     false
+, "fail_fast":  true
+, "regFiles":   "functions"
 , "regNames": null
 , "regCases": null
 , "exemple regFiles": "only.test.js"
