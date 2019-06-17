@@ -37,6 +37,7 @@
 * [Ajout de préférence analyse](#add_analyse_pref)
 * [Horloges et durées](#temporal_fields)
 * [UI / Aspect visuel](#visual_aspect)
+  * [Champs d'édition](#edit_text_fields)
   * [Boites de dialogue](#dialog_boxes)
   * [Boutons de fermeture](#boutons_close)
   * [Boutons expand/collapse](#boutons_toggle_next)
@@ -943,6 +944,27 @@ Appliquer la classe `main-button` aux `button`s principaux, qui est défini dans
 Utiliser la classe CSS `no-user-selection` pour empêcher un élément de l'interface d'être sélectionné lorsque l'on glisse la souris.
 
 > Note : une fois cette classe appliquée, les textes contenus ne peuvent pas être sélectionnés par l'user.
+
+### Champs d'édition {#edit_text_fields}
+
+Tous les champs d'édition sont automatiquement observés par l'observation de la mutation du DOM (cf. `ui.js`).
+
+Les deux méthodes utilisées par défaut sont `UI.onFocusTextField` (au focus dans le champ) et `UI.onBlurTextField` (quand on quitte le champ).
+
+On peut néanmoins définir d'autres méthodes en cas de besoin. Pour cela, il suffit de définir les attributs `data-onfocus-fn` et `data-onblur-fn` dans la balise du champ d'édition, dont la valeur doit être la méthode `UI` à appeler (et obligatoire une méthode de l'objet `UI`).
+
+Par exemple, le `TEXTAREA` du porte-documents, qui a besoin de ses propres méthodes, est défini par :
+
+```html
+
+  <TEXTAREA
+    id="porte_documents"
+    data-onblur-fn="onBlurPorteDocumentTextarea"
+    ></TEXTAREA>
+
+```
+
+Quand on quitte ce champ, c'est donc la méthode `UI.onBlurPorteDocumentTextarea` qui sera invoquée. Cette méthode appelle la fonction `PorteDocuments.observeKeys()` qui définit la combinaison de raccourcis de nom `PORTE-DOCS`.
 
 ### Boites de dialog {#dialog_boxes}
 

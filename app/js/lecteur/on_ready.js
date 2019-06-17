@@ -9,7 +9,8 @@ window.onOKMe = function(){F.notify("OK ? Tu as fait OK ?…")}
 
 function WhenAllIsReallyReady(){
 
-  App.runtests()
+  // Pour lancer tout de suite les tests
+  // App.runtests()
 
   // confirm("Voulez-vous vraiment tout casser ?", {type: 'confirm',
   //     defaultButtonIndex:1

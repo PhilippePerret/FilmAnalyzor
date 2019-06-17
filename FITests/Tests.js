@@ -89,7 +89,7 @@ global.Tests = {
       p = path.join(this.testsFolder,'**','*.js')
       files = glob.sync(p)
     }
-    console.log("Fichiers après filtrage ou non par les dossiers : ", files)
+    // console.log("Fichiers après filtrage ou non par les dossiers : ", files)
 
     const systemFiles = ['before_tests.js', 'after_tests.js']
     files = files.filter( file => {
@@ -100,34 +100,32 @@ global.Tests = {
         return true
       }
     })
-    console.log("Fichiers après filtrage par les fichiers système : ", files)
+    // console.log("Fichiers après filtrage par les fichiers système : ", files)
 
     if ( this.config.regFiles ) {
       // Si une expression régulière est définie pour les noms de fichier,
       // on l'applique
       files = files.filter( file => file.match(this.config.regFiles) )
-      console.log(`Fichiers après filtrage par l'expression régulière ${this.config.regFiles} sur le path : `, files)
+      // console.log(`Fichiers après filtrage par l'expression régulière ${this.config.regFiles} sur le path : `, files)
     }
 
     // Si les tests doivent être joués au hasard
     if ( this.config.random && files.length > 1 ){
       files = Array.shuffle(files)
-      console.log("Fichiers après randomisation : ", files)
+      // console.log("Fichiers après randomisation : ", files)
     }
 
     this.testsFiles = files
   }
 
 , initTestsMethods(){
-    Console.redbold("Les méthodes générales sont à exposer")
     global.describe     = this.describe.bind(this)
-    return // pour le moment
-    global.given        = this.given.bind(this)
-    global.pending      = this.pending.bind(this)
-    global.tester       = this.tester.bind(this)
     global.action       = this.action.bind(this)
-    global.beforeTests  = this.beforeTests.bind(this)
-    global.afterTests   = this.afterTests.bind(this)
+    // global.given        = this.given.bind(this)
+    // global.pending      = this.pending.bind(this)
+    // global.tester       = this.tester.bind(this)
+    // global.beforeTests  = this.beforeTests.bind(this)
+    // global.afterTests   = this.afterTests.bind(this)
   }
 
 , describe(sujet, fn){

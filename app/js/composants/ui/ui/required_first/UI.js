@@ -24,10 +24,30 @@ const UI = {
           mutation.addedNodes.forEach( node => {
             // console.log("Observers focus/blur posés sur :", node)
             // console.log("Champs de saisie trouvés : ",$(node).find(TEXT_TAGNAMES))
-            $(node).find(TEXT_TAGNAMES)
-              .on(STRfocus, UI.onFocusTextField.bind(UI))
-              .on(STRblur,  UI.onBlurTextField.bind(UI))
-              .data('owner-id', node.id)
+            // $(node).find(TEXT_TAGNAMES)
+            //   .on(STRfocus, UI.onFocusTextField.bind(UI))
+            //   .on(STRblur,  UI.onBlurTextField.bind(UI))
+            //   .data('owner-id', node.id)
+            // l'idée maintenant est de faire un peu plus du surmesure.
+            // Le champ peut contenir une donnée "data-onfocus-fn" et "data-onblur-fn"
+            // dont la valeur sera une méthode de UI qui sera appelée au lieu des
+            // méthode communes onFocusTextField et onBlurTextField
+            $(node).find(TEXT_TAGNAMES).each((i, o) => {
+              var fn, fnOnFocus, fnOnBlur
+              o = $(o)
+              fnOnFocus = o.data('onfocus-fn') || 'onFocusTextField'
+              fnOnBlur  = o.data('onblur-fn')  || 'onBlurTextField'
+              // if ( fnOnFocus ) {
+              //   console.log("L'élément définit une méthode au focus", o, fnOnFocus)
+              // }
+              // if ( fnOnBlur ) {
+              //   console.log("L'élément définit une méthode au blur", o, fnOnBlur)
+              // }
+              o.on(STRfocus,  UI[fnOnFocus].bind(UI))
+                .on(STRblur,  UI[fnOnBlur].bind(UI))
+                .data('owner-id', node.id)
+
+            })
           })
         }
       }
@@ -54,6 +74,10 @@ const UI = {
     domObserver.observe(DGet('section-porte-documents'), domObserverConfig)
     domObserver.observe(DGet('section-eventers'), domObserverConfig)
 
+  }
+
+, onBlurPorteDocumentTextarea(e){
+    return PorteDocuments.observeKeys()
   }
 
 /**
@@ -189,7 +213,7 @@ const UI = {
                               universels.
 **/
 , setKeyUpAndDown(modeName, args) {
-
+    // console.log("application des raccourcis:", modeName)
     isDefined(this.ShortcutsMap) || ( this.ShortcutsMap = new Map() )
     if ( this.ShortcutsMap.has(modeName) ) {
       // console.log(`Le mode de shortcuts "${modeName}" m'est connu, je le reprends`)
@@ -199,6 +223,9 @@ const UI = {
       isDefined(args.name) || ( args.name = modeName )
       this.ShortcutsMap.set(modeName, args)
     }
+
+    // Pour les tests
+    this.currentShortcutsName = args.name
 
     var res
     window.onkeyup = ((e) => {
@@ -235,12 +262,13 @@ const UI = {
 , universalKeyUp(e) {
     switch (e.key) {
       case ESCAPE: // fermeture de la fenêtre au premier plan
-        console.log("Fermeture fenêtre par raccourcis universels.")
+        // console.log("Fermeture fenêtre par raccourcis universels.")
         if (
               FWindow.currentIsEventFormAndCanClose()
           ||  FWindow.currentIsPorteDocumentsAndCanClose()
           ||  FWindow.currentIsFaListing()
           ||  FWindow.currentIsDataEditorAndCanClose()
+          ||  FWindow.currentIsEventersAndCanClose()
         ) {
           FWindow.closeCurrent()
           return false
@@ -258,6 +286,7 @@ const UI = {
           return false
         } else {
           F.notify("Je suis dans un champ de saisie, je ne démarre pas la vidéo.")
+          return true
         }
     }
     return // non traité = undefined
@@ -297,7 +326,6 @@ const UI = {
       return
     } else if ( e.metaKey ) {
       // META key seule (p.e. CMD+R) pour recharger
-      console.log("META + ", e.key)
       switch (e.key) {
         case STRr: // Recharger, mais il ne faut le faire qu'en mode développement
           if (process.env.NODE_ENV === 'development') return true

@@ -389,7 +389,7 @@ onKeyUp(e){
   }
 }
 
-get fwindow(){return this._fwindow || defP(this,'_fwindow', new FWindow(this, {class: 'eventer', draggable:'x', container: $('#section-eventers')}))}
+get fwindow(){return this._fwindow || defP(this,'_fwindow', new FWindow(this, {class: 'eventer', name:'EVENTER', draggable:'x', container: $('#section-eventers')}))}
 get jqObj(){return this._jqObj||defP(this,'_jqObj', $(`#${this.domId}`))}
 get jqPanEvents(){return this._jqPanEvents||defP(this,'_jqPanEvents',this.jqObj.find('div.pan-events'))}
 get jqPanFilter(){return this._jqPanFilter||defP(this,'_jqPanFilter',this.jqObj.find('div.pan-filter'))}

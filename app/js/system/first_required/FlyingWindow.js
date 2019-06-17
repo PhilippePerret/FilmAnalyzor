@@ -148,7 +148,7 @@ static setCurrent(wf, e){
 // Enregistrer une nouvelle fenêtre (à son ouverture, et à son activation,
 // donc il faut vérifier si elle est déjà dans le stack)
 static stack(fwindow){
-  if(this.isReaderOrEventBtns(fwindow)) return
+  if(this.currentIsReader(fwindow)) return
   if(isUndefined(this._stack)) this._stack = []
   this.destack(fwindow)
   this._stack.unshift(fwindow)
@@ -156,7 +156,7 @@ static stack(fwindow){
 }
 // Retirer une fenêtre, à sa fermeture
 static unstack(fwindow){
-  if(this.isReaderOrEventBtns(fwindow)) return
+  if(this.currentIsReader(fwindow)) return
   this.destack(fwindow)
   isNotEmpty(this._stack) && this.setCurrent(this._stack[0])
   // console.log("_stack dans FWindow::unstack", this._stack.map(fw => fw.UUID))
@@ -167,9 +167,81 @@ static destack(fwindow){
   this._stack = this._stack.filter(fw => fw.UUID != fwindow.UUID)
 }
 
-static isReaderOrEventBtns(fwindow){
-  return fwindow && (fwindow.name === ReaderFWindowName || fwindow.name === BtnsEventFWindowName)
+static currentIsReader(fwindow){
+  return fwindow && ( fwindow.name === ReaderFWindowName )
 }
+
+static unsetCurrent(wf){
+  if(!wf || !this.current) return
+  if(this.current.id !== wf.id) return
+  this.current.bringToBack()
+  delete this.current
+}
+
+/**
+  Méthode appelée par la touche Escape pour fermer la fenêtre
+  courante, si elle existe.
+  Noter que si des modifications ont été opérées mais pas enregistrées, il faut
+  le gérer avant l'appel de cette méthode qui se contente seulement de fermer
+  la fenêtre courante.
+**/
+static closeCurrent(){
+  if(this.currentIsReader(this.current)) return false
+  if ( isDefined(this.current) ) {
+    // S'il existe une fonction de fermeture propre, on
+    // l'utilise.
+    if (isDefined(this.current.owner) && isFunction(this.current.owner.hide)) {
+      this.current.owner.hide()
+    } else {
+      this.current.hide()
+    }
+
+    // Si la nouvelle fenêtre courante est le reader, il faut remettre les
+    // raccourcis INTERFACE
+    if ( this.currentIsReader() ) {
+      console.log("La fenêtre courante est le reader, il faut remettre les raccourcis interface")
+    }
+  }
+  return true
+}
+
+// Retourne TRUE si la fenêtre courante est le formulaire d'event
+static currentIsEventForm(){
+  return this.current.name === 'AEVENTFORM'
+}
+static currentIsEventers(){
+  return this.current.name === 'EVENTERS'
+}
+static currentIsEventersAndCanClose(){
+  return this.currentIsEventers()
+}
+// Retourne TRUE si le formulaire d'event est au premier plan et qu'on
+// peut le fermer.
+static currentIsEventFormAndCanClose(){
+  return this.currentIsEventForm() && not(EventForm.current.modified)
+}
+// Retourne TRUE si la fenêtre courante est le porte-documents
+static currentIsPorteDocuments(){
+  return this.current.name === 'PORTEDOCUMENT'
+}
+// Retourne TRUE si la fenêtre courante est le porte documents et qu'on
+// peut la fermer
+static currentIsPorteDocumentsAndCanClose(){
+  return this.currentIsPorteDocuments() && not(PorteDocuments.keepCurrentDocument())
+}
+static currentIsFaListing(){
+  return this.current.type === 'FALISTING'
+}
+static currentIsDataEditor(){
+  return this.current.type === 'DATAEDITOR'
+}
+static currentIsDataEditorAndCanClose(){
+  return this.currentIsDataEditor() // && not(DataEditor.current.modified)
+}
+
+static get current()  {return this._current}
+static set current(w) {this._current = w}
+
 /**
 * Méthode qui vérifie que la flying-window +wf+ ne soit pas placée
 * sur une autre.
@@ -211,64 +283,6 @@ static checkOverlaps(wf){
     return true
   }
 }
-static unsetCurrent(wf){
-  if(!wf || !this.current) return
-  if(this.current.id !== wf.id) return
-  this.current.bringToBack()
-  delete this.current
-}
-
-/**
-  Méthode appelée par la touche Escape pour fermer la fenêtre
-  courante, si elle existe.
-  Noter que si des modifications ont été opérées mais pas enregistrées, il faut
-  le gérer avant l'appel de cette méthode qui se contente seulement de fermer
-  la fenêtre courante.
-**/
-static closeCurrent(){
-  if(this.isReaderOrEventBtns(this.current)) return false
-  if ( isDefined(this.current) ) {
-    // S'il existe une fonction de fermeture propre, on
-    // l'utilise.
-    if (isDefined(this.current.owner) && isFunction(this.current.owner.hide)) {
-      this.current.owner.hide()
-    } else {
-      this.current.hide()
-    }
-  }
-  return true
-}
-
-// Retourne TRUE si la fenêtre courante est le formulaire d'event
-static currentIsEventForm(){
-  return this.current.name === 'AEVENTFORM'
-}
-// Retourne TRUE si le formulaire d'event est au premier plan et qu'on
-// peut le fermer.
-static currentIsEventFormAndCanClose(){
-  return this.currentIsEventForm() && not(EventForm.current.modified)
-}
-// Retourne TRUE si la fenêtre courante est le porte-documents
-static currentIsPorteDocuments(){
-  return this.current.name === 'PORTEDOCUMENT'
-}
-// Retourne TRUE si la fenêtre courante est le porte documents et qu'on
-// peut la fermer
-static currentIsPorteDocumentsAndCanClose(){
-  return this.currentIsPorteDocuments() && not(PorteDocuments.keepCurrentDocument())
-}
-static currentIsFaListing(){
-  return this.current.type === 'FALISTING'
-}
-static currentIsDataEditor(){
-  return this.current.type === 'DATAEDITOR'
-}
-static currentIsDataEditorAndCanClose(){
-  return this.currentIsDataEditor() // && not(DataEditor.current.modified)
-}
-
-static get current()  {return this._current}
-static set current(w) {this._current = w}
 
 // ---------------------------------------------------------------------
 //  INSTANCES

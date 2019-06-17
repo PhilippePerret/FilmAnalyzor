@@ -21,12 +21,13 @@ const PorteDocuments = {
     if ( this.keepCurrentDocument() ) return
     isDefined(this.documents.get(docId)) || this.defineDocument(docId)
     this.currentDocument = this.documents.get(docId)
-    this.isOpened || this.open()
+    this.isOpened ? this.show() : this.open()
     this.currentDocument.edit()
     this.visualizeDoc && this.updateVisuDoc()
     this.menuDocuments.val(docId)
     FWindow.setCurrent(this.fwindow)
     this.setDroppableButtonForCurrent()
+    this.observeKeys()
   }
 
 /**
@@ -45,6 +46,17 @@ const PorteDocuments = {
     this.btnDrop.attr('data-id',this.currentDocument.id)
   }
 
+/**
+  Observeurs de touche (PORTE-DOCS)
+
+  Noter que les gestionnaires universels sont activés
+**/
+, onKeyUp(e){
+
+  }
+, onKeyDown(e){
+
+  }
 /**
   Méthode pour boucler sur tous les documents actuels
 **/
@@ -182,7 +194,12 @@ const PorteDocuments = {
     this.setUI() // thème, menu de modèles
     this.docField.focus()
     this.isOpened = true
+    this.observeKeys()
 }
+
+, observeKeys(){
+    UI.setKeyUpAndDown('PORTE-DOCS',{up:this.onKeyUp.bind(this),down:this.onKeyDown.bind(this)})
+  }
 
 /**
   Préparation de l'interface en fonction du type de document

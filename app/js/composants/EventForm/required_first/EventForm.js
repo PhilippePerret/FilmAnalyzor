@@ -152,6 +152,7 @@ static get videoController(){ return this.a.videoController }
 constructor(foo){
   this.isNew    = false
   this.analyse = this.a = current_analyse // pourra être redéfini plus tard
+  console.log("Instanciation de EventForm avec ",foo)
   switch (typeof foo) {
     case STRstring:
       // <= Un type
@@ -246,9 +247,12 @@ set modified(v){
 }
 
 get event() { return this._event }
-get id()    { return this._id   || defP(this,'_id', this.event.id) }
+get id()    { return this._id   || defP(this,'_id',   this.event.id) }
 get type()  { return this._type || defP(this,'_type', this.event.type) }
-get time()  { return this._time || defP(this,'_time', this.event.time) }
+get time()  {
+  if ( isUndefined(this._time) && isDefined(this.event) ) this._time = this.event.time
+  return this._time || 0
+}
 
 /**
  * Initialisation de l'objet, appelée quand l'analyse courante est

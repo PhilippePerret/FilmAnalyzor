@@ -222,7 +222,6 @@ endLoading(code){
 
 // Pour sauver le document
 save(){
-  console.log(`Je sauve le document ${this}`)
   if(this.a.locked && isFalse(this.isAbsoluteData) && isFalse(this.isSystemDoc)){
    return F.notify(T('analyse-locked-no-save'))
   }

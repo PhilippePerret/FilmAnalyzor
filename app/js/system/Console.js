@@ -23,6 +23,8 @@ static framedTitle(msg,opts){this.w(msg,opts,STYLE2)}
 static subtitle(msg,opts){this.w(msg,opts,STYLE3)}
 static redbold(msg,opts){this.w(msg,opts,REDBOLD)}
 static bluebold(msg,opts){this.w(msg,opts,BLUEBOLD)}
+static greenbold(msg,opts){this.w(msg,opts,GREENBOLD)}
+static action(msg,opts){this.greenbold(`${INDENT}${msg}`,opts)}
 static path(msg,opts){this.w(msg,opts,PATHSTYLE)}
 static error(msg,opts){this.w(msg,opts,REDBOLD)}
 static success(msg,opts){this.w(`${INDENT}${msg}`,opts, 'color:#00AA00;')}

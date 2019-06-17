@@ -3,7 +3,7 @@
 module.exports = {
 
   startAll(){
-    // Console.clear()
+    Console.clear()
     Console.space(3)
     Console.mainTitle(`=========== DÉBUT DES TESTS =============`,{time:true})
     this.startTime = (new Date()).getTime()

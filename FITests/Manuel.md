@@ -127,6 +127,29 @@ module.exports = [t]
 
 Noter l'utilisation d'une fonction `async` pour pouvoir utiliser `await`.
 
+On peut utiliser aussi la syntaxe en `describe` qui ne nécessite pas d'export :
+
+```javascript
+
+describe("Nom du test", () => {
+
+  this.before(() => {/* à faire au début (Promise) */})
+  this.after(()=> {/* à faire à la fin (Promise) */})
+
+  this.case("nom du cas", async () => {
+
+    /* ... les tests ici ... */
+
+  })
+
+  this.case("Autre cas", async () => {
+    //...
+  })
+
+})
+
+```
+
 
 ## Les Assertions {#les_assertions}
 

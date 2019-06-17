@@ -37,15 +37,14 @@ module.exports = {
 //   this.pending_count ++ ;
 //   this.log(RC+'%c'+(str||'TODO')+'…', 'color:orange;font-weight:bold;');
 // }
-// Tests.action  = function(msg, fn_action){
-//   try {
-//     this.log(INDENT+'%cACTION: '+msg, GREENBOLD)
-//     return fn_action()
-//   } catch (e) {
-//     this.onFailure("Problème en exécutant l'action « " + msg + ' » : ' + e.message)
-//     throw(e)
-//   }
-// }
+, action(msg, fn_action){
+  try {
+    Console.action(msg)
+    return fn_action()
+  } catch (e) {
+    this.addSystemError("Problème en exécutant l'action « " + msg + ' » : ' + e.message)
+  }
+}
 //
 
 

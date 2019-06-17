@@ -29,11 +29,12 @@ Object.assign(UI, {
 
     var sel // = new Selector(target) (dès que c'est utile ci-dessous)
 
-    if ( touche === STRArrowLeft || touche === STRArrowRight ) {
-      // Quand une des flèches gauche ou droit est pressée, il faut
-      // regarder où il faut se rendre en fonction des préférences 'goto-...'
-      // Mais ça doit être traité par DOWN_IN
-    } else if(e.key === ESCAPE){
+    // Pour un comportement normal des touches normales
+    if ( !e.metaKey && !e.ctrlKey && !(e.key === ESCAPE) ) {
+      return true
+    }
+
+    if(e.key === ESCAPE){
       /**
         // TODO Il faut traiter l annulation quand on est dans un champ
         // de texte.
@@ -172,7 +173,7 @@ Object.assign(UI, {
           }
         }
       }
-    }
+  }
 
 /**
   Méthode principale qui reçoit les touches quand on est hors d'un champ
@@ -180,7 +181,7 @@ Object.assign(UI, {
 **/
 , onKey_UP_OUT_TextField(e){
     let target = $(e.target)
-    log.info(`-> onKey_UP_OUT_TextField (e.key: "${e.key}")`)
+    // log.info(`-> onKey_UP_OUT_TextField (e.key: "${e.key}")`)
     // console.log("Touche pressée en dehors d'un champ de saisie :", e.key)
     // On met la touche pressée dans une variable pour pouvoir la
     // modifier plus tard.

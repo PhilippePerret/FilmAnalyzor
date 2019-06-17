@@ -28,7 +28,12 @@ Object.assign(PorteDocuments, {
 
     var body = DCreate(DIV, {
       class: STRbody
-    , append: [DCreate(TEXTAREA, {id: 'document-contents', attrs:{autofocus: true}})]
+    , append: [DCreate(TEXTAREA, {id: 'document-contents', attrs:{
+          autofocus: true
+          // Le textarea possède sa propre méthode d'observation des keys
+          // après le blur du champ.
+        , 'data-onblur-fn': 'onBlurPorteDocumentTextarea'
+      }})]
     })
 
     var opts = []

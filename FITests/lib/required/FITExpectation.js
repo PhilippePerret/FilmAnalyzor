@@ -38,11 +38,12 @@ get subject(){
 // Le message "est égal" ou "n'est pas égal", etc. en fonction de la positivité
 // de l'expectation
 positivise(what ,state){
+  let sujet = ` (${this.sujet}) `
   switch (what) {
     case 'est':
       return {
-          success: `${this.positive? 'est bien' : 'n’est pas'} ${state}`
-        , failure: `${this.positive? 'devrait être' : 'ne devrait pas être'} ${state}`
+          success: `${this.positive? 'est bien' : sujet + 'n’est pas'} ${state}`
+        , failure: `${this.positive? sujet + ' devrait être' : 'ne devrait pas être'} ${state}`
       }
     case 'existe':
       return {
