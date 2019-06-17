@@ -5,7 +5,10 @@
 * [Configurer les tests](#configurer_les_tests)
 * [Définition d'une feuille de test](#define_test_sheet)
 * [Liste des tests à lancer](#tests_list)
-* [Exécutions avant et après les tests](#before_and_after_tests)
+* [Exécutions avant et après](#before_and_after_methods)
+  * [Exécutions avant et après les tests](#before_and_after_tests)
+  * [Exécution avant et après le test courant](#before_and_after_testseul)
+  * [Code à exécuter avant ou après chaque cas](#before_and_after_each_case)
 * [Textes écrits dans le suivi](#textes_suivis)
 * [Les Assertions](#les_assertions)
   * [Création d'assertions](#create_new_assertions)
@@ -239,14 +242,15 @@ Attend qu'une condition soit vraie (premier argument) avant de poursuivre.
 
 Pour filtrer les tests à lancer, on se sert du [fichier de configuration `config.json`](#configurer_les_tests).
 
+## Exécutions avant et après {#before_and_after_methods}
 
-## Exécutions avant et après la suite entière de tests {#before_and_after_tests}
-
-Avant de voir ce sujet, noter la simplicité du nommage :
+Noter la simplicité du nommage :
 
 * `before_tests` concerne le code à jouer avant tous les tests (`tests` au pluriel)
-* `before_test` concerne le code à jouer avant un test particulier (`test` au singulier)
+* `before_test` (ou `before`) concerne le code à jouer avant un test particulier (`test` au singulier)
 * `before_case` concerne le code à jouer avant les cas (correspond au `before_each` des autres frameworks de test).
+
+### Exécutions avant et après la suite entière de tests {#before_and_after_tests}
 
 Pour le code à évaluer avant le test courant, voir [exécution avant et après le test courant](#before_and_after_testseul)
 
@@ -275,21 +279,25 @@ Par exemple, pour attendre deux secondes avant de lancer les tests, permettant a
 module.exports = function(){
   Console.bluebold("Merci d'activer l'application")
   return new Promise((ok,ko)=> {setTimeout(ok,2000)})
+  // ou :
+  // return wait(2000)
 }
 
 ```
 
+### Exécution avant et après le test courant {#before_and_after_testseul}
 
-## Exécution avant et après le test courant {#before_and_after_testseul}
+Pour jouer du code avant et après la feuille de test courant, le test courant, utiliser les méthodes `after` (ou `after_test`) et `before` (ou `before_test`) :
 
-Pour jouer du code avant et après la feuille de test courant, le test courant, utiliser :
 ```javascript
 
   var t = new Test("mon test")
-  t.beforeTest(<promesse>)
+
+  t.before(<promesse>)
+  t.after(<promesse>)
+
   t.case(...)
   t.case(...)
-  t.afterTest(<promesse>)
 
 ```
 
@@ -299,7 +307,7 @@ Le cas classique, dans Film-Analyzer, consiste à charger une analyse de film av
 
 var t = new Test("Mon test sur une analyse")
 
-t.beforeTest(FITAnalyse.load.bind(FITAnalyse, 'dossier/test'))
+t.before(FITAnalyse.load.bind(FITAnalyse, 'dossier/test'))
 
 t.case("Premier test", ()=>{
   //... Je peux exécuter ici un tests sur l'analyse chargée, après son
@@ -307,6 +315,20 @@ t.case("Premier test", ()=>{
 })
 
 ```
+
+### Code à exécuter avant ou après chaque cas {#before_and_after_each_case}
+
+Pour exécuter du code asynchrone ou non avant et après chaque cas, on utilise les méthodes de test `before_case` et `after_case` :
+
+```javascript
+
+const test = new Test("Mon test")
+
+test.before_case( () => { /* code à exécuter avant chaque cas */ })
+test.after_case( () => { /* code à exécuter avant chaque cas */ })
+
+```
+
 
 ## Textes écrits dans le suivi {#textes_suivis}
 

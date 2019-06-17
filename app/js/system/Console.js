@@ -27,6 +27,7 @@ static path(msg,opts){this.w(msg,opts,PATHSTYLE)}
 static error(msg,opts){this.w(msg,opts,REDBOLD)}
 static success(msg,opts){this.w(`${INDENT}${msg}`,opts, 'color:#00AA00;')}
 static failure(msg,opts){this.w(`${INDENT}${msg}`,opts, 'color:red;')}
+static indent(msg,opts){this.w(`${INDENT}${msg}`,opts)}
 
 static w(msg, opts, style){
   opts = opts || {}

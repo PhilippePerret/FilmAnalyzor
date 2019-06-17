@@ -22,16 +22,33 @@ module.exports = {
     await this.execBeforeTests()
 
     for (var cas of this.allCases ) {
-      if ( this.config.random ) {
+
+      if ( this.currentTest != cas.test ) {
+
+        // ==== C'est un nouveau test ====
+
+        // Noter que c'est aussi bien valable pour les tests aléatoires
+
+        // S'il y avait un test courant, il faut exécuter son éventuel
+        // afterTset
+        if ( this.currentTest ) await this.currentTest.execAfterTest()
+
         this.currentTest = cas.test
-      } else {
-        if ( this.currentTest != cas.test ) {
-          this.currentTest = cas.test
-          this.showCurrentTestTitle(this.title, this.srcRelPath)
-        }
+        this.showCurrentTestTitle(this.title, this.srcRelPath)
+
+        // S'il y a des choses à faire avant de procéder au test
+        await this.currentTest.execBeforeTest()
+
       }
+
+      // S'il y a des choses à faire avant de procéder au cas
+      await cas.test.execBeforeCase()
+
       // await this.simuleCase(cas)
       await cas.run()
+
+      // S'il y a des choses à faire avant de procéder au cas
+      await cas.test.execAfterCase()
 
       // Si on doit s'arrêter au premier échec
       if ( this.config.fail_fast && cas.failed ){
@@ -40,6 +57,11 @@ module.exports = {
       }
 
     }
+
+    // À la toute fin, s'il y avait un test courant, il faut exécuter son
+    // éventuel afterTset
+    if ( this.currentTest ) await this.currentTest.execAfterTest()
+
 
     await this.execAfterTests()
 

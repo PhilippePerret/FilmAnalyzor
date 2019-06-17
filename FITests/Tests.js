@@ -20,10 +20,10 @@ global.Tests = {
       this.MAINFOLDER = path.join(this.appPath,'FITests')
       this.requireFolder('./lib/required/divers', window)
       this.requireFolder('./lib/required/Tests', this)
-      this.requireFolder('./lib/required/Test', Test.prototype)
       global.FITCase = this.require('lib/required/FITCase')
       this.require('./lib/required/FITAssertion') // => function assert
       this.require('./lib/required/FITExpectation') // => function expect
+      this.require('./lib/required/FITest') // => function expect
       // toutes les assertions
       this.requireFolder('./lib/required/Assertions')
 
@@ -172,12 +172,6 @@ Object.defineProperties(Tests,{
   }}
 })
 
-global.Test = class {
-  constructor(name){
-    this.name   = name
-    this.cases  = []
-  }
-}
 global.FITestExpectation = class {
   constructor(data){}
 }
