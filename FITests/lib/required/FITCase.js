@@ -66,7 +66,7 @@ traiteError(error) {
       break;
     default:
       // Une erreur systémique (pas une erreur de test)
-      Tests.add_sys_error(this, error)
+      Tests.addSystemError(this, error)
   }
 }
 
@@ -79,9 +79,9 @@ traiteError(error) {
 writeFormatedName(){
   if (Tests.config.random){
     Console.path(this.test.srcRelPath)
-    Console.subtitle(`-> ${this.test.name} :: Cas : ${this.name}`)
+    Console.subtitle(`-> ${this.test.name} ${this.name}`)
   } else {
-    Console.subtitle(`---> Cas ${this.name}`)
+    Console.subtitle(`---> ${this.name}`)
   }
 }
 

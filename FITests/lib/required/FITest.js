@@ -7,6 +7,7 @@ global.Test = class {
 constructor(name){
   this.name   = name
   this.cases  = []
+  ++ Tests.instanciedTests
 }
 
 // ---------------------------------------------------------------------
@@ -65,22 +66,18 @@ addFailure(assertion){
 }
 
 async execBeforeTest(){
-  console.log("À exécuter avant le test")
   if ( 'function' === typeof this.methodBeforeTest) await this.methodBeforeTest.call()
 }
 
 async execAfterTest(){
-  console.log("À exécuter après le test")
   if ( 'function' === typeof this.methodAfterTest) await this.methodAfterTest.call()
 }
 
 async execBeforeCase(){
-  console.log("À exécuter avant le case")
   if ( 'function' === typeof this.methodBeforeCase) await this.methodBeforeCase.call()
 }
 
 async execAfterCase(){
-  console.log("À exécuter après le case")
   if ( 'function' === typeof this.methodAfterCase) await this.methodAfterCase.call()
 }
 

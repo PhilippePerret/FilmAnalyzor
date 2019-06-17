@@ -1,8 +1,8 @@
 {
-  "onlyFolders": []
+  "onlyFolders": ["FilmAnalyzor"]
 , "random":     false
 , "fail_fast":  true
-, "regFiles":   "functions"
+, "regFiles":   "test"
 , "regNames": null
 , "regCases": null
 , "exemple regFiles": "only.test.js"

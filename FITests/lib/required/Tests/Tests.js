@@ -26,6 +26,11 @@ module.exports = {
     ++ this.failure_count
   }
 
+, addSystemError(tcase, err) {
+    console.error(err, tcase)
+    // this.sys_errors.push([tcase, err]);
+  }
+
 // Tests.tester  = function(str){console.log(RC+'%cÀ TESTER : '+str, REDBOLD)}
 // Tests.given   = function(str){console.log(RC+INDENT+'%c'+str+'…', BLUEBOLD)}
 // Tests.pending = function(str){
@@ -43,26 +48,7 @@ module.exports = {
 // }
 //
 
-// Tests.initBeforeRun = function(){
-//
-//   // Le code à jouer avant le début des tests
-//   // Si c'est une promesse, on attend qu'il lance
-//   // lui-même la suite du programme
-//   var ret = null
-//   if(undefined !== this.beforeTestsFunction){
-//     ret = this.beforeTestsFunction()
-//   }
-//   if (ret && ret.constructor.name == 'Promise'){
-//     ret.then(this.run.bind(this))
-//   } else {
-//     this.run()
-//   }
-// }
 
-
-// Tests.add_sys_error = function(tcase, err) {
-//   this.sys_errors.push([tcase, err]);
-// }
 //
 // Tests.beforeTests = function(fn) {
 //   var curMod
@@ -77,7 +63,7 @@ module.exports = {
 //     Tests.beforeTestsFunction = fn
 //   } else {
 //     var err_msg = `La méthode beforeTests() est déjà définie dans "${Tests.module_defining_before_tests}", on ne peut pas la redéfinir dans "${curMod}"`
-//     Tests.add_sys_error(err_msg)
+//     Tests.addSystemError(err_msg)
 //     throw(err_msg)
 //   }
 //
@@ -95,7 +81,7 @@ module.exports = {
 //     Tests.afterTestsFunction = fn
 //   } else {
 //     var err_msg = `La méthode afterTests() est déjà définie dans "${Tests.module_defining_after_tests}", on ne peut pas la redéfinir dans "${curMod}"`
-//     Tests.add_sys_error(err_msg)
+//     Tests.addSystemError(err_msg)
 //     throw(err_msg)
 //   }
 // }

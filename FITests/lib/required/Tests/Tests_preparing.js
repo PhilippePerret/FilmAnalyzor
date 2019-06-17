@@ -20,15 +20,24 @@ module.exports = {
 
         // On requiert le fichier de test.
         // Il doit exporter un ou plusieurs tests, qu'on va filtrer et conserver
+        let nombre_instances_test = 0 + this.instanciedTests
+        this.newInstanciedTests = []
         tests = require(file)
+        if ( 'object' === typeof(tests) && Object.keys(tests).length == 0 ){
+          // Les tests ont pu être définis par des describes
+          tests = this.newInstanciedTests
+        } else if ( ! Array.isArray(tests) ){
+          // Un test seul a été exporté
+          tests = [tests]
+        }
         // +test+ peut être :
-        //  - undefini => erreur de programmation des tests
+        //  - vide => erreur de programmation des tests
         //  - une instance Test => un test unique dans le fichier
         //  - un Array de Test => une liste de tests
-        if ( 'object' === typeof(tests) && Object.keys(tests).length == 0 ){
+        if ( tests.length == 0 ){
           throw new TestExportationError(file)
         }
-        else if ( ! Array.isArray(tests) ) tests = [tests]
+        else
         ++ this.files_count
         // On va relever tous les cases valides de chaque test
         for ( test of tests ) {

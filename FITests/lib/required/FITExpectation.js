@@ -16,8 +16,8 @@ global.wait = function(wTime, wMsg){
 }
 
 global.FITExpectation = class {
-constructor(voulu, options){
-  this.voulu    = voulu
+constructor(sujet, options){
+  this.sujet    = sujet
   this.value    = undefined
   this.options  = options || {}
   this.positive = true
@@ -32,7 +32,7 @@ get not() {
 }
 // Le sujet du test
 get subject(){
-  return this.options.subject || this.voulu
+  return this.options.subject || this.options.sujet || this.sujet
 }
 
 // Le message "est égal" ou "n'est pas égal", etc. en fonction de la positivité
@@ -41,10 +41,14 @@ positivise(what ,state){
   switch (what) {
     case 'est':
       return {
-          succ: `${this.positive? 'est bien' : 'n’est pas'} ${state}`
-        , fail: `${this.positive? 'devrait être' : 'ne devrait pas être'} ${state}`
+          success: `${this.positive? 'est bien' : 'n’est pas'} ${state}`
+        , failure: `${this.positive? 'devrait être' : 'ne devrait pas être'} ${state}`
       }
-      break;
+    case 'existe':
+      return {
+          success: `${this.positive?'existe bien':'n’existe pas'} ${state}`
+        , failure: `${this.positive?'devrait exister':'ne devrait pas exister'} ${state}`
+      }
     default:
 
   }

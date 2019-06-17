@@ -21,8 +21,6 @@ test.case("applique les bons raccourcis-clavier", async () => {
   // await expect('div#porte_documents').to_be_visible()
   await expect('div#porte_documents').to_be_visible()
 
-  // Les bons raccourcis doivent être enclenchés
-  expect(UI.).to_be()
 });
 
 module.exports = test

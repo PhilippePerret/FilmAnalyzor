@@ -51,12 +51,13 @@ global.Tests = {
     // Liste Array des instances Test des tests joués (et seulement les tests joués)
     this.tests = []
     this.loadSupportFiles()
-    this.success_count  = 0
-    this.failure_count  = 0
-    this.pending_count  = 0
-    this.files_count    = 0
-    this.tests_count    = 0
-    this.cases_count    = 0
+    this.success_count    = 0
+    this.failure_count    = 0
+    this.pending_count    = 0
+    this.files_count      = 0
+    this.tests_count      = 0
+    this.cases_count      = 0
+    this.instanciedTests  = 0
     this.buildTestsFilesList()
     // on prépare tous les cases, en fonction des filtrages à opérer
     this.prepareAllCases()
@@ -119,6 +120,7 @@ global.Tests = {
 
 , initTestsMethods(){
     Console.redbold("Les méthodes générales sont à exposer")
+    global.describe     = this.describe.bind(this)
     return // pour le moment
     global.given        = this.given.bind(this)
     global.pending      = this.pending.bind(this)
@@ -126,6 +128,12 @@ global.Tests = {
     global.action       = this.action.bind(this)
     global.beforeTests  = this.beforeTests.bind(this)
     global.afterTests   = this.afterTests.bind(this)
+  }
+
+, describe(sujet, fn){
+    let test = new Test(sujet)
+    this.newInstanciedTests.push(test)
+    fn.bind(test).call()
   }
 
 /**
