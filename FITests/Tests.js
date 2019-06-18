@@ -27,8 +27,6 @@ global.Tests = {
       this.require('lib/required/FITSubject')
       // toutes les assertions
       this.requireFolder('lib/required/Assertions')
-      // Tout le support de l'application courante
-      this.requireFolder(path.join(this.appPath,'__TestsFIT__','support'))
 
       this.initTestsMethods() // pour exposer 'pending', 'tester' etc.
     }
@@ -71,7 +69,8 @@ global.Tests = {
   Chargement des fichiers de support propres à l'application
 **/
 , loadSupportFiles(){
-    Console.redbold("Le dossier support est à charger")
+    // Tout le support de l'application courante
+    this.requireFolder(path.join(this.appPath,'__TestsFIT__','support'))
   }
 
 /**

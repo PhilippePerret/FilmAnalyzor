@@ -2,9 +2,10 @@
 
 describe("Création d'un event", function(){
 
-  this.case("une note au temps voulu", async () => {
+  this.case("Création d'une idée au temps voulu", async () => {
 
-    await action("On presse « n » puis « i »", async () => {
+    await action("On se rend à 32 secondes et on presse « n » puis « i »", async () => {
+      goToTime(32)
       keyPress('n')
       await wait(500)
       keyPress('i')
@@ -15,7 +16,22 @@ describe("Création d'un event", function(){
     expect(FrontFWindow).is_event_form()
 
     expect(FrontEventForm).complies_with({
-      type: 'info'
+      type: 'idee', isNew: true, time:32
+    })
+
+    await wait(10000)
+    F.notify("J'ai fini d'attendre 10 secondes")
+
+    await action("On presse la touche tabulation pour entrer dans le titre", () => {
+      keyPress('Tab')
+    })
+    expect(UI.currentShortcutsName).is('TEXT FIELD')
+
+    await action("On écrit le titre", async () => {
+
+    })
+    await action("On écrit une description", async() => {
+
     })
 
     // tester("Écrire un titre d'information")

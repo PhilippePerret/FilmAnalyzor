@@ -339,13 +339,20 @@ equals(expected, options){
 
 ### Options des assertions {#options_assertions}
 
+> Note : pour les [sujets complexes](#complexes_subjects), on peut définir toutes ces valeurs dans la propriété `options`.
+
 `onlyFailure`
 : si `true`, le succès reste silencieux, seul la failure écrit un message.
 
 `onlySuccess`
 : si `true`, la failure reste silencieuse, seul le succès écrit un message.
 
-On peut aussi mettre explicitement `success:false` ou `failure:false` dans les options (dernier argument de l'assertion) pour indiquer de ne pas écrire de message.
+`success`, `failure`
+: On peut aussi mettre explicitement `success:false` ou `failure:false` dans les options (dernier argument de l'assertion) pour indiquer de ne pas écrire de message.
+
+`noRef`
+: si `true`, on n'indique pas la valeur du sujet dans certaines assertions.
+: Par exemple, pour l'égalité, au lieu du message "La somme (2+2:number) est juste", on obtiendra "la somme est juste".
 
 
 ### Sujets complexes (`expect(sujet)`) {#complexes_subjects}
@@ -366,6 +373,7 @@ On va pouvoir déterminer plusieurs propriétés de cet instance dont les plus g
 * la valeur (le premier argument habituel de `expect`) : `sub.value = ...`
 * le nom (à marquer dans les messages) : `sub.subject_message = "..."`
 * les assertions : `sub.assertions = ... objet contenant les assertions`.
+* Les options : `sub.options = {prop:value, prop:value, ...}`
 
 Par exemple :
 
@@ -374,6 +382,7 @@ Par exemple :
 const sub = new FITSubject("Mon formulaire courant")
 sub.value = EventForm.current // retourne l'instance du formulaire courant
 sub.subject_message = "Le formulaire courant"
+sub.options = {noRef: true}
 sub.assertions = {
   est_ouvert(){
     //... on teste pour voir s'il est ouvert
@@ -387,6 +396,42 @@ sub.assertions = {
 // etc.
 }
 
+```
+
+Dans le cas où la valeur doit changer dynamiquement, on peut faire une sous-classe de `FITSubject`.
+
+```javascript
+
+class MonSousSujet extends FITSubject {
+  constructor(){
+    this.name = 'Mon sous-sujet'
+    super(this.name)
+    ///...
+    this.value = // une valeur dynamique, par exemple la fenêtre courante
+    this.assertions = {
+      est_bien(){
+        //...
+        assert(/*...*/)
+      }
+    , est_avant(quoi){/* ... */}
+    }
+  }
+}
+
+Object.defineProperties(global,{
+  // Créera une nouvelle instance à chaque appel
+  MonSousSujet:{get(){return new MonSousSujet()}}
+})
+
+```
+
+Il suffit ensuite de l'utiliser comme :
+
+```javascript
+
+  const subj = MonSousSujet // une instance toute fraiche, donc avec la fenêtre
+  expect(subj).est_bien()
+  expect(subj).est_avant('ca')
 ```
 
 ---------------------------------------------------------------------

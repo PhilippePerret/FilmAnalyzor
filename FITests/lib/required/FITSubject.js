@@ -13,6 +13,8 @@ constructor(name){
 toString(){ return this.name }
 toValue() { return this.subject_value }
 
+get classe() {return 'FITSubject'}
+
 // Le sujet à utiliser pour le message
 get subject_message(){return this._subject_message || name}
 set subject_message(v){this._subject_message = v}

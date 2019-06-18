@@ -18,18 +18,18 @@ global.wait = function(wTime, wMsg){
 global.FITExpectation = class {
 constructor(sujet, options){
   this.sujet    = sujet
+  this.options  = options || {}
 
   this.value    = undefined
 
-  if (sujet instanceof FITSubject) {
+  // if (sujet instanceof FITSubject) {
+  if (sujet.classe === 'FITSubject') {
     this.value = sujet.subject_value || sujet.value
     sujet.subject_message && ( this.subject = sujet.subject_message )
-    if ( sujet.assertions ) {
-      Object.assign(this, sujet.assertions)
-    }
+    sujet.assertions      && Object.assign(this, sujet.assertions)
+    sujet.options         && Object.assign(this.options, sujet.options)
   }
 
-  this.options  = options || {}
   this.positive = true
   this.strict   = false
 }
@@ -60,13 +60,13 @@ assertise(verbe, complement_verbe, suj, exp){
 }
 // Le message "est égal" ou "n'est pas égal", etc. en fonction de la positivité
 // de l'expectation
-positivise(what ,state){
-  let sujet = ` (${this.sujet}::${typeof(this.sujet)}) `
+positivise(what,state){
+  let sujet = this.options.noRef ? '' : ` (${this.sujet}::${typeof(this.sujet)}) `
   switch (what) {
     case 'est':
       return {
           success: `${this.positive? 'est bien' : sujet + 'n’est pas'} ${state}`
-        , failure: `${this.positive? sujet + ' devrait être' : 'ne devrait pas être'} ${state}`
+        , failure: `${this.positive? sujet + 'devrait être' : 'ne devrait pas être'} ${state}`
       }
     case 'existe':
       return {
