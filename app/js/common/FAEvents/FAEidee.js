@@ -21,7 +21,8 @@ get isValid(){
   // Définir ici les validité
   this.ideeType || errors.push({msg: T('idee-type-required'), prop: 'ideeType'})
   this.content  || errors.push({msg: T('idee-description-required'), prop: 'longtext1'})
-  this.setup    || errors.push({msg: T('idee-setup-required'), prop: 'longtext2'})
+  // Non, l'installation de l'idée n'est plus requise
+  // this.setup    || errors.push({msg: T('idee-setup-required'), prop: 'longtext2'})
 
   if(errors.length){super.onErrors(this, errors)}
   return errors.length == 0

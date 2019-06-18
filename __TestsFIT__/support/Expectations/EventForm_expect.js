@@ -16,7 +16,7 @@ class EventFormSubject extends FITSubject {
         const pass = res.ok === this.positive
         var expe = JSON.stringify(expected)
         if ( !res.ok ) expe += `\n\t${res.bads.join(', ')}`
-        const msgs = this.assertise('est','conforme à', this.subject, expe)
+        const msgs = this.assertise(this.subject, 'est','conforme à', expe)
         assert(pass, ...msgs, options)
       }
     }
@@ -25,6 +25,30 @@ class EventFormSubject extends FITSubject {
   get subject_message(){return 'Le formulaire d’event courant'}
   get options(){ return {noRef:true} }
 
+/**
+  Méthode pour définir les valeurs du formulaire
+**/
+set(hash){
+  for ( var prop in hash ){
+    this.jqObj.find(this.fieldId(prop)).val(hash[prop])
+  }
+}
+
+// Pour mettre le formulaire courant comme modifié
+setModified(){this.eventForm.modified = true}
+
+// Retourne l'id DOM du champ contenant la propriété +prop+
+fieldId(prop){
+  switch (prop) {
+    case 'description': prop = 'longtext1'; break
+  }
+  return `#event-${this.eventId}-${prop}`
+}
+
+get eventId(){return this.eventForm.id }
+get jqObj(){return this.eventForm.jqObj}
+// Juste pour la clarté
+get eventForm(){return this.subject_value}
 }
 
 // Pour évaluer le formulaire
@@ -58,6 +82,3 @@ function EventFormCompliesWith(owner, hexp){
 Object.defineProperties(global,{
   FrontEventForm:{get(){return new EventFormSubject()}}
 })
-
-// Object.assign(FrontEventForm, EventFormExpectations)
-// FITExpectation.add(EventFormExpectations)

@@ -191,7 +191,7 @@ submit(){
   // Si c'est une modification, on prend le temps initial pour savoir
   // s'il a bougé. S'il n'a pas bougé, il sera inutile de faire l'update
   // dans l'analyse courante
-  var initTime = this.isNew ? null : Math.round(this.event.time)
+  var initTime = this.isNew ? null : this.event.time.round(2)
 
   var all_data = this.getFormValues()
   this.isNew = all_data.is_new

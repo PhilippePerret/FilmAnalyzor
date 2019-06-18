@@ -2,28 +2,32 @@
 
 ### Traiter :
 
-Réflexion sur la touche escape
-Quand la touche escape est activée, maintenant, elle obéit aux raccourcis universels qui demandent de fermer la fenêtre Fwindow active (entendu que toute fenêtre est une `FWindow`, maintenant).
-Le problème consiste à savoir quel raccourci remettre. Par exemple :
+RÉFLEXIONS SUR LES FITests
+- Ne pourrait-on pas distinguer les opérations des vérifications ? Ça ne changerait pas grand-chose au niveau programmation peut-être, mais ça pourrait éclaircir le code.
+  Un autre avantage serait qu'on pourrait mettre les choses dans l'ordre qu'on voudrait. L'application de tests appellerait toujours dans l'ordre : `preliminaires`, `tests_preliminaires`, `operation`, `verification`, mais on pourrait, dans la définition du case, commencer par la vérification, ensuite mettre l'opération et seulement à la fin les préliminaires, qui sont moins importants que le reste.
+Par exemple :
 
-- on ouvre la liste des personnages (=> raccourcis 'FA-LISTING')
-- on édite un personnage depuis cette liste (=> raccourcis 'DATAEDITOR')
-- on ferme l'édition du personnage avec escape
-  => Comment savoir quel mode de raccourci mettre ?
+```javascript
 
-La solution pourrait être :
-  - dans le DIV de la fwindow, mettre une "data-shortcuts-mode" avec la faleur du mode de raccourci
-    => On prend la nouvelle fenêtre courante et on applique le mode de raccourci défini
-    (note : c'est le process le plus sûr, aucune donnée isolée à mémoriser)
-  - on enregistre dans le stack de FWindow le mode de raccourcis avec la fenêtre
+      this.case("Un cas étudié", async () => {
+          preliminaires(() => {
+            /* ... les préliminaires à exécuter */
+            })
+          tests_preliminaires( () => {
+            /* ... les tests à faire sur l'état initial */
+          })
 
-Dans tous les cas, cela exige que la méthode `UI.setKeyUpAndDown` connaisse le nom de modes pour être capable de les rappliquer. Il pourrait très bien les apprendre en cours de route :
-  - le nom du mode étant le premier nom donné en argument, une table (Map) de UI pourrait conserver la mémoire  
-    des données. Il suffirait donc, ensuite, de rappeler `UI.setKeyUpAndDown` juste avec le nom et la méthode retrouverait les méthodes à utiliser.
+          await operation( async () => {
+            /* ... L'opération proprement dite */
+          })
 
-OUI mais le problème se pose si on a deux fenêtres qui utilisent le même mode shortcuts, par exemple la liste des personnages et la listes des brins. Elles sont toutes les deux de type `FALISTING` et utilisent le mode shortcuts `FA-LISTING`
+          verifications( () => {
+            /* les vérifications après l'opération */
+          })
 
-Il reste juste, maintenant, à savoir quand implémenter le 'data-shortcuts-mode' (certainement dans la définition de la fwindow)
+        })
+
+```
 
 * Garder toujours le curseur visible dans le banc-timeline (faire l'essai en zoomant et en passant du début à la fin du film)
 

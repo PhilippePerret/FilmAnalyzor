@@ -23,7 +23,7 @@ constructor(sujet, options){
   this.value    = undefined
 
   // if (sujet instanceof FITSubject) {
-  if (sujet.classe === 'FITSubject') {
+  if (sujet && sujet.classe === 'FITSubject') {
     this.value = sujet.subject_value || sujet.value
     sujet.subject_message && ( this.subject = sujet.subject_message )
     sujet.assertions      && Object.assign(this, sujet.assertions)
@@ -53,7 +53,7 @@ get subject(){
 set subject(v){this._subject = v}
 
 // Helper pour construire les paramètres de l'appel à `assert`
-assertise(verbe, complement_verbe, suj, exp){
+assertise(suj, verbe, complement_verbe, exp){
   const msgs = this.positivise(verbe, complement_verbe)
   const temp = `${suj} %{msg} ${exp}`
   return [T(temp, {msg:msgs.success}), T(temp, {msg:msgs.failure})]

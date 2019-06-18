@@ -407,75 +407,7 @@ forEachEvent(method, options){
   donc parfaitement valide ici.
 
  */
-addEvent(nev) {
-  if ( this.locked ) return F.notify(T('analyse-locked-no-save'))
-  (this._addEvent||requiredChunk(this,'addEvent')).bind(this)(nev)
-  FAStater.update()
-}
 
-/**
- * Procédure de description de l'event
- */
-destroyEvent(event_id, form_instance){
-  (this._destroyEvent||requiredChunk(this,'destroyEvent')).bind(this)(event_id, form_instance)
-  FAStater.update()
-}
-/**
- * Méthode appelée à la modification d'un event
- *
- * [1]  En règle générale, si une opération spéciale doit être faite sur
- *      l'event, il vaut mieux définir sa méthode d'instance `onModify` qui
- *      sera automatiquement appelée après la modification.
- */
-updateEvent(ev, options){
-  log.info("-> FAnalyse#updateEvent")
-  var new_idx = undefined
-  if (options && options.initTime != ev.time){
-    // Quand le temps initial de l'event est différent de son nouveau temps
-    var idx_init      = this.indexOfEvent(ev.id)
-    var next_ev_old   = this.events[idx_init + 1]
-    var idx_new_next  = this.getIndexOfEventAfter(ev.time)
-    var next_ev_new   = this.events[idx_new_next]
-    if( next_ev_old != next_ev_new){
-      // => Il faut replacer l'event au bon endroit
-      this.events.splice(idx_init, 1)
-      var new_idx = this.getIndexOfEventAfter(ev.time)
-      this.events.splice(new_idx, 0, ev)
-    }
-  }
-  // [1]
-  if (ev.type === STRscene){
-    FAEscene.updateAll()
-    FADecor.resetAll()
-  }
-
-  // Il faut aussi replacer l'event dans le banc-timeline
-  ev.updateInTimeline()
-
-  // On actualise tous les autres éléments (par exemple l'attribut data-time)
-  ev.updateInUI()
-
-  // S'il est affiché, il faut updater son affichage dans le
-  // reader (et le replacer si nécessaire)
-  ev.updateInReader(new_idx)
-
-  // Et enfin on actualise l'état d'avancement
-  FAStater.update()
-  next_ev_old = null
-  next_ev_new = null
-
-  // On marque l'analyse modifiée
-  this.modified = true
-
-  log.info("<- FAnalyse#updateEvent")
-}
-
-/**
-  Retourne l'event d'identifiant +eid+
-**/
-getEventById(eid){
-  return this.ids[eid]
-}
 
 // Pour éditer le document d'identifiant +doc_id+
 // Note : on pourrait y aller directement, mais c'est pour compatibiliser
