@@ -10,6 +10,7 @@ const STYLE3     = 'font-size:1.1em;font-weight:bold;' // Case
 const REDBOLD    = 'font-weight:bold;color:red;'
 const BLUEBOLD   = 'color:blue;font-weight:bold;'
 const GREENBOLD  = 'color:darkgreen;font-weight:bold;'
+const ORANGEBOLD = 'color:orange;font-weight:bold;'
 
 global.Console = class {
 static space(nombre_lignes){
@@ -24,6 +25,7 @@ static subtitle(msg,opts){this.w(msg,opts,STYLE3)}
 static redbold(msg,opts){this.w(msg,opts,REDBOLD)}
 static bluebold(msg,opts){this.w(msg,opts,BLUEBOLD)}
 static greenbold(msg,opts){this.w(msg,opts,GREENBOLD)}
+static orangebold(msg,opts){this.w(msg,opts,ORANGEBOLD)}
 static action(msg,opts){this.greenbold(`${INDENT}${msg}`,opts)}
 static path(msg,opts){this.w(msg,opts,PATHSTYLE)}
 static error(msg,opts){this.w(msg,opts,REDBOLD)}

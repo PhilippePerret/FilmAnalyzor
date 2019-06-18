@@ -4,6 +4,10 @@
 * [Utilisation des FITests](#utilisation)
 * [Configurer les tests](#configurer_les_tests)
 * [Définition d'une feuille de test](#define_test_sheet)
+  * [Syntaxe `describe`](#describe_syntax)
+  * [Mot clé `not`](#not_keyword)
+  * [Mot clé `strictly`](#strictly_keyword)
+  * [Les Assertions](#les_assertions)
 * [Liste des tests à lancer](#tests_list)
 * [Exécutions avant et après](#before_and_after_methods)
   * [Exécutions avant et après les tests](#before_and_after_tests)
@@ -12,13 +16,14 @@
 * [Textes écrits dans le suivi](#textes_suivis)
 * [Les Assertions](#les_assertions)
   * [Création d'assertions](#create_new_assertions)
-    * [Options des assertions](#options_of_assert_function)
+  * [Options des assertions](#options_assertions)
+  * [Sujets complexes (`expect(sujet)`)](#complexes_subjects)
 * [Méthodes pratiques](#les_methodes_pratiques)
   * [Simuler des touches clavier](#simulate_keyboard)
+  * [Exécution d'une action (`action`)](#exec_action)
 * [Textes écrits dans le suivi](#textes_suivis)
   * [Cas entièrement à implémenter (`pending`)](#pending)
   * [Test à implémenter plus tard (`tester`)](#test_to_define)
-  * [Exécution d'une action (`action`)](#exec_action)
 
 # Introduction {#introduction}
 
@@ -128,6 +133,8 @@ module.exports = [t]
 
 Noter l'utilisation d'une fonction `async` pour pouvoir utiliser `await`.
 
+### Syntaxe `describe` {#describe_syntax}
+
 On peut utiliser aussi la syntaxe en `describe` qui ne nécessite pas d'export :
 
 ```javascript
@@ -151,6 +158,33 @@ describe("Nom du test", () => {
 
 ```
 
+### Mot clé `not` {#not_keyword}
+
+On utilise le mot clé `not` pour inverser le sens de l'assertion.
+
+```javascript
+
+expect(2+6).equals(7)
+// => échec
+
+expect(2+6).not.equals(7)
+// => succès
+
+```
+
+### Mot clé `strictly` {#strictly_keyword}
+
+On utilise le mot clé `strictly` pour demander une comparaison stricte.
+
+```javascript
+
+expect('12').equals(12)
+// => succès
+
+expect('12').strictly.equals(12)
+// => échec
+
+```
 
 ## Les Assertions {#les_assertions}
 
@@ -158,11 +192,11 @@ Les assertions s'utilisent de cette manière :
 
 ```javascript
 
-  expect(<sujet|valeur>).<methode d’expectation>(<quelque chose>)
+  expect(<sujet|valeur>).<assertion>(<valeur attendue>)
 
 ```
 
-Par exemple, pour tester qu'une fonction existe pour un objet :
+Par exemple, pour tester qu'une fonction existe pour un objet, on utilise l'assertion `responds_to` :
 
 ```javascript
 
@@ -177,22 +211,117 @@ On peut définir dans le dossier `support/assertions` les assertions propres à 
 
 ### Création d'assertions {#create_new_assertions}
 
-* dans sa dernière partie elle invoque la méthode générique `assert` qui attend ces arguments :
-    ```javascript
-    assert(
-        condition
-      , "<message si condition true>" // ou `false` pour ne pas mettre de message
-      , "<message si condition false"
-      [, options]
-    )
-    ```
-Les options peuvent déterminer si le message ne doit s'afficher que si la condition est `false`.
-
-Par exemple, si je veux définir :
+On crée les nouvelles assertions, propres à toute l'application dans le dossier `__TestsFIT__/support`, à l'aide de :
 
 ```javascript
 
-  expect(actual).equals(expected)
+const MesAssertions = {
+  uneAssertion(){
+    //...
+  }
+, uneAutreAssertion(){
+    //...
+  }
+}
+
+FITExpectation.add(MesAssertions)
+
+```
+
+Noter qu'avec la définition ci-dessus, les assertions seront utilisables pour n'importe quel sujet. Pour faire des assertions propres à des sujets particuliers, utiliser les [sujets complexes](#complexes_subjects)
+
+Ensuite, on peut tout simplement faire :
+
+```javascript
+
+describe("En utilisation mes assertions", function(){
+  this.case("J'utilise la première", async () => {
+    expect('monsujet').uneAssertion()
+  })
+  this.case("J'utilise la seconde", async () => {
+    expect('monsujet').not.uneAutreAssertion({onlyFailure:true})
+  })
+  this.case("J'utilise la seconde", async () => {
+    expect('monsujet').strictly.unestrict({onlySuccess:true})
+  })
+})
+```
+
+### Codage de l'assertion
+
+Une assertion est composée de deux parties :
+
+```javascript
+
+affirmation(expected[, options]){
+    /**
+      Estimation, comparaison de la valeur actuelle et attendue
+      éventuellement en fonction de 'not' et 'strictly'
+      Cette partie doit définir `pass` qui sera TRUE si c'est un succès
+      (quelle que soit la valeur de 'not') et FALSE si c'est un échec.
+    **/
+    const estimation = ...
+    const pass = this.positive === estimation
+    /**
+      La deuxième partie produit l'assertion proprement dite, qui
+      sera écrite dans le rapport d'erreur comme un succès ou un échec
+      Le plus simple est de faire :
+    **/
+    const msgs = this.positivise('<verbe>', '<complément>')
+    // => retourne un objet contenant l'affirmation pour un succès et pour
+    //    un échec. Par exemple {success: 'est plus grand que'}, {failure
+    //    'devrait être plus grand que'}.
+    const expe = ... // on compose la valeur attendue
+    // On compose le template pour faire les deux messages échec/succès
+    const temp = `${this.subject} %{msg} ${expe}`
+    const succ_msg = T(temp, {msg: msgs.success})
+    const fail_msg = T(temp, {msg: msgs.failure})
+    // Et finalement on appelle la méthode générique
+    assert(pass, succ_msg, fail_msg, options)
+}
+
+```
+
+Version encore plus courte :
+
+```javascript
+
+affirmation(expected, options){
+  const esti = ...
+  const pass = this.positive === esti
+  const expe = ... // expected à écrire
+  const msgs = this.assertise('<verbe>', '<complément>', this.subject, expe)
+  assert(pass, ...msgs, options)
+}
+
+```
+
+Les options peuvent déterminer si le message ne doit s'afficher que si la condition est `false`, pas exemple, avec `onlyFailure:true`. Cf. [Options des assertions](#options_assertions).
+
+### Rédaction des messages positifs et négatifs
+
+Pour simplifier la rédaction des messages de la méthode `assert`, on peut utiliser les méthodes `assertise` et `positivise` des instances de `FITExpectation` qui connait déjà un certain nombre de verbes. On lui envoie un verbe de base qu'elle doit connaitre (par exemple « est »), optionnellement un complément, et elle revoit les deux messages de succès (`success`) et d'échec (`failure`).
+
+> Comme la méthode `positivise` est une méthode de l'instance `FITExpectation`, donc de l'expectation elle-même, elle sait si l'assertion est positive ou non et renvoie le message en conséquence.
+
+Par exemple, avec une assertion négative (`not`) :
+
+```javascript
+
+this.positivise('est', 'égal à')
+
+// => {
+//      success: "n'est pas égal à"
+//      failure: "ne devrait pas être égal à"
+//    }
+```
+
+
+Je peux donc définir :
+
+```javascript
+
+  expect(actual).strictly_equals(expected)
 
 ```
 
@@ -200,20 +329,15 @@ J'implémente :
 
 ```javascript
 
-equals(voulu){
-
-  const pass = this.positive === Object.is(valeur, voulu)
-  const msgs = this.positivise('est', 'égal à')
-  assert(
-      conditionTrue
-    , `${actual} ${msgs.success} ${expected}`
-    , `${actual} ${msgs.failure} ${expected}`
-    , options
-  )
+equals(expected, options){
+  const esti = this.strict ? (this.sujet === expected) : (this.sujet == expected)
+  const pass = this.positive === esti
+  const msgs = this.assertise('est', 'égal à', actual, expected)
+  assert(pass, ...msgs, options)
 }
 ```
 
-### Options des assertions {#options_of_assert_function}
+### Options des assertions {#options_assertions}
 
 `onlyFailure`
 : si `true`, le succès reste silencieux, seul la failure écrit un message.
@@ -223,6 +347,49 @@ equals(voulu){
 
 On peut aussi mettre explicitement `success:false` ou `failure:false` dans les options (dernier argument de l'assertion) pour indiquer de ne pas écrire de message.
 
+
+### Sujets complexes (`expect(sujet)`) {#complexes_subjects}
+
+Les « sujets complexes » permettent de définir des sujets propres à l'application avec tout ce qu'il faut pour les estimer. Imaginons par exemple qu'une classe `EventForm` permette de générer des formulaires (instances). Soit `EventForm.current`, dans l'application, la propriété qui retourne l'instance du formulaire au premier plan, le formulaire courant. On peut faire un sujet de ce formulaire courant :
+
+```javascript
+
+// Dans un fichier de `__TestsFIT__/support/`
+const sub = new FITSubject("Le formulaire courant")
+
+global.CurrentForm = sub // pour l'exposer
+
+```
+
+On va pouvoir déterminer plusieurs propriétés de cet instance dont les plus générales sont :
+
+* la valeur (le premier argument habituel de `expect`) : `sub.value = ...`
+* le nom (à marquer dans les messages) : `sub.subject_message = "..."`
+* les assertions : `sub.assertions = ... objet contenant les assertions`.
+
+Par exemple :
+
+```javascript
+
+const sub = new FITSubject("Mon formulaire courant")
+sub.value = EventForm.current // retourne l'instance du formulaire courant
+sub.subject_message = "Le formulaire courant"
+sub.assertions = {
+  est_ouvert(){
+    //... on teste pour voir s'il est ouvert
+    assert(
+      ok, ...
+    )
+  }
+, est_bien_rempli(){
+    // ...
+  }
+// etc.
+}
+
+```
+
+---------------------------------------------------------------------
 
 ## Méthodes pratiques {#les_methodes_pratiques}
 
@@ -380,41 +547,6 @@ action("On joue CMD+N puis on confirme avec la touche Entrée", ()=>{
 
 ```
 
-## Textes écrits dans le suivi {#textes_suivis}
-
-En dehors des messages des assertions elles-mêmes, on peut trouver ces textes dans le suivi du tests :
-
-* [Cas entièrement à implémenter (`pending`)](#pending)
-* [Test à implémenter plus tard (`tester`)](#test_to_define)
-* [Exécution d'une action (`action`)](#exec_action)
-<!-- Reporter aussi au-dessus si ajout -->
-
-### Cas entièrement à implémenter (`pending`) {#pending}
-
-On utilise le mot-clé-fonction `pending` pour déterminer un cas entièrement à implémenter.
-
-```javascript
-
-  t.case("Mon tests pas implémenté", ()=>{
-    pending("Faire ce test plus tard")
-  })
-```
-
-Noter que contrairement à [`tester`](#test_to_define), qui n'influence pas le résumé total des tests à la fin (sa couleur), ce `pending` empêche les tests de passer au vert.
-
-### Test à implémenter plus tard (`tester`) {#test_to_define}
-
-Lorsqu'un test ponctuel — à l'intérieur d'un cas long — est compliqué ou délicat et qu'on ne veut pas l'implémenter tout de suite, on peut le remplacer par le mot-clé-fonction `tester`.
-
-```javascript
-  tester("<message du test à faire>")
-```
-
-C'est le message `<message du test à faire>` qui apparaitra en rouge gras dans le suivi des tests, indiquant clairement que ce test sera à implémenter.
-
-On peut se servir de ce mot-clé, par exemple, pour définir rapidement tous les tests à faire. Puis les implémenter dans un second temps.
-
-
 ### Exécution d'une action (`action`) {#exec_action}
 
 Pour mettre en valeur une action à exécuter (et s'assurer qu'elle fonctionne), on peut utiliser le mot-clé-fonction `action` :
@@ -434,3 +566,53 @@ Par exemple :
 ```
 
 De cette manière, dans l'énoncé des tests, on peut suivre toutes les actions accomplies.
+
+L'action peut être aussi asynchrone et doit alors être précédée du mot clé `await` :
+
+```javascript
+
+  await action("Je fais une action asynchrone", async () => {
+    keyPress('n')
+    wait(1000)
+    keyPress('i')
+  })
+
+```
+
+
+---------------------------------------------------------------------
+
+## Textes écrits dans le suivi {#textes_suivis}
+
+En dehors des messages des assertions elles-mêmes, on peut trouver ces textes dans le suivi du tests :
+
+* [Cas entièrement à implémenter (`pending`)](#pending)
+* [Test à implémenter plus tard (`tester`)](#test_to_define)
+<!-- Reporter aussi au-dessus si ajout -->
+
+### Cas entièrement à implémenter (`pending`) {#pending}
+
+On utilise le mot-clé-fonction `pending` pour déterminer un cas entièrement à implémenter.
+
+```javascript
+
+  t.case("Mon tests pas implémenté", ()=>{
+    pending("Faire ce test plus tard")
+  })
+```
+
+> On peut ne rien mettre en paramètre, ce qui indiquera "TODO" dans les tests.
+
+Noter que contrairement à [`tester`](#test_to_define), qui n'influence pas le résumé total des tests à la fin (sa couleur), ce `pending` empêche les tests de passer au vert.
+
+### Test à implémenter plus tard (`tester`) {#test_to_define}
+
+Lorsqu'un test ponctuel — à l'intérieur d'un cas long — est compliqué ou délicat et qu'on ne veut pas l'implémenter tout de suite, on peut le remplacer par le mot-clé-fonction `tester`.
+
+```javascript
+  tester("<message du test à faire>")
+```
+
+C'est le message `<message du test à faire>` qui apparaitra en rouge gras dans le suivi des tests, indiquant clairement que ce test sera à implémenter.
+
+On peut se servir de ce mot-clé, par exemple, pour définir rapidement tous les tests à faire. Puis les implémenter dans un second temps.

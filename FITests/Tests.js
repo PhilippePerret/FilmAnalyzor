@@ -23,7 +23,8 @@ global.Tests = {
       global.FITCase = this.require('lib/required/FITCase')
       this.require('lib/required/FITAssertion') // => function assert
       this.require('lib/required/FITExpectation') // => function expect
-      this.require('lib/required/FITest') // => function expect
+      this.require('lib/required/FITest')
+      this.require('lib/required/FITSubject')
       // toutes les assertions
       this.requireFolder('lib/required/Assertions')
       // Tout le support de l'application courante
@@ -123,11 +124,8 @@ global.Tests = {
 , initTestsMethods(){
     global.describe     = this.describe.bind(this)
     global.action       = this.action.bind(this)
-    // global.given        = this.given.bind(this)
-    // global.pending      = this.pending.bind(this)
-    // global.tester       = this.tester.bind(this)
-    // global.beforeTests  = this.beforeTests.bind(this)
-    // global.afterTests   = this.afterTests.bind(this)
+    global.pending      = this.pending.bind(this)
+    global.tester       = this.tester.bind(this)
   }
 
 , describe(sujet, fn){

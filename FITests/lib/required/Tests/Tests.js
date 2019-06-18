@@ -31,12 +31,12 @@ module.exports = {
     // this.sys_errors.push([tcase, err]);
   }
 
-// Tests.tester  = function(str){console.log(RC+'%cÀ TESTER : '+str, REDBOLD)}
-// Tests.given   = function(str){console.log(RC+INDENT+'%c'+str+'…', BLUEBOLD)}
-// Tests.pending = function(str){
-//   this.pending_count ++ ;
-//   this.log(RC+'%c'+(str||'TODO')+'…', 'color:orange;font-weight:bold;');
-// }
+, tester(str){Console.redbold(`À TESTER : ${str}`)}
+, given(str){Console.bluebold(`\n\t\t${str}…`)}
+, pending(str){
+    this.pending_count ++ ;
+    Console.orangebold(`\t\t${str||'TODO'}`);
+}
 , action(msg, fn_action){
   try {
     Console.action(msg)

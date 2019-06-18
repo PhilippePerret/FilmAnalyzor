@@ -155,7 +155,7 @@ const MESSAGES = {
 }
 
 /**
- * Gestion des "translation"
+ * Gestion des "translations"
  * Les messages sont définis dans ERRORS et MESSAGES, on envoie à cette
  * méthode la clé +lid+ (pour "Locale Id"), avec éventuellement la table
  * des remplacement +lrep+ (pour "Locales Replacement") et la méthode retourne
@@ -163,12 +163,19 @@ const MESSAGES = {
  *
  * Les variables s'écrivent `%{<variable name>}` dans le texte (comme les
  * template ruby).
+
+  Note : maintenant (juin 2019), la méthode ne produit jamais d'erreur. Elle
+  est capable de recevoir un string normal pour procéder à une translation.
+
+    T('Je dis %{what}', {what: "« Bonjour ! »"})
+    // => "Je dis « Bonjour ! »"
+
  */
 const T = function(lid, lrep){
-  var str = ERRORS[lid] || MESSAGES[lid]
-  if(undefined===str){
-    throw(`L'identifiant de message/error "${lid}" est inconnu de nos services…`)
-  }
+  var str = ERRORS[lid] || MESSAGES[lid] || lid
+  // if(undefined===str){
+  //   throw(`L'identifiant de message/error "${lid}" est inconnu de nos services…`)
+  // }
   if(lrep){
     for(var k in lrep){
       var reg = new RegExp(`%\{${k}\}`, 'g')

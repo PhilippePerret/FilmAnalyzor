@@ -18,9 +18,20 @@ global.wait = function(wTime, wMsg){
 global.FITExpectation = class {
 constructor(sujet, options){
   this.sujet    = sujet
+
   this.value    = undefined
+
+  if (sujet instanceof FITSubject) {
+    this.value = sujet.subject_value || sujet.value
+    sujet.subject_message && ( this.subject = sujet.subject_message )
+    if ( sujet.assertions ) {
+      Object.assign(this, sujet.assertions)
+    }
+  }
+
   this.options  = options || {}
   this.positive = true
+  this.strict   = false
 }
 // ---------------------------------------------------------------------
 //  Sujet
@@ -30,11 +41,23 @@ get not() {
   this.positive = false
   return this // pour le chainage
 }
-// Le sujet du test
-get subject(){
-  return this.options.subject || this.options.sujet || this.sujet
+// Mode strict
+get strictly() {
+  this.strict = true
+  return this // chainage
 }
+// Le sujet du test (à écrire)
+get subject(){
+  return this.options.subject || this._subject || this.options.sujet || this.sujet
+}
+set subject(v){this._subject = v}
 
+// Helper pour construire les paramètres de l'appel à `assert`
+assertise(verbe, complement_verbe, suj, exp){
+  const msgs = this.positivise(verbe, complement_verbe)
+  const temp = `${suj} %{msg} ${exp}`
+  return [T(temp, {msg:msgs.success}), T(temp, {msg:msgs.failure})]
+}
 // Le message "est égal" ou "n'est pas égal", etc. en fonction de la positivité
 // de l'expectation
 positivise(what ,state){
@@ -55,5 +78,11 @@ positivise(what ,state){
   }
 }
 
+/**
+  Pour ajouter des expectations générales propres à l'application
+**/
+static add(objet){
+  Object.assign(FITExpectation.prototype, objet)
+}
 
 } // class FITExpectation
