@@ -1,5 +1,5 @@
 {
-  "onlyFolders": ["FilmAnalyzor"]
+  "onlyFolders": ["FilmAnalyzor/EventForm"]
 , "random":     false
 , "fail_fast":  true
 , "regFiles":   "test"

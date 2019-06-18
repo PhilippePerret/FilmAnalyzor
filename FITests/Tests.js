@@ -21,11 +21,13 @@ global.Tests = {
       this.requireFolder('./lib/required/divers', window)
       this.requireFolder('./lib/required/Tests', this)
       global.FITCase = this.require('lib/required/FITCase')
-      this.require('./lib/required/FITAssertion') // => function assert
-      this.require('./lib/required/FITExpectation') // => function expect
-      this.require('./lib/required/FITest') // => function expect
+      this.require('lib/required/FITAssertion') // => function assert
+      this.require('lib/required/FITExpectation') // => function expect
+      this.require('lib/required/FITest') // => function expect
       // toutes les assertions
-      this.requireFolder('./lib/required/Assertions')
+      this.requireFolder('lib/required/Assertions')
+      // Tout le support de l'application courante
+      this.requireFolder(path.join(this.appPath,'__TestsFIT__','support'))
 
       this.initTestsMethods() // pour exposer 'pending', 'tester' etc.
     }
@@ -152,8 +154,9 @@ global.Tests = {
   l'objet +owner+
 **/
 , requireFolder(pfolder, owner){
-    // glob.sync(path.join(pfolder,'**','*.js')).map( file => {
-    glob.sync(path.join(this.MAINFOLDER,pfolder,'**','*.js')).map( file => {
+    if ( ! fs.existsSync(pfolder) ) pfolder = path.join(this.MAINFOLDER,pfolder)
+    pfolder = path.join(pfolder,'**','*.js')
+    glob.sync(pfolder).map( file => {
       // console.log("Requérir:", file)
       try {
         if ( owner ) Object.assign( owner, require(file) )

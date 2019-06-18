@@ -235,8 +235,10 @@ const UI = {
         else return stopEvent(e)
       }
       res = args.up(e)
-      stopEvent(e)
-      return res
+      if ( isDefined(res) ) {
+        if ( isTrue(res) ) return true
+        else return stopEvent(e)
+      }
     })
     window.onkeydown = ((e) => {
       res = this.universalKeyDown(e)
@@ -245,8 +247,10 @@ const UI = {
         else return stopEvent(e)
       }
       res = args.down(e)
-      stopEvent(e)
-      return res
+      if ( isDefined(res) ) {
+        if ( isTrue(res) ) return true
+        else return stopEvent(e)
+      }
     })
     this.markShortcuts.html(args.name)
   }
@@ -285,7 +289,7 @@ const UI = {
           F.notify("Je dois démarrer la vidéo.")
           return false
         } else {
-          F.notify("Je suis dans un champ de saisie, je ne démarre pas la vidéo.")
+          // F.notify("Je suis dans un champ de saisie, je ne démarre pas la vidéo.")
           return true
         }
     }

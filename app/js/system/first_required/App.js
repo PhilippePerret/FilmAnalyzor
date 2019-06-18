@@ -44,8 +44,11 @@ const App = {
       log.error("ERROR dans App::require avec le path", rpath)
       log.error(e)
     }
-
   }
+
+/**
+  Pour requérir tous les javascript du dossier
+**/
 
 /**
   Pour charger un module se trouvant dans le dossier app/js/tools

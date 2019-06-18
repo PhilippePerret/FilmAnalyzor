@@ -111,7 +111,7 @@ loadComponant(compName, fn_callback){
 , loadCSSFile(file, id){
     var relpath = file.replace(/\.\/app/,'.')
     document.head.append(DCreate(LINK, {id:id, attrs:{href: relpath, rel:'stylesheet'}}))
-}
+  }
 
 }
 

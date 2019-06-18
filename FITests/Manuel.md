@@ -14,6 +14,7 @@
   * [Création d'assertions](#create_new_assertions)
     * [Options des assertions](#options_of_assert_function)
 * [Méthodes pratiques](#les_methodes_pratiques)
+  * [Simuler des touches clavier](#simulate_keyboard)
 * [Textes écrits dans le suivi](#textes_suivis)
   * [Cas entièrement à implémenter (`pending`)](#pending)
   * [Test à implémenter plus tard (`tester`)](#test_to_define)
@@ -352,6 +353,32 @@ test.after_case( () => { /* code à exécuter avant chaque cas */ })
 
 ```
 
+## Simuler des touches clavier {#simulate_keyboard}
+
+Pour simuler des touches clavier, on utilise :
+
+```javascript
+
+keyPress('<touche>'[, {options}])
+
+keyUp(idem)
+
+keyDown(idem)
+
+```
+
+On met dans les `options` les modifiers, par exemple `keyDown('n',{metaKey:true})`.
+
+Pour des tests plus clairs, on peut les utiliser en combinaison des actions :
+
+```javascript
+
+action("On joue CMD+N puis on confirme avec la touche Entrée", ()=>{
+    keyPress('n', {metaKey:true})
+    keyPress('Enter')
+  })
+
+```
 
 ## Textes écrits dans le suivi {#textes_suivis}
 

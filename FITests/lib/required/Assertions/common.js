@@ -3,6 +3,7 @@
 Object.assign(FITExpectation.prototype,{
 
   equals(value){return this.to_be(value)} // alias
+, is(value){return this.to_be(value)} // alias
 
 , to_be(value) {
     this.value = value

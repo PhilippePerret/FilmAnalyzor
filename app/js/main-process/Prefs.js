@@ -176,6 +176,7 @@ const Prefs = {
     ObjMenus.getMenu('option_edit_in_mini_writer').checked = this.get('option_edit_in_mini_writer')
     ObjMenus.getMenu('option_start_3secs_before_event').checked = this.get('option_start_3secs_before_event')
     ObjMenus.getMenu('option_lock_stop_points').checked = this.get('option_lock_stop_points')
+    ObjMenus.getMenu('options_run_tests_at_startup').checked = this.get('options_run_tests_at_startup')
   }
 }
 

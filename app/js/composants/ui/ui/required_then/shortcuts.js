@@ -35,12 +35,8 @@ Object.assign(UI, {
     }
 
     if(e.key === ESCAPE){
-      /**
-        // TODO Il faut traiter l annulation quand on est dans un champ
-        // de texte.
-      **/
-      // this.cancel.bind(this)()
-      // return stopEvent(e)
+      // TODO
+      F.notify("L'annulation dans un champ de texte n'est pas encore implémentée.")
     } else if(isTrue(e.metaKey)){
       // MÉTA
       // console.log("-> Touche META")

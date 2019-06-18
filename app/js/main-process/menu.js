@@ -624,7 +624,18 @@ const DATA_MENUS = [
                   execJsOnCurrent(`options.set('option_lock_stop_points',${c})`)
                 }
             }
-          , {type: 'separator'}
+          , {type:'separator'}
+          , {
+                label: 'Lancer les tests au démarrage'
+              , id: 'options_run_tests_at_startup'
+              , type: 'checkbox'
+              , checked: false
+              , click: () => {
+                  var c = ObjMenus.getMenu('options_run_tests_at_startup').checked ? 'true' : 'false'
+                  execJsOnCurrent(`options.set('options_run_tests_at_startup',${c})`)
+                }
+            }
+          , {type:'separator'}
           , {
                 label:    "Utiliser le miniwriter pour éditer les textes"
               , id:       'option_edit_in_mini_writer'

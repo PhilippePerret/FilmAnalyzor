@@ -38,7 +38,7 @@ get subject(){
 // Le message "est égal" ou "n'est pas égal", etc. en fonction de la positivité
 // de l'expectation
 positivise(what ,state){
-  let sujet = ` (${this.sujet}) `
+  let sujet = ` (${this.sujet}::${typeof(this.sujet)}) `
   switch (what) {
     case 'est':
       return {

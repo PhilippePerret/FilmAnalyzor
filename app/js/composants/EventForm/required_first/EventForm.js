@@ -152,7 +152,7 @@ static get videoController(){ return this.a.videoController }
 constructor(foo){
   this.isNew    = false
   this.analyse = this.a = current_analyse // pourra être redéfini plus tard
-  console.log("Instanciation de EventForm avec ",foo)
+  // console.log("Instanciation de EventForm avec ",foo)
   switch (typeof foo) {
     case STRstring:
       // <= Un type
