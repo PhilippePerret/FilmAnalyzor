@@ -4,14 +4,14 @@ describe("Création d'un event", function(){
 
   // On crée une nouvelle analyse vierge
   this.before( () => {
-    // console.log(JSON.stringify(new FITEventScene().data))
-    this.ca = new FITAnalyse({title:'Essai analyse', events: [
-        new FITEventScene().data
-      , new FITEventScene().data
-      , new FITEventScene().data
-    ]})
-    console.log("ca = ", this.ca)
-    this.ca.build()
+    // this.ca = new FITAnalyse({title:'Essai analyse', events: [
+    //     new FITEventScene().data
+    //   , new FITEventScene().data
+    //   , new FITEventScene().data
+    // ]})
+    // console.log("ca = ", this.ca)
+    // this.ca.build()
+    this.ca = FITAnalyse.create()
   })
 
   this.case("Création d'une idée au temps voulu", async () => {
