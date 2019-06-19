@@ -101,8 +101,9 @@ static filmHasSceneNearCurrentPos(){
 }
 
 // Pour obtenir un nouvel identifiant pour un nouvel event
+// Note : maintenant, c'est 1-start, il n'y a plus de zéro
 static newId(){
-  isDefined(this.lastId) || ( this.lastId = -1 )
+  isDefined(this.lastId) || ( this.lastId = 0 )
   return ++ this.lastId
 }
 
@@ -152,8 +153,8 @@ static get videoController(){ return this.a.videoController }
 constructor(foo){
   this.isNew    = false
   this.analyse = this.a = current_analyse // pourra être redéfini plus tard
-  // console.log("Instanciation de EventForm avec ",foo)
-  switch (typeof foo) {
+  // console.log("Instanciation de EventForm avec ",foo, typeof(foo))
+  switch (typeof(foo)) {
     case STRstring:
       // <= Un type
       // => C'est une création

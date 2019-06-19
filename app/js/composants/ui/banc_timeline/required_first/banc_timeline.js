@@ -1,10 +1,6 @@
 'use strict'
 
-
-
-
 const BancTimeline = {
-
 
   reset(){
     log.info("-> BancTimeline::reset")
@@ -145,7 +141,7 @@ const BancTimeline = {
 **/
 , append(ev) {
     var bte = new BancTimelineElement(ev)
-    BancTimeline.items.push(bte) // TODO Il faudrait le placer selon son temps
+    BancTimeline.items.push(bte)
     bte.place()
   }
 // ---------------------------------------------------------------------

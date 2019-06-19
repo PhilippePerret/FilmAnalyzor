@@ -9,9 +9,9 @@ const execSync = require('child_process').execSync
 
 global.FITAnalyse = class {
 
-  constructor(data){
-    this.pData = data || {}
-  }
+constructor(data){
+  this.pData = data || {}
+}
 
 get BUILDING_OPERATIONS(){return [
     'buildMainFolder'
@@ -20,7 +20,18 @@ get BUILDING_OPERATIONS(){return [
   , 'buildFilesFolder'
   , 'buildDocuments'
   , 'buildBrins'
+  , 'buildPersonnages'
 ]}
+
+/**
+  Chargement de l'analyse dans l'application
+  Utiliser `await ca.load()` dans le test pour attendre le chargement
+**/
+load(){
+  return new Promise((ok,ko) => {
+    FAnalyse.load(this.folder, ok)
+  })
+}
 
 /**
   Construction de l'analyse de test
@@ -53,9 +64,11 @@ buildDataFile(){
   fs.writeFileSync(this.dataFilePath, JSON.stringify(datajson))
 }
 // Construction du fichier des events
+// Note : il faut toujours que ce fichier existe
 buildEventsFile(){
-  if ( undefined === this.pData.events ) return
-  else if ( 'number' === typeof(this.pData.events) ) {
+  if ( undefined === this.pData.events ){
+    this.pData.events = []
+  } else if ( 'number' === typeof(this.pData.events) ) {
     var nombre = this.pData.events
     this.pData.events = []
     while ( nombre -- ) this.pData.events.push(FITEvent.create(this))
@@ -94,6 +107,20 @@ buildBrins(){
     console.error("Le fichier brin n'a pas pu être créé avec le path ", this.brinsFilePath)
   }
 }
+buildPersonnages(){
+  if (undefined === this.pData.personnages) return
+  if ( 'number' === typeof(this.pData.personnages) ) {
+    var nombre = this.pData.personnages
+    this.pData.personnages = []
+    while ( nombre -- ) { this.pData.personnages.push(new FITPersonnage(this)) }
+  }
+  // on peut enregistrer les données personnages
+  let d = this.pData.personnages.map( perso => perso.data() )
+  fs.writeFileSync(this.personnagesFilePath, YAML.dump(d))
+  if ( ! fs.existsSync(this.personnagesFilePath) ) {
+    console.error("Le fichier personnages n'a pas pu être créé avec le path ", this.personnagesFilePath)
+  }
+}
 // Construction du dossier principal
 buildMainFolder(){
   fs.existsSync(this.path) && this.constructor.rmdir(this.path)
@@ -125,6 +152,7 @@ get path(){
 get eventsFilePath()  { return path.join(this.path,'events.json')}
 get dataFilePath()    { return path.join(this.path,'data.json')}
 get brinsFilePath()   { return path.join(this.filesFolderPath,'dbrins.yaml')}
+get personnagesFilePath()   { return path.join(this.filesFolderPath,'dpersonnages.yaml')}
 get exportFolderPath(){ return path.join(this.path,'export') }
 get filesFolderPath() { return path.join(this.path,'analyse_files')
 }
@@ -133,18 +161,21 @@ get filesFolderPath() { return path.join(this.path,'analyse_files')
 //  CLASSE FITAnalyse
 
 static create(data){
-  if ( undefined === data ) {
-    // Quand aucune donnée n'a été donnée, il faut créer une analyse tout
-    // à fait aléatoire.
-    data = {
-        events:     1 + Math.rand(9)
-      , scenes:     1 + Math.rand(4)
-      , brins:      1 + Math.rand(3)
-      , documents:  1 + Math.rand(3)
-    }
+  // On calcule des données par défaut que les données transmises remplaceront
+  let dataDefaut = {
+      events:       1 + Math.rand(9)
+    , scenes:       1 + Math.rand(4)
+    , personnages:  4 + Math.rand(4)
+    , brins:        1 + Math.rand(3)
+    , documents:    1 + Math.rand(3)
   }
-  // console.log("Données pour construire la fixture d'analyse : ", data)
-  let ca = new FITAnalyse(data)
+  let finalData
+  if ( data !== EMPTY ){
+    data = data || {}
+    finalData = Object.assign({}, dataDefaut, data)
+  }
+  // console.log("Données pour construire la fixture d'analyse : ", finalData)
+  let ca = new FITAnalyse(finalData)
   ca.build()
   return ca
 }

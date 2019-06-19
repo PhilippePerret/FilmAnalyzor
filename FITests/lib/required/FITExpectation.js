@@ -17,8 +17,14 @@ global.wait = function(wTime, wMsg){
 
 global.FITExpectation = class {
 constructor(sujet, options){
-  this.sujet    = sujet
-  this.options  = options || {}
+  this.sujet = sujet
+
+  if ( 'string' === typeof options) {
+    // C'est le titre seul qui a été donné
+    this.options = {subject:options}
+  } else {
+    this.options = options || {}
+  }
 
   this.value    = undefined
 
@@ -55,7 +61,7 @@ set subject(v){this._subject = v}
 // Helper pour construire les paramètres de l'appel à `assert`
 assertise(suj, verbe, complement_verbe, exp){
   const msgs = this.positivise(verbe, complement_verbe)
-  const temp = `${suj} %{msg} ${exp}`
+  const temp = `${suj} %{msg} ${exp||''}`.trim()
   return [T(temp, {msg:msgs.success}), T(temp, {msg:msgs.failure})]
 }
 // Le message "est égal" ou "n'est pas égal", etc. en fonction de la positivité
@@ -73,8 +79,17 @@ positivise(what,state){
           success: `${this.positive?'existe bien':'n’existe pas'} ${state}`
         , failure: `${this.positive?'devrait exister':'ne devrait pas exister'} ${state}`
       }
+    case 'contient':
+      return {
+          success: `${this.positive?'contient bien':'ne contient pas'} ${state}`
+        , failure: `${this.positive?'devrait contenir':'ne devrait pas contenir'} ${state}`
+      }
     default:
-
+      console.error(`Dans "positivise", les cas ne connaissent pas le verbe "${what}".`)
+      return {
+          success: 'PHRASE SUCCÈS INCONNUE'
+        , failure: 'PHRASE ÉCHEC INCONNUE'
+      }
   }
 }
 

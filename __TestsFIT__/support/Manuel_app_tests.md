@@ -19,7 +19,16 @@ const ca = FITAnalyse.create()
 
 ```
 
-Si la méthode `create` ne reçoit aucun argument comme ci-dessus, ce sera une analyse créée avec toutes les valeurs par défaut, et un nombre aléatoires d'éléments (events, brins, etc.).
+Si la méthode `create` ne reçoit aucun argument comme ci-dessus, ce sera une analyse créée avec toutes les valeurs par défaut, et un nombre aléatoires d'éléments (events, brins, personnages etc.).
+
+Pour obtenir une analyse vraiment vide (mais qui contiendra une vidéo, un fichier data et sera donc valide), ajouter l'argument `EMPTY` :
+
+```javascript
+
+const ca = FITAnalyse.create(EMPTY)
+// => Fixture sans éléments
+
+```
 
 Sinon, on peut définir toutes les valeurs en ajoutant un hash :
 
@@ -54,11 +63,14 @@ Les propriétés principales sont les suivants :
 : OU nombre de ces events.
 
 `brins`
-: Liste `Array` des brins (fixtures obtenues à l'aide de [`FITBrins`](#fixtures_brins))
+: Liste `Array` des brins (fixtures obtenues à l'aide de [`FITBrin`](#fixtures_brins))
 : OU nombre de brins à obtenir.
 
 `documents`
-: Liste `Array` des documents (fixtures obtenues à l'aide de [`FITDocuments`](#fixtures_documents))
+: Liste `Array` des documents (fixtures obtenues à l'aide de [`FITDocument`](#fixtures_documents))
+
+`personnages`
+: Liste `Array` des données personnages (fixture obtenue à l'aide de [`FITPersonnage`](#fixtures_personnages))
 
 
 On peut également définir :
@@ -89,6 +101,36 @@ On peut également définir :
 
 `stopPoints`
 : Liste `Array` des trois derniers stop-points.
+
+### Lancement de l'analyse après création {#run_fitanalyse}
+
+```javascript
+
+this.ca = FITAnalyse.create()
+await this.ca.load()
+
+```
+
+> Note : ne pas oublier le `await` qui va bien attendre la fin du chargement de l'analyse avant de poursuivre, c'est-à-dire avant de commencer les tests.
+
+Ce code peut être mis dans le `.before` du test :
+
+```javascript
+
+describe("Un test avec une nouvelle analyse", () => {
+
+  this.before(async () => {
+    this.ca = FITAnalyse.create()
+    await this.ca.load()
+  })
+
+  this.case("Étude d'un premier cas", async () => {
+
+    /* Ici, on peut tester `this.ca` */
+  })
+})
+
+```
 
 
 ### Obtenir les éléments de l'analyse-fixture {#get_elements_analyse}
@@ -161,16 +203,49 @@ Les données communes sont :
 `associates`
 : Les éléments de l'analyse associés à l'event. Cf. [Composition de la donnée `associates`](#associates_data_composition)
 
-### Fixtures Scènes `FITEventsScenes` {#fixtures_scenes}
+### Fixtures Scènes `FITEventScene` {#fixtures_scenes}
 
-### Fixtures Documents `FITDocuments` {#fixtures_documents}
+### Fixtures Personnages avec `FITPersonnage` {#fixtures_personnages}
+
+```javascript
+
+const ca = FITAnalyse.create(EMPTY)
+const perso = FITPersonnage.create(ca[, {data}])
+
+```
+
+Où data peut définir :
+
+`id`
+: Identifiant du personnage, en lettres.
+
+`dim`
+: Diminutif @ du personnage. Pour utiliser `@<dim>` dans les textes au lieu du nom entier.
+
+`pseudo`
+: Pseudo du personnage, utilisé dans la plupart des textes.
+
+`prenom`, `nom`
+: Nom et Prénom du personnage.
+
+`ages`
+: L'âge (Integer seul) ou liste d'âges (Array d'integers) dans l'histoire pour le personnage.
+
+`dimensions`
+: Dimensions du personnage.
+
+`fonctions`
+: Fonction(s) du personnage dans le récit.
+
+
+### Fixtures Documents `FITDocument` {#fixtures_documents}
 
 Pour obtenir une fixture de document, il suffit de faire :
 
 ```javascript
 
 const ca  = FITAnalyse.create()
-const doc = FITDocument.create()
+const doc = FITDocument.create(ca)
 
 ```
 

@@ -1,7 +1,8 @@
 'use strict'
 
 /**
-  Ajout d'un event
+  AJOUT D'UN EVENT
+  ================
 
   Noter que maintenant la procédure ne s'occupe plus du chargement de
   l'analyse (depuis la version 0.5.2).

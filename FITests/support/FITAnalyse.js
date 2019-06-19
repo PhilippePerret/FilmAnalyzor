@@ -63,7 +63,7 @@ const FITAnalyse = {
       fs.writeFileSync(this.analyse.eventsFilePath,'[]','utf8')
       this.analyse._events  = []
       this.analyse.ids      = {}
-      EventForm.lastId      = -1
+      EventForm.lastId      = 0
       $('#reader').html('')
       $('.form-edit-event').remove() // toutes
     }

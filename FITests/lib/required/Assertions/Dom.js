@@ -12,7 +12,7 @@
 
 **/
 
-const DOM = {
+global.DOM = {
   async exists(el){
     const o = new Dom(el)
     const res = await o.exists()
@@ -83,18 +83,7 @@ Object.assign(FITExpectation.prototype,{
       , this.options
     )
   }
-// , is_visible(){
-//     let idom    = new Dom(this.sujet)
-//     const pass  = idom.is_visible()
-//     const msgs  = this.positivise('est', 'visible')
-//     assert(
-//         pass === this.positive
-//       , `${this.subject} ${msgs.success} dans la page.`
-//       , `${this.subject} ${msgs.failure} dans la page.`
-//       , this.options
-//     )
-//   }
 })
 
 module.exports.Dom = Dom
-module.exports.DOM = DOM
+// module.exports.DOM = DOM

@@ -39,6 +39,11 @@ global.FITEvent = class {
     if (len && tit.length > len ) tit = tit.substring(0, len)
     return tit
   }
+
+  static getAssociates(analyse){
+    return null // pour le moment
+    // TODO Implémenter
+  }
 // ---------------------------------------------------------------------
 // INSTANCE
 constructor(data){
@@ -49,15 +54,16 @@ get data(){ return this.defaultData }
 get defaultData(){
   if (undefined === this._defdata) {
     this._defdata = {
-      id:       this.pData.id       || this.c.newId()
-    , time:     this.pData.time     || this.c.random(60*10)
-    , titre:    this.pData.titre    || this.c.newTitre()
-    , content:  this.pData.content  || this.pData.description || this.c.newContent(100)
-    , associates: this.pData.associates || null
+      id:         this.pData.id       || this.c.newId()
+    , time:       this.pData.time     || this.c.random(60*10)
+    , titre:      this.pData.titre    || this.c.newTitre()
+    , content:    this.pData.content  || this.pData.description || this.c.newContent(100)
+    , associates: this.associates
     }
   }
   return this._defdata
 }
+get associates(){return this.pData.associates || ( this.pData.associates = this.c.getAssociates(this.a))}
 get c(){return this.constructor}
 get a(){return this.c.a }
 }

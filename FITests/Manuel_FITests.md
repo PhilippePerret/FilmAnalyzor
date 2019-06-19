@@ -186,6 +186,34 @@ expect('12').strictly.equals(12)
 
 ```
 
+## Les expectations {#les_expectations}
+
+On appelle ici « expectation » la partie d'une assertion complète. Elle se résume à :
+
+```javascript
+
+expect(sujet[, options])
+
+```
+
+Le sujet peut être un [sujet complexe](#complexes_subjects) ou tout autre élément qui peut être comparé.
+
+`options`, pour le moment, ne sert qu'à décrire comment sera présenté le sujet dans les messages. Au plus simple, on peut mettre simplement en string la valeur dont l'on veut voir désigner le sujet.
+
+Par exemple :
+
+```javascript
+
+expect(2+2).is(4)
+//=> écrit "4 est bien égal à 4"
+
+expect(2+2,'2+2').is(4)
+// ou
+expect(2+2,{sujet:'2+2'}).is(4)
+// => écrivent "2+2 est bien égal à 4"
+
+```
+
 ## Les Assertions {#les_assertions}
 
 Les assertions s'utilisent de cette manière :
@@ -228,7 +256,7 @@ FITExpectation.add(MesAssertions)
 
 ```
 
-Noter qu'avec la définition ci-dessus, les assertions seront utilisables pour n'importe quel sujet. Pour faire des assertions propres à des sujets particuliers, utiliser les [sujets complexes](#complexes_subjects)
+Noter qu'avec la définition ci-dessus, les assertions seront utilisables pour n'importe quel sujet. Pour faire des assertions propres à des sujets particuliers, utiliser les [sujets complexes](#complexes_subjects).
 
 Ensuite, on peut tout simplement faire :
 
@@ -357,7 +385,9 @@ equals(expected, options){
 
 ### Sujets complexes (`expect(sujet)`) {#complexes_subjects}
 
-Les « sujets complexes » permettent de définir des sujets propres à l'application avec tout ce qu'il faut pour les estimer. Imaginons par exemple qu'une classe `EventForm` permette de générer des formulaires (instances). Soit `EventForm.current`, dans l'application, la propriété qui retourne l'instance du formulaire au premier plan, le formulaire courant. On peut faire un sujet de ce formulaire courant :
+Les « sujets complexes » sont une des fonctionnalités les plus puissantes des *FITests*. Il permet de définir un comportement propre à l'application de façon très simple.
+
+Les « sujets complexes » permettent de définir des sujets propres à l'application — donc des éléments à mettre en premier argument d'un `expect` — avec tout ce qu'il faut pour les estimer. Imaginons par exemple qu'une classe `EventForm` permette de générer des formulaires (instances). Soit `EventForm.current`, dans l'application, la propriété qui retourne l'instance du formulaire au premier plan, le formulaire courant. On peut faire un sujet de ce formulaire courant :
 
 ```javascript
 
@@ -404,8 +434,8 @@ Dans le cas où la valeur doit changer dynamiquement, on peut faire une sous-cla
 
 class MonSousSujet extends FITSubject {
   constructor(){
-    this.name = 'Mon sous-sujet'
     super(this.name)
+    this.name = 'Mon sous-sujet'
     ///...
     this.value = // une valeur dynamique, par exemple la fenêtre courante
     this.assertions = {

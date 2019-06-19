@@ -144,9 +144,9 @@ observe(options){
 
   cont.on(STRclick,     this.onClickOnSlider.bind(this))
   cont.on('dblclick',  this.onDoubleClickOnSlider.bind(this))
-  cont.on('mousemove', this.onMoveOnSlider.bind(this))
-  cont.on('mouseover', this.onHoverSlider.bind(this))
-  cont.on('mouseout',  this.onMouseOutSlider.bind(this))
+  cont.on(STRmousemove, this.onMoveOnSlider.bind(this))
+  cont.on(STRmouseover, this.onHoverSlider.bind(this))
+  cont.on(STRmouseout,  this.onMouseOutSlider.bind(this))
 
   // Taille du cursor (sauf si la vidéo principale)
   if(!options.height && !this.container.parentNode.id === 'section-video'){

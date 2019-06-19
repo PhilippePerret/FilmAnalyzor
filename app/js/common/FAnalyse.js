@@ -640,7 +640,7 @@ set eventsIO(eventsData){
   log.info("-> FAnalyse#[set]eventsIO")
   var my = this
     , ev
-  EventForm.lastId = -1
+  EventForm.lastId = 0
   my.ids    = {}
   my.events = eventsData.map(eventData => {
     ev = FAEvent.instanceOf(eventData)
