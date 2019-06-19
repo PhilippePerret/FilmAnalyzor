@@ -167,8 +167,167 @@ const BancTimeline = {
     this.cursor.css(STRleft,`${(this.t2p(t.vtime))}px`)
   }
 
+// ---------------------------------------------------------------------
+//  LA MAP DE LA TIMELINE
+
+/**
+  Définition de la "map" du banc timeline. L'idée est de faire une carte
+  qui contienne les positions des éléments sur le banc, pour un placement
+  plus efficace des éléments. Au lieu de parcourir tous les éléments dans le
+  DOM, on parcourera une Map.
+
+  On profite aussi de cette boucle pour placer les items sur des rows sans
+  chevauchement.
+**/
+, defineMap(){
+    var row
+    this.map = new Map()
+    // Pour connaitre les rangées occupées à un moment de la boucle sur tous
+    // les éléments, on tient à jour cette collection busyRows où les clés
+    // sont les indices de rangée (de 1 à SCENE_ROW) et la valeur est true (si
+    // la rangée est libre) ou false (si la rangée est occupée)
+    let busyRows = new Map()
+    let indexSceneRow = BancTimelineElement.SCENE_ROW
+    var i = indexSceneRow
+    while ( --i > 0 ) busyRows.set(indexSceneRow - i, null)
+
+    // On peut boucler sur chaque items ({BancTimelineElement})
+    for (var item of this.items) {
+
+      // Déterminer la rangée sur laquelle poser l'élément courant +item+
+      var row = undefined
+
+      if ( item.event.isScene ) {
+        // Si c'est une scène, la rangée SCENE_ROW est réservée à son
+        // placement.
+        row = indexSceneRow
+      } else {
+        for ( var [irow, drow] of busyRows) {
+          if ( isNull(drow) ) {
+            // Dans le cas où la rangée analysée est vide, on prend simplement
+            // son indice pour l'appliquer à la rangée de l'item et on définit
+            // la fin de l'utilisation de cette rangée.
+            row = irow
+            break
+          } else {
+            // La rangée d'indice +irow+ est utilisée. Deux cas peuvent se
+            // produire ici :
+            // CAS 1: le temps de l'élément à placer est inférieur au temps
+            //        de fin d'utilisation de la rangée => Il faut essayer
+            //        avec la suivante
+            // CAS 2: le temps de l'élément à placer est supérieur au temps
+            //        de fin d'utilisation de la rangée => on peut placer
+            //        l'élément dessus est définir le temps d'utilisation de
+            //        fin de l'élément
+            if ( item.event.startAt > drow.end ) { // CAS 2
+              row = irow
+              break
+            } else { // CAS 1
+              // On doit essayer avec le suivant
+            }
+          }
+        }
+      }
+      if ( row ) {
+        busyRows.set(row, { end: item.event.endAt } )
+        item.row = row
+        // console.log("Rangée pour item:", item, row)
+      } else {
+        log.error(`Impossible de trouver une rangée libre pour ${item}`)
+      }
+    } // fin de boucle sur tous les éléments à placer (items)
+
+  }
+
+// ---------------------------------------------------------------------
+//  MÉTHODES DE CALCUL
+
+/**
+  Méthode qui reçoit un nombre de pixels +x+ correspondant à une coordonnée
+  dans le ban de timeline et retourne le temps correspondant en fonction du
+  zoom appliqué.
+**/
+, p2t(x){
+    return (x * this.coefP2T()).round(2)
+  }
+
+/**
+  Inversement, reçoit un temps et retourne un nombre de pixels
+
+  Permet de placer les éléments sur la timeline en fonction de leur temps.
+**/
+, t2p(t){
+    // console.log({
+    //   operation: 't2p'
+    // , 'temps donné': t
+    // , 'coefficiant T2P': this.coefT2P()
+    // , return: Math.round(t * this.coefT2P())
+    // })
+    return Math.round(t * this.coefT2P())
+  }
+// ---------------------------------------------------------------------
+//  MÉTHODES DE CALCUL
+
+, coefP2T(){
+    return this._coefp2t || defP(this,'_coefp2t', this.calcCoefP2T())
+  }
+, coefT2P(){ return this._coeft2p || defP(this,'_coeft2p', this.calcCoefT2P())}
+
+// ---------------------------------------------------------------------
+// Méthodes de calculs
+
+, calcCoefP2T(){
+    let duree = UI.video.duration
+      , coef  = ( duree / this.width ) / this.zoom
+    return coef
+  }
+
+, calcCoefT2P(){
+    log.info('-> BancTimeline::calcCoefT2P')
+    let duree = UI.video.duration
+    try {
+      this.width    || raise('la largeur du banc est nulle.')
+      this.a.duree  || raise('La durée du film est nulle.')
+      this.zoom     || raise('Le zoom du banc est nul.')
+      // Le calcul
+      this._coeft2p = (this.width / duree) * this.zoom
+    } catch (e) {
+      raise(`Impossible de calculer le coefficiant BancTimeline time2pixels : ${e}`)
+    }
+    // console.log({
+    //   operation:'Calcul coef T2P (temps -> pixels)'
+    // , width: this.width
+    // , zoom: this.zoom
+    // , duree: duree
+    // , coefficiant: this._coeft2p
+    // })
+    return this._coeft2p
+  }
+
+, UI: {
+  zoom(deca){ // UI.zoom
+    this.setBTZoom(0.2 * (deca||1))
+    BancTimeline.items.map(bte => bte.repositionne())
+    console.log("ZOOM:", BancTimeline.zoom)
+  }
+, dezoom(deca){ // UI.dezoom
+    this.setBTZoom(-0.2* (deca||1))
+    BancTimeline.items.map(bte => bte.repositionne())
+    console.log("ZOOM:", BancTimeline.zoom)
+  }
+, setBTZoom(value){ // UI.setBTZoom
+    delete BancTimeline._coefp2t
+    delete BancTimeline._coeft2p
+    BancTimeline.zoom += value
+    if(BancTimeline.zoom < 0) BancTimeline.zoom = 0.1
+  }
+}
+
 
 }// /const BancTimeline
+
+
+
 Object.defineProperties(BancTimeline, {
   // Propriétés diverses
   a:{get(){return current_analyse}}

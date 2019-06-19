@@ -41,7 +41,11 @@ writeFailure(){
   Cette méthode est utile pour l'erreur produite en cas d'erreur
 **/
 get finalFailureMessage() {
-  return this.options.failure || this.failure_message
+  var msg = this.options.failure || this.failure_message
+  if ( this.options && this.options.details ){
+    msg += `\n${this.options.details.join(', ')}`
+  }
+  return msg
 }
 
 }// /class
