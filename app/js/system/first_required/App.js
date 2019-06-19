@@ -26,9 +26,9 @@ const App = {
     UIBuilder.init()
 
     log.info("--- APP READY ---")
-    log.info("    MODE_TEST = ", MODE_TEST || 'false')
-    if ( MODE_TEST ) {
-      // Tests.initAndRun()
+    log.info("    MODE_TEST = ", (MODE_TEST||Prefs.get('run_tests_at_startup')) || 'false')
+    if ( MODE_TEST || Prefs.get('run_tests_at_startup')) {
+      App.runtests()
     } else {
       FAnalyse.checkLast()
     }

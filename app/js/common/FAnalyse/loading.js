@@ -209,11 +209,6 @@ load(){
     // jouer du code pour essai à la toute fin
     WhenAllIsReallyReady()
 
-    // On essaie de lancer les tests là
-    if ( MODE_TEST ){
-      Tests.initAndRun()
-    }
-
     log.info('<- FAnalyse.onVideoReady')
   }
 

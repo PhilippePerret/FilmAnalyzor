@@ -877,6 +877,14 @@ var opt = current_analyse.options.get('<id de l’option>')
 
 ```
 
+On peut aussi faire :
+
+```javascript
+
+const opt = Prefs.get('<id_options>')
+
+```
+
 ### Ajout de préférence analyse {#add_analyse_pref}
 
 1. Dans le fichier `./app/js/system/Options.js`, ajouter l'option à la donnée `Options.DEFAULT_DATA`.

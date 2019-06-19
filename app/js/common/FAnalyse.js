@@ -23,13 +23,9 @@ static set current(v){this._current = v}
 // et la charger si elle est définie.
 // Sauf si les tests sont demandés au chargement (c'est une autre option)
 static checkLast(){
-  var dprefs = Prefs.get(['load_last_on_launching', 'last_analyse_folder', 'options_run_tests_at_startup'])
+  var dprefs = Prefs.get(['load_last_on_launching', 'last_analyse_folder', 'run_tests_at_startup'])
   // console.log("prefs:", dprefs)
-  console.log("dprefs['options_run_tests_at_startup']", dprefs['options_run_tests_at_startup'])
-  if ( dprefs['options_run_tests_at_startup'] ){
-    console.log("Je dois lancer les tests, donc je ne charge pas la dernière analyse")
-  }
-  if (!dprefs['load_last_on_launching'] || dprefs['options_run_tests_at_startup']) return
+  if (!dprefs['load_last_on_launching'] || dprefs['run_tests_at_startup']) return
   if (!dprefs['last_analyse_folder']) return
   var apath = path.resolve(dprefs['last_analyse_folder'])
   if(fs.existsSync(apath)){
@@ -39,7 +35,7 @@ static checkLast(){
 
   } else {
     // console.log("Impossible de trouver le dossier :", apath)
-    F.error(`Impossible de trouver le dossier de l'analyse à charger :<br>${apath}`)
+    F.error(T('unfound-analyse-folder',{path:apath}))
     Prefs.set({'last_analyse_folder':null})
   }
 }
@@ -176,11 +172,12 @@ get protocole(){return this._protocole||defP(this,'_protocole',new FAProtocole(t
 onVideoLoaded(){
   // console.log("-> FAnalyse#onVideoLoaded")
 
+  // On peut indiquer aux menus qu'il y a une analyse chargée
+  ipc.send('current-analyse-exist', true)
+
   // On peut marquer l'état d'avancement de l'analyse
   this.setupState()
 
-  // On peut indiquer aux menus qu'il y a une analyse chargée
-  ipc.send('current-analyse-exist', true)
   // Si une fonction a été définie pour la fin du chargement, on
   // peut l'appeler maintenant.
   isFunction(this.methodeAfterLoading) && this.methodeAfterLoading()

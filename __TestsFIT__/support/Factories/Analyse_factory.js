@@ -150,7 +150,6 @@ static create(data){
 }
 
 static rmdir(fpath){
-  console.log("Destruction du dossier ", fpath)
   execSync(`rm -rf "${path.resolve(fpath)}"`)
   if ( fs.existsSync(fpath) ) {
     console.error("Le dossier suivant n'a pas pu être détruit : ", fpath)

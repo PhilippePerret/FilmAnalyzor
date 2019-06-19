@@ -627,12 +627,12 @@ const DATA_MENUS = [
           , {type:'separator'}
           , {
                 label: 'Lancer les tests au démarrage'
-              , id: 'options_run_tests_at_startup'
+              , id: 'run_tests_at_startup'
               , type: 'checkbox'
               , checked: false
               , click: () => {
-                  var c = ObjMenus.getMenu('options_run_tests_at_startup').checked ? 'true' : 'false'
-                  execJS(`FAnalyse.setGlobalOption('options_run_tests_at_startup',${c})`)
+                  var c = ObjMenus.getMenu('run_tests_at_startup').checked ? 'true' : 'false'
+                  execJS(`FAnalyse.setGlobalOption('run_tests_at_startup',${c})`)
                 }
             }
           , {type:'separator'}

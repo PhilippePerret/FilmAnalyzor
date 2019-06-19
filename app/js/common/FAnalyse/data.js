@@ -139,6 +139,9 @@ Object.assign(FAnalyse.prototype, {
     // Note : filmEndTime essaie déjà d'être défini en prenant
     // la fin de la vidéo. Mais si la vidéo n'est pas définie,
     // filmEndTime ne l'est pas non plus.
+    if ( isNaN(UI.video.duration) ) {
+      console.error("Problème avec la vidéo : sa durée est NaN…")
+    }
     return (this.filmEndTime||UI.video.duration) - this.filmStartTime
   }
 

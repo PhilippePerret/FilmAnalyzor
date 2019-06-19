@@ -18,7 +18,7 @@ static get DEFAULT_DATA(){
   return {
       'option_start_when_time_choosed':       true
     , 'option_lock_stop_points':              false
-    // , 'options_run_tests_at_startup':         false // globale
+    // , 'run_tests_at_startup':         false // globale
     , 'video_speed':                          1
     , 'ui.section.reader.width':              null
     , 'ui.section.timeline.height':           null
@@ -136,7 +136,7 @@ setInMenus(){
   let set_option = 'set-option'
   ipc.send(set_option, {menu_id: 'option_start_when_time_choosed', property:STRchecked, value: this.startWhenTimeChosen})
   ipc.send(set_option, {menu_id: 'option_lock_stop_points', property:STRchecked, value: this.lockStopPoints})
-  ipc.send(set_option, {menu_id: 'options_run_tests_at_startup', property:STRchecked, value: this.lockStopPoints})
+  ipc.send(set_option, {menu_id: 'run_tests_at_startup', property:STRchecked, value: this.lockStopPoints})
   ipc.send(set_option, {menu_id: 'option_start_3secs_before_event', property:STRchecked, value: this.start3SecondsBefore})
   // Options propres à l'analyse courante
   let midSize = VideoController.VIDEO_SIZES[this.videoSize] ? this.videoSize : 'custom'
@@ -157,7 +157,7 @@ get videoSpeed(){return this.get('video_speed')}
 set videoSpeed(v){this.set('video_speed', v)}
 get startWhenTimeChosen(){return !!this.get('option_start_when_time_choosed')}
 get lockStopPoints(){return !!this.get('option_lock_stop_points')}
-get runTestsAtStartUp(){return !!this.get('options_run_tests_at_startup')}
+get runTestsAtStartUp(){return !!this.get('run_tests_at_startup')}
 get start3SecondsBefore(){return !!this.get('option_start_3secs_before_event')}
 
 // /fin valeurs d'options

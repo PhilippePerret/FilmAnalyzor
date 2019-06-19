@@ -22,6 +22,7 @@ const ERRORS = {
 , "--- ANALYSE ---":""
 , "analyse-locked-no-save": "L'analyse est verrouillée, impossible de la modifier."
 , "invalid-folder": "Le dossier \"%{fpath}\" n’est pas un dossier d’analyse valide."
+, "unfound-analyse-folder": "Le dossier d'analyse \"%{path}\" est introuvable."
 , "already-analyse-folder": "Ce dossier est déjà un dossier d'analyse ! Utiliser le menu « Ouvrir… » pour l'ouvrir."
 
 , "--- FILM ---":""

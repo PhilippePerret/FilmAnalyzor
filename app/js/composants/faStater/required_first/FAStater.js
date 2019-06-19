@@ -186,7 +186,6 @@ const FAStater = {
   }
 
 , calcAndShowEventsCount(){
-    var eventsCount =
 
     this.eventsCountExpected = 2000
     this.eventsCountActual   = this.a.events.length
