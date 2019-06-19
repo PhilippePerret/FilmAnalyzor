@@ -463,21 +463,21 @@ onEndMove(e){
   Vérification de la taille de la fenêtre, pour qu'elle ne dépasse jamais
 **/
 checkSize(){
-    let top     = this.jqObj.position().top
-      , height  = this.jqObj.outerHeight()
+  let top     = this.jqObj.position().top
+    , height  = this.jqObj.outerHeight()
 
-    if ( top + height > H ) {
-      this.jqObj.css({top:'0px'})
-      if ( isNotEmpty(this.jqObj.find('> .body')) ) {
-        this.jqObj.find('> .body').css('height',`${H-120}px`)
-      } else if ( isNotEmpty(this.jqObj.find('> form')) ) {
-        this.jqObj.find('> form').css('height',`${H-80}px`)
-      } else {
-        this.jqObj.css('height',`${H-80}px`)
-      }
+  if ( top + height > H ) {
+    this.jqObj.css({top:'0px'})
+    if ( isNotEmpty(this.jqObj.find('> .body')) ) {
+      this.jqObj.find('> .body').css('height',`${H-120}px`)
+    } else if ( isNotEmpty(this.jqObj.find('> form')) ) {
+      this.jqObj.find('> form').css('height',`${H-80}px`)
+    } else {
+      this.jqObj.css('height',`${H-80}px`)
     }
-
   }
+
+}
 /**
   Pour procéder au swiping
 

@@ -21,10 +21,15 @@ static set current(v){this._current = v}
 
 // Voir si les préférences demandent que la dernière analyse soit chargée
 // et la charger si elle est définie.
+// Sauf si les tests sont demandés au chargement (c'est une autre option)
 static checkLast(){
-  var dprefs = Prefs.get(['load_last_on_launching', 'last_analyse_folder'])
+  var dprefs = Prefs.get(['load_last_on_launching', 'last_analyse_folder', 'options_run_tests_at_startup'])
   // console.log("prefs:", dprefs)
-  if (!dprefs['load_last_on_launching']) return
+  console.log("dprefs['options_run_tests_at_startup']", dprefs['options_run_tests_at_startup'])
+  if ( dprefs['options_run_tests_at_startup'] ){
+    console.log("Je dois lancer les tests, donc je ne charge pas la dernière analyse")
+  }
+  if (!dprefs['load_last_on_launching'] || dprefs['options_run_tests_at_startup']) return
   if (!dprefs['last_analyse_folder']) return
   var apath = path.resolve(dprefs['last_analyse_folder'])
   if(fs.existsSync(apath)){
@@ -207,7 +212,12 @@ init(){
   this.setMarkModified()
 
   if (this.videoPath){
-    this.videoController.load(this.videoPath)
+    const fullVideoPath = path.resolve(this.folder, this.videoPath)
+    if ( fs.existsSync(fullVideoPath) ) {
+      this.videoController.load(fullVideoPath)
+    } else {
+      F.error(T('unfound-video-path', {path: this.videoPath}))
+    }
   } else {
     F.error(T('video-path-required'))
     this.onVideoLoaded()

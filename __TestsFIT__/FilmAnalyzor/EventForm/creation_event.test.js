@@ -3,15 +3,9 @@
 describe("Création d'un event", function(){
 
   // On crée une nouvelle analyse vierge
-  this.before( () => {
-    // this.ca = new FITAnalyse({title:'Essai analyse', events: [
-    //     new FITEventScene().data
-    //   , new FITEventScene().data
-    //   , new FITEventScene().data
-    // ]})
-    // console.log("ca = ", this.ca)
-    // this.ca.build()
-    this.ca = FITAnalyse.create()
+  this.before(async () => {
+    this.ca = FITAnalyse.create({events: 0})
+    await FAnalyse.load(this.ca.path)
   })
 
   this.case("Création d'une idée au temps voulu", async () => {

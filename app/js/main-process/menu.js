@@ -610,7 +610,7 @@ const DATA_MENUS = [
               , enabled: true
               , click: () => {
                   var c = ObjMenus.getMenu('option_start_when_time_choosed').checked ? 'true' : 'false'
-                  execJsOnCurrent(`options.set('option_start_when_time_choosed',${c})`)
+                  execJS(`FAnalyse.setGlobalOption('option_start_when_time_choosed',${c})`)
                 }
             }
           , {type:'separator'}
@@ -632,7 +632,7 @@ const DATA_MENUS = [
               , checked: false
               , click: () => {
                   var c = ObjMenus.getMenu('options_run_tests_at_startup').checked ? 'true' : 'false'
-                  execJsOnCurrent(`options.set('options_run_tests_at_startup',${c})`)
+                  execJS(`FAnalyse.setGlobalOption('options_run_tests_at_startup',${c})`)
                 }
             }
           , {type:'separator'}

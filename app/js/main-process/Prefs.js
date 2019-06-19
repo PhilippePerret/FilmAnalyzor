@@ -25,10 +25,10 @@ const fs    = require('fs')
 const GOTODATA = require('../system/prefs/gotodata')
 
 const USER_PREFS_DEFAULT = {
-    'load_last_on_launching':   true
-  , 'last_analyse_folder':      null
-  , 'option_duree_scene_auto':  true
-  // Définition des raccourcis pour se déplacer avec les flèches
+    'load_last_on_launching'      : true
+  , 'last_analyse_folder'         : null
+  , 'option_duree_scene_auto'     : true
+  , 'options_run_tests_at_startup': false
 }
 for(var dsc of GOTODATA){
   USER_PREFS_DEFAULT[`goto-${dsc.type}`] = dsc.dataArrowComb
@@ -82,6 +82,7 @@ const Prefs = {
     *   Soit {<clé pref>: {type: <'user'|'analyse'>, value: <valeur>}, ...}
     */
 , set(anyPref, kpref, vpref){
+    let forPrefs = anyPref === 'user'
     if ('string' === typeof anyPref){
       switch (anyPref) {
         case 'analyse':
@@ -113,7 +114,8 @@ const Prefs = {
         this.set(type, kpref, valu)
       }
     }
-    this.modified = true
+    if ( forPrefs ) this.save() // maintenant on sauve tout de suite
+    else this.modified = true
   }
 
   /**
@@ -133,7 +135,9 @@ const Prefs = {
    * Sauver les préférences
    */
 , save(){
+    console.log("-> Prefs.save", this.userPrefs)
     fs.writeFileSync(this.userPrefsPath, JSON.stringify(this.userPrefs), 'utf8')
+    console.log("<- Prefs.save")
   }
 
   /**
@@ -180,7 +184,6 @@ const Prefs = {
   }
 }
 
-
 /**
  * Pour les préférences
  */
@@ -189,6 +192,7 @@ ipc.on('get-pref', (ev, data) => {
   ev.returnValue = Prefs.get(data)
 })
 ipc.on('set-pref', (ev, data) => {
+  console.log("-> set-pref", data)
   ev.returnValue = Prefs.set(data)
 })
 

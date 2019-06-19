@@ -46,7 +46,7 @@ buildDataFile(){
     , locked:  (undefined === this.pData.locked)?false:this.pData.locked
     , filmStartTime:  this.pData.filmStartTime || 0
     , filmEndTime:    this.pData.filmEndTime   || null
-    , videoPath:      this.pData.videoPath     || '../Drive-10mn-light.mp4'
+    , videoPath:      this.pData.videoPath     || path.join(this.folder,'../Drive-10mn-light.mp4')
     , lastCurrentTime:  this.pData.lastCurrentTime || 0
     , stopPoints:       this.pData.stopPoints || []
   }
@@ -58,7 +58,7 @@ buildEventsFile(){
   else if ( 'number' === typeof(this.pData.events) ) {
     var nombre = this.pData.events
     this.pData.events = []
-    while ( nombre -- ) this.pData.events.push(FITEvent.create({type:'any'}))
+    while ( nombre -- ) this.pData.events.push(FITEvent.create(this))
   }
   fs.writeFileSync(this.eventsFilePath, JSON.stringify(this.pData.events))
 }
@@ -110,6 +110,8 @@ get brins()       { return this.pData.brins       || [] }
 get personnages() { return this.pData.personnages || []}
 get documents()   { return this.pData.documents   || [] }
 
+// alias parce que je parle plus souvent de "dossier" de l'analyse que de "path"
+get folder(){return this.path}
 get path(){
   if (undefined === this.pData.path){
     var dossier = path.join(Tests.appPath,'analyses')

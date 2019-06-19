@@ -18,7 +18,7 @@ static get DEFAULT_DATA(){
   return {
       'option_start_when_time_choosed':       true
     , 'option_lock_stop_points':              false
-    , 'options_run_tests_at_startup':         false
+    // , 'options_run_tests_at_startup':         false // globale
     , 'video_speed':                          1
     , 'ui.section.reader.width':              null
     , 'ui.section.timeline.height':           null

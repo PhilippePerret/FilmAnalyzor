@@ -50,6 +50,7 @@ const ERRORS = {
 , "--- VIDÉO ---": ""
 , "video-path-required": "Il faut indiquer la vidéo du film, en actionnant le menu « Analyse > Choisir la vidéo du film »."
 , "video-required": "La vidéo du film est absolument requise pour analyser le film…<br>Astuce : utilisez une autre vidéo si vous voulez travailler « à blanc »."
+, "unfound-video-path": "La vidéo à l'adresse \"%{path}\" est introuvable…"
 
 , "---- SCÈNES ---":""
 , "scene-too-close": "Une scène se trouve à moins de 2 secondes. Impossible d'en créer une autre si proche…"

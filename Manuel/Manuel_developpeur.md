@@ -34,7 +34,7 @@
   * [Actualisation des informations vidéo](#update_infos_video)
 * [Ajout de préférences globales](#add_global_prefs)
   * [Utilisation des préférences globales](#use_global_prefs})
-* [Ajout de préférence analyse](#add_analyse_pref)
+  * [Ajout de préférence analyse](#add_analyse_pref)
 * [Horloges et durées](#temporal_fields)
 * [UI / Aspect visuel](#visual_aspect)
   * [Champs d'édition](#edit_text_fields)
@@ -769,7 +769,7 @@ produira le code
 
 Noter que la classe CSS `.draghelper` doit être définie. Une définition possible est :
 
-```CSS
+```
 
 div.draghelper
   display: inline-block
@@ -818,7 +818,9 @@ Ces préférences sont définies dans le menu « Options » jusqu'à définiti
 
 Pour définir une nouvelle préférences (donc une options globale) :
 
-1. Définir la valeur par défaut et le nom de l'option dans le fichier `./js/system/Options.js:14`, dans la constante `DEFAULT_DATA`. S'inspirer des autres options.
+1. (faut-il vraiment le faire pour une préférence *globale* ?…) Définir la valeur par défaut et le nom de l'option dans le fichier `./js/system/Options.js:14`, dans la constante `DEFAULT_DATA`. S'inspirer des autres options.
+
+1.bis Dans `main-process/Prefs`, ajouter la préférence à `USER_PREFS_DEFAULT` avec une valeur par défaut.
 
 2. Créer un nouveau menu dans le submenu de "Options" (fichier `/main-process/menu.js:427`) avec les données suivantes :
 
@@ -829,8 +831,17 @@ Pour définir une nouvelle préférences (donc une options globale) :
     , type:     'checkbox'
     , checked:  false
     , click:    ()=>{
-        var check = this.getMenu('<id_indispensable_et_universel>').checked
-        mainW.webContents.executeJavaScript(`FAnalyse.setGlobalOption('<id_indispensable_et_universel>',${checked?'true':'false'})`)
+        var c = ObjMenus.getMenu('<id_indispensable_et_universel>').checked ? 'true' : 'false'
+        /**
+          LA DIFFÉRENCE NOTOIRE ENTRE PREFÉRENCE ET OPTIONS SE JOUE ICI
+
+          POUR UNE PRÉFÉRENCE GLOBALE TOUCHANT TOUTES LES ANALYSE
+        **/
+        execJS(`FAnalyse.setGlobalOption('<id_indispensable_et_universel>',${c})`)
+        /**
+          OU POUR UN OPTION DE L'ANALYSE COURANTE
+        **/
+        // execJsOnCurrent(`options.set('<id_indispensable_et_universel>',${c})`)
     }
   }
 ```
@@ -853,7 +864,7 @@ Pour définir une nouvelle préférences (donc une options globale) :
 
 Si la valeur par défaut doit être false, il n'y a rien d'autres à faire. Sinon, il faut définir sa valeur par défaut dans `Prefs` (fichier `.../main-process/Prefs.js:26` comme ci-dessous), dans la constante `USER_PREFS_DEFAULT`.
 
-Noter que les préférences générales, lorsqu'elles sont modifiées, sont enregistrées dans le fichier `$LIBRARY/Application\ Support/Film-Analyzer/user-preferences.json` quand on quitte l'application.
+Noter que les préférences générales, lorsqu'elles sont modifiées, sont enregistrées aussitôt qu'une modification est produite, dans le fichier `$LIBRARY/Application\ Support/Film-Analyzer/user-preferences.json`.
 
 
 ### Utilisation des préférences globales {#use_global_prefs}

@@ -92,7 +92,7 @@ const UI = {
     let my = this
     if ( isTrue(this.videoObserved) ) return
     $(UI.video)
-      .on('error', ()=>{
+      .on('error', (err) => {
         log.warn("Une erreur s'est produite au chargement de la vidéo.", err)
       })
       .on('loadeddata', () => {
