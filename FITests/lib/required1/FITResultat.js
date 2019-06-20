@@ -28,6 +28,7 @@ constructor(owner, data){
 
 // Retourne true si le résultat (le test) est valide
 get valid(){return this.isValid()}
+get invalid(){return !this.isValid()}
 isValid(){return this.valide === this.positive}
 
 /**
@@ -60,6 +61,12 @@ set comp_verbe(v){ this._comp_verbe = v }
 get options() { return this._options}
 set options(v){ this._options = options}
 
+// Pour détailler l'échec avec un message complet
+get detailFailure(){return this._detailFailure}
+set detailFailure(v){
+  this._detailFailure = `\t\t${v.split("\n").join("\n\t\t")}`
+}
+
 get messages(){
   if (undefined === this._msgs){
     this._msgs = {success: null, failure: null}
@@ -69,6 +76,9 @@ get messages(){
     }
     if ( this.badDetails.length ) {
       this._msgs.failure = `${fail} (MAIS ${this.badDetails.join(', ')})`
+      if ( this.detailFailure ) {
+        this._msgs.failure += this.detailFailure
+      }
     }
   }
   return this._msgs

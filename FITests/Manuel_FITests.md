@@ -15,7 +15,7 @@
   * [Code à exécuter avant ou après chaque cas](#before_and_after_each_case)
 * [Textes écrits dans le suivi](#textes_suivis)
 * [Les Assertions](#les_assertions)
-  * [Création d'assertions](#create_new_assertions)
+  * [Création d'une assertion](#create_new_assertions)
   * [Options des assertions](#options_assertions)
   * [Sujets complexes (`expect(sujet)`)](#complexes_subjects)
 * [Méthodes pratiques](#les_methodes_pratiques)
@@ -282,42 +282,58 @@ Une assertion est composée de deux parties :
 ```javascript
 
 affirmation(expected[, options]){
+  /**
+    Une instance pour travailler le résultat de façon plus souple
+  **/
+  let resultat = new FITResultat(this,{
+        sujet: "Le sujet de l'assertion",
+      , verbe: "LeVerbe" // doit être connu de FITExpectation.positivise
+      , comp_verbe: "complement optionnel" // p.e. 'visible' si verbe 'est'
+      , objet:  "L'objet traité par l'assertion"
+      , options: options || {}
+    })
     /**
-      Une propriété optionnelle pour détailler le message, quand
-      par exemple c'est un test complexe.
-      TODO Plus tard, il faudra imaginer avec une classe propre qui
-      s'occupera de toute la partie message, de façon assez complexe,
-      pour gérer tous les cas et servir aussi 1/ à faire le message court
-      et 2/ à faire le message détail en fin de test.
-    **/
-    var details = []
-    /**
+      Estimation principale
+      =====================
+
       Estimation, comparaison de la valeur actuelle et attendue
       éventuellement en fonction de 'not' et 'strictly'
       Cette partie doit définir `pass` qui sera TRUE si c'est un succès
       (quelle que soit la valeur de 'not') et FALSE si c'est un échec.
-    **/
-    const estimation = ...
-    const pass = this.positive === estimation
-    /**
-      La deuxième partie produit l'assertion proprement dite, qui
-      sera écrite dans le rapport d'erreur comme un succès ou un échec
-      Le plus simple est de faire :
-    **/
-    const msgs = this.positivise('<verbe>', '<complément>')
-    // => retourne un objet contenant l'affirmation pour un succès et pour
-    //    un échec. Par exemple {success: 'est plus grand que'}, {failure
-    //    'devrait être plus grand que'}.
-    const expe = ... // on compose la valeur attendue
-    // On compose le template pour faire les deux messages échec/succès
-    const temp = `${this.subject} %{msg} ${expe}`
-    const succ_msg = T(temp, {msg: msgs.success})
-    const fail_msg = T(temp, {msg: msgs.failure})
 
-    options = options || {}
-    options.details = details
-    // Et finalement on appelle la méthode générique
-    assert(pass, succ_msg, fail_msg, options)
+      On ne doit pas mettre de messages dans ce validIf, contrairement aux
+      conditions suivantes.
+    **/
+    let estimation = ...
+    resultat.validIf(estimation)
+
+    /**
+      Peut-être y a-t-il d'autres conditions
+    **/
+    if ( resultat.valid && options.doit_etre_grand ){
+      estimation = /* est-il grand ? */
+      resultat.validIf(estimation, "il est grand", "il n'est pas grand")
+      // Le premier message sera ajouté si c'est un succès, le second message,
+      // précédé de "mais" sera ajouté en cas d'échec
+    }
+
+    /**
+      D'autres sous estimations…
+    **/
+
+    /**
+      Ajouts, en cas d'échec, d'un message plus complet qui permettra de
+      vraiment comprendre d'où vient l'erreur.
+    **/
+    if ( resultat.invalid ) {
+      resultat.detailFailure = "Le message détaillant l'échec."
+    }
+
+    /**
+      On produit l'assertion proprement dite, qui sera écrite dans le
+      rapport d'erreur comme un succès ou un échec
+    **/
+    assert(resultat)
 }
 
 ```
