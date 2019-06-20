@@ -92,7 +92,7 @@ describe("Création d'un event", function(){
     expect(FITTimeline).contains(new_event, {top: 20})
 
     // L'event a été ajouté dans le reader
-    // expect(FITReader).contains(new_event)
+    expect(FITReader).contains(new_event, {shown:true})
 
   })
 

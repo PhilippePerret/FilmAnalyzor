@@ -1,8 +1,8 @@
 'use strict'
 
 const BancTimeline = {
-
-  reset(){
+  SCENE_ROW: 7 // 0-start
+, reset(){
     log.info("-> BancTimeline::reset")
     // Suppression de tous les markers
     UI.timeRuler.find('span.marker').remove()
@@ -135,13 +135,13 @@ const BancTimeline = {
     log.info("<- BancTimeline::dispatchElementOnTape()")
   }
 
-
 /**
   À la création d'un event, on le place sur le banc timeline
 **/
 , append(ev) {
     var bte = new BancTimelineElement(ev)
     BancTimeline.items.push(bte)
+    this.searchRowForItem(bte)
     bte.place()
   }
 // ---------------------------------------------------------------------
@@ -171,72 +171,76 @@ const BancTimeline = {
 //  LA MAP DE LA TIMELINE
 
 /**
+
   Définition de la "map" du banc timeline. L'idée est de faire une carte
   qui contienne les positions des éléments sur le banc, pour un placement
   plus efficace des éléments. Au lieu de parcourir tous les éléments dans le
   DOM, on parcourera une Map.
 
-  On profite aussi de cette boucle pour placer les items sur des rows sans
-  chevauchement.
+  En même temps qu'on définit cette map, au début, on place les items
+  à leur place, rangée par rangée.
+
 **/
 , defineMap(){
-    var row
-    this.map = new Map()
     // Pour connaitre les rangées occupées à un moment de la boucle sur tous
-    // les éléments, on tient à jour cette collection busyRows où les clés
-    // sont les indices de rangée (de 1 à SCENE_ROW) et la valeur est true (si
-    // la rangée est libre) ou false (si la rangée est occupée)
-    let busyRows = new Map()
-    let indexSceneRow = BancTimelineElement.SCENE_ROW
-    var i = indexSceneRow
-    while ( --i > 0 ) busyRows.set(indexSceneRow - i, null)
+    // les éléments, on tient à jour cette map `map` où les clés
+    // sont les indices de rangée (de 1 à SCENE_ROW) et la valeur est une liste
+    // contenant tout les espaces occupés.
+    // Un espace occupé s'exprime par {:start, :end}
+    this.map = []
 
-    // On peut boucler sur chaque items ({BancTimelineElement})
+    // On peut boucler sur chaque items ({BancTimelineElement}), chaque élément
+    // de la timeline, correspondant en général à des events
     for (var item of this.items) {
-
-      // Déterminer la rangée sur laquelle poser l'élément courant +item+
-      var row = undefined
-
-      if ( item.event.isScene ) {
-        // Si c'est une scène, la rangée SCENE_ROW est réservée à son
-        // placement.
-        row = indexSceneRow
-      } else {
-        for ( var [irow, drow] of busyRows) {
-          if ( isNull(drow) ) {
-            // Dans le cas où la rangée analysée est vide, on prend simplement
-            // son indice pour l'appliquer à la rangée de l'item et on définit
-            // la fin de l'utilisation de cette rangée.
-            row = irow
-            break
-          } else {
-            // La rangée d'indice +irow+ est utilisée. Deux cas peuvent se
-            // produire ici :
-            // CAS 1: le temps de l'élément à placer est inférieur au temps
-            //        de fin d'utilisation de la rangée => Il faut essayer
-            //        avec la suivante
-            // CAS 2: le temps de l'élément à placer est supérieur au temps
-            //        de fin d'utilisation de la rangée => on peut placer
-            //        l'élément dessus est définir le temps d'utilisation de
-            //        fin de l'élément
-            if ( item.event.startAt > drow.end ) { // CAS 2
-              row = irow
-              break
-            } else { // CAS 1
-              // On doit essayer avec le suivant
-            }
-          }
-        }
-      }
-      if ( row ) {
-        busyRows.set(row, { end: item.event.endAt } )
-        item.row = row
-        // console.log("Rangée pour item:", item, row)
-      } else {
-        log.error(`Impossible de trouver une rangée libre pour ${item}`)
-      }
+      this.searchRowForItem(item)
     } // fin de boucle sur tous les éléments à placer (items)
 
+  } // /defineMap
+
+/**
+  Méthode qui retourne la rangée sur laquelle doit être placé l'item
+  +item+ en l'ajoutant à la map (cf. ci-dessus)
+**/
+, searchRowForItem(item){
+    // Si c'est une scène, la rangée SCENE_ROW est réservée à son
+    // placement.
+    // Normalement, une scène ne peut pas être superposée à une autre
+    // scène, donc on a aucune vérification à faire ici. On peut juste
+    // passer l'élément
+    if ( item.event.isScene ) {
+      item.row = this.SCENE_ROW
+      return
+    }
+
+    for ( var irow = 0; irow < this.SCENE_ROW ; ++ irow ) {
+      // Création de la rangée. On ajoute un espace au tout début pour
+      // simplifier le code
+      if ( isUndefined(this.map[irow]) ) {
+        this.map[irow] = [{start:-1, end:-1}]
+      }
+      // On prend cette rangée
+      var drow = this.map[irow]
+      for ( var space of drow ) {
+        if ( space.start > item.event.endAt || space.end < item.event.startAt ) {
+          // L'espace libre a été trouvé
+          drow.push({start: item.event.startAt, end:item.event.endAt})
+          item.row = irow
+          break
+        }
+      }
+      // Si la rangée de l'item est définie, on peut passer à la suite
+      // Noter, donc, que toutes les rangées en seront pas forcément
+      // définies
+      if ( isDefined(item.row) ) break
+    } // fin de boucle sur toutes les rangées
+
+    // Quand on n'a pas trouvé de ligne pour l'item, on le met
+    // sous la ligne des scènes
+    if ( isUndefined(item.row) ) {
+      log.error(T('no-row-for-item',{item:item}))
+      item.row = this.SCENE_ROW + 1
+    }
+    // console.log("BancTimeline.map =", this.map)
   }
 
 // ---------------------------------------------------------------------

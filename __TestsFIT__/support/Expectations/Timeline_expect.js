@@ -19,37 +19,34 @@ const TimelineAssertions = {
                     top     Valeur en pixels de la hauteur attendue de l'event
 **/
 contains(foo, options){
+  options = options || {}
+  let resultat = new FITResultat(this,{
+      sujet: 'La Timeline'
+    , verbe: 'contient'
+    , objet: `${foo}`
+    , options: options
+  })
   const jqRef = `#banctime-tape #banctime-event-${foo.id}`
-  var ajout   = []
-    , details = []
-    , valide  = DOM.contains(jqRef)
-  if ( valide ) details.push(`L'élément ${foo} a été trouvé`)
-  else details.push(`L'élément ${foo} n'a pas été trouvé`)
-  if (valide && options && options.top){
-    const o = $(jqRef)
-    // console.log("$(jqRef):", $(jqRef))
-    const otop = o.position().top
-    valide = otop.isCloseTo(options.top, 4)
-    if ( valide ) details.push(`l'élément est bien placé à top:${options.top}px`)
-    else details.push(`mais l'élément est placé à top:${otop}px au lieu de ${options.top}px`)
-    ajout.push(`top à ${options.top}px`)
+
+  resultat.validIf(DOM.contains(jqRef))
+
+  if (resultat.valid && options.top){
+    const otop = $(jqRef).position().top
+    resultat.validIf(
+        otop.isCloseTo(options.top, 4)
+      , `top à ${options.top}px`
+      , `placé à top:${otop}px au lieu de ${options.top}px`
+    )
   }
-  if (valide && options && options.left){
-    const o = $(jqRef)
-    // console.log("$(jqRef):", $(jqRef))
-    const oleft = o.position().left
-    valide = oleft.isCloseTo(options.left, 4)
-    if ( valide ) details.push(`l'élément est bien placé à left:${options.left}px`)
-    else details.push(`mais l'élément est placé à left:${oleft}px au lieu de ${options.left}px`)
-    ajout.push(`left à ${options.left}px`)
+  if (resultat.valid && options.left){
+    const oleft = $(jqRef).position().left
+    resultat.validIf(
+        oleft.isCloseTo(options.left, 4)
+      , `left à ${options.left}px`
+      , `placé à left:${oleft}px au lieu de ${options.left}px`
+    )
   }
-  const pass = this.positive === valide
-  if ( ajout.length ){
-    ajout = `(avec ${ajout.join(', ')})`
-  } else ajout = ''
-  const msgs = this.assertise('La Timeline', 'contient', ajout, foo)
-  options.details = details
-  assert(pass, ...msgs, options)
+  assert(resultat)
 }
 }
 

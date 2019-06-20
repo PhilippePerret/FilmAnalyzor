@@ -2,6 +2,10 @@
 
 * [Création d'une analyse pour les tests](#fixture_analyse)
   * [Obtenir les éléments de l'analyse-fixture](#get_elements_analyse)
+* [Les sujets complexes](#complex_subjects)
+  * [`FITTimeline`, gestion de la Timeline](#complex_fittimeline)
+  * [`FITReader`, gestion du reader d'events](#complex_fitreader)
+  * [`FrontFWindow`, gestion de la fenêtre courante](#complex_frontfwindow)
 * [Fixtures](#les_fixtures)
   * [Fixtures d'Events quelconque (`FITEvents<Type>`)](#fixtures_events)
   * [Fixtures Scènes `FITEventsScenes`](#fixtures_scenes)
@@ -151,6 +155,42 @@ ca.events       // => liste des FITEvent<Type>
 ```
 
 > Bien noter que pour le moment, ce sont des listes, pas des dictionnaires.
+
+---------------------------------------------------------------------
+
+## Les sujets complexes {#complex_subjects}
+
+Les sujets complexes, comme l'explique le manuel, héritent de la classe mère `FITSubject` et permettent une utilisation profonde et simplifiée des expectation.
+
+```javascript
+
+  expect(<sujet complexe>).assertion()
+
+```
+
+### `FITTimeline`, gestion de la Timeline {#complex_fittimeline}
+
+Il permet de gérer la timeline. Par exemple, l'assertion `expect(FITTimeline).contains(event)` produit un succès si la timeline contient l'event `event`.
+
+Pour une liste complète des assertions, voir `./__TestsFIT__/support/Expectation/Timeline_expect.js`.
+
+### `FITReader`, gestion du reader d'events {#complex_fitreader}
+
+Il permet de gérer la timeline. Par exemple, l'assertion `expect(FITReader).contains(event)` produit un succès si la timeline contient l'event `event`.
+
+Pour une liste complète des assertions, voir `./__TestsFIT__/support/Expectation/Reader_expect.js`.
+
+### `FrontFWindow`, gestion de la fenêtre courante {#complex_frontfwindow}
+
+C'est un sujet dynamique, c'est-à-dire qu'il se modifie à chaque appel. Il permet par exemple de connaitre la fenêtre au premier plan, et la tester. Par exemple :
+
+```javascript
+
+expect(FrontFWindow).is_event_form()
+
+```
+
+… produira un succès si le formulaire d'event est au premier plan et un échec dans le cas contraire.
 
 ---------------------------------------------------------------------
 

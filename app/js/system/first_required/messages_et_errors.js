@@ -127,6 +127,9 @@ const ERRORS = {
 , "settime-time-undefined": "Le temps est indéfini (undefined), dans %{method}."
 , "marker-undefined": "Le marker d'identifiant '%{id}' est inconnu de nos services, désolé…"
 
+, "--- BANC TIMELINE ---":""
+, "no-row-for-item": "Impossible de trouver une rangée libre pour %{item}. Il est placé sous la ligne des scènes."
+
 }
 const MESSAGES = {
   "--- UI ---":""

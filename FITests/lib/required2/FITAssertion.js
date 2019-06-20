@@ -3,13 +3,20 @@
   NOTES
     * À la fin de ce module est définie la méthode globale `assert`
 **/
-
 class FITAssertion {
 constructor(pass, success_msg, failure_msg, options){
-  this.pass = pass
-  this.success_message = success_msg
-  this.failure_message = failure_msg
-  this.options = options || {}
+  if ( pass instanceof(FITResultat) ) {
+    this.resultat = pass
+    this.pass = this.resultat.isValid()
+    this.success_message = this.resultat.messages.success
+    this.failure_message = this.resultat.messages.failure
+    this.options = this.resultat.options
+  } else {
+    this.pass = pass
+    this.success_message = success_msg
+    this.failure_message = failure_msg
+    this.options = options || {}
+  }
 }
 
 /**

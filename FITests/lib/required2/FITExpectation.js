@@ -62,11 +62,12 @@ set subject(v){this._subject = v}
 assertise(suj, verbe, complement_verbe, exp){
   const msgs = this.positivise(verbe, complement_verbe)
   const temp = `${suj} %{msg} ${exp||''}`.trim()
-  return [T(temp, {msg:msgs.success}), T(temp, {msg:msgs.failure})]
+  return [T(temp, {msg:msgs.success.trim()}), T(temp, {msg:msgs.failure.trim()})]
 }
 // Le message "est égal" ou "n'est pas égal", etc. en fonction de la positivité
 // de l'expectation
 positivise(what,state){
+  state = state || ''
   let sujet = this.options.noRef ? '' : ` (${this.sujet}::${typeof(this.sujet)}) `
   switch (what) {
     case 'est':

@@ -18,15 +18,17 @@ global.Tests = {
 , initAll(){
     if ( not(this.inited) ) {
       this.MAINFOLDER = path.join(this.appPath,'FITests')
-      this.requireFolder('./lib/required/divers', window)
-      this.requireFolder('./lib/required/Tests', this)
-      global.FITCase = this.require('lib/required/FITCase')
-      this.require('lib/required/FITAssertion') // => function assert
-      this.require('lib/required/FITExpectation') // => function expect
-      this.require('lib/required/FITest')
-      this.require('lib/required/FITSubject')
+      this.requireFolder('./lib/required1/divers', window)
+      this.requireFolder('./lib/required1')
+      if (undefined === FITResultat) throw new Error("FITResultat devrait être défini")
+      this.requireFolder('./lib/required2/Tests', this)
+      global.FITCase = this.require('lib/required2/FITCase')
+      this.require('lib/required2/FITAssertion') // => function assert
+      this.require('lib/required2/FITExpectation') // => function expect
+      this.require('lib/required2/FITest')
+      this.require('lib/required2/FITSubject')
       // toutes les assertions
-      this.requireFolder('lib/required/Assertions')
+      this.requireFolder('lib/required2/Assertions')
 
       this.initTestsMethods() // pour exposer 'pending', 'tester' etc.
     }

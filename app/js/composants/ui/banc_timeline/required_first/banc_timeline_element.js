@@ -26,8 +26,8 @@ place(){
   en taille et sur l'axe des x.
 **/
 repositionne(){
-  let arr = ['_style', '_left', '_width', '_right']
-  arr.map(p => delete this[p])
+  let a = ['_style', '_left', '_width', '_right']
+  a.map(p => delete this[p])
   this.jqObj.attr('style', this.style) // recalcule tout
 }
 
@@ -96,7 +96,6 @@ defineTopDiv(){
 
 Object.assign(BancTimelineElement,{
   MAX_ROWS:   7
-, SCENE_ROW:  8
-, FIRST_TOP_ELEMENT:  10
+, FIRST_TOP_ELEMENT:  20
 , HEIGHT_ELEMENT:     20
 })

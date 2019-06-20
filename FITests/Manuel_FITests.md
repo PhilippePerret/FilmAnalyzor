@@ -283,6 +283,15 @@ Une assertion est composée de deux parties :
 
 affirmation(expected[, options]){
     /**
+      Une propriété optionnelle pour détailler le message, quand
+      par exemple c'est un test complexe.
+      TODO Plus tard, il faudra imaginer avec une classe propre qui
+      s'occupera de toute la partie message, de façon assez complexe,
+      pour gérer tous les cas et servir aussi 1/ à faire le message court
+      et 2/ à faire le message détail en fin de test.
+    **/
+    var details = []
+    /**
       Estimation, comparaison de la valeur actuelle et attendue
       éventuellement en fonction de 'not' et 'strictly'
       Cette partie doit définir `pass` qui sera TRUE si c'est un succès
@@ -304,6 +313,9 @@ affirmation(expected[, options]){
     const temp = `${this.subject} %{msg} ${expe}`
     const succ_msg = T(temp, {msg: msgs.success})
     const fail_msg = T(temp, {msg: msgs.failure})
+
+    options = options || {}
+    options.details = details
     // Et finalement on appelle la méthode générique
     assert(pass, succ_msg, fail_msg, options)
 }
