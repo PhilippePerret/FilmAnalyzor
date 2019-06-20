@@ -7,23 +7,37 @@ class EventFormSubject extends FITSubject {
     super(name)
 
     // La valeur (value) pour les assertions
-    this.subject_value   = EventForm.current
+    this.currentForm  = EventForm.current
+    this.sujet = "Le formulaire d'event courant"
 
     // Les assertions
     this.assertions = {
-      complies_with(expected, options){
-        const res = EventFormCompliesWith(this, expected)
-        const pass = res.ok === this.positive
-        var expe = JSON.stringify(expected)
-        if ( !res.ok ) expe += `\n\t${res.bads.join(', ')}`
-        const msgs = this.assertise(this.subject, 'est','conforme à', expe)
-        assert(pass, ...msgs, options)
-      }
+      complies_with: this.complies_with.bind(this)
     }
   }
-  // Le titre pour les messages
-  get subject_message(){return 'Le formulaire d’event courant'}
-  get options(){ return {noRef:true} }
+
+// ---------------------------------------------------------------------
+//  ASSERTIONS
+
+complies_with(expected, options){
+  let resultat = this.newResultat({
+      verbe:      'est'
+    , comp_verbe: 'conforme à'
+    , objet:      JSON.stringify(expected)
+    , options:    options
+  })
+
+  // C'est cette méthode qui utilise le resultat.validIf
+  this.eventFormCompliesWith(expected, resultat)
+  assert(resultat)
+}
+
+// /ASSERTIONS
+// ---------------------------------------------------------------------
+
+// Le titre pour les messages
+get subject_message(){return 'Le formulaire d’event courant'}
+get options(){ return {noRef:true} }
 
 /**
   Méthode pour définir les valeurs du formulaire
@@ -48,13 +62,13 @@ fieldId(prop){
 get eventId(){return this.eventForm.id }
 get jqObj(){return this.eventForm.jqObj}
 // Juste pour la clarté
-get eventForm(){return this.subject_value}
-}
+get eventForm(){return this.currentForm}
+
 
 // Pour évaluer le formulaire
-function EventFormCompliesWith(owner, hexp){
-  const iform = owner.value
-  const oform = iform.jqObj
+eventFormCompliesWith(hexp, resultat){
+  const iform = this.eventForm
+  const oform = this.jqObj
   var goods = []
   var bads  = []
   for ( var prop in hexp ) {
@@ -76,8 +90,13 @@ function EventFormCompliesWith(owner, hexp){
       bads.push(`${prop} : ${expected} attendu, ${actual} trouvé`)
     }
   }
-  return {ok: bads.length === 0, goods:goods, bads:bads}
+  resultat.validIf(bads.length === 0)
+  resultat.detailFailure = bads.join(', ')
 }
+
+
+}
+
 
 Object.defineProperties(global,{
   FrontEventForm:{get(){return new EventFormSubject()}}

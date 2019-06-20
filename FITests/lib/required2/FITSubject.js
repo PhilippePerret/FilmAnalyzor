@@ -13,6 +13,11 @@ constructor(name){
 toString(){ return this.name }
 toValue() { return this.subject_value }
 
+newResultat(data){
+  if ( undefined === data.options ) data.options = {}
+  return new FITResultat(this, Object.assign(data,{sujet: this.sujet}))
+}
+
 get classe() {return 'FITSubject'}
 
 // Le sujet à utiliser pour le message

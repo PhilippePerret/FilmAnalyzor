@@ -6,6 +6,7 @@
   * [`FITTimeline`, gestion de la Timeline](#complex_fittimeline)
   * [`FITReader`, gestion du reader d'events](#complex_fitreader)
   * [`FrontFWindow`, gestion de la fenêtre courante](#complex_frontfwindow)
+  * [`EventsFile`, gestion du fichier des events](#complex_eventsfile)
 * [Fixtures](#les_fixtures)
   * [Fixtures d'Events quelconque (`FITEvents<Type>`)](#fixtures_events)
   * [Fixtures Scènes `FITEventsScenes`](#fixtures_scenes)
@@ -191,6 +192,20 @@ expect(FrontFWindow).is_event_form()
 ```
 
 … produira un succès si le formulaire d'event est au premier plan et un échec dans le cas contraire.
+
+
+### `EventsFile`, gestion du fichier des events {#complex_eventsfile}
+
+L'instance `EventsFile` permet de gérer le fichier `events.json` qui contient les events enregistrés. Elle est réactualisée à chaque appel. Elle permet principalement de vérifier le contenu du fichier.
+
+Par exemple :
+
+```javascript
+
+expect(EventsFile).contains({id: 12, titre:"Le titre du douzième", description: "Une description"})
+
+```
+
 
 ---------------------------------------------------------------------
 

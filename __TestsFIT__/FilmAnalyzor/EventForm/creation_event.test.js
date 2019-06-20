@@ -31,9 +31,9 @@ describe("Création d'un event", function(){
 
     // Le formulaire d'event est bien la fenêtre courante
     expect(FrontFWindow).is_event_form()
+    expect(FrontFWindow).not.is_porte_documents()
 
     const frontForm = FrontEventForm
-    const curForm = frontForm.subject_value
     expect(frontForm).complies_with({
       type: 'idee', isNew: true, time:32
     })
@@ -45,18 +45,18 @@ describe("Création d'un event", function(){
     await action("On presse la touche tabulation pour entrer dans le titre", () => {
       keyPress('Tab')
     })
-    expect(UI.currentShortcutsName).is('TEXT FIELD')
+    expect(UI.currentShortcutsName, 'La combinaison shortcuts courante').is('TEXT FIELD')
 
-    const titre = `Un titre ${new Date().getTime()}`
-    const description = `La description du titre ${titre} est ${new Date()}.`
+    const nev_titre = `Un titre ${new Date().getTime()}`
+    const description = `La description du titre ${nev_titre} est ${new Date()}.`
 
     await action("On choisit le type « Majeure »", async()=>{
       frontForm.set({ideeType: 'major'})
     })
-    await action(`On écrit le titre « ${titre} »`, async () => {
-      frontForm.set({titre:titre})
+    await action(`On écrit le titre « ${nev_titre} »`, async () => {
+      frontForm.set({titre:nev_titre})
     })
-    await action(`On écrit la description « ${description.substring(0,40)}[…] »`, async() => {
+    await action(`On écrit la description « ${description.substring(0,40)} […] »`, async() => {
       frontForm.set({description:description})
     })
 
@@ -74,17 +74,17 @@ describe("Création d'un event", function(){
 
     // // Il doit y avoir un event de plus
     // TODO : faire plutôt un sujet complexe de l'analyse courante
-    expect(curca.eventsCount,{sujet:'Le nombre d’events'}).is(inica.eventsCount + 1)
+    expect(curca.eventsCount,'Le nombre d’events').is(inica.eventsCount + 1)
 
     // Il ne doit pas y avoir de scènes en plus
-    expect(curca.scenesCount,{sujet:'Le nombre de scènes'}).is(inica.scenesCount)
+    expect(curca.scenesCount,{subject:'Le nombre de scènes'}).is(inica.scenesCount)
 
     // L'event possède le bon ID et la bonne classe
     const new_event = current_analyse.ids[new_event_id]
     expect(new_event).is_instanceof(FAEidee)
     // L'event possède les bonnes données
     expect(new_event.id).is(new_event_id)
-    expect(new_event.titre,'Le titre de l’event').is(titre)
+    expect(new_event.titre,'Le titre de l’event').is(nev_titre)
     expect(new_event.description, 'La description de l’event').is(description)
     expect(new_event.installation, 'L’installation').is_undefined()
 
@@ -93,6 +93,10 @@ describe("Création d'un event", function(){
 
     // L'event a été ajouté dans le reader
     expect(FITReader).contains(new_event, {shown:true})
+
+    // L'event a bien été enregistré
+    expect(EventsFile).contains({id:new_event.id, titre:nev_titre, description:description})
+
 
   })
 

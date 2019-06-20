@@ -4,26 +4,30 @@ Object.assign(FITExpectation.prototype,{
 
   equals(value){return this.to_be(value)} // alias
 , is(value){return this.to_be(value)} // alias
-, to_be(value) {
-    this.value = value
-    const pass = this.positive === Object.is(this.sujet, this.value)
-    const msgs = this.positivise('est', 'égal à')
-    assert(
-        pass
-      , `${this.subject} ${msgs.success} ${this.value}`
-      , `${this.subject} ${msgs.failure} ${this.value}`
-      , this.options
-    )
+, to_be(value, options) {
+    let resultat = this.newResultat({
+        verbe:'est', comp_verbe: 'égal à'
+      , objet: value
+      , options: options
+    })
+    resultat.validIf(Object.is(this.sujet, value))
+    assert(resultat)
   }
 
 , is_defined(options){
-    const pass = this.positive === (undefined !== this.sujet)
-    const msgs = this.assertise(this.sujet, 'est', 'défini')
-    assert(pass, ...msgs, options)
+    let resultat = this.newResultat({
+        verbe:'est', comp_verbe:'défini'
+      , options:options||{}
+    })
+    resultat.validIf(undefined !== this.sujet)
+    assert(resultat)
   }
 , is_undefined(options){
-    const pass = this.positive === (undefined === this.sujet)
-    const msgs = this.assertise(this.subject, 'est', 'indéfini')
-    assert(pass, ...msgs, options)
+    let resultat = this.newResultat({
+        verbe:'est', comp_verbe:'indéfini'
+      , options:options||{}
+    })
+    resultat.validIf(undefined === this.sujet)
+    assert(resultat)
   }
 })

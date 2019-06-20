@@ -3,14 +3,21 @@
 Object.assign(FITExpectation.prototype,{
 
   is_typeof(value, options){
-    const pass = this.positive === (typeof(this.sujet) === value.name.toLowerCase())
-    const msgs = this.assertise(`${this.subject}`, 'est', 'de type', value.name.toLowerCase())
-    assert(pass, ...msgs, options)
+    let resultat = this.newResultat({
+        verbe:'est', comp_verbe:'de type'
+      , objet: value.name.toLowerCase()
+    })
+    resultat.validIf(typeof(this.sujet) === value.name.toLowerCase())
+    assert(resultat)
   }
 , is_instanceof(value, options){
-    const pass = this.positive === (this.sujet instanceof(value))
-    const msgs = this.assertise(`${this.subject}`, 'est', 'une instance de', value.name)
-    assert(pass, ...msgs, options)
+    let resultat = this.newResultat({
+        verbe:'est', comp_verbe:'une instance de'
+      , options:options||{}
+      , objet: value.name
+    })
+    resultat.validIf(this.sujet instanceof(value))
+    assert(resultat)
   }
 
 })

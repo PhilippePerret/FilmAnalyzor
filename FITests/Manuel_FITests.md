@@ -415,7 +415,46 @@ equals(expected, options){
 
 Les « sujets complexes » sont une des fonctionnalités les plus puissantes des *FITests*. Il permet de définir un comportement propre à l'application de façon très simple.
 
-Les « sujets complexes » permettent de définir des sujets propres à l'application — donc des éléments à mettre en premier argument d'un `expect` — avec tout ce qu'il faut pour les estimer. Imaginons par exemple qu'une classe `EventForm` permette de générer des formulaires (instances). Soit `EventForm.current`, dans l'application, la propriété qui retourne l'instance du formulaire au premier plan, le formulaire courant. On peut faire un sujet de ce formulaire courant :
+Les « sujets complexes » permettent de définir des sujets propres à l'application — donc des éléments à mettre en premier argument d'un `expect` — avec tout ce qu'il faut pour les estimer. Imaginons par exemple qu'une classe `EventForm` permette de générer des formulaires (instances). Soit `EventForm.current`, dans l'application, la propriété qui retourne l'instance du formulaire au premier plan, le formulaire courant. On peut faire un sujet de ce formulaire courant.
+
+```javascript
+
+class CurrentFormSubject extends FITSubject {
+constructor(){
+  super('CurrentEventForm')
+  this.assertions = {
+      is_opened: this.is_opened.bind(this)
+    , is_closed: this.is_closed.bind(this)
+  }
+}
+is_opened(options){
+  let resultat = this.newResultat('est','ouvert',options)
+  resultat.validIf(DOM.displays('#form....'))
+  assert(resultat)
+}
+is_closed(){
+  // ...
+  assert(resultat)
+}
+}
+
+// Pour obtenir une nouvelle instance chaque fois
+Object.defineProperties(global,{
+  CurrentForm:{get(){return new CurrentFormSubject() }}
+})
+
+```
+
+De cette manière, on pourra faire :
+
+```javascript
+
+expect(CurrentForm).is_opened()
+
+```
+
+
+Ci-dessous, c'est l'ancienne tournure :
 
 ```javascript
 
@@ -473,9 +512,14 @@ class MonSousSujet extends FITSubject {
       }
     , est_avant(quoi){/* ... */}
     }
+    // Pour pouvoir utiliser les données et les méthodes de cette instance
+    // car le mot `this` ne fera pas référence à cette instance (les méthodes
+    // sont "collées" aux expectations)
+    this.assertions.i = this
   }
 }
 
+// Pour créer une nouvelle instance dynamique à chaque appel
 Object.defineProperties(global,{
   // Créera une nouvelle instance à chaque appel
   MonSousSujet:{get(){return new MonSousSujet()}}

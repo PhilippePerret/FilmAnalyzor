@@ -16,8 +16,18 @@ global.wait = function(wTime, wMsg){
 }
 
 global.FITExpectation = class {
+
+/**
+  C'est la méthode qui est appelée quand on fait `expect(<sujet>)`
+
+  @param {FITSubject|Any} sujet   Le sujet de l'expectation, la valeur à tester,
+                                  en général
+**/
 constructor(sujet, options){
   this.sujet = sujet
+
+  // Pour garder toujours une trace du sujet original envoyé
+  this.actual = sujet
 
   if ( 'string' === typeof options) {
     // C'est le titre seul qui a été donné
@@ -28,71 +38,56 @@ constructor(sujet, options){
 
   this.value    = undefined
 
-  // if (sujet instanceof FITSubject) {
+  // Si le sujet est une classe héritante de FITSubject, on doit la
+  // traiter de façon particulière
+  // Sinon, on la transforme toujours en FITSubject pour pouvoir avoir
+  // un traitement similaire pour tout le monde
   if (sujet && sujet.classe === 'FITSubject') {
+    this.isFitSubject   = true
+    this.fitSubject     = sujet // pour pouvoir définir 'positive'
     this.value = sujet.subject_value || sujet.value
     sujet.subject_message && ( this.subject = sujet.subject_message )
     sujet.assertions      && Object.assign(this, sujet.assertions)
     sujet.options         && Object.assign(this.options, sujet.options)
+  } else {
+    this.fitSubject = new FITSubject('any')
+    this.fitSubject.sujet = this.options.subject || sujet
+    // Quand le sujet n'est pas un FITSubject original, il faut binder
+    // les méthodes de FITSubject
+    this.bindFITSubjectMethods()
   }
 
-  this.positive = true
-  this.strict   = false
+  this.fitSubject.positive  = true
+  this.fitSubject.strict    = false
+
 }
 // ---------------------------------------------------------------------
 //  Sujet
 
 // Inverseur
 get not() {
-  this.positive = false
+  // this.positive = false
+  this.fitSubject.positive = false
   return this // pour le chainage
 }
 // Mode strict
 get strictly() {
-  this.strict = true
+  this.fitSubject.strict = true
   return this // chainage
 }
-// Le sujet du test (à écrire)
-get subject(){
-  return this.options.subject || this._subject || this.options.sujet || this.sujet
-}
-set subject(v){this._subject = v}
 
-// Helper pour construire les paramètres de l'appel à `assert`
-assertise(suj, verbe, complement_verbe, exp){
-  const msgs = this.positivise(verbe, complement_verbe)
-  const temp = `${suj} %{msg} ${exp||''}`.trim()
-  return [T(temp, {msg:msgs.success.trim()}), T(temp, {msg:msgs.failure.trim()})]
+// ---------------------------------------------------------------------
+//  Méthodes correspondant à FITSubject, lorsque le sujet fourni n'en
+// est pas un
+bindFITSubjectMethods(){
+  this.newResultat = this.fitSubject.newResultat.bind(this.fitSubject)
 }
-// Le message "est égal" ou "n'est pas égal", etc. en fonction de la positivité
-// de l'expectation
-positivise(what,state){
-  state = state || ''
-  let sujet = this.options.noRef ? '' : ` (${this.sujet}::${typeof(this.sujet)}) `
-  switch (what) {
-    case 'est':
-      return {
-          success: `${this.positive? 'est bien' : sujet + 'n’est pas'} ${state}`
-        , failure: `${this.positive? sujet + 'devrait être' : 'ne devrait pas être'} ${state}`
-      }
-    case 'existe':
-      return {
-          success: `${this.positive?'existe bien':'n’existe pas'} ${state}`
-        , failure: `${this.positive?'devrait exister':'ne devrait pas exister'} ${state}`
-      }
-    case 'contient':
-      return {
-          success: `${this.positive?'contient bien':'ne contient pas'} ${state}`
-        , failure: `${this.positive?'devrait contenir':'ne devrait pas contenir'} ${state}`
-      }
-    default:
-      console.error(`Dans "positivise", les cas ne connaissent pas le verbe "${what}".`)
-      return {
-          success: 'PHRASE SUCCÈS INCONNUE'
-        , failure: 'PHRASE ÉCHEC INCONNUE'
-      }
-  }
-}
+
+// // Le sujet du test (à écrire)
+// get subject(){
+//   return this.options.subject || this._subject || this.options.sujet || this.sujet
+// }
+// set subject(v){this._subject = v}
 
 /**
   Pour ajouter des expectations générales propres à l'application

@@ -58,30 +58,26 @@ async is_visible(){
 
 Object.assign(FITExpectation.prototype,{
   async exists(){
+    let resultat = this.newResultat({
+        verbe:'existe', objet:'dans la page', options:options||{}
+    })
     const pass = await DOM.exists(this.sujet)
-    const msgs = this.positivise('existe')
-    assert(
-        pass === this.positive
-      , `${this.subject} ${msgs.success} dans la page.`
-      , `${this.subject} ${msgs.failure} dans la page.`
-      , this.options
-    )
+    resultat.validIf(pass)
+    assert(resultat)
   }
 
 , async is_visible() {
+    let resultat = this.newResultat({
+        verbe:'est', comp_verbe:'visible', options:options||{}
+    })
     let pass
     if ( not(this.positive) && not(DOM.contains(this.sujet))){
       pass = false // donc c'est bon
     } else {
       pass = await DOM.exists(this.sujet)
     }
-    const msgs = this.positivise('est', 'visible')
-    assert(
-        this.positive === pass
-      , `${this.subject} ${msgs.success} dans la page`
-      , `${this.subject} ${msgs.failure} dans la page`
-      , this.options
-    )
+    resultat.validIf(pass)
+    assert(resultat)
   }
 })
 

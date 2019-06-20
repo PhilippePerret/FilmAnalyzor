@@ -7,7 +7,7 @@ class FITAssertion {
 constructor(pass, success_msg, failure_msg, options){
   if ( pass instanceof(FITResultat) ) {
     this.resultat = pass
-    this.pass = this.resultat.isValid()
+    this.pass = this.resultat.valid
     this.success_message = this.resultat.messages.success
     this.failure_message = this.resultat.messages.failure
     this.options = this.resultat.options

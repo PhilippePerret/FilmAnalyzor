@@ -70,12 +70,14 @@ set detailFailure(v){
 get messages(){
   if (undefined === this._msgs){
     this._msgs = {success: null, failure: null}
-    let [succ, fail] = this.owner.assertise(this.sujet, this.verbe, this.comp_verbe, this.objet)
+    let [succ, fail] = this.assertise(this.sujet, this.verbe, this.comp_verbe, this.objet)
+    this._msgs.success = succ
+    this._msgs.failure = fail
     if ( this.bonDetails.length ) {
-      this._msgs.success = `${succ} (${this.bonDetails.join(', ')})`
+      this._msgs.success += ` (${this.bonDetails.join(', ')})`
     }
     if ( this.badDetails.length ) {
-      this._msgs.failure = `${fail} (MAIS ${this.badDetails.join(', ')})`
+      this._msgs.failure += ` (MAIS ${this.badDetails.join(', ')})`
       if ( this.detailFailure ) {
         this._msgs.failure += this.detailFailure
       }
@@ -83,16 +85,54 @@ get messages(){
   }
   return this._msgs
 }
-get shortSuccessMessage(){
 
-}
-get shortFailureMessage(){
 
+// Helper pour construire les paramètres de l'appel à `assert`
+assertise(suj, verbe, complement_verbe, exp){
+  const msgs = this.positivise(verbe, complement_verbe)
+  if ( undefined === exp ) exp = '' // pour que 0 reste 0
+  const temp = `${suj} %{msg} ${exp}`.trim()
+  return [T(temp, {msg:msgs.success.trim()}), T(temp, {msg:msgs.failure.trim()})]
 }
-get fullSuccessMessage(){
+// Le message "est égal" ou "n'est pas égal", etc. en fonction de la positivité
+// de l'expectation
+/**
+  @param {String} verbe   Le verbe de base
+  @param {String} comp_verbe  Le complément du verbe, par exemple 'visible' pour
+                              faire "est visible".
+**/
+positivise(verbe,comp_verbe){
+  comp_verbe = comp_verbe || ''
+  let sujet = this.options.noRef ? '' : ` (${this.sujet}::${typeof(this.sujet)}) `
+  switch (verbe) {
+    case 'est':
+      return {
+          success: `${this.positive? 'est bien' : sujet + 'n’est pas'} ${comp_verbe}`
+        , failure: `${this.positive? sujet + 'devrait être' : 'ne devrait pas être'} ${comp_verbe}`
+      }
+    case 'existe':
+      return {
+          success: `${this.positive?'existe bien':'n’existe pas'} ${comp_verbe}`
+        , failure: `${this.positive?'devrait exister':'ne devrait pas exister'} ${comp_verbe}`
+      }
+    case 'contient':
+      return {
+          success: `${this.positive?'contient bien':'ne contient pas'} ${comp_verbe}`
+        , failure: `${this.positive?'devrait contenir':'ne devrait pas contenir'} ${comp_verbe}`
+      }
+    case 'répond':
+      return {
+          success: `${this.positive?'répond bien':'ne répond pas'} ${comp_verbe}`
+        , failure: `${this.positive?'devrait répondre':'ne devrait pas répondre'} ${comp_verbe}`
+      }
+    default:
+      console.error(`Dans "positivise", les cas ne connaissent pas le verbe "${verbe}".`)
+      return {
+          success: 'PHRASE SUCCÈS INCONNUE'
+        , failure: 'PHRASE ÉCHEC INCONNUE'
+      }
+  }
+}
 
-}
-get fullFailureMessage(){
-}
 
 } // /class
