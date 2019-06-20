@@ -19,6 +19,8 @@
   * [Création d'une assertion](#create_new_assertions)
   * [Options des assertions](#options_assertions)
   * [Sujets complexes (`expect(sujet)`)](#complexes_subjects)
+* [Sujets complexes existants](#tests_own_complex_subjects)
+  * [Élément DOM courant (`FocusedElement`)](#active_dom_element)
 * [Méthodes pratiques](#les_methodes_pratiques)
   * [Simuler des touches clavier](#simulate_keyboard)
   * [Exécution d'une action (`action`)](#exec_action)
@@ -536,6 +538,23 @@ Il suffit ensuite de l'utiliser comme :
   expect(subj).est_bien()
   expect(subj).est_avant('ca')
 ```
+
+---------------------------------------------------------------------
+
+## Sujets complexes existants {#tests_own_complex_subjects}
+
+### Élément DOM courant (`FocusedElement`) {#active_dom_element}
+
+Le [sujet complexe](complexes_subjects) `FocusedElement` permet de travailler et tester l'élément courant, par exemple pour voir si c'est bien le focus courant.
+
+À la base, pour tester si l'élément courant est le bon, on se sert de l'identifiant DOM et l'on fait :
+
+```javascript
+
+expect(FocusedElement).is({id:'identifiant_attendu'})
+
+```
+
 
 ---------------------------------------------------------------------
 
