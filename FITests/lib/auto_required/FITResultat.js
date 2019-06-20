@@ -103,8 +103,13 @@ assertise(suj, verbe, complement_verbe, exp){
 **/
 positivise(verbe,comp_verbe){
   comp_verbe = comp_verbe || ''
-  let sujet = this.options.noRef ? '' : ` (${this.sujet}::${typeof(this.sujet)}) `
+  let sujet = this.options.ref ?` (${this.sujet}::${typeof(this.sujet)}) `:''
   switch (verbe) {
+    case 'a':
+      return {
+          success: `${this.positive? 'a bien' : sujet + 'n’a pas'} ${comp_verbe}`
+        , failure: `${this.positive? sujet + 'devrait avoir' : 'ne devrait pas avoir'} ${comp_verbe}`
+      }
     case 'est':
       return {
           success: `${this.positive? 'est bien' : sujet + 'n’est pas'} ${comp_verbe}`

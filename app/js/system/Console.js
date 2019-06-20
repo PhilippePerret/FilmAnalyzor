@@ -10,6 +10,7 @@ const PATHSTYLE  = 'font-size:0.85;color:grey;font-style:italic;margin-left:400p
 const STYLE3     = 'font-size:1.1em;font-weight:bold;' // Case
 const REDBOLD    = 'font-weight:bold;color:red;'
 const BLUEBOLD   = 'color:blue;font-weight:bold;'
+const SMALLBLUE  = 'font-size:0.85em;color:#9999FF;'
 const GREENBOLD  = 'color:darkgreen;font-weight:bold;'
 const ORANGEBOLD = 'color:orange;font-weight:bold;'
 
@@ -25,6 +26,7 @@ static framedTitle(msg,opts){this.w(msg,opts,STYLE2)}
 static subtitle(msg,opts){this.w(msg,opts,STYLE3)}
 static redbold(msg,opts){this.w(msg,opts,REDBOLD)}
 static bluebold(msg,opts){this.w(msg,opts,BLUEBOLD)}
+static smallblue(msg,opts){this.w(msg,opts,SMALLBLUE)}
 static greenbold(msg,opts){this.w(msg,opts,GREENBOLD)}
 static orangebold(msg,opts){this.w(msg,opts,ORANGEBOLD)}
 static action(msg,opts){this.greenbold(`${INDENT}${msg}`,opts)}
@@ -39,6 +41,16 @@ static w(msg, opts, style){
   if ( opts.time ) {
     let d = new Date()
     msg = `${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}.${d.getMilliseconds()} ${msg}`
+  }
+  if ( opts.indent ) {
+    var indent
+    if ('number'==typeof(opts.indent)){
+      indent = ""
+      while ( opts.indent -- > 0 ) indent += "\t"
+    } else {
+      indent = opts.indent
+    }
+    msg = indent + msg.split(RC).join(RC+indent)
   }
   console.log(`%c${msg}`,style)
 }

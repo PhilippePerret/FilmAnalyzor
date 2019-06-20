@@ -35,6 +35,7 @@ const UI = {
             $(node).find(TEXT_TAGNAMES).each((i, o) => {
               var fn, fnOnFocus, fnOnBlur
               o = $(o)
+              // console.log("Mise de l'observer de focus sur l'élément ", o[0])
               fnOnFocus = o.data('onfocus-fn') || 'onFocusTextField'
               fnOnBlur  = o.data('onblur-fn')  || 'onBlurTextField'
               // if ( fnOnFocus ) {

@@ -24,7 +24,6 @@ static reset(){
   this.videoWasPlaying = false
 }
 
-
 /**
   Méthode appelée pour éditer un event
 
@@ -284,7 +283,7 @@ toggleForm(){
 }
 
 /**
-  Nouvelle méthode appelée par le constructor pour soi construire le formulaire
+  Nouvelle méthode appelée par le constructor pour soit construire le formulaire
   et l'afficher soit le remettre au premier plan.
 **/
 activate(){
@@ -383,10 +382,20 @@ afterBuilding(){
     // Pour les autres types, on a un menu type
     this.peupleTypes()
   }
+
+  // On doit sélectionner le premier champ focusable, mais il faut laisser
+  // le temps à l'observeur de mutation de placer les observeurs de focus
+  // sur les éléments pour pouvoir déclencher les bons raccourcis clavier.
+  setTimeout(this.focusFirstField.bind(this), 500)
+
   jqo = eid = typ = null
   this.built = true
 }
 
+focusFirstField(){
+  // console.log("[onShow] Je focusse dans ", this.jqObj.find('*[tabindex="1"]'))
+  this.jqObj.find('*[tabindex="1"]').focus()
+}
 
 // ---------------------------------------------------------------------
 //  Méthodes pour les PROCÉDÉS
@@ -778,6 +787,7 @@ setNumeroScene(){
 
 onKeyDownOnTextFields(e){
   // console.log("-> EventForm#onKeyDownOnTextFields")
+  OBSOLÈTE
   if(e.metaKey){
     if(e.keyCode === KRETURN){
       this.submit()

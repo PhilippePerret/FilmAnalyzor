@@ -18,15 +18,15 @@ global.Tests = {
 , initAll(){
     if ( not(this.inited) ) {
       this.MAINFOLDER = path.join(this.appPath,'FITests')
+      this.require('lib/required2/FITSubject')
       this.requireFolder('./lib/required1/divers', window)
-      this.requireFolder('./lib/required1')
+      this.requireFolder('lib/auto_required')
       if (undefined === FITResultat) throw new Error("FITResultat devrait être défini")
       this.requireFolder('./lib/required2/Tests', this)
       global.FITCase = this.require('lib/required2/FITCase')
       this.require('lib/required2/FITAssertion') // => function assert
       this.require('lib/required2/FITExpectation') // => function expect
       this.require('lib/required2/FITest')
-      this.require('lib/required2/FITSubject')
       // toutes les assertions
       this.requireFolder('lib/required2/Assertions')
 
@@ -127,6 +127,12 @@ global.Tests = {
     global.action       = this.action.bind(this)
     global.pending      = this.pending.bind(this)
     global.tester       = this.tester.bind(this)
+    global.sumary       = this.sumary.bind(this)
+  }
+
+, sumary(msg){
+    msg = msg.split(RC).map(lig => `\t${lig.trim()}`).join(RC)
+    Console.smallblue(`SOMMAIRE\n--------${msg}`)
   }
 
 , describe(sujet, fn){

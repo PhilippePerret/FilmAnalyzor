@@ -14,6 +14,7 @@
   * [Exécution avant et après le test courant](#before_and_after_testseul)
   * [Code à exécuter avant ou après chaque cas](#before_and_after_each_case)
 * [Textes écrits dans le suivi](#textes_suivis)
+  * [Sommaire des opérations](#sumarize_operations)
 * [Les Assertions](#les_assertions)
   * [Création d'une assertion](#create_new_assertions)
   * [Options des assertions](#options_assertions)
@@ -736,6 +737,24 @@ En dehors des messages des assertions elles-mêmes, on peut trouver ces textes d
 * [Cas entièrement à implémenter (`pending`)](#pending)
 * [Test à implémenter plus tard (`tester`)](#test_to_define)
 <!-- Reporter aussi au-dessus si ajout -->
+
+### Sommaire des opérations {#sumarize_operations}
+
+On peut écrire un sommaire des opérations qui sont testés, n'importe où (dans le describe, dans le case), à l'aide la méthode `sumarize` :
+
+```javascript
+
+describe("Mon tests", async function(){
+  this.case("Le cas courant", async () => {
+    sumarize(`
+      - on fait ceci pour voir cela
+      - et puis ensuite on teste ça
+      - et on devrait obtenir tel résultat.
+      `)
+  })
+})
+
+```
 
 ### Cas entièrement à implémenter (`pending`) {#pending}
 

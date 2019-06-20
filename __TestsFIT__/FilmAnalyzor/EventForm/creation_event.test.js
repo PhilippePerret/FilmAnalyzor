@@ -10,6 +10,20 @@ describe("Création d'un event", function(){
 
   this.case("Création d'une idée au temps voulu", async () => {
 
+    /**
+      Avec ce test on s'assure que :
+    **/
+    sumary(`
+      - on peut créer un event en affichant le formulaire à l'aide
+        de la suite de touche n (pour "nouveau"), i (pour une idée)
+      - le formulaire est correctement réglé, notamment avec son ID,
+        le type de l'event et le temps
+      - le focus se met bien au champ de titre
+      - on peut rentrer un titre et une description
+      - l'event est correctement créé sur la Timeline
+      - l'event est créé dans le reader
+      - l'event est correctement enregistré dans le fichier events.json
+    `)
 
     // ---------------------------------------------------------------------
     // ÉTAT PRÉLIMINAIRE DE L'ANALYSE
@@ -42,10 +56,8 @@ describe("Création d'un event", function(){
     const new_event_id = frontForm.eventId
     // console.log("frontForm",frontForm)
 
-    await action("On presse la touche tabulation pour entrer dans le titre", () => {
-      keyPress('Tab')
-    })
     expect(UI.currentShortcutsName, 'La combinaison shortcuts courante').is('TEXT FIELD')
+    expect(FocusedElement).is({id:`event-${new_event_id}-titre`})
 
     const nev_titre = `Un titre ${new Date().getTime()}`
     const description = `La description du titre ${nev_titre} est ${new Date()}.`
@@ -99,23 +111,11 @@ describe("Création d'un event", function(){
       , failure: "L'application n'a pas été enregistrée, apparemment (son modified reste à true)"
     })
 
-    // L'event a bien été enregistré
+    // L'event a bien été enregistré dans le fichier
     expect(EventsFile).contains({id:new_event.id, titre:nev_titre, content:description})
 
 
   })
 
-  // this.case('On peut créer un procédé', async () => {
-  //   pending()
-  //   // await action("On presse «n» puis «p»", async () => {
-  //   //   keyPress('n')
-  //   //   await wait(200)
-  //   //   keyPress('p')
-  //   //   await wait(200)
-  //   // })
-  // })
-  //
-  // this.case('On peut créer un noeud structurel', async()=>{
-  //   tester("La création du noeud dramatique")
-  // })
+
 })
