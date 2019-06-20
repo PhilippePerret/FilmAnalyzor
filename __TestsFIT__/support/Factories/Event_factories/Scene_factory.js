@@ -4,12 +4,22 @@
 **/
 
 global.FITEventScene = class extends FITEvent {
-constructor(pdata){
-  super(pdata)
+
+// ---------------------------------------------------------------------
+// CLASSE
+static create(data){
+  this.a = data.analyse
+  return new FITEventScene(data)
+}
+
+constructor(data){
+  data.type = 'scene'
+  super(data)
+
 }
 get data(){
   var [decor, sdecor, lieu, effet] = this.c.newDecorAndAll()
-  return Object.assign(super.defaultData,{
+  return Object.assign({}, super.defaultData,{
       numero:     this.pData.numero     || this.c.getANumero()
     , titre:      this.pData.titre      || this.c.getAPitch()
     , decor:      this.pData.decor      || decor

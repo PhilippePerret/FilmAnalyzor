@@ -128,6 +128,8 @@ global.Tests = {
     global.pending      = this.pending.bind(this)
     global.tester       = this.tester.bind(this)
     global.sumary       = this.sumary.bind(this)
+    global.sumarize     = this.sumary.bind(this)
+    global.sumarise     = this.sumary.bind(this)
   }
 
 , sumary(msg){

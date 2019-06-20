@@ -5,19 +5,18 @@
 
 global.FITEvent = class {
 
-  static create(analyse, data){
-    this.a = this.analyse = analyse
-    data = data || {}
-    // Si le type n'est pas défini, on prend un type au hasard
-    if ( !data.type ) {
-      data.type = this.getAEventType()
-    }
-    let className = `FITEvent${data.type.titleize()}`
-    console.log("Class name pour la création de l'event : ", className)
-    let classe = window[className]
-    Object.assign(data, {analyse:analyse})
-    return classe.create(data)
+static create(data){
+  data = data || {}
+  this.a = this.analyse = data.analyse || {}
+  // Si le type n'est pas défini, on prend un type au hasard
+  if ( !data.type ) {
+    data.type = this.getAEventType()
   }
+  let className = `FITEvent${data.type.titleize()}`
+  console.log("Class name pour la création de l'event : ", className)
+  let classe = window[className]
+  return classe.create(data)
+}
 
   static newId(){
     if ( undefined === this.lastId ) this.lastId = 0
@@ -34,18 +33,15 @@ global.FITEvent = class {
     const frCar = Math.rand(1000)
     return String.LoremIpsum.substring(frCar, frCar + len).trim()
   }
-  static newTitre(len){
-    const tit = `Event à ${new Date().getTime()}`
-    if (len && tit.length > len ) tit = tit.substring(0, len)
-    return tit
-  }
 
   static getAssociates(analyse){
-    return null // pour le moment
+    return {} // pour le moment
     // TODO Implémenter
   }
+
 // ---------------------------------------------------------------------
 // INSTANCE
+
 constructor(data){
   this.pData = data || {} // pData pour "Provided Data"
 }
@@ -54,15 +50,24 @@ get data(){ return this.defaultData }
 get defaultData(){
   if (undefined === this._defdata) {
     this._defdata = {
-      id:         this.pData.id       || this.c.newId()
-    , time:       this.pData.time     || this.c.random(60*10)
-    , titre:      this.pData.titre    || this.c.newTitre()
+      id:         this.pData.id       || FITEvent.newId()
+    , type:       this.type
+    , time:       this.pData.time     || Math.rand(60*10)
+    , titre:      this.pData.titre    || this.newTitre()
     , content:    this.pData.content  || this.pData.description || this.c.newContent(100)
     , associates: this.associates
     }
   }
   return this._defdata
 }
+
+newTitre(len){
+  var tit = `${(this.type||'Event').titleize()} à ${new Date().getTime()}`
+  if (len && tit.length > len ) tit = tit.substring(0, len)
+  return tit
+}
+
+get type(){return this.pData.type}
 get associates(){return this.pData.associates || ( this.pData.associates = this.c.getAssociates(this.a))}
 get c(){return this.constructor}
 get a(){return this.c.a }

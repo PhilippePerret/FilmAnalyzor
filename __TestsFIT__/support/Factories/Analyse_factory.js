@@ -9,6 +9,48 @@ const execSync = require('child_process').execSync
 
 global.FITAnalyse = class {
 
+// ---------------------------------------------------------------------
+//  CLASSE FITAnalyse
+
+static create(data){
+  // On calcule des données par défaut que les données transmises remplaceront
+  let dataDefaut = {
+      events:       1 + Math.rand(9)
+    , scenes:       1 + Math.rand(4)
+    , personnages:  4 + Math.rand(4)
+    , brins:        1 + Math.rand(3)
+    , documents:    1 + Math.rand(3)
+  }
+  let finalData
+  if ( data !== EMPTY ){
+    data = data || {}
+    finalData = Object.assign({}, dataDefaut, data)
+  }
+  // console.log("Données finales pour construire la fixture d'analyse : ", finalData)
+  let ca = new FITAnalyse(finalData)
+  ca.build()
+  return ca
+}
+
+static createAndLoad(data){
+  const ca = this.create(data)
+  ca.load()
+  return ca
+}
+
+static rmdir(fpath){
+  execSync(`rm -rf "${path.resolve(fpath)}"`)
+  if ( fs.existsSync(fpath) ) {
+    console.error("Le dossier suivant n'a pas pu être détruit : ", fpath)
+  }
+}
+
+
+
+
+// ---------------------------------------------------------------------
+//  INSTANCE
+
 constructor(data){
   this.pData = data || {}
 }
@@ -72,7 +114,18 @@ buildEventsFile(){
     var nombre = this.pData.events
     this.pData.events = []
     while ( nombre -- ) this.pData.events.push(FITEvent.create(this))
+  } else {
+    // Les events ont été fabriqués avec des données déterminées, mais il
+    // faut s'assurer que ce sont ces données qui ont été transmises et non
+    // pas les instances
+    this.pData.events = this.pData.events.map( de => {
+      if ( undefined === de.data ) return de
+      else return de.data
+    })
   }
+  // Dans tous les cas, il faut s'assurer que les events sont bien classés
+  this.pData.events.sort((a, b) => a.time - b.time)
+  // console.log("this.pData.events classés : ", this.pData.events)
   fs.writeFileSync(this.eventsFilePath, JSON.stringify(this.pData.events))
 }
 // Construction des documents
@@ -157,33 +210,6 @@ get exportFolderPath(){ return path.join(this.path,'export') }
 get filesFolderPath() { return path.join(this.path,'analyse_files')
 }
 
-// ---------------------------------------------------------------------
-//  CLASSE FITAnalyse
 
-static create(data){
-  // On calcule des données par défaut que les données transmises remplaceront
-  let dataDefaut = {
-      events:       1 + Math.rand(9)
-    , scenes:       1 + Math.rand(4)
-    , personnages:  4 + Math.rand(4)
-    , brins:        1 + Math.rand(3)
-    , documents:    1 + Math.rand(3)
-  }
-  let finalData
-  if ( data !== EMPTY ){
-    data = data || {}
-    finalData = Object.assign({}, dataDefaut, data)
-  }
-  // console.log("Données pour construire la fixture d'analyse : ", finalData)
-  let ca = new FITAnalyse(finalData)
-  ca.build()
-  return ca
-}
 
-static rmdir(fpath){
-  execSync(`rm -rf "${path.resolve(fpath)}"`)
-  if ( fs.existsSync(fpath) ) {
-    console.error("Le dossier suivant n'a pas pu être détruit : ", fpath)
-  }
-}
 }

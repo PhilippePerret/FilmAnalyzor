@@ -10,8 +10,19 @@ static create(data){
 
 // ---------------------------------------------------------------------
 // INSTANCE
-constructor(data){
-  super(data)
+constructor(pdata){
+  data.type = 'action'
+  super(pdata)
 }
+
+/**
+  Les données qui seront enregistrées dans events.json
+**/
+get data(){
+  return Object.assign({}, super.defaultData, {
+    type: 'action'
+  })
+}
+
 
 }

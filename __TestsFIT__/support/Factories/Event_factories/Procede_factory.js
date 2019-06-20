@@ -11,7 +11,18 @@ static create(data){
 // ---------------------------------------------------------------------
 // INSTANCE
 constructor(data){
+  data.type = 'procede'
   super(data)
 }
+
+/**
+  Les données qui seront enregistrées dans events.json
+**/
+get data(){
+  return Object.assign({}, super.defaultData, {
+    type: 'procede'
+  })
+}
+
 
 }

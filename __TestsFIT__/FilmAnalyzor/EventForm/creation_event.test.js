@@ -8,7 +8,7 @@ describe("Création d'un event", function(){
     await this.ca.load()
   })
 
-  this.case("Création d'une idée au temps voulu", async () => {
+  this.case("Création correcte d'une idée au temps voulu", async () => {
 
     /**
       Avec ce test on s'assure que :
