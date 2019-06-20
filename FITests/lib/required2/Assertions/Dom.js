@@ -13,10 +13,19 @@
 **/
 
 global.DOM = {
-  async exists(el){
-    const o = new Dom(el)
-    const res = await o.exists()
-    return res
+  // async exists(el){
+  //   const o = new Dom(el)
+  //   const res = await o.exists()
+  //   return res
+  // }
+  async exists(el, options){
+    var xtime = 16
+    while( xtime -- > 0 ) {
+      // console.log(`\$${el}.length = ${$(el).length}`)
+      if ( $(el).length ) return true
+      await wait(200)
+    }
+    return false
   }
 , contains(el){ return $(el).length > 0 }
 , displays(el){ return $(el).is(':visible') }
@@ -57,16 +66,17 @@ async is_visible(){
 }
 
 Object.assign(FITExpectation.prototype,{
-  async exists(){
+  async exists(options){
     let resultat = this.newResultat({
-        verbe:'existe', objet:'dans la page', options:options||{}
+        verbe:'existe',
+        objet:'dans la page', options:options||{}
     })
-    const pass = await DOM.exists(this.sujet)
+    const pass = await DOM.exists(this.actual)
     resultat.validIf(pass)
     assert(resultat)
   }
 
-, async is_visible() {
+, async is_visible(options) {
     let resultat = this.newResultat({
         verbe:'est', comp_verbe:'visible', options:options||{}
     })

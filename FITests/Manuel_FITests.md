@@ -16,6 +16,7 @@
 * [Textes écrits dans le suivi](#textes_suivis)
   * [Sommaire des opérations](#sumarize_operations)
 * [Les Assertions](#les_assertions)
+  * [Assertions usuelles](#usual_assertions)
   * [Création d'une assertion](#create_new_assertions)
   * [Options des assertions](#options_assertions)
   * [Sujets complexes (`expect(sujet)`)](#complexes_subjects)
@@ -239,6 +240,9 @@ Toutes les assertions utilisables sont définies dans le dossier `required/Asser
 
 On peut définir dans le dossier `support/assertions` les assertions propres à l'application testée.
 
+### Assertions usuelles {#usual_assertions}
+
+Les assertions usuelles, standards, sont définies dans le dossier `FITests/lib/required2/Assertions/`.
 
 ### Création d'assertions {#create_new_assertions}
 

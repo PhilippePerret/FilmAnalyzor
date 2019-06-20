@@ -121,7 +121,8 @@ static newUUID(){
 **/
 // Méthode mettant la fenêtre +wf+ en fenêtre au premier plan
 static setCurrent(wf, e){
-  log.info(`-> FWindow.setCurrent(fwindow ${wf.UUID})`)
+  log.info(`-> FWindow.setCurrent(fwindow ${wf.UUID} - ${wf.name})`)
+  // console.log(`-> FWindow.setCurrent(fwindow ${wf.UUID} - ${wf.name})`)
   if(wf.isCurrent()){
     log.info(`    ${wf.UUID} est déjà la fenêtre courante`)
   } else {

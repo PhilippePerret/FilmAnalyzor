@@ -40,7 +40,6 @@ static editEvent(ev){
   // On le met en formulaire courant et on l'active
   this.currentForm = ev.form
   this.currentForm.activate()
-
 }
 
 static get current(){return this.currentForm}
@@ -288,7 +287,7 @@ toggleForm(){
 **/
 activate(){
   if ( isFalse(this.inited) ) this.toggleForm()
-  else FWindow.setCurrent(this.fwindow)
+  FWindow.setCurrent(this.fwindow)
 }
 
 onShow(){

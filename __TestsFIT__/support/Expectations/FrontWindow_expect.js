@@ -13,23 +13,36 @@ constructor(currentFWindow){
 
 // ---------------------------------------------------------------------
 //  ASSERTIONS
-is(name, human_name, options){
+
+async is(name, human_name, options){
+  options = options || {}
   // console.log("-> is", name, human_name, options)
   let resultat = this.newResultat({
       verbe:    'est'
     , objet:    human_name
     , options:  options
   })
-  resultat.validIf(!!(this.current && this.current.name === name))
-  assert(resultat)
+  var pass
+    , xtimes = options.xtimes || 8
+    , current
+  while ( xtimes -- ){
+    current = FWindow.current
+    // if ( current ) console.log("current.name / name", current.name, name)
+    // else console.log("Pas de courante")
+    pass = !!(current && current.name === name)
+    if ( this.positive === pass ) break
+    await wait(500)
+  }
+  resultat.validIf(pass)
+  return assert(resultat)
 }
 
-is_event_form(options){
-  return this.is('AEVENTFORM', 'le formulaire d’events', options)
+async is_event_form(options){
+  await this.is('AEVENTFORM', 'le formulaire d’events', options)
 }
 
-is_porte_documents(options){
-  return this.is('PORTEDOCUMENTS', 'le porte-documents', options)
+async is_porte_documents(options){
+  await this.is('PORTEDOCUMENTS', 'le porte-documents', options)
 }
 
 }
