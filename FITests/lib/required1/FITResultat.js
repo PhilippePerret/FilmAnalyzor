@@ -64,7 +64,7 @@ set options(v){ this._options = options}
 // Pour détailler l'échec avec un message complet
 get detailFailure(){return this._detailFailure}
 set detailFailure(v){
-  this._detailFailure = `\t\t${v.split("\n").join("\n\t\t")}`
+  this._detailFailure = `\n\t\t${v.split("\n").join("\n\t\t")}`
 }
 
 get messages(){
@@ -72,15 +72,15 @@ get messages(){
     this._msgs = {success: null, failure: null}
     let [succ, fail] = this.assertise(this.sujet, this.verbe, this.comp_verbe, this.objet)
     this._msgs.success = succ
-    this._msgs.failure = fail
     if ( this.bonDetails.length ) {
       this._msgs.success += ` (${this.bonDetails.join(', ')})`
     }
+    this._msgs.failure = fail
     if ( this.badDetails.length ) {
       this._msgs.failure += ` (MAIS ${this.badDetails.join(', ')})`
-      if ( this.detailFailure ) {
-        this._msgs.failure += this.detailFailure
-      }
+    }
+    if ( this.detailFailure ) {
+      this._msgs.failure += this.detailFailure
     }
   }
   return this._msgs

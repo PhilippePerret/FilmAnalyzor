@@ -7,11 +7,15 @@
 class FITTimelineSubject extends FITSubject {
 constructor(name){
   super(name)
-  this.assertions = TimelineAssertions
-}
+  this.sujet = "La Main-Timeline"
+  this.assertions = {
+    contains: this.contains.bind(this)
+  }
 }
 
-const TimelineAssertions = {
+// ---------------------------------------------------------------------
+//  ASSERTIONS
+
 /**
   Produit un succès si la Timeline contient l'event correspondant à +foo+
   @param {Event|Anything} foo   En général un évènement
@@ -19,18 +23,16 @@ const TimelineAssertions = {
                     top     Valeur en pixels de la hauteur attendue de l'event
 **/
 contains(foo, options){
-  options = options || {}
-  let resultat = new FITResultat(this,{
-      sujet: 'La Timeline'
-    , verbe: 'contient'
+  let resultat = this.newResultat({
+      verbe: 'contient'
     , objet: `${foo}`
-    , options: options
+    , options:options||{}
   })
   const jqRef = `#banctime-tape #banctime-event-${foo.id}`
 
   resultat.validIf(DOM.contains(jqRef))
 
-  if (resultat.valid && options.top){
+  if (resultat.valid && options && options.top){
     const otop = $(jqRef).position().top
     resultat.validIf(
         otop.isCloseTo(options.top, 4)
@@ -38,7 +40,7 @@ contains(foo, options){
       , `placé à top:${otop}px au lieu de ${options.top}px`
     )
   }
-  if (resultat.valid && options.left){
+  if (resultat.valid && options && options.left){
     const oleft = $(jqRef).position().left
     resultat.validIf(
         oleft.isCloseTo(options.left, 4)
@@ -48,6 +50,7 @@ contains(foo, options){
   }
   assert(resultat)
 }
+
 }
 
 global.FITTimeline = new FITTimelineSubject('Timeline')

@@ -7,6 +7,7 @@ class FITEventsFile extends FITSubject {
 constructor(analyse){
   super('EventsFile')
   this.a = this.analyse = analyse
+  this.sujet = "Le fichier des events"
   // this.assertions   = FITEventsFileAssertions
   this.assertions = {
     contains: this.contains.bind(this)
@@ -17,51 +18,40 @@ getData(){
   return JSON.parse(fs.readFileSync(this.a.eventsFilePath,'utf8'))
 }
 
-contains(data, options){
+contains(reqData, options){
   options = options || {}
-  let resultat = new FITResultat(this, {
-      sujet: 'Le fichier des events'
-    , verbe: 'contient'
-    , objet: `${JSON.stringify(data)}`
+  let resultat = this.newResultat({
+      verbe: 'contient'
+    , objet: `${JSON.stringify(reqData)}`
     , options: options
   })
-
   const inFile = this.getData()
-  console.log("inFile:",inFile)
-
-
+  var pass = false
+  for ( var h of inFile ){
+    if ( hashCompliesWith(h, reqData) ) {
+      pass = true
+      break
+    }
+  }
+  resultat.validIf(pass)
+  if ( resultat.invalid ){
+    resultat.detailFailure = `Le contenu du fichier est : ${JSON.stringify(inFile,null,2)}`
+  }
   assert(resultat)
 }
 
+// ---------------------------------------------------------------------
+//  MÉTHODES UTILES
 }
 
-//
-// const FITEventsFileAssertions = {
-// /**
-//   Assertion qui vérifie que le reader contienne bien l'item +item+
-//
-//   @param {Object} options
-//
-// **/
-//   contains(data, options){
-//     options = options || {}
-//     let resultat = new FITResultat(this, {
-//         sujet: 'Le fichier des events'
-//       , verbe: 'contient'
-//       , objet: `${JSON.stringify(data)}`
-//       , options: options
-//     })
-//
-//     const inFile = this.i.getData()
-//     console.log("inFile:",inFile)
-//
-//
-//     assert(resultat)
-//   }
-//
-// }
-//
-// Object.assign(FITEventsFile.prototype, FITEventsFileAssertions)
+global.hashCompliesWith = function(actual, expected){
+  for ( var k in expected ){
+    if ( undefined === actual[k] ) return false
+    if ( ! Object.is(expected[k], actual[k]) ) return false
+  }
+  return true
+}
+
 
 Object.defineProperties(global,{
   EventsFile:{get(){ return new FITEventsFile(current_analyse) }}

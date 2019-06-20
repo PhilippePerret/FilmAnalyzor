@@ -94,8 +94,13 @@ describe("Création d'un event", function(){
     // L'event a été ajouté dans le reader
     expect(FITReader).contains(new_event, {shown:true})
 
+    await waitFor(()=>{return current_analyse.modified == false}, {
+        message: "J'attends que l'analyse (modifiée) soit enregistrée."
+      , failure: "L'application n'a pas été enregistrée, apparemment (son modified reste à true)"
+    })
+
     // L'event a bien été enregistré
-    expect(EventsFile).contains({id:new_event.id, titre:nev_titre, description:description})
+    expect(EventsFile).contains({id:new_event.id, titre:nev_titre, content:description})
 
 
   })
