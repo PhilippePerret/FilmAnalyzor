@@ -1,7 +1,7 @@
 'use strict'
 
 module.exports = {
-  init(): function(){
+  init: function(){
     log.info('n:New element')
   }
 , onKeyUp: function(e){// NE PAS UTILISER () => {...} (scope)
@@ -24,7 +24,7 @@ module.exports = {
     this.close() // on referme la fenêtre après avoir choisi
     return stopEvent(e)
   }
-, title: 'Créer un nouveau…'
+, title: 'Créer un nouvel event de type…'
 , body: function(){
     var divs = [], dev
     this.shortcut2type = {}

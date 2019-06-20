@@ -28,18 +28,38 @@ class FATexte {
   *     CLASSE
   */
 
+static init(){
+  // On définit toutes les expressions régulières et les textes de remplacement.
+  this.defineRegexpAndReplacements()
+}
+
+static defineRegexpAndReplacements(){
+  window.REG_MD_BOLD = /\*\*([^\*\n]+)\*\*/g
+  window.REP_MD_BOLD = '<strong>$1</strong>'
+  window.REG_MD_ITAL = /\*([^\*\n]+)\*/g
+  window.REP_MD_ITAL = '<em>$1</em>'
+  window.VAR_REGEXP  = new RegExp('\{\{(?<key>[a-zA-Z0-9_\-]+)\}\}','g')
+  window.DOC_REGEXP  = new RegExp('\{\{document: ?(?<key>[a-zA-Z0-9_\-]+)(\\|(?<text>[^}]+))?\}\}','g')
+  window.BRIN_REGEXP = new RegExp('\{\{brin: ?(?<key>[a-zA-Z0-9_\-]+)(\\|(?<text>[^}]+))?\}\}','g')
+}
+
 static reset(){
+  delete this._lastIndiceNote
+  delete this._varsPath
+  delete this._dimsPath
+  delete this._table_vars
+  delete this._table_dims
+  delete this.missedVariables
   delete this._lastIndiceNote
 }
 
 static forEachDim(method){
-  if(this.table_dims === null) return
+  if ( isNull(this.table_dims) ) return
   for(var dim in this.table_dims){
     var d = this.table_dims[dim]
     method(dim, d.regexp, d.value)
   }
 }
-
 
 static get TYPES2HTYPES(){
   let t2h = {
@@ -50,15 +70,15 @@ static get TYPES2HTYPES(){
   , 'scenes':     {fr: 'scènes',    genre: 'F'}
   , 'times':      {fr: 'temps',     genre: 'M'}
   }
-  t2h[STRbrin]      = {fr: STRbrin,      genre: 'M'}
-  t2h[STRimage]     = {fr: STRimage,     genre: 'F'}
-  t2h[STRdocument]  = {fr: STRdocument,  genre: 'M'}
-  t2h[STRevent]     = {fr: STRevent,     genre: 'M'}
-  t2h[STRscene]     = {fr: 'scène',     genre: 'F'}
-  t2h[STRtime]      = {fr: 'temps',     genre: 'M'}
+  t2h[STRbrin]      = {fr: STRbrin,       genre: 'M'}
+  t2h[STRimage]     = {fr: STRimage,      genre: 'F'}
+  t2h[STRdocument]  = {fr: STRdocument,   genre: 'M'}
+  t2h[STRevent]     = {fr: STRevent,      genre: 'M'}
+  t2h[STRscene]     = {fr: 'scène',       genre: 'F'}
+  t2h[STRtime]      = {fr: 'temps',       genre: 'M'}
 }
 static htypeFor(type, options){
-  if(undefined === options) options = {}
+  options = options || {}
   let dtype = this.TYPES2HTYPES[type]
     , isFem = dtype.genre === 'F'
   var str = dtype.fr
@@ -75,36 +95,35 @@ static htypeFor(type, options){
 }
 
 static deDim(str){
-  if(this.dimsData == null) return str // pas de diminutifs
+  // console.log("String au départ :", str)
+  if ( isNull(this.dimsData) ) return str // pas de diminutifs
   this.forEachDim(function(dim, regDim, value){
     str = str.replace(regDim, value)
   })
+  // console.log("String après deDim :", str)
   return str
 }
 
 // Stylisation du texte
 static deStyle(str){
-  str = str.replace(/\*\*([^\*]+)\*\*/g, '<strong>$1</strong>')
-  str = str.replace(/\*([^\*]+)\*/g, '<em>$1</em>')
+  str = str.replace(REG_MD_BOLD, REP_MD_BOLD)
+  str = str.replace(REG_MD_ITAL, REP_MD_ITAL)
   return str
 }
-
-static get VAR_REGEXP(){return new RegExp('\{\{(?<key>[a-zA-Z0-9_\-]+)\}\}','g')}
 
 static deVar(str){
   var my = this
     , groups
     , key
-    , tableref
-  // Quand il n'y a pas de variables définies, on fait quand même le
-  // traitement pour signaler à l'analyste qu'il doit définir celles qui
-  // sont utilisées, et lui explique comment le faire.
-  if(my.table_vars === null){ tableref = {} }
-  else tableref = my.table_vars
-  str = str.replace(my.VAR_REGEXP, function(){
+    // Quand il n'y a pas de variables définies, on fait quand même le
+    // traitement pour signaler à l'analyste qu'il doit définir celles qui
+    // sont utilisées, et lui explique comment le faire.
+    , tableref = isNull(my.table_vars) ? {} :  my.table_vars
+
+  str = str.replace(VAR_REGEXP, function(){
     groups  = arguments[arguments.length-1]
     key     = groups.key
-    if(undefined === tableref[key]) my.notifyMissedVariable(key)
+    isDefined(tableref[key]) || my.notifyMissedVariable(key)
     return tableref[key] || key
   })
   return str
@@ -113,11 +132,9 @@ static deVar(str){
 /**
   Traitement des balises documents dans les strings
 **/
-static get DOC_REGEXP(){return new RegExp('\{\{document: ?(?<key>[a-zA-Z0-9_\-]+)(\\|(?<text>[^}]+))?\}\}','g')}
-
 static deDoc(str){
   var groups, doc_key
-  str = str.replace(this.DOC_REGEXP, function(){
+  str = str.replace(DOC_REGEXP, function(){
     groups  = arguments[arguments.length-1]
     doc_key = groups.key
     return FADocument.get(doc_key).as_link()
@@ -128,11 +145,9 @@ static deDoc(str){
 /**
   Traitement des balises brins dans les strings
 **/
-static get BRIN_REGEXP(){return new RegExp('\{\{brin: ?(?<key>[a-zA-Z0-9_\-]+)(\\|(?<text>[^}]+))?\}\}','g')}
-
 static deBrin(str){
   var groups, brin_id
-  str = str.replace(this.BRIN_REGEXP, function(){
+  str = str.replace(BRIN_REGEXP, function(){
     groups  = arguments[arguments.length-1]
     brin_id = groups.key
     return FABrin.get(brin_id).as(STRshort,LINKED|FORMATED)
@@ -144,7 +159,7 @@ static deBrin(str){
   Retourne un nouvel indice de note
 **/
 static newIndiceNote(){
-  if(undefined === this._lastIndiceNote) this._lastIndiceNote = 0
+  this._lastIndiceNote = this._lastIndiceNote || 0
   return ++ this._lastIndiceNote
 }
 
@@ -153,8 +168,8 @@ static newIndiceNote(){
   de la variable +varname+ rencontrée dans le texte.
 **/
 static notifyMissedVariable(varname){
-  if(undefined === this.missedVariables) this.missedVariables = {}
-  if(undefined === this.missedVariables[varname]){
+  defaultize(this,'missedVariables',{})
+  if ( isUndefined(this.missedVariables[varname]) ) {
     // <= La table des variables manquantes ne connait pas la variable
     // => C'est la première fois qu'on la rencontre
     // => Il faut le signaler
@@ -178,22 +193,23 @@ static get table_vars(){return this._table_vars||defP(this,'_table_vars',this.de
 
 // Prépare la table des diminutifs du film
 static defineTableDims(){
-  if (this.dimsData === null) return null
+  if ( isNull(this.dimsData) ) return null
   var tbl = {}, reg
   for(var dim in this.dimsData){
     reg = new RegExp(`(^|[^a-zA-Z0-9_])@${dim}([^a-zA-Z0-9_]|$)`, 'g')
     tbl[dim] = {dim: dim, value: `$1<a class="lkshow" onclick="showPersonnage('${this.dimsData[dim].id}',event)">${this.dimsData[dim].pseudo}</a>$2`, regexp: reg}
   }
+  // console.log("this.dimsData:", this.dimsData)
   return tbl
 }
 
 static defineTableVars(){
-  if(false == fs.existsSync(this.varsPath)) return null
+  if ( isFalse(fs.existsSync(this.varsPath)) ) return null
   return YAML.safeLoad(fs.readFileSync(this.varsPath,'utf8'))
 }
 
 static get dimsData(){
-  if(undefined === this._dimsData){
+  if ( isUndefined(this._dimsData) ){
     this._dimsData = {}
     if(fs.existsSync(this.dimsPath)){
       this._dimsData = YAML.safeLoad(fs.readFileSync(this.dimsPath,'utf8'))
@@ -201,7 +217,8 @@ static get dimsData(){
     // On met les diminutifs de personnages
     Object.assign(this._dimsData, FAPersonnage.diminutifs)
 
-    if(this._dimsData == {}) this._dimsData = null
+    isEmpty(this._dimsData) && ( this._dimsData = null )
+    // console.log("this._dimsData:", this._dimsData)
   }
   return this._dimsData
 }
@@ -230,7 +247,7 @@ constructor(str) {
  Cf. l'astuce tout en haut pour l'utilisation pratique.
  */
 formate(str, options){
-  if(undefined === str) str = this.raw_string
+  if ( isUndefined(str) ) str = this.raw_string
   else this.raw_string = str
   str = this.deEventTags(str, options)
   str = this.deSceneTags(str, options)
@@ -242,7 +259,7 @@ formate(str, options){
   str = this.deStyle(str)
 
   // Si une option de format a été définie
-  if(options && options.format) str = this.setFormat(str, options.format)
+  if ( options && options.format ) str = this.setFormat(str, options.format)
   return str
 }
 
@@ -258,9 +275,9 @@ setFormat(str, format){
   switch (format) {
     case HTML:
       str = CHILD_PROCESS.execSync(`echo "${str.replace(/\"/g,'\\"')}" | pandoc`).toString()
-      str = str.replace(/\n/g, '<br>')
+      str = str.replace(/¶/g, '<br>')
       return str
-    case 'raw':
+    case STRraw:
       return str
     default:
       console.error(`Le Format "${format}" est inconnu.`)
@@ -342,7 +359,7 @@ deSceneTags(str){
   else this.raw_string = str
   str = str.replace(FATexte.REGEXP_SCENE_TAG, function(){
     var groups = arguments[arguments.length - 1]
-    return current_analyse.ids[groups.event_id].asLink(groups.alt_text)
+    return current_analyse.ids[groups.event_id].showLink(groups.alt_text)
   })
   // console.log(founds)
   return str
@@ -398,3 +415,5 @@ deBrin(str){return this.execDe(str, 'deBrin') }
 deDoc(str){return this.execDe(str, 'deDoc') }
 
 }
+
+FATexte.init()

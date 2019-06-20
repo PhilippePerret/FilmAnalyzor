@@ -28,8 +28,13 @@ constructor(classeFAElement){
 // Pour ouvrir et fermer le panneau
 toggle(force_opened, selected_item){
   if (isUndefined(force_opened)) this.fwindow.toggle()
-  else this.fwindow[force_opened?'show':'hide']()
+  else this.fwindow[force_opened?STRshow:STRhide]()
   selected_item && this.select(selected_item)
+  if ( this.fwindow.isOpened ) {
+    this.observeKeysPressed()
+  } else {
+    this.unobserveKeysPressed()
+  }
 }
 get opened(){return this.fwindow.visible}
 
@@ -37,6 +42,9 @@ get opened(){return this.fwindow.visible}
 forEachItem(fn){
   for(var el of this.items){if(false === fn(el)) break}
 }
+
+// Retourne l'item quelconque d'identifiant +item_id+
+item(item_id){return this.owner.get(item_id)}
 
 // ---------------------------------------------------------------------
 //  MÉTHODES DE DOM
@@ -87,14 +95,17 @@ observe(){
 
   this.observeListing()
 
+  // Le bouton '+' doit être surveillé, pour créer un nouvel item
   if(this.data.creatable){
-    // Le bouton '+' doit être surveillé, pour créer un nouvel item
     this.jqObj.find('.header .btn-add').on(STRclick, this.createItem.bind(this))
   }
+
+  // Le bouton pour ouvrir les détails doit être actif
   if(this.data.collapsable){
     this.jqObj.find('.body .btn-collapse-all').on(STRclick, this.setCollapseAll.bind(this,true))
     this.jqObj.find('.body .btn-uncollapse-all').on(STRclick, this.setCollapseAll.bind(this,false))
   }
+
   // Le bouton OK doit être surveillé
   this.btnOK.on(STRclick, this.onOK.bind(this))
   // Le bouton pour actualiser la liste
@@ -103,18 +114,30 @@ observe(){
   this.btnShowAll.on(STRclick, this.showAll.bind(this))
 
 }
+// Observation des touches clavier
+observeKeysPressed(){
+  UI.setKeyUpAndDown(this.shortcuts_mode, {name:'FA-LISTING', up: this.onKeyUp.bind(this), down: this.onKeyDown.bind(this)})
+}
+unobserveKeysPressed(){
+  // TODO il faudrait pouvoir éviter ça, c'est fwindow qui regarderait la nouvelle
+  // fenêtre courante et déterminerait les raccourcis qu'il faut mettre. Si
+  // aucune fenêtre courante, c'est cette méthode qui serait appelée.
+  // UI.toggleKeyUpAndDown(true /* out fields */)
+}
+
 setCollapseAll(collapsed, e){
   if(e) stopEvent(e) // cf. note N0001
   // this.jqObj.find('.body .additionnal-infos')[collapsed?'hide':'show']()
   BtnToggleContainer[collapsed?'closeAll':'openAll'](this.jqObj)
 }
+
 observeListing(){
 
   // Si les infos supplémentaires sont masquables/affichables, il faut les
   // mettre dans leur état par défaut
   if (this.collapsable){
     BtnToggleContainer.observe(this.jqObj)
-    this.jqObj.find('.body .additionnal-infos')[this.collapsed?'hide':'show']()
+    this.jqObj.find('.body .additionnal-infos')[this.collapsed?STRhide:STRshow]()
   }
 
   if(this.associable){
@@ -128,19 +151,99 @@ observeListing(){
 // ---------------------------------------------------------------------
 //  Méthodes d'évènement
 
+onKeyUp(e){
+  switch (e.key) {
+    case STRn: // n => nouvel item
+      return this.createItem(e)
+    case STRe: // e => edit item
+      return this.editCurrentItem(e)
+    case DELETE: //
+    case BACKSPACE:
+      return this.removeCurrentItem(e)
+  }
+  return stopEvent(e) // dans tous les cas
+}
+onKeyDown(e){
+  switch (e.key) {
+    case DOWNARROW:
+      this.selectNextItem()
+      break
+    case UPARROW:
+      this.selectPrevItem()
+      break
+  }
+  return stopEvent(e) // dans tous les cas
+}
 onOK(){
   this.owner.modified && this.owner.save()
   this.toggle()
 }
 
+// Pour sélectionner l'item suivant
+// note : contrairement à d'autres listes, FAListing n'a pas de sélection
+// par défaut
+selectNextItem(){
+  isDefined(this.selectedIndex) || ( this.selectedIndex = -1 )
+  ++ this.selectedIndex
+  if ( this.selectedIndex > this.itemCount - 1 ) this.selectedIndex = 0
+  this.selectItem(this.selectedIndex)
+}
+selectPrevItem(){
+  isDefined(this.selectedIndex) || ( this.selectedIndex = 1 )
+  -- this.selectedIndex
+  if ( this.selectedIndex < 0 ) this.selectedIndex = this.itemCount - 1
+  this.selectItem(this.selectedIndex)
+}
+editCurrentItem(e){
+  if ( isDefined(this.selectedIndex) ) {
+    this.editItem(this.selectedId)
+  } else {
+    F.notify(T('no-selected-item-user-arrow'))
+  }
+  return e && stopEvent(e)
+}
+removeCurrentItem(e){
+  if ( isDefined(this.selectedIndex) ) {
+    this.onWantRemoveItem(this.selectedItem)
+  } else {
+    F.notify(T('no-selected-item-user-arrow'))
+  }
+  return e && stopEvent(e)
+}
+get selectedItem(){return this.item(this.selectedId) }
+selectItem(idx){
+  this.jqObj.find(`.body .falisting > LI.selected`).removeClass('selected')
+  let o = this.jqObj.find(`.body .falisting > LI:nth-child(${idx + 1})`)
+  o.addClass('selected')
+  UI.rendVisible(o)
+}
+get selectedId(){
+  return this.selectedJqObj.data('id')
+}
+get selectedJqObj(){ return this.jqObj.find(`.body .falisting > LI:nth-child(${this.selectedIndex + 1})`) }
+get itemCount(){
+  if ( isUndefined(this._itemcount) ){
+    this._itemcount = this.jqObj.find(`.body .falisting > LI`).length
+  }
+  return this._itemcount
+}
+
 /**
   Pour sélectionner un élément en particulier
+
+  ATTENTION : cette méthode n'affiche que l'élément dont il est question, elle
+  n'est pas à confondre avec les méthodes qui sélectionne des éléments pour
+  agir dessus, avec toute la liste affichée (cf. les méthodes above).
+
+  Fonctionnement : tous les items sont affichés dans la fenêtre, donc on les
+  masque (hide), puis on affiche (show) celui dont le 'data-id' correspond à
+  l'item recherché.
 **/
 select(item_id){
-  let item = this.owner.get(item_id)
+  let item = this.item(item_id)
   this.jqObj.find('.body .falisting > LI').hide()
-  this.jqObj.find(`.body > LI[data-id="${item_id}"]`).show()
-  this.btnShowAll.css('visibility',STRvisible)
+  this.jqObj.find(`.body .falisting > LI[data-id="${item_id}"]`).show()
+  this.btnShowAll.css('visibility', STRvisible)
 }
 
 showAll(){
@@ -160,6 +263,13 @@ createItem(e){
   if(e) stopEvent(e) // cf. note N0001
   this.owner.edit()
 }
+/**
+  Méthode appelée pour éditer l'item d'id +item_id+
+  Appelée par le bouton "edit" ou par la touche 'e' sur l'item sélectionné.
+**/
+editItem(item_id){
+  this.owner.edit(item_id)
+}
 
 /**
   Actualisation de la liste (normalement, c'est automatique, mais on ne
@@ -169,7 +279,7 @@ update(){
   this.listing.html('')
   this.divsItems().map(div => this.listing.append(div))
   this.observeListing()
-  F.notify("Liste actualisée.")
+  // F.notify("Liste actualisée.")
 }
 
 divsItems(){
@@ -229,13 +339,32 @@ setHeight(){
 // ---------------------------------------------------------------------
 // MÉTHODES DE CONSTRUCTION POUR LES ITEMS
 buildEditButton(item){
-  let attrs = {onclick:`${item.constructor.name}.edit('${item.id}', event)`}
-  return DCreate(A,{id:this.editBtnUID, class:'lkedit lktool fright',inner:'edit',attrs:attrs})
+  let o = DCreate(A,{id:this.editBtnUID, class:'lkedit lktool fright',inner:'edit'})
+  $(o).on(STRclick, this.editItem.bind(this, item.id))
+  return o
+}
+
+/**
+  Méthode appelée lorsqu'on veut supprimer l'item avec la petite croix
+**/
+onWantRemoveItem(item, e){
+  confirm({
+      message: `Veux-tu vraiment détruire définitivement l'item ${item} ?`
+    , methodOnOK: this.execRemoveItem.bind(this, item.id)
+  })
+  e && stopEvent(e)
+  return false
+}
+// La destruction a été confirmée
+execRemoveItem(item_id){
+  // console.log("this:", this)
+  this.owner.destroy(item_id)
 }
 
 buildRemoveButton(item){
-  let attrs = {onclick:`${item.constructor.name}.destroy('${item.id}')`}
-  return DCreate(A,{class:'lkdel lktool fright',inner:' x ',attrs:attrs})
+  let btn = DCreate(A,{class:'lkdel lktool fright',inner:' x '})
+  $(btn).on(STRclick, this.onWantRemoveItem.bind(this,item))
+  return btn
 }
 buildCollapseButton(item){
   return DCreate(IMG, {class: 'toggle-container', src:'img/folder_closed.png', attrs:{'data-container-id':`${item.domId}-additionnal-infos`}})
@@ -261,9 +390,9 @@ isNotCurrentWindow(){
 
 // Titre principal de la fenêtre
 get mainTitle() {
-  if(undefined === this._maintitle){
+  isDefined(this._maintitle) || (
     this._maintitle = this.data.mainTitle || `${this.owner.type.toUpperCase()}S`
-  }
+  )
   return this._maintitle
 }
 // Toutes les instances transmises
@@ -283,8 +412,8 @@ get selected(){return this.data.selected}
 get collapsable(){return this.data.collapsable}
 // True si on doit masquer les informations à l'ouverture
 get collapsed(){
-  if(undefined === this._collapsed){
-    if(undefined === this.data.collapsed) this.data.collapsed = true
+  if ( isUndefined(this._collapsed) ){
+    if ( isUndefined(this.data.collapsed) ) this.data.collapsed = true
     this._collapsed = this.data.collapsed
   }
   return this._collapsed
@@ -303,14 +432,16 @@ get displayStatistiques(){
 }
 asListItem(it,ops){return this.data.asListItem(it,ops)}
 get data(){return this._data||defP(this,'_data',this.owner.DataFAListing)}
+get typeElements(){return this._typeelements || defP(this,'_typeelements', `${this.owner.type}s`)}
 
 // ---------------------------------------------------------------------
 
+get shortcuts_mode(){ return this._shortcutsmode || defP(this,'_shortcutsmode', `FA-LISTING-${this.owner.name}`)}
 get listing()   {return this._listing||defP(this,'_listing', this.jqObj.find('.falisting'))}
 get btnOK()     {return this.fwindow.jqObj.find('.footer .btn-ok')}
 get btnShowAll(){return this.fwindow.jqObj.find('.footer .btn-show-all')}
 get jqObj()     {return this.fwindow.jqObj}
-get fwindow()   {return this._fwindow||defP(this,'_fwindow', new FWindow(this,{name:`${this.owner.name}-FAListing`, class:'fwindow-listing-type images', x:200,y:100}))}
+get fwindow()   {return this._fwindow||defP(this,'_fwindow', new FWindow(this, {name:`${this.owner.name}-FAListing`, type:'FALISTING', shortcuts_mode:this.shortcuts_mode, class:`fwindow-listing-type ${this.typeElements}`, x:200,y:100}))}
 }
 
 
@@ -333,7 +464,6 @@ Object.assign(FAListing,{
       if(it){
         try { res = data.asListItem(it) }
         catch(e){console.error("Erreur en essayant de construire le premier élément :",res, e)}
-        console.log("res:", res)
         res || raise('falist-aslistitem-bad-return')
         isString(res.outerHTML) || raise('falist-aslistitem-bad-return')
         res.tagName === LI || raise('falist-aslistitem-required')

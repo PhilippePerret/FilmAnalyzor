@@ -4,12 +4,19 @@
 button, select, option, label
   -webkit-user-select: none
 
+button, .btn
+  cursor: pointer
+
 // Un div dans un span doit toujours être inline
 span div
   display: inline
 
 .small
   font-size: 0.75em
+
+.mono
+  font-family: Monospace
+  white-space: pre
 
 img
   &.small
@@ -100,7 +107,6 @@ input.main-field
 .inline90
   display: inline-block
   width: 90
-
 
 a
   &.btn

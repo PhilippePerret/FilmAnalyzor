@@ -1,6 +1,6 @@
 'use strict'
 
-EventForm.COMMON_HIDDEN_FIELDS = ['id', 'is_new', 'type']
+EventForm.COMMON_HIDDEN_FIELDS = [STRid, 'is_new', STRtype]
 
 Object.assign(EventForm.prototype,{
   /**
@@ -15,10 +15,10 @@ Object.assign(EventForm.prototype,{
     @return {String}        Le formulaire propre à l'event
   **/
 , formsByType(type){
-    if(undefined === this._formsByType) this._formsByType = {}
-    if(undefined === this._formsByType[type]){
+    isDefined(this._formsByType) || ( this._formsByType = {} )
+    isDefined(this._formsByType[type]) || (
       this._formsByType[type] = this.buildFormOfType(type)
-    }
+    )
     return this._formsByType[type]
   }
 
@@ -37,11 +37,6 @@ Object.assign(EventForm.prototype,{
       dom.push(DCreate(INPUT, {type:STRhidden, id:`${prefid}-${prop}`}))
     }
 
-    dom.push(DCreate(SECTION, {class: 'header no-user-selection', append:[
-        DCreate(BUTTON, {type:BUTTON, class:'btn-close'})
-      , DCreate(SPAN, {class:'event-type', inner: type.toUpperCase()})
-      ]}))
-
     /*  Div supérieur avec temps, durée ou numéro */
     let attrs = {title: 'Pour glisser et déposer l’event et l’associer'}
     attrs[STRdata_type] = STRevent
@@ -57,13 +52,34 @@ Object.assign(EventForm.prototype,{
       ]}))
 
     /*  Pour le type particulier de l'event */
+    let wLabel = 130
     if(type != STRqrd){
       var fieldsType = []
+      const typeStt = type === STRstt
+
+      if ( typeStt) {
+        // Pour le type 'stt', on doit proposer un menu pour mettre le noeud dans
+        // un paradigme de field ou un autre. Pour le moment, deux paradigmes sont possibles
+        fieldsType.push(
+            DCreate(DIV,{class:'div-form', append:[
+                DCreate(LABEL, {inner:'Paradigme', style:`width:${wLabel}px;display:inline-block;`})
+              , DCreate(SELECT, {id: my.fId('idx_pfa'), class:`${type}-pfa`, style:'max-width:270px;', append:[
+                    DCreate(OPTION,{inner:'principal', value:'1'})
+                  , DCreate(OPTION,{inner:'secondaire', value:'2'})
+                  , DCreate(OPTION,{inner:'tertiaire', value:'3'})
+                  , DCreate(OPTION,{inner:'quaternaire', value:'4'})
+                ],attrs:{tabindex:3}})
+              , DCreate(AIDE,"On peut composer jusqu'à 4 paradigmes différents pour le film complet. Le premier, par exemple, peut concerner la forme de l'intrigue principale tandis que le second s'intéressera à l'intrigue secondaire.")
+            ]})
+        )
+      }
       fieldsType.push(
-          DCreate(LABEL, {inner:type === STRstt ? 'Type du nœud' : 'Type'})
-        , DCreate(SELECT, {id: my.fId(`${type}Type`), class: `${type}-types`, style:'max-width:270px;'})
+        DCreate(DIV,{class:'div-form', append:[
+            DCreate(LABEL, {inner:typeStt?'Type du nœud':'Type', style:`width:${wLabel}px;display:inline-block;`})
+          , DCreate(SELECT, {id: my.fId(`${type}Type`), class: `${type}-types`, style:'max-width:270px;', attrs:{tabindex:typeStt?4:3}})
+        ]})
       )
-      if(type !== STRstt){
+      if( not(typeStt) ){
         fieldsType.push(
             DCreate(BUTTON, {type:BUTTON, class:'update btn-update-types', title: T('tit-update-type-list'), append:[
               DCreate(IMG, {src: 'img/update-2.png', alt: 'Actualiser la liste des types'})
@@ -100,9 +116,10 @@ Object.assign(EventForm.prototype,{
         ]}))
     } // si scène
 
+    // Le titre générique de l'event
     dom.push(DCreate(DIV, {class:'div-form', append:[
         DCreate(LABEL, {for: my.fId('titre'), inner: type === STRscene ? 'Pitch' : 'Titre générique (optionnel)'})
-      , DCreate(INPUT, {type:'TEXT', id:my.fId('titre'), class:'main-field'})
+      , DCreate(INPUT, {type:'TEXT', id:my.fId('titre'), class:'main-field',attrs:{tabindex:1}})
       ]}))
 
     // La case à cocher pour dire que l'event est lié à l'image de son
@@ -133,7 +150,7 @@ Object.assign(EventForm.prototype,{
       }
     })(type)
 
-    if(undefined !== label){
+    if ( isDefined(label) ) {
       dom.push(DCreate(DIV, {class:'div-form', append:[
           DCreate(LABEL, {inner:label})
         , DCreate(SELECT, {class:'decors', style:`display:${type===STRscene?'block':'none'};`})
@@ -150,7 +167,7 @@ Object.assign(EventForm.prototype,{
       }
     })(type)
 
-    if(undefined!==label){
+    if ( isDefined(label) ) {
       var ds = [DCreate(LABEL,{inner:label})]
       if(type === STRscene) ds.push(DCreate(SELECT, {class:'sous_decors'}))
       ds.push(DCreate(INPUT, {type:'TEXT', id:my.fId('shorttext2')}))
@@ -174,7 +191,7 @@ Object.assign(EventForm.prototype,{
     })(type)
     dom.push(DCreate(DIV,{class:'div-form', append:[
         DCreate(LABEL, {inner:label})
-      , DCreate(TEXTAREA, {id: my.fId('longtext1'), attrs:{rows: '4'}})
+      , DCreate(TEXTAREA, {id: my.fId('longtext1'), attrs:{rows: '4', tabindex:2}})
       ]}))
 
     label = (typ => {
@@ -185,7 +202,7 @@ Object.assign(EventForm.prototype,{
         default:        return
       }
     })(type)
-    if(undefined !== label){
+    if ( isDefined(label) ) {
       dom.push(DCreate(DIV, {class:'div-form', append:[
           DCreate(LABEL, {inner:label})
         , DCreate(TEXTAREA, {id: my.fId('longtext2'), attrs:{rows:'4'}})
@@ -200,7 +217,7 @@ Object.assign(EventForm.prototype,{
         default:     return
       }
     })(type)
-    if(undefined !== label){
+    if ( isDefined(label) ) {
       dom.push(DCreate(DIV, {class:'div-form', append:[
           DCreate(LABEL, {inner:label})
         , DCreate(TEXTAREA, {id: my.fId('longtext3'), attrs:{rows:'4'}})
@@ -214,25 +231,18 @@ Object.assign(EventForm.prototype,{
         default:     return
       }
     })(type)
-    if(undefined !== label){
+    if ( isDefined(label) ) {
       dom.push(DCreate(DIV, {class:'div-form', append:[
           DCreate(LABEL, {inner:label})
-        , DCreate(TEXTAREA, {id: my.fId('longtext4'), attrs:{rows:'4'}})
+        , DCreate(TEXTAREA, {id: my.fId('longtext4'), attrs:{rows:'4', tabindex:0}})
         ]}))
     }
 
-    /*  Buttons de pas de page */
+    /*  Buttons de bas de page */
     dom.push(DCreate(DIV, {class:'event-form-buttons no-user-selection', append:[
         DCreate(BUTTON, {type:BUTTON, id:my.fId('destroy'), class:'btn-form-destroy warning small fleft', inner:'Détruire'})
       , DCreate(BUTTON, {inner:'Renoncer', class:'btn-form-cancel cancel small fleft', type:BUTTON})
       , DCreate(BUTTON, {inner:'__SAVE_BUTTON_LABEL__', class:'btn-form-submit main-button', type:BUTTON})
-      ]}))
-
-    /*  PIED DE PAGE */
-    dom.push(DCreate(SECTION, {class:'footer no-user-selection', append:[
-        DCreate(SPAN, {class:'event-type', inner: type.toUpperCase()})
-      , DCreate(SPAN, {class:'event-id', inner: '...'})
-      , DCreate(SPAN, {class:'event-time', inner: '...'})
       ]}))
 
     return (DCreate(FORM, {class:'form', id:'event-__EID__-form', append: dom})).outerHTML
@@ -243,6 +253,29 @@ Object.assign(EventForm.prototype,{
   **/
 , observe(){
     let my = this
+      , jqo = this.jqObj
+      , eid = this.id
+
+    // On rend les champs horlogeable et dureeables
+    let horloges = UI.setHorlogeable(jqo[0])
+    // L'horloge de position de l'évènement
+    this.horlogePosition = horloges[`event-${eid}-time`]
+    this.horlogePosition.dispatch({
+        time: this.time
+      , synchroVideo: true
+      , parentModifiable: this
+    }).showTime()
+
+    let hdurees = UI.setDurationable(jqo[0])
+    // L'horloge de durée de l'évènement
+    this.horlogeDuration = hdurees[`event-${eid}-duree`]
+    this.horlogeDuration.dispatch({
+        duree: this.duree || 10
+      , startTime: parseFloat(this.time)
+      , synchroVideo: true
+      , parentModifiable: this
+    }).showTime()
+
     this.jqObj.find('.btn-form-cancel').on(STRclick, my.cancel.bind(my))
     this.btnSubmit.on(STRclick, my.submit.bind(my))
     this.jqObj.find('.btn-form-destroy').on(STRclick, my.destroy.bind(my))
@@ -254,7 +287,7 @@ Object.assign(EventForm.prototype,{
     // Quand le type de l'event est scene et que le résumé est vide,
     // on synchronise le pitch avec le résumé
     if(this.type === STRscene && this.isNew){
-      this.jqField('titre').on('keyup', my.synchronizePitchAndResume.bind(my))
+      this.jqField(STRtitre).on('keyup', my.synchronizePitchAndResume.bind(my))
       this.jqField('longtext1').on('keyup', my.checkIfSynchronizable.bind(my))
     }
 
@@ -290,7 +323,7 @@ Object.assign(EventForm.prototype,{
     my.jqObj.find('textarea, input[type="text"], input[type="checkbox"], select').on('keydown', this.onKeyDownOnTextFields.bind(this))
 
     // Pour savoir si l'on doit éditer dans les champs de texte ou
-    // dans le mini-writer
+    // dans le miniwriter
     UI.miniWriterizeTextFields(this.jqObj, this.a.options.get('option_edit_in_mini_writer'))
 
     // Pour tous les events, le champ permet d'associer à une image

@@ -24,12 +24,9 @@ Object.assign(FAEvent,{
     this.listing.toggle(true)
     filtereds_items = null
   }
-, save(item_id){
-    /* pour les listing, inusité pour le moment */
-  }
-, destroy(item_id){
-    /* pour les listing */
-  }
+, save(){/* requis pour les associations */}
+, destroy(){/* requis pour les associations */}
+
 })
 
 Object.defineProperty(FAEvent,'DataFAListing',{

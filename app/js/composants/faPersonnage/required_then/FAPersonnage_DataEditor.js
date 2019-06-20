@@ -9,7 +9,6 @@ Object.assign(FAPersonnage,{
     this.contents = YAML.dump(this.data)
     // console.log("Dans DESave, this.contents = ", this.contents)
     this.iofile.save({after: this.DEAfterSave.bind(this)})
-    FAWriter.resetDocument('dpersonnages')
   }
 , DEAfterSave(){
     this.modified = false
@@ -20,7 +19,7 @@ Object.assign(FAPersonnage,{
 , DECreateItem(dperso){
     defaultize(this, '_data', {})
     this._data[dperso.id] = dperso
-    this.reset()
+    this.update() // reset et actualise le listing si ouvert
     this.DESave()
     return this.get(dperso.id)
   }
@@ -40,7 +39,7 @@ Object.assign(FAPersonnage,{
 **/
 , DERemoveItem(dperso){
     delete this._data[dperso.id]
-    this.reset()
+    this.update()
     this.DESave()
     return true
   }

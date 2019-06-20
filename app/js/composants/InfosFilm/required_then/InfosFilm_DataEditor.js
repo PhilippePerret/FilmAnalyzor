@@ -13,7 +13,7 @@ DESave(){}
     inff.contents = YAML.dump(dinfos)
     // console.log("Dans DESave, this.contents = ", this.contents)
     inff.iofile.save({after: this.DEAfterUpdateItem.bind(this)})
-    FAWriter.resetDocument('infos')
+    PorteDocuments.resetDocument(20 /* infos */)
     return inff
   }
 , DEAfterUpdateItem(){

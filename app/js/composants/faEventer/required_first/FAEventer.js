@@ -51,6 +51,7 @@ constructor(analyse){
 
 show(){
   log.info(`-> <<FAEventer #${this.id}>>#show()`)
+  UI.sectionEventers.show()
   this.fwindow.show()
   log.info(`<- <<FAEventer #${this.id}>>#show()`)
 }
@@ -59,8 +60,10 @@ beforeShow(){
   this.peuplePersonnagesInFilter()
   log.info(`<- <<FAEventer #${this.id}>>#beforeShow()`)
 }
-close(){this.fwindow.hide()}
-// close(){this.fwindow.remove()}
+close(){
+  this.fwindow.hide()
+  UI.sectionEventers.show()
+}
 
 /**
  * On peuple l'eventer en respectant le filtre choisi
@@ -366,7 +369,7 @@ observe(){
   }
   this.horlogeFiltreFromTime = horloges[`${this.domId}-from-time`]
   this.horlogeFiltreToTime   = horloges[`${this.domId}-to-time`]
-  this.horlogeFiltreToTime.time = this.a.videoController.video.duration
+  this.horlogeFiltreToTime.time = UI.video.duration
   this.horlogeFiltreFromTime.dispatch(dataHorloge)
   this.horlogeFiltreToTime.dispatch(dataHorloge)
 
@@ -386,7 +389,7 @@ onKeyUp(e){
   }
 }
 
-get fwindow(){return this._fwindow || defP(this,'_fwindow', new FWindow(this, {class: 'eventer', container: $('#section-eventers')}))}
+get fwindow(){return this._fwindow || defP(this,'_fwindow', new FWindow(this, {class: 'eventer', name:'EVENTER', draggable:'x', container: $('#section-eventers')}))}
 get jqObj(){return this._jqObj||defP(this,'_jqObj', $(`#${this.domId}`))}
 get jqPanEvents(){return this._jqPanEvents||defP(this,'_jqPanEvents',this.jqObj.find('div.pan-events'))}
 get jqPanFilter(){return this._jqPanFilter||defP(this,'_jqPanFilter',this.jqObj.find('div.pan-filter'))}

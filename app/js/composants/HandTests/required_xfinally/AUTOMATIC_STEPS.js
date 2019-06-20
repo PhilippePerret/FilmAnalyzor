@@ -336,7 +336,7 @@ const DATA_AUTOMATIC_STEPS = {
     {NaT: true, exec: "if(current_analyse.locked === true){current_analyse.locked=false};current_analyse.locked", expected: false}
   ]
 , "enregistrer le document courant":[
-    {NaT: true, exec: "FAWriter.currentDoc.save()", expected: '---nothing---'}
+    {NaT: true, exec: "PorteDocuments.currentDocument.save()", expected: '---nothing---'}
   ]
 , "afficher la liste des décors": "ouvrir la fenêtre des décors"
 , "afficher les décors": "ouvrir la fenêtre des décors"
@@ -349,7 +349,7 @@ const DATA_AUTOMATIC_STEPS = {
     {NaT: true, exec: "current_analyse.displayBrins()", expected: '---nothing---'}
   ]
 , "ouvrir le document dbrins":[
-    {NaT: true, exec: "FAWriter.openDoc('dbrins')", expected: '---nothing---'}
+    {NaT: true, exec: "PorteDocuments.editDocument(13)", expected: '---nothing---'}
   ]
 
 // ---------------------------------------------------------------------

@@ -5,7 +5,6 @@ Object.defineProperty(FABrin,'DataFAListing',{get(){return {
   items: Object.values(this.brins)
   // items:[]
 , asListItem(item, opts){
-    console.log("Traitement du brin : ", item)
     return DCreate(LI,{append:[
         DCreate(DIV,{class:'bar-title', append:[
           , DCreate(DIV, {class: `title ${item.domC('title')}`, inner: `Brin « ${item.f_title} »`})

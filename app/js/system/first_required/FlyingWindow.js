@@ -106,7 +106,7 @@ class FWindow {
 * Retourne un ID unique (pour la session)
 **/
 static newId(){
-  if (undefined === this.lastId) this.lastId = 0
+  isDefined(this.lastId) || ( this.lastId = 0 )
   return ++this.lastId
 }
 
@@ -131,7 +131,8 @@ static setCurrent(wf, e){
       log.info(`    ${this.current.UUID} en arrière plan.`)
     }
     this.current = wf
-    this.current.bringToFront()
+    this.current.bringToFront().activeShortcutsModeIfAny()
+    this.current.show()
     this.stack(wf)
   }
   // console.log("Fenêtre courante = ", wf.UUID)
@@ -147,7 +148,7 @@ static setCurrent(wf, e){
 // Enregistrer une nouvelle fenêtre (à son ouverture, et à son activation,
 // donc il faut vérifier si elle est déjà dans le stack)
 static stack(fwindow){
-  if(this.isReaderOrEventBtns(fwindow)) return
+  if(this.currentIsReader(fwindow)) return
   if(isUndefined(this._stack)) this._stack = []
   this.destack(fwindow)
   this._stack.unshift(fwindow)
@@ -155,7 +156,7 @@ static stack(fwindow){
 }
 // Retirer une fenêtre, à sa fermeture
 static unstack(fwindow){
-  if(this.isReaderOrEventBtns(fwindow)) return
+  if(this.currentIsReader(fwindow)) return
   this.destack(fwindow)
   isNotEmpty(this._stack) && this.setCurrent(this._stack[0])
   // console.log("_stack dans FWindow::unstack", this._stack.map(fw => fw.UUID))
@@ -166,9 +167,81 @@ static destack(fwindow){
   this._stack = this._stack.filter(fw => fw.UUID != fwindow.UUID)
 }
 
-static isReaderOrEventBtns(fwindow){
-  return fwindow && (fwindow.name === ReaderFWindowName || fwindow.name === BtnsEventFWindowName)
+static currentIsReader(fwindow){
+  return fwindow && ( fwindow.name === ReaderFWindowName )
 }
+
+static unsetCurrent(wf){
+  if(!wf || !this.current) return
+  if(this.current.id !== wf.id) return
+  this.current.bringToBack()
+  delete this.current
+}
+
+/**
+  Méthode appelée par la touche Escape pour fermer la fenêtre
+  courante, si elle existe.
+  Noter que si des modifications ont été opérées mais pas enregistrées, il faut
+  le gérer avant l'appel de cette méthode qui se contente seulement de fermer
+  la fenêtre courante.
+**/
+static closeCurrent(){
+  if(this.currentIsReader(this.current)) return false
+  if ( isDefined(this.current) ) {
+    // S'il existe une fonction de fermeture propre, on
+    // l'utilise.
+    if (isDefined(this.current.owner) && isFunction(this.current.owner.hide)) {
+      this.current.owner.hide()
+    } else {
+      this.current.hide()
+    }
+
+    // Si la nouvelle fenêtre courante est le reader, il faut remettre les
+    // raccourcis INTERFACE
+    if ( this.currentIsReader() ) {
+      console.log("La fenêtre courante est le reader, il faut remettre les raccourcis interface")
+    }
+  }
+  return true
+}
+
+// Retourne TRUE si la fenêtre courante est le formulaire d'event
+static currentIsEventForm(){
+  return this.current.name === 'AEVENTFORM'
+}
+static currentIsEventers(){
+  return this.current.name === 'EVENTERS'
+}
+static currentIsEventersAndCanClose(){
+  return this.currentIsEventers()
+}
+// Retourne TRUE si le formulaire d'event est au premier plan et qu'on
+// peut le fermer.
+static currentIsEventFormAndCanClose(){
+  return this.currentIsEventForm() && not(EventForm.current.modified)
+}
+// Retourne TRUE si la fenêtre courante est le porte-documents
+static currentIsPorteDocuments(){
+  return this.current.name === 'PORTEDOCUMENT'
+}
+// Retourne TRUE si la fenêtre courante est le porte documents et qu'on
+// peut la fermer
+static currentIsPorteDocumentsAndCanClose(){
+  return this.currentIsPorteDocuments() && not(PorteDocuments.keepCurrentDocument())
+}
+static currentIsFaListing(){
+  return this.current.type === 'FALISTING'
+}
+static currentIsDataEditor(){
+  return this.current.type === 'DATAEDITOR'
+}
+static currentIsDataEditorAndCanClose(){
+  return this.currentIsDataEditor() // && not(DataEditor.current.modified)
+}
+
+static get current()  {return this._current}
+static set current(w) {this._current = w}
+
 /**
 * Méthode qui vérifie que la flying-window +wf+ ne soit pas placée
 * sur une autre.
@@ -210,33 +283,6 @@ static checkOverlaps(wf){
     return true
   }
 }
-static unsetCurrent(wf){
-  if(!wf || !this.current) return
-  if(this.current.id !== wf.id) return
-  this.current.bringToBack()
-  delete this.current
-}
-
-/**
-  Méthode appelée par la touche Escape pour fermer la fenêtre
-  courante, si elle existe.
-**/
-static closeCurrent(){
-  if(this.isReaderOrEventBtns(this.current)) return false
-  if ( isDefined(this.current) ) {
-    // S'il existe une fonction de fermeture propre, on
-    // l'utilise.
-    if (isDefined(this.current.owner) && isFunction(this.current.owner.hide)) {
-      this.current.owner.hide()
-    } else {
-      this.current.hide()
-    }
-  }
-  return true
-}
-
-static get current()  {return this._current}
-static set current(w) {this._current = w}
 
 // ---------------------------------------------------------------------
 //  INSTANCES
@@ -273,27 +319,30 @@ constructor(owner, data){
   this.UUID = this.constructor.newUUID()
   if(data.id) this._domId = data.id
   if(data.name) this.name = data.name
-  this.built = false
+  this.built    = false
+  this.isOpened = false
 
 }
 
 toggle(){
-  this[this.visible?'hide':'show']()
+  this[this.visible?STRhide:STRshow]()
 }
 show(){
   log.info(`-> ${this.ref}.show() [built:${this.built}, visible:${this.visible}]`)
-  if(!this.built) this.build().observe()
+  isTrue(this.built) || this.build().observe()
   isFunction(this.owner.beforeShow) && this.owner.beforeShow()
   this.jqObj.show()
   this.visible = true
+  this.isOpened = this.visible
   FWindow.setCurrent(this)
   isTrue(this.draggable) && FWindow.checkOverlaps(this)
+  this.checkSize()
   isFunction(this.owner.onShow) && this.owner.onShow()
   log.info(`<- ${this.ref}.show() [built:${this.built}, visible:${this.visible}]`)
 }
 hide(){
   if(isFunction(this.owner.beforeHide)){
-    if(this.owner.beforeHide() === false) return // abandon
+    if ( isFalse(this.owner.beforeHide()) ) return // abandon
   }
   this.constructor.unsetCurrent(this)
   // Dans tous les cas, il faut retirer cette fenêtre de la liste des
@@ -301,6 +350,7 @@ hide(){
   this.constructor.unstack(this)
   this.jqObj.hide()
   this.visible = false
+  this.isOpened = this.visible
   isFunction(this.owner.onHide) && this.owner.onHide()
 }
 
@@ -338,6 +388,7 @@ bringToFront(){
   this.current = true
   isFunction(this.owner.onFocus) && this.owner.onFocus.bind(this.owner)()
   log.info(`<- ${this.ref}.bringToFront`)
+  return this // pour le chainage
 }
 // Pour remettre la Flying window en arrière plan
 bringToBack(){
@@ -346,6 +397,25 @@ bringToBack(){
   this.current = false
   isFunction(this.owner.onBlur) && this.owner.onBlur.bind(this.owner)()
   log.info(`<- ${this.ref}.bringToBack`)
+  return this // pour le chainage
+}
+
+activeShortcutsModeIfAny(){
+  let modeName
+  if ( this.shortcuts_mode ) {
+    if ( UI.ShortcutsMap && UI.ShortcutsMap.has(this.shortcuts_mode) ) {
+      // Mode de raccourci défini et déjà connu de UI
+      modeName = this.shortcuts_mode
+    } else {
+      // Mode de raccourci défini et mais pas encore connu de UI
+      return
+    }
+  } else {
+    // Pas de mode de raccourci propre à la fenêtre, on remet les raccourcis
+    // par défaut
+    modeName = 'INTERFACE'
+  }
+  UI.setKeyUpAndDown(modeName)
 }
 
 isCurrent(){ return isTrue(this.current) }
@@ -357,11 +427,14 @@ build(){
   isDefined(this.position) || ( this.position = {} )
   // console.log("position:", this.position)
   // console.log("Construction de la FWindow ", this.domId)
+  let attrs = {}
+  if ( isDefined(this.shortcuts_mode) ) attrs['data-shortcuts-mode'] = this.shortcuts_mode
   var div = DCreate(DIV, {
     id: this.domId
   , class: `fwindow ${this.class || ''}`.trim()
   , append: this.owner.build()
   , style: `top:${this.position.top||this._y||0}px;left:${this.position.left||this._x||0}px;`
+  , attrs:attrs
   })
   $(this.container).append(div)
   // Si le propriétaire possède une méthode d'après construction,
@@ -378,17 +451,33 @@ build(){
 
 // Méthode appelée quand on clique sur le bouton 'btn-close'
 onBtnClose(){
-  if(isFunction(this.owner.cancel)){
-    this.owner.cancel.bind(this.owner)()
-  } else {
-    this.hide()
-  }
+  if ( isFunction(this.owner.cancel) ) this.owner.cancel.bind(this.owner).call()
+  else this.hide()
 }
 
 onEndMove(e){
   isFunction(this.owner.onEndMove) && this.owner.onEndMove(e)
 }
 
+/**
+  Vérification de la taille de la fenêtre, pour qu'elle ne dépasse jamais
+**/
+checkSize(){
+  let top     = this.jqObj.position().top
+    , height  = this.jqObj.outerHeight()
+
+  if ( top + height > H ) {
+    this.jqObj.css({top:'0px'})
+    if ( isNotEmpty(this.jqObj.find('> .body')) ) {
+      this.jqObj.find('> .body').css('height',`${H-120}px`)
+    } else if ( isNotEmpty(this.jqObj.find('> form')) ) {
+      this.jqObj.find('> form').css('height',`${H-80}px`)
+    } else {
+      this.jqObj.css('height',`${H-80}px`)
+    }
+  }
+
+}
 /**
   Pour procéder au swiping
 
@@ -477,6 +566,15 @@ get class(){return this._class}
 // Position x/y de la fenêtre
 get x(){return this._x || 100}
 get y(){return this._y || 100}
+// Un type peut être défini, lorsque le name est utilisé pour autre chose
+// Par exemple, pour les falistings, le type est 'FALISTING' et le name contient
+// le type de listing (personnages, brins, etc.).
+get type(){return this._type}
+// Le mode de raccourcis que la fenêtre doit utiliser. La donnée est mise dans
+// l'attribut `data-shortcuts-mode` du div de la fenêtre et sera utilisé par
+// la classe pour ré-activer le mode de raccourcis utilisé quand la fenêtre
+// reprendra la place frontale.
+get shortcuts_mode(){ return this._shortcuts_mode }
 // Référence pour logs
 get ref(){
   if(isUndefined(this._ref)){this._ref = `<<fwindow ${this.name || '#'+this.id}>>` }

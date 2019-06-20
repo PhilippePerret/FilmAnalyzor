@@ -1,0 +1,11 @@
+{
+  "onlyFolders": ["FilmAnalyzor/EventForm"]
+, "random":     false
+, "fail_fast":  true
+, "regFiles":   "test"
+, "regNames": null
+, "regCases": null
+, "exemple regFiles": "only.test.js"
+, "exemple regNames": "le filtrage"
+, "exemple regCases": "un wait"
+}

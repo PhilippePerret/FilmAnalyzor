@@ -50,7 +50,6 @@ init(){
 
   // Si l'analyse a enregistré une taille de vidéo, on la règle. Sinon, on
   // met la taille médium. Idem pour la vitesse de lecture de la vidéo.
-  this.setSize(this.a.options.videoSize)
   this.setSpeed(this.a.options.videoSpeed)
 
   this.observe()
@@ -60,21 +59,6 @@ init(){
 
 }
 // /fin init
-
-/**
- * Pour définir la taille de la vidéo (trois formats sont disponibles, pour
- * le moment)
- *
- * Si +save+ est true, la taille doit être enregistrée dans les préférences
- * de l'analyse courante.
- */
-setSize(v, save){
-  isDefined(v) || ( v = this.menuVideoSize.value )
-  UI.video.width = VideoController.VIDEO_SIZES[v] || v // peut-être un nombre
-  isTrue(save) && ( this.a.options.videoSize = v )
-}
-// retourne la taille actuelle de la vidéo
-getSize(){ return UI.video.width }
 
 /**
 * Pour définir la vitesse de la vidéo
@@ -95,78 +79,15 @@ getSpeed(){
 }
 
 /**
- * Pour redéfinir les largeurs de la vidéo en fonction de la largeur
- * de l'écran.
- */
-static redefineVideoSizes(w){
-  isDefined(w) || ( w = UI.sectionVideo.width() )
-  VideoController.VIDEO_SIZES['large']    = w - 10
-  VideoController.VIDEO_SIZES['medium']   = parseInt((w / 3) * 2, 10)
-  VideoController.VIDEO_SIZES['vignette'] = parseInt(w / 2.2, 10)
-}
-
-/**
  * Pour charger la vidéo de path +vpath+
  */
 load(vpath){
   log.info("-> VideoController#load")
   let my = this
-  $(UI.video)
-    .on('error', ()=>{
-      log.warn("Une erreur s'est produite au chargement de la vidéo.", err)
-    })
-    .on('loadeddata', () => {
-      UI.showVideoController()
-      my.a.onVideoLoaded.bind(this.a)()
-    })
-    .on('ended', () => {
-      // Quand on atteint le bout de la vidéo
-      my.a.locator.stop()
-    })
+  UI.videoObserved || UI.observeVideo()
   UI.video.src = path.resolve(vpath)
   UI.video.load() // la vidéo, vraiment
   log.info("<- VideoController#load")
-}
-
-/**
-  Quand on clique sur les marker de structure à côté de l'horloge principale,
-  on peut se rendre aux parties choisies. Chaque clic passe à la partie
-  suivante. CMD click permet de revenir en arrière.
-
-  +mainSub+   Soit 'Main' soit 'Sub', pour indiquer qu'il s'agit d'une
-              partie (expo, dév, dénouement) ou d'une zone
-  +absRel+    Soit 'Abs', soit 'Rel', pour indiquer qu'on a cliqué sur
-              la section qui s'occupe des valeurs absolues ou la section
-              qui s'occupe des valeurs relatives.
-
-**/
-onClickMarkStt(mainSub, absRel, e){
-  var pfa = this.a.PFA
-  // L'objet jQuery du marker
-  var mk = this[`mark${mainSub}Part${absRel}`]
-  // l'identifiant structure de la partie courant (peut-être indéfini)
-  var kstt = mk.attr('data-stt-id')
-  if(!kstt){
-    // <= L'identifiant structurel n'est pas défini
-    // => Il n'existe pas de noeud courant ou on est au tout début
-    // ==> Prendre l'exposition
-    kstt = mainSub == 'Main' ? 'DNOU' : 'desine'
-  }
-  var node = pfa.node(kstt)
-  // console.log("Noeud courant : ", node.hname)
-  var other_node
-  if (e.metaKey){
-    other_node = pfa.node(node.previous || node.last)
-    // Sinon le temps ne serait pas contrôlé, car il est avant le
-    // temps suivant attendu :
-    delete this.a.locator.nextTimes
-  } else {
-    other_node = pfa.node(node.next || node.first)
-  }
-  // console.log("Nœud suivant/précédent, son temps:", other_node, other_node[`startAt${absRel}`])
-  this.a.locator.setTime(new OTime(other_node[`startAt${absRel}`]))
-
-  pfa = null
 }
 
 /**
@@ -183,67 +104,27 @@ setMarkStt(mainSub, absRel, node, name){
 /**
 * On place les observeurs sur le video-controleur
 **/
-get DATA_BUTTONS(){return [
-    ['.btn-play', 'togglePlay']
-  , ['.btn-stop', 'stopAndRewind']
-  , ['.btn-go-to-film-start', 'goToFilmStart']
-  , ['.btn-stop-points', 'goToNextStopPoint']
-  , ['.btn-go-to-time-video', 'goToTime']
-]}
-
 observe(){
   var my = this
 
-  return
-
-  var valsRewForw = [0.04, 1, 5]
-  for(var i = 1; i < 4 ; ++ i){
-    var val = valsRewForw.shift()
-      , btnRewind   = this.section.find(`.btn-rewind-${i}`)[0]
-      , btnForward  = this.section.find(`.btn-forward-${i}`)[0]
-    listenMDown(btnRewind,  my.locator, 'startRewind', val)
-    listenMUp(btnRewind,    my.locator, 'stopRewind')
-    listenMDown(btnForward, my.locator, 'startForward', val)
-    listenMUp(btnForward,   my.locator, 'stopForward')
-  }
-
-  // Les « horlogeables »
-  var horloges = UI.setHorlogeable(this.section.find('.video-header')[0], {synchro_video: true})
-  this.locator.oMainHorloge = Object.values(horloges)[0]
-
-  // Boutons pour se déplacer de scène en scène (dans le contrôleur)
-  var btnPrevScene = this.section.find('.btn-prev-scene')[0]
-  var btnNextScene = this.section.find('.btn-next-scene')[0]
-  listenMDown(btnPrevScene, my.locator,'goToPrevScene')
-  listenMUp(btnPrevScene, my.locator,'stopGoToPrevScene')
-  listenMDown(btnNextScene, my.locator,'goToNextScene')
-  listenMUp(btnNextScene, my.locator,'stopGoToNextScene')
-
   // La vidéo elle-même, peut être déplacée pour récupérer un temps
   $(UI.video).draggable({
-    revert: true
-  , cursorAt: {left: 40, top: 10}
-  , helper: (e) => {
-      let otime = this.locator.currentTime
-      var attrs = {'data-value': otime.horloge}
-      attrs[STRdata_type] = STRtime
-      attrs[STRdata_id]   = otime.seconds.round(2)
-      return DCreate(DIV, {
-        inner: otime.horloge
-      , class: 'dropped-time'
-      , attrs:attrs
-      , zindex:1000
-      })
-    }
-  , start:() => {zIndex(UI.sectionVideo, 1000, {deep: true})}
-  , stop:() =>  {zIndex(UI.sectionVideo, 1, {deep: true})}
-})
-
-  // Sur les parties à droite de l'horloge principale
-  this.markMainPartAbs.on(STRclick, this.onClickMarkStt.bind(this, 'Main', 'Abs'))
-  this.markSubPartAbs.on(STRclick, this.onClickMarkStt.bind(this, 'Sub', 'Abs'))
-  this.markMainPartRel.on(STRclick, this.onClickMarkStt.bind(this, 'Main', 'Rel'))
-  this.markSubPartRel.on(STRclick, this.onClickMarkStt.bind(this, 'Sub', 'Rel'))
+      cursorAt: {left: 40, top: 10}
+    , helper: (e) => {
+        let otime = this.locator.currentTime
+        var attrs = {'data-value': otime.horloge}
+        attrs[STRdata_type] = STRtime
+        attrs[STRdata_id]   = otime.seconds.round(2)
+        let div = DCreate(DIV, {
+          inner: otime.horloge
+        , class: 'dropped-time'
+        , attrs:attrs
+        , style:'z-index:1000'
+        })
+        $(document.body).append(div)
+        return div
+      }
+  })
 
   // Pour afficher les scènes, le div est sensible au clic et permet
   // d'éditer la scène
@@ -253,7 +134,6 @@ observe(){
     }
   })
 
-  horloges = null
   my = null
 }
 
@@ -264,7 +144,7 @@ get spanVCtrl(){
 
 get btnPlay(){return this._btnPlay||defP(this,'_btnPlay', this.spanVCtrl.find('.btn-play')[0])}
 get btnStop(){return this._btnStop||defP(this,'_btnStop', this.spanVCtrl.find('.btn-stop')[0])}
-get btnRewindStart(){return this.btnSop}
+get btnRewindStart(){return this.btnStop}
 
 get markMainPartAbs(){return this._markMainPartAbs || defP(this,'_markMainPartAbs', this.section.find('.main-part-abs'))}
 get markSubPartAbs(){return this._markSubPartAbs || defP(this,'_markSubPartAbs',    this.section.find('.sub-part-abs'))}
@@ -283,4 +163,11 @@ static get CTRL_BUTTONS(){
   }
 }
 
+// Retourne le locator de l'analyse courante
+get loc(){ return this.a.locator }
+
 }
+
+let extension = require('./js/lecteur/videoController/controller.js')
+Object.assign(VideoController.prototype, extension.methods)
+Object.defineProperties(VideoController.prototype, extension.properties)

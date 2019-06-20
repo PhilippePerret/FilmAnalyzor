@@ -18,7 +18,6 @@ global.screenHeight  = null
 global.ObjMenus   = require('./app/js/main-process/menu.js')
 global.FAWindows  = require('./app/js/main-process/windows.js')
 
-
 global.mainW          = null
 global.pubW           = null // fenêtre de publication
 global.userPrefsPath  =
@@ -78,3 +77,5 @@ ipc.on('get-screen-dimensions', ev => {
 //   mainW.webContents.send('uncaught-exception', {error: error, source: 'console.error'})
 //   oldConsoleError(`Envoyé : ${error}`)
 // }
+
+module.exports = app // essai pour les tests

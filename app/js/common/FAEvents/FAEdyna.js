@@ -11,9 +11,9 @@ static get TEXT_PROPERTIES(){return this._tprops||defP(this,'_tprops',FAEvent.tP
 static get TYPESPARENT_PER_TYPE(){
   return {
       'objectif': null
-    , 'sous-objectif': ['objectif']
-    , 'moyen': ['objectif', 'sous-objectif']
-    , 'obstacle': ['objectif', 'sous-objectif', 'moyen']
+    , 'sous-objectif': [STRobjectif]
+    , 'moyen': [STRobjectif, 'sous-objectif']
+    , 'obstacle': [STRobjectif, 'sous-objectif', 'moyen']
     , 'conflit':  ['obstacle']
   }
 }
@@ -49,7 +49,7 @@ get isValid(){
 
 parentIsValid(){
   // console.log("-> parentIsValid() / this.parent = ", this.parent)
-  if(this.dynaType == 'objectif' || !this.dynaType) return
+  if(this.dynaType == STRobjectif || !this.dynaType) return
   if(!this.parent){
     // Pas de parent défini
     // => erreur

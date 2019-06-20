@@ -22,79 +22,85 @@ log.transports.console.level = 'warn'
 const CURRENT_THING_MENUS = [
   'save-analyse', 'save-as-analyse', 'export-as-pdf', 'export-as-epub',
   'export-as-kindle', 'export-as-docbook', 'display-infos-film',
-  'display-full-analyse', 'display-full-analyse-forcer', 'display-pfa',
-  'display-fondamentales', 'display-statistiques', 'new-eventer', 'open-writer',
-  'display-timeline', 'display-analyse-state', 'display-last-report',
+  'display-full-analyse', 'display-full-analyse-forcer',
+  'display-fondamentales', 'display-statistiques', 'new-eventer', 'open-porte-documents',
+  'display-analyse-state', 'display-last-report', 'display-documents',
   'display-protocole', 'option-locked', 'new-version', 'display-brins',
   'goto-last-scene', 'display-decors', 'check-data-validity',
-  'display-personnages', 'display-images', 'open-in-finder'
+  'display-personnages', 'display-images', 'open-in-finder', 'calc-pfa',
+  'display-pfa-1', 'display-pfa-2', 'display-pfa-3', 'display-pfa-4'
+
 ]
 // Note : les ID des menus de documents seront ajoutés "à la volée"
 
-// Les submenus du writer, qui doivent être calculés en fonction des types
+// Les submenus du porte_documents, qui doivent être calculés en fonction des types
 // de documents.
-const FAWriterSubmenus = [
+const PorteDocumentsSubmenus = [
       {
-          label: "Ouvrir/fermer le FAWriter"
-        , id: 'open-writer'
-        , accelerator: 'CmdOrCtrl+Shift+W'
+          label: "Ouvrir/fermer le Porte-documents"
+        , id: 'open-porte-documents'
+        , accelerator: 'CmdOrCtrl+Alt+Shift+W'
         , enabled: false
-        , click: () => {execJsOnCurrent('openDocInWriter')}
+        , click: () => {execJsOnCurrent('editDocumentInPorteDocuments')}
       }
     , {type:'separator'}
   ]
 
-const DATA_DOCS = require('../composants/faWriter/required_first/min.js')
+const DATA_DOCS = require('../composants/faDocument/required_first/data_documents')
 
-function openDocInWriter(doc_id){
-  mainW.webContents.executeJavaScript(`current_analyse && current_analyse.openDocInWriter("${doc_id}")`)
+function editDocumentInPorteDocuments(docId){
+  mainW.webContents.executeJavaScript(`current_analyse && current_analyse.editDocumentInPorteDocuments(${docId})`)
 }
-function openDocInDataEditor(doc_id){
-  mainW.webContents.executeJavaScript(`current_analyse && current_analyse.openDocInDataEditor("${doc_id}")`)
+function openDocInDataEditor(docId){
+  mainW.webContents.executeJavaScript(`current_analyse && current_analyse.openDocInDataEditor(${docId})`)
 }
 var curType = null
-for(var doc_id in DATA_DOCS){
-  if (DATA_DOCS[doc_id].menu === false) continue
-  else if (DATA_DOCS[doc_id] === 'separator'){
-    FAWriterSubmenus.push({type:'separator'})
+for(var docDim in DATA_DOCS){
+  if ( DATA_DOCS[docDim].menu === false ) continue
+  else if (DATA_DOCS[docDim] === 'separator') {
+    PorteDocumentsSubmenus.push({type:'separator'})
     continue
   }
-  var ddoc = DATA_DOCS[doc_id]
-  var menu_id = `open-doc-${doc_id}`
-  CURRENT_THING_MENUS.push(menu_id)
-  var method    = openDocInWriter.bind(null, doc_id)
-  if(ddoc.dataeditor){
-    CURRENT_THING_MENUS.push(`${menu_id}-de`)
-    var DEMethod  = openDocInDataEditor.bind(null,doc_id)
-    FAWriterSubmenus.push({
+  var ddoc = DATA_DOCS[docDim]
+  var menu_id = `open-doc-${docDim}`
+  // CURRENT_THING_MENUS.push(menu_id) // ça ne marche plus…
+  var method  = editDocumentInPorteDocuments.bind(null, ddoc.id)
+  if ( ddoc.dataeditor ) {
+    // CURRENT_THING_MENUS.push(`${menu_id}-de`)  // ça ne marche plus…
+    var deMethod  = openDocInDataEditor.bind(null, ddoc.id)
+    PorteDocumentsSubmenus.push({
         label:    ddoc.hname
       , submenu:[
             {
               label: "Éditeur de données"
             , id:     `${menu_id}-de`
-            , enabled: false
-            , click: DEMethod
+            , enabled: true
+            , accelerator: ddoc.accelerator
+            // , enabled: false// ça ne marche plus…
+            , click: deMethod
             }
           , {
               label:  "Fichier complet"
             , id:     menu_id
-            , enabled: false
-            , click:    method
+            // , enabled: false // ça ne marche plus
+            , enabled: true
+            , click: method
             }
         ]
     })
   } else {
-    FAWriterSubmenus.push({
+    PorteDocumentsSubmenus.push({
         label:    ddoc.hname
       , id:       menu_id
-      , enabled:  false
+      , enabled:  true
+      // , enabled:  false // ça ne marche plus
       , click:    method
       , accelerator: ddoc.accelerator
     })
   }
 }
 
-// console.log("FAWriterSubmenus:", FAWriterSubmenus)
+// console.log("PorteDocumentsSubmenus:", FAWriterSubmenus)
 
 const ObjMenus = {
     class: 'ObjMenus'
@@ -102,15 +108,26 @@ const ObjMenus = {
   , getMenuData: null
   , getMenu(id) {
       var d = this.getMenuData[id]
-      if('undefined' == typeof(d)){
+      if('undefined' === typeof(d)){
         log.error(`Menu <${id}> is not defined…`)
         throw("Menu introuvable",id)
         return null
       }
       var m = this.mainMenuBar.items[d[0]].submenu.items[d[1]] ;
-      // console.log("m:", m)
+      if ('undefined' === typeof(m)){
+        console.error("this.mainMenuBar.items[d[0]].submenu.items[d[1]] EST INDÉFINI")
+        console.error("\n\nd = ", d)
+        console.log("\n\nthis.mainMenuBar.items[d[0]]:",this.mainMenuBar.items[d[0]])
+        console.log("\n\nthis.mainMenuBar.items[d[0]].submenu.items",this.mainMenuBar.items[d[0]].submenu.items)
+      }
       // Si hiérarchie plus profonde
-      if (d.length > 2){ m = m.submenu.items[d[2]] }
+      try {
+        if (d.length > 2){ m = m.submenu.items[d[2]] }
+      } catch (e) {
+        console.error("Impossible d'obtenir le menu id (d)", id, d)
+        console.error(e)
+        return null
+      }
       // console.log("m final:", m)
       return m ;
     }
@@ -123,6 +140,7 @@ const ObjMenus = {
   , setMenusState(id_menus, state) {
       var my = this
       for(var mid of id_menus){
+        // console.log("----> réglage du menu ", mid)
         my.getMenu(mid).enabled = state
       }
     }
@@ -213,7 +231,6 @@ const DATA_MENUS = [
               label: 'Enregistrer sous…'
             , id: 'save-as-analyse'
             , enabled: false
-            , accelerator: 'CmdOrCtrl+Shift+S'
             , click: () => { mainW.webContents.send('save-as-analyse')}
           }
         , {type:'separator'}
@@ -330,57 +347,88 @@ const DATA_MENUS = [
           , {
                 label: "Informations sur le film"
               , id: 'display-infos-film'
-              , accelerator: 'CmdOrCtrl+Alt+Shift+I'
+              , accelerator: 'CmdOrCtrl+Shift+I'
               , enabled: false
               , click: () => {execJsOnCurrent('togglePanneauInfosFilm')}
             }
           , {type:'separator'}
           , {
-                label: "Paradigme de Field Augmenté"
-              , id: 'display-pfa'
-              , accelerator: 'CmdOrCtrl+Alt+Shift+P'
-              , enabled: false
-              , click: ()=>{execJsOnCurrent('displayPFA')}
+                label: "Paradigmes de Field Augmenté"
+              , enabled: true
+              , submenu:[
+                  {
+                    label: 'PFA principal'
+                  , id: 'display-pfa-1'
+                  , accelerator: 'CmdOrCtrl+Alt+Shift+P'
+                  , enabled: false
+                  , click: ()=>{execJsOnCurrent('displayPFA', 1)}
+                  }
+                , {
+                    label: 'PFA secondaire'
+                  , id: 'display-pfa-2'
+                  , enabled: false
+                  , click: ()=>{execJsOnCurrent('displayPFA', 2)}
+                  }
+                , {
+                    label: 'PFA tertiaire'
+                  , id: 'display-pfa-3'
+                  , enabled: false
+                  , click: ()=>{execJsOnCurrent('displayPFA', 3)}
+                  }
+                , {
+                    label: 'PFA quaternaire'
+                  , id: 'display-pfa-4'
+                  , enabled: false
+                  , click: ()=>{execJsOnCurrent('displayPFA', 4)}
+                  }
+                ]
             }
           , {
                 label: "Fondamentales"
               , id: 'display-fondamentales'
-              , accelerator: 'CmdOrCtrl+Alt+Shift+F'
+              , accelerator: 'CmdOrCtrl+Shift+F'
               , enabled: false
               , click: ()=>{execJsOnCurrent('togglePanneauFondamentales')}
             }
           , {
                 label: "Personnages"
               , id: 'display-personnages'
-              , accelerator: 'CmdOrCtrl+Alt+Shift+C'
+              , accelerator: 'CmdOrCtrl+Shift+C'
               , enabled: false
               , click: ()=>{execJsOnCurrent('togglePanneauPersonnages')}
             }
           , {
                 label: "Brins"
               , id: 'display-brins'
-              , accelerator: 'CmdOrCtrl+Alt+Shift+B'
+              , accelerator: 'CmdOrCtrl+Shift+B'
               , enabled: false
               , click: ()=>{execJsOnCurrent('togglePanneauBrins')}
             }
           , {
+                label: 'Documents'
+              , id: 'display-documents'
+              , accelerator: 'CmdOrCtrl+Shift+W'
+              , enabled: false
+              , click: _ => {execJsOnCurrent('togglePanneauDocuments')}
+            }
+          , {
                 label: "Décors"
               , id: 'display-decors'
-              , accelerator: 'CmdOrCtrl+Alt+Shift+D'
+              , accelerator: 'CmdOrCtrl+Shift+D'
               , enabled: false
               , click: ()=>{execJsOnCurrent('togglePanneauDecors')}
             }
           , {
                 label: "Images"
               , id: 'display-images'
-              , accelerator: 'CmdOrCtrl+Alt+Shift+G'
+              , accelerator: 'CmdOrCtrl+Shift+G'
               , enabled: false
               , click: ()=>{execJsOnCurrent('togglePanneauImages')}
             }
           , {
                 label: "Statistiques"
               , id: 'display-statistiques'
-              , accelerator: 'CmdOrCtrl+Alt+Shift+S'
+              , accelerator: 'CmdOrCtrl+Shift+S'
               , enabled: false
               , click: ()=>{execJsOnCurrent('togglePanneauStatistiques')}
             }
@@ -398,10 +446,11 @@ const DATA_MENUS = [
             }
           , {type:'separator'}
           , {
-                label: 'Afficher/masquer la Timeline'
-              , id: 'display-timeline'
-              , accelerator: 'CmdOrCtrl+Shift+T'
-              , click: () => {execJsOnCurrent('displayTimeline')}
+                label: 'Calque du PFA'
+              , id: 'calc-pfa'
+              , accelerator: 'CmdOrCtrl+Shift+P'
+              , enabled: false
+              , click:() => {execJsOnCurrent('displayCalcPFA')}
             }
       ]
     }
@@ -411,7 +460,7 @@ const DATA_MENUS = [
   , {
         label: "Documents"
       , enabled: true
-      , submenu: FAWriterSubmenus
+      , submenu: PorteDocumentsSubmenus
     }
   /**
    * MENU VIDÉO
@@ -421,30 +470,6 @@ const DATA_MENUS = [
       , enabled: true
       , submenu: [
             {
-                label: "Jouer"
-              , accelerator: 'CmdOrCtrl+P'
-              , click: () => {console.log("Jouer la vidéo")}
-            }
-          , {type: 'separator'}
-          , {
-                label: 'Taille'
-              , submenu: [
-                    {label: 'Petite',   id: 'size-video-small', type:'radio', click:()=>{setVideoSize('small')}}
-                  , {label: 'Moyenne',  id: 'size-video-medium', type:'radio', click:()=>{setVideoSize('medium')}}
-                  , {label: 'Large',    id: 'size-video-large', type:'radio', click:()=>{setVideoSize('large')}}
-                  , {label: 'Personnalisée',    id: 'size-video-custom', type:'radio'}
-                  , {type:'separator'}
-                  , {label: 'Augmenter',  id: 'size-video-aug', click:()=>{
-                      setVideoSize('+')
-                      ObjMenus.getMenu('size-video-custom').checked = true
-                    }}
-                  , {label: 'Diminuer',   id: 'size-video-dim', click:()=>{
-                      setVideoSize('-')
-                      ObjMenus.getMenu('size-video-custom').checked = true
-                    }}
-                ]
-            }
-          , {
                 label: 'Vitesse de lecture'
               , submenu: [
                     {label: 'Image/image', id: 'video-speed-rx0.07', type:'radio', click:()=>{setVideoSpeed(0.07)}}
@@ -519,7 +544,7 @@ const DATA_MENUS = [
             ]
         }
       , {
-            label: 'Liste des… (CMD+clic btn)'
+            label: 'Liste des…'
           , submenu: [
                 {label: 'Scènes', click: ()=>{listEvent('scene')}}
               , {label: 'Nœuds STT', click: ()=>{listEvent('stt')}}
@@ -585,7 +610,7 @@ const DATA_MENUS = [
               , enabled: true
               , click: () => {
                   var c = ObjMenus.getMenu('option_start_when_time_choosed').checked ? 'true' : 'false'
-                  execJsOnCurrent(`options.set('option_start_when_time_choosed',${c})`)
+                  execJS(`FAnalyse.setGlobalOption('option_start_when_time_choosed',${c})`)
                 }
             }
           , {type:'separator'}
@@ -599,9 +624,20 @@ const DATA_MENUS = [
                   execJsOnCurrent(`options.set('option_lock_stop_points',${c})`)
                 }
             }
-          , {type: 'separator'}
+          , {type:'separator'}
           , {
-                label:    "Utiliser le mini-writer pour éditer les textes"
+                label: 'Lancer les tests au démarrage'
+              , id: 'run_tests_at_startup'
+              , type: 'checkbox'
+              , checked: false
+              , click: () => {
+                  var c = ObjMenus.getMenu('run_tests_at_startup').checked ? 'true' : 'false'
+                  execJS(`FAnalyse.setGlobalOption('run_tests_at_startup',${c})`)
+                }
+            }
+          , {type:'separator'}
+          , {
+                label:    "Utiliser le miniwriter pour éditer les textes"
               , id:       'option_edit_in_mini_writer'
               , type:     'checkbox'
               , checked:  false
@@ -617,6 +653,13 @@ const DATA_MENUS = [
       label: 'Outils'
     , submenu:[
         {
+            label: 'Jouer les Tests FIT'
+          , enabled:true // TODO: plus tard, seulement en développement
+          , id: 'test-fit'
+          , accelerator:'Cmd+Alt+Ctrl+T'
+          , click: () => {execJS('App.runtests()')}
+        }
+      , {
             label: 'Test manuel de l’application'
           , enabled: true // TODO: plus tard, seulement en développement
           , id:'test-manuel-app'
@@ -660,6 +703,15 @@ const DATA_MENUS = [
         label: 'Raccourcis'
       , submenu: fakeShortcutsIn([
           {
+              label: 'Forcer les raccourcis « out-fields » (INTERFACE)'
+            , click: _ => {execJS('UI.toggleKeyUpAndDown(true)')}
+          }
+        , {
+              label: 'Forcer les raccourcis « in-fields » (TEXTFIELD)'
+            , click: _ => {execJS('UI.toggleKeyUpAndDown(false)')}
+          }
+        , {type:'separator'}
+        , {
               label: 'Raccourcis « Go-To »…'
             , shortcut: 'G'
             , click: _ => {execJS('Helper.open("go-to")')}
@@ -673,14 +725,25 @@ const DATA_MENUS = [
         , {
               label: 'Nouveau marqueur…'
             , shortcut: 'M'
-            , click: _ => {execJS('current_analyse && current_analyse.locator.createNewMarker()')}
+            , click: _ => {execJS('current_analyse && current_analyse.markers.createNew()')}
           }
         , {
               label: 'Liste des marqueurs'
             , shortcut: 'Shift M'
             , click: _ => {execJS('current_analyse && Markers.displayListing()')}
           }
-        ])
+        , {type:'separator'}
+        , {
+              label: 'Liste des scènes'
+            , shortcut: 'Shift S'
+            , click: _ => {execJS('current_analyse && FAEscene.klisting.show()')}
+          }
+        , {
+              label: 'Liste des nœuds structurels'
+            , shortcut: 'Shift N'
+            , click: _ => {execJS('current_analyse && FAEstt.klisting.show()')}
+          }
+      ])
     }
 ]
 
@@ -776,8 +839,10 @@ for(iMainMenu = 0; iMainMenu < nbMainMenus; ++iMainMenu ){
       nbSubSubMenus = subMenu.submenu.length
       for(iSubSubMenu=0; iSubSubMenu < nbSubSubMenus; ++iSubSubMenu){
         subSubMenu = subMenu.submenu[iSubSubMenu]
+        // console.log("----> subSubMenu:", subSubMenu)
         if(!subSubMenu.id){continue}
         my.getMenuData[subSubMenu.id] = [iMainMenu, iSubMenu, iSubSubMenu]
+        // console.log("=====> Je prends ses données :", my.getMenuData[subSubMenu.id])
       }
     }
     if (!subMenu.id){ continue }
@@ -788,7 +853,8 @@ for(iMainMenu = 0; iMainMenu < nbMainMenus; ++iMainMenu ){
   }
 
 }//fin de boucle sur tous les menus principaux
-
+// console.log("my.getMenuData:", my.getMenuData)
+// throw("pour s'arrêter")
 
 ObjMenus.data_menus = DATA_MENUS
 

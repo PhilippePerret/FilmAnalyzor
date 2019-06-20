@@ -46,8 +46,8 @@ class BtnPlay {
    */
   static setAndWatch(container, ev){
     var btnPlay ;
-    if (undefined === ev) return // [1]
-    if('undefined' === typeof(ev.type)) ev = current_analyse.ids[ev]
+    if ( isUndefined(ev) ) return // [1]
+    isDefined(ev.type) || ( ev = current_analyse.ids[ev] )
     // On boucle sur chaque bouton trouvé qui n'a pas été préparé
     // On reconnait un bouton préparé au fait qu'il a une image (mais on
     // pourrait aussi le reconnaitre à sa classe `btnplay-<id event>`)
@@ -107,7 +107,7 @@ class BtnPlay {
       // sur le bouton, on rejoint le temps de début de l'event
       this.locator.setTime(this.startTime)
       // On définit aussi le temps de fin
-      this.locator.setEndTime(this.endTime, this.togglePlay.bind(this))
+      this.locator.setEndTime(this.endTime, this.stop.bind(this))
       // Si les options indiquent qu'il faut jouer après le choix d'un temps,
       // alors la vidéo jouera. De la même manière, si la vidéo est en train
       // de déjà jouer, c'est bon
@@ -126,7 +126,7 @@ class BtnPlay {
 
   stop(){
     this.playing = false
-    this.locator.stop()
+    this.controller.stop()
     this.setButton(this.srcPlay)
     BtnPlay.unsetCurrent(this) // attention aux loops
   }
@@ -156,6 +156,7 @@ class BtnPlay {
   // ---------------------------------------------------------------------
   // Raccourcis
   get locator(){ return current_analyse.locator }
+  get controller(){ return current_analyse.videoController }
   get videoIsPlaying(){ return this.locator.playing }
 
   // ---------------------------------------------------------------------

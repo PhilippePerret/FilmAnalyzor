@@ -6,8 +6,8 @@
 
 class Marker {
   constructor(analyse, data){
-    this.a = analyse
-    this.id     = this.constructor.newId()
+    this.a      = analyse
+    this.id     = data.id
     this.time   = data.time
     this.title  = data.title || `Marqueur #${this.id}`
   }
@@ -53,6 +53,7 @@ onChangePosition(){
   this.time = BancTimeline.p2t(this.jqObj.offset().left)
   this.updateHTMLTitle()
   this.a.markers.save(/* no message */true)
+  delete this._otime
 }
 
 // Actualise l'aide quand on survole le marqueur (titre formaté et horloge)
@@ -61,6 +62,11 @@ updateHTMLTitle(){
   this.jqObj.attr(STRtitle, this.HTMLTitle)
 }
 
+selectAndGo(e){
+  e && stopEvent(e) // sinon, click sur la timeruler
+  this.select()
+  this.a.locator.setTime(this.otime)
+}
 select(){
   this.a.markers.setCurrent(this)
   this.jqObj.addClass('selected')
@@ -75,6 +81,7 @@ remove(){
   // TODO
 }
 
+// Observation du marker dans la timeline
 observe(){
   this.jqObj
     // On peut déplacer ce marker sur l'axe horizontal
@@ -82,8 +89,16 @@ observe(){
     // On peut éditer ce marker en double-cliquant dessus
     .on(STRdblclick, this.edit.bind(this))
     // On peut le sélectionner pour le détruire
-    .on(STRclick, this.select.bind(this))
+    .on(STRclick, this.selectAndGo.bind(this))
 }
+
+/**
+  Observation du marquer dans le reader
+  (quand on clique dessus, on se rend à la position du marqueur)
+**/
+observeInReader(){
+    this.jqReaderObj.on(STRclick, this.selectAndGo.bind(this))
+  }
 
 /**
   Construction de la marque à placer dans la timeRuler
@@ -100,9 +115,9 @@ get HTMLTitle(){
   isDefined(this._htmltitle) || (
     this._htmltitle = `${DFormater(this.title)} (${OTime.vVary(this.time).horloge})`
   )
-  console.log("this.time = ", this.time)
-  console.log("this.horloge = ", OTime.vVary(this.time).horloge)
   return this._htmltitle
 }
+
+get otime(){return this._otime||defP(this,'_otime',new OTime(this.time))}
 
 } // /Class Marker

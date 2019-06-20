@@ -8,7 +8,7 @@ const setFilmStartTimeAt = function(vtime){
   let initStartTime = my.filmStartTime ? parseFloat(my.filmStartTime) : 0
 
   // On prend le nouveau temps
-  vtime = vtime || my.locator.getTime().round(2)
+  vtime = vtime || my.locator.currentTime.round(2)
   my.filmStartTime = vtime
   BancTimeline.positionneMarkFilmStartEnd()
 
@@ -41,7 +41,7 @@ FAnalyse.prototype.execSetFilmStartTimeAt = function(diff){
   // Corriger toutes les balises {{time:...}} qu'on
   // peut trouver dans les documents.
   var cont
-  FADocument.forEachDocument(function(doc){
+  PorteDocuments.forEachDocument(function(doc){
     if ( isUndefined(doc.contents) ) return
     if(!doc.contents.match(/\{\{time\:/)) return
     cont = doc.contents
@@ -68,7 +68,7 @@ FAnalyse.prototype.endSetFilmStartTimeAt = function(){
 
 // Pour définir le début du film
 let setFilmEndTimeAt = function(vtime){
-  vtime = vtime || this.locator.getTime().vtime
+  vtime = vtime || this.locator.currentTime.vtime
   this.filmEndTime = vtime
   this.modified = true
   F.notify(`J'ai pris le temps ${new OTime(this.filmEndTime).horloge} comme fin du film.`)
@@ -76,7 +76,7 @@ let setFilmEndTimeAt = function(vtime){
 
 // Pour définir la fin du générique de fin
 let setEndGenericFin = function(){
-  this.filmEndGenericFin = this.locator.getTime()
+  this.filmEndGenericFin = this.locator.currentTime
   this.modified = true
   F.notify(`J'ai pris le temps ${new OTime(this.filmEndGenericFin).horloge} comme fin du générique de fin.`)
 }

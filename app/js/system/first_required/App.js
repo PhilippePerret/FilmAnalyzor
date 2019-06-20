@@ -1,21 +1,34 @@
 'use strict'
 
-
 const App = {
   class: 'App'
 , type: 'object'
 , allComponantsLoaded: false
 , ready: false
+, runtests(){
+    if ( NONE === typeof(Tests) ) require(path.join(APPFOLDER,'FITests'))
+    Tests.run()
+  }
 
   // Quand App est prête
 , onReady(){
+
+    if ( MODE_TEST ) {
+      return this.runtests()
+      // if ( NONE === typeof(Tests) ) {
+      //   return System.loadComponant('TestsFIT', this.onReady.bind(this))
+      // } else {
+      //   Tests.MAINFOLDER = path.join(APPFOLDER,'app','js','composants','TestsFIT')
+      // }
+    }
 
     const UIBuilder = require('./ui/ui_builder')
     UIBuilder.init()
 
     log.info("--- APP READY ---")
-    if (MODE_TEST) {
-      Tests.initAndRun()
+    log.info("    MODE_TEST = ", (MODE_TEST||Prefs.get('run_tests_at_startup')) || 'false')
+    if ( MODE_TEST || Prefs.get('run_tests_at_startup')) {
+      App.runtests()
     } else {
       FAnalyse.checkLast()
     }
@@ -25,15 +38,24 @@ const App = {
   Pour requérir un module dans le dossier ./app/js/ (ne pas mettre ./app/js/)
 **/
 , require(rpath){
-    return require(path.join(APPFOLDER,'app','js',rpath))
+    try {
+      return require(path.join(APPFOLDER,'app','js',rpath))
+    } catch (e) {
+      log.error("ERROR dans App::require avec le path", rpath)
+      log.error(e)
+    }
   }
+
+/**
+  Pour requérir tous les javascript du dossier
+**/
 
 /**
   Pour charger un module se trouvant dans le dossier app/js/tools
 **/
 , loadTool(affixe){
     if(!affixe.endsWith('.js')) affixe += '.js'
-    return require(`${APPFOLDER}/app/js/tools/${affixe}`)
+    return tryRequire(`${APPFOLDER}/app/js/tools/${affixe}`)
   }
 
 , runHandTests(options){
@@ -109,6 +131,20 @@ const App = {
     return fs.statSync(referent).mtime > fs.statSync(actual).mtime
   }
 
+, confirmQuit(){
+    confirm({
+        message: "L'analyse a été modifiée mais pas sauvée. Confirmez-vous la perte des nouvelles données ?"
+      , buttons:['Quitter quand même', 'Renoncer']
+      , okButtonIndex: 0
+      , defaultButtonIndex: 1
+      , cancelButtonIndex: 1
+      , methodOnOK: this.execQuit.bind(this)
+    })
+  }
+, execQuit(){
+    F.notify("Je ne sais pas encore provoquer le quit de l'application.", {error:true})
+  }
+
 }// /fin App
 
 const AppLoader = {
@@ -137,39 +173,6 @@ const AppLoader = {
     }
   }
 
-  /**
-    Méthode qui s'assure, avant de charger l'analyse choisie, que tous les
-    composants sont bien chargés. Et les charge au besoin.
-  **/
-, loadAllComponants(){
-    log.info("-> AppLoader::loadAllComponants")
-    App.allComponantsLoaded = false
-    // return
-    if(NONE === typeof UI)            return this.loadComponant('ui/ui')
-    if(NONE === typeof Helper)        return this.loadComponant('Helper')
-    if(NONE === typeof BancTimeline)  return this.loadComponant('ui/banc_timeline')
-    if(NONE === typeof DataEditor)    return this.loadComponant('DataEditor')
-    if(NONE === typeof EventForm)     return this.loadComponant('EventForm')
-    if(NONE === typeof FAWriter)      return this.loadComponant('faWriter')
-    if(NONE === typeof FAProtocole)   return this.loadComponant('faProtocole')
-    if(NONE === typeof FAStater)      return this.loadComponant('faStater')
-    if(NONE === typeof FAEventer)     return this.loadComponant('faEventer')
-    if(NONE === typeof FABrin)        return this.loadComponant('faBrin')
-    if(NONE === typeof FAPersonnage)  return this.loadComponant('faPersonnage')
-    if(NONE === typeof FAProcede)     return this.loadComponant('faProcede')
-    if(NONE === typeof FAReader)      return this.loadComponant('faReader')
-    if(NONE === typeof FAStats)       return this.loadComponant('faStats')
-    if(NONE === typeof FAImage)       return this.loadComponant('faImage')
-    if(NONE === typeof Snippets)      return this.loadComponant('Snippets')
-    if(NONE === typeof Markers)       return this.loadComponant('Markers')
-
-    // Si tout est OK, on peut rappeler la méthode Fanalyse.load
-    log.info("   Tous les composants sont chargés.")
-    App.allComponantsLoaded = true
-    this.onReady()
-    log.info("<- AppLoader::loadAllComponants")
-  }
-
 /**
   Méthodes de chargement des composants (au load principal)
 **/
@@ -184,6 +187,10 @@ const AppLoader = {
     App.onReady()
   }
 }
+
+// Object.assign(AppLoader,require(`./js/system/first_required/App_load_componants`))
+Object.assign(AppLoader,require(`./App_load_componants`))
+
 
 // On démarre le chargement
 AppLoader.start()

@@ -64,11 +64,12 @@ treate(){
   try {
     // Traitement en fonction du type
     switch (this.realType) {
-      case 'step':    this.treateAsStep()       ; break
+      case STRstep:   this.treateAsStep()       ; break
       case 'doc':     this.treateAsCustomDoc()  ; break
       case 'reg-doc': this.treateAsRegularDoc() ; break
-      case 'brin':    this.treateAsBrin()       ; break
-      case 'image':   this.treateAsImage()      ; break
+      case STRbrin:   this.treateAsBrin()       ; break
+      case STRimage:  this.treateAsImage()      ; break
+      case STRpfa:    this.treateAsPFA()        ; break
       default:
         throw new Error(`Je ne sais pas encore traiter une étape de type "${this.type}"`)
     }
@@ -92,6 +93,17 @@ treateAsStep(){
   let my = this
    ,  method = require(`./js/composants/faBuilder/builders/${this.id}.js`).bind(my.builder)
   my.builder.add2finalCode(method.call())
+}
+/**
+  Traitement d'une "vraie" étape définie
+**/
+treateAsPFA(){
+  log.info("-> FABuilder.treateAsPFA")
+  let my = this
+   ,  method = require(`./js/composants/faBuilder/builders/pfa.js`).bind(my.builder)
+   ,  pfa_id = parseInt(this.id.split('_')[1],10)
+  my.builder.add2finalCode(method(pfa_id))
+  log.info("<- FABuilder.treateAsPFA")
 }
 
 /**

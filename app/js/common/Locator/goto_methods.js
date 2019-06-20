@@ -23,29 +23,28 @@ module.exports = {
   }
 
 , goToNextScene(){
-    this.stopGoToNextScene() // un appel précédent
     log.info('-> Locator#goToNextScene')
-    let method = () => {
-      let nScene = this.nextScene
-      if (nScene) this.setTime(nScene.otime)
-      else F.notify('Pas de scène suivante.')
+    let nScene = this.nextScene
+    if (nScene) this.setTime(nScene.otime)
+    else {
+      F.notify('Pas de scène suivante.')
+      // Mais s'il y a une scène courante, on se rend à sa fin
+      let cScene = this.currentScene
+      if ( cScene ) {
+        this.setTime(OTime.vVary(cScene.endAt))
+      }
     }
-    this.timerNextScene = setTimeout(method, 300)
     log.info('<- Locator#goToNextScene')
   }
 , goToPrevScene(){
-    this.stopGoToPrevScene() // un appel précédent
     log.info('-> Locator#goToPrevScene')
-    let method = () => {
-      let pScene = this.prevScene
-      if (pScene) this.setTime(pScene.otime)
-      else F.notify('Pas de scène précédente.')
-    }
-    this.timerPrevScene = setTimeout(method, 300)
+    let pScene = this.prevScene
+    if (pScene) this.setTime(pScene.otime)
+    else F.notify('Pas de scène précédente.')
+    log.info('<- Locator#goToPrevScene')
   }
 
 , goToNextImage(){
-    // F.notify("Aller à l'image suivante")
     this.setTime(this.varOTime(this.currentTime.seconds + 1/24))
   }
 , goToPrevImage(){
@@ -73,11 +72,51 @@ module.exports = {
     this.setTime(this.varOTime(this.currentTime.seconds - 60))
   }
 
-, goToNextSttnode(){
-    F.notify("Aller au nœud PFA suivant")
+/**
+  Pour aller à l'event suivant (en dehors des scènes et des nœud structurels)
+**/
+, goToNextEvent()   {
+    var e = TimeMap.eventAfter(this.currentTime)
+    e && this.setTime(e.otime)
   }
-, goToPrevSttnode(){
-    F.notify("Aller au nœud PFA précédent")
+, goToPrevEvent()   {
+    var e = TimeMap.eventBefore(this.currentTime)
+    e && this.setTime(e.otime)
+  }
+
+/**
+  Pour aller au nœud structurel suivant ou précédent
+**/
+, goToNextSttnode() {
+    // Le noeud relatif
+    var node = TimeMap.sttNodeAfter(this.currentTime)
+    // Le noeud absolu
+    var absNode = this.a.pfa1.absNodeAfter(this.currentTime)
+
+    let closestNat = ((aN, n) => {
+      if ( aN && n )  return aN.startAtAbs < n.event.otime.rtime ?'abs':'rel'
+      else if ( aN )  return 'abs'
+      else if ( n )   return 'rel'
+    })(absNode, node)
+    this.goAndMarkCursor(closestNat, closestNat === 'abs' ? absNode : node)
+
+  }
+, goToPrevSttnode() {
+    var node    = TimeMap.sttNodeBefore(this.currentTime)
+    var absNode = this.a.pfa1.absNodeBefore(this.currentTime)
+
+    let closestNat = ((aN, n) => {
+      if ( aN && n )  return aN.startAtAbs > n.event.otime.rtime ?'abs':'rel'
+      else if ( aN )  return 'abs'
+      else if ( n )   return 'rel'
+    })(absNode, node)
+
+    this.goAndMarkCursor(closestNat, closestNat === 'abs' ? absNode : node)
+  }
+
+, goAndMarkCursor(nat/* 'abs' ou 'rel' */, node) {
+    if ( isUndefined(nat) ) return
+    node.goToAndMarkCursor(nat === STRrel)
   }
 
 , goToNextMarker(){

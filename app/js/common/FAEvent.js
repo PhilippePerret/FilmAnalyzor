@@ -1,11 +1,13 @@
 'use strict'
 
+window.EVENTS_TYPES_DATA = require('./js/common/FAEvents_data.js')
+
 class FAEvent {
 // ---------------------------------------------------------------------
 //  CLASSE
 
-static get OWN_PROPS(){return ['id', 'type', 'titre', STRtime, 'duree', 'parent', 'curimage', ['content', 'longtext1'], 'associates']}
-static get TEXT_PROPERTIES(){return ['titre', 'content']}
+static get OWN_PROPS(){return [STRid, STRtype, STRtitre, STRtime, STRduree, 'parent', 'curimage', ['content', 'longtext1'], 'associates']}
+static get TEXT_PROPERTIES(){return [STRtitre, STRcontent]}
 
 static get ALL_PROPS(){
   if(isUndefined(this._all_props)){
@@ -47,7 +49,6 @@ static instanceOf(edata){
 **/
 static edit(event_id){
   var typeOrInstance = isDefined(event_id) ? this.get(event_id) : this.type
-  // console.log("typeOrInstance:",typeOrInstance)
   return EventForm.editEvent.bind(EventForm, typeOrInstance)()
 }
 
@@ -123,7 +124,7 @@ static saveModifieds(){
 static pathModifieds(){return path.join(this.folderModifieds,`${new Date().getTime()}.json`)}
 static get folderModifieds(){
   if(isUndefined(this._folderModifieds)){
-    this._folderModifieds = path.join(this.a.folderBackup, 'events')
+    this._folderModifieds = path.join(this.a.folderBackup, STRevents)
     if(!fs.existsSync(this._folderModifieds)) fs.mkdirSync(this._folderModifieds)
   }
   return this._folderModifieds
@@ -182,6 +183,7 @@ reset(){
   delete this._asLink
   delete this._endAt
   delete this._otime
+  delete this._hduree
   delete this._horl
   delete this._div
   delete this._contenu
@@ -196,6 +198,8 @@ get isAScene(){return false} // surclassé par FAEscene
 get isScene(){return false} // surclassé par FAEscene
 get isAnImage(){return false}
 get isImage(){return false}
+get isASttNode(){return this.type === STRstt}
+get isSttNode(){return this.isASttNode}
 
 // ---------------------------------------------------------------------
 //  Propriétés temporelles
@@ -232,6 +236,7 @@ set duree(v){
   }
 }
 get duree(){return this._duree || (this.type === STRscene ? 60 : 10)}
+get hduree(){return this._hduree || defP(this,'_hduree', new OTime(this.duree).hduree)}
 
 // Alias
 get description(){return this.content}
@@ -263,7 +268,7 @@ unsetParent(){
 forEachTextProperty(fn){
   let my = this
   for(var prop of my.constructor.TEXT_PROPERTIES){
-    if(false === fn(prop, my[prop])) break
+    if ( isFalse(fn(prop, my[prop])) ) break
   }
 }
 // ---------------------------------------------------------------------
@@ -279,9 +284,9 @@ onErrors(evt, errors){
   var focusPrefix  = `#event-${evt.id}-`
   var focusFieldId = `${focusPrefix}${errors[0].prop}`
   F.notify(errors.map(function(d){
-    $(`${focusPrefix}${d.prop}`).addClass('error')
+    $(`${focusPrefix}${d.prop}`).addClass(STRerror)
     return d.msg
-  }).join(RC), {error: true, duree: 'auto'})
+  }).join(RC), {error: true, duree: STRauto})
   if($(focusFieldId).length) evt.firstErroredFieldId = focusFieldId
 }
 /**
@@ -309,8 +314,8 @@ reveal(){
  */
 show(){
   // console.log("-> show", this.id)
-  if(this.shown === true) return
-  if(this.jqReaderObj && this.jqReaderObj.length){
+  if ( isTrue(this.shown) ) return
+  if ( this.jqReaderObj && this.jqReaderObj.length ) {
     // <= l'objet DOM existe déjà
     // => On a juste à l'afficher
     this.jqReaderObj.show()
@@ -320,8 +325,6 @@ show(){
     this.a.reader.append(this)
     this.observe()
   }
-  // SI vraiment on a besoin de montrer cet event,
-  //  on doit appeler la méthode FAReader.reveal(this)
 
   this.shown = true
 }
@@ -331,10 +334,7 @@ hide(){
   this.shown = false
 }
 
-get end(){
-  if(isUndefined(this._end)) this._end = this.time + this.duree
-  return this._end
-}
+get end(){ return this._end || defP(this,'_end', this.time + this.duree)}
 
 remove(){
   delete this._div
@@ -344,26 +344,46 @@ remove(){
   this.shown = false
   this.observed = false
 }
+
 /**
- * Après édition de l'event, on peut avoir à updater son affichage dans
- * le reader. On va faire simplement un remplacement de div (le div du
- * contenu, pour ne pas refaire les boutons, etc.).
+  Après édition de l'event, on peut avoir à updater son affichage dans
+  le reader.
+
+  Pour procéder à l'opération, on garde son div dans le reader en changeant
+  son ID, on place le nouveau div avant l'ancien div puis on détruit
+  l'ancien div. Si l'event était visible dans le reader, on le laisse visible,
+  sinon, on le masque.
+
  */
 updateInReader(new_idx){
   log.info(`-> <<FAEvent #${this.id}>>#updateInReader`)
-  // On détruit complètement l'objet reader (ce qui forcera sa reconstruction
-  // et son observation)
-  this.remove()
-  this.a.reader.append(this)
-  this.div.style.opacity = 1
+
+  let isVisible = this.jqReaderObj.is(':visible')
+
+  this.jqReaderObj.attr('id', `${this.domReaderId}-ANCIEN`)
+  let ancien = $(`div#reader #${this.domReaderId}-ANCIEN`)
+  delete this._jqreaderobj
+  delete this._div
+  $(this.div).insertBefore(ancien)
+  this.observe()
+  ancien.remove()
+
+  isVisible || this.hide()
 
   log.info(`<- <<FAEvent #${this.id}>>#updateInReader`)
-
 }
 
 /**
- * Les données "communes" qu'on doit actualiser dans tous l'interface, quel
- * que soit l'élément.
+  Après édition, on peut avoir à modifier l'event dans le banc-timeline
+  Cela se produit, pour le moment, si on modifie sa position et/ou sa durée
+**/
+updateInTimeline(){
+  this.btelement.repositionne()
+}
+
+/**
+  Les données "communes" qu'on doit actualiser dans tous l'interface, quel
+  que soit l'élément.
  */
 updateInUI(){
   // Le temps se trouve toujours dans une balise contenant data-time, avec
@@ -397,7 +417,7 @@ hasPersonnages(filtre){
       stxt = new RegExp(`@${FAPersonnage.get(pid).dim}[^a-zA-Z0-9_]`)
       if(!!this.content.match(stxt) && false === filtre.all){
         return true
-      } else if(true === filtre.all && !this.content.match(stxt)) {
+      } else if( isTrue(filtre.all) && !this.content.match(stxt)) {
         return false
       }
     }
@@ -502,7 +522,7 @@ dispatch(d){
 
 togglePlay(){
   if(this.playing){
-    this.locator.stop()
+    this.controller.stop()
   } else {
     // On met en route
     var t = this.time
@@ -542,7 +562,7 @@ observe(container){
     , o = this.jqReaderObj
 
   if(isUndefined(o)){
-    log.warn(`BIZARREMENT, le jqReaderObj de l'event #${this.id} est introuvable dans le reader. recherché avec domReaderId:${this.domReaderId}`)
+    log.warn(`[FAEvent.observe] BIZARREMENT, le jqReaderObj de l'event #${this.id} est introuvable dans le reader. recherché avec domReaderId: '${this.domReaderId}'`)
   } else {
 
     if(o.attr(STRobserved) == STROBSERVED) return

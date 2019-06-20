@@ -38,7 +38,7 @@ Object.assign(FABuildingScript,{
 , supStep(e, ui){
     let target = $(e.target)
       , dropped = $(ui.helper)
-      , drop_id = dropped.data('id')
+      , drop_id = dropped.data(STRid)
     // console.log("-> supStep, target, dropped, drop_id", target, dropped, drop_id)
     dropped.draggable(STRoption, 'connectToSortable','#bse-steps-list')
   }

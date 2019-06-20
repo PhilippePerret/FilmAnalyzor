@@ -35,7 +35,7 @@ const FAStater = {
     this.inited = true
   }
 , observe(){
-  if(this.a){
+  if ( this.a ) {
     // Quand on clique sur la jauge d'avancement, ça ouvre le
     // détail
     $('#statebar-jauger label[for="statebar-jauger"]').on(STRclick, this.a.toggleAnalyseState.bind(this.a))
@@ -186,7 +186,6 @@ const FAStater = {
   }
 
 , calcAndShowEventsCount(){
-    var eventsCount =
 
     this.eventsCountExpected = 2000
     this.eventsCountActual   = this.a.events.length

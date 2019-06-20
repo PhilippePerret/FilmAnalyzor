@@ -22,21 +22,27 @@
   * [Filtrage des events](#filtering_events)
   * [Association des events](#associations_elements)
 * [Autres données de l'analyse](#analyse_autres_donnees)
-  * [Éléments propres de l'analyse (Personnages, Brins, etc.)](#elements_analyse)
+  * [FAElements, éléments propres de l'analyse (Personnages, Brins, etc.)](#elements_analyse)
   * [Récupérer une instance par son type et son id](#get_instance_with_type_and_id)
   * [FAListing, listing des éléments](#falisting_elements)
   * [DataEditor, l'éditeur de données](#data_editor)
+  * [Les Keys-Windows, choix d'élément par les touches](#les_keyswindows)
   * [Actualisation automatique des éléments affichés lors des modifications](#autoupdate_after_edit)
   * [Association des éléments](#associations_elements)
+    * [Helpers de drag](#assocations_helper_drag)
 * [Vidéo](#la_video)
   * [Actualisation des informations vidéo](#update_infos_video)
 * [Ajout de préférences globales](#add_global_prefs)
   * [Utilisation des préférences globales](#use_global_prefs})
-* [Ajout de préférence analyse](#add_analyse_pref)
+  * [Ajout de préférence analyse](#add_analyse_pref)
 * [Horloges et durées](#temporal_fields)
-* [Aspect visuel](#visual_aspect)
+* [UI / Aspect visuel](#visual_aspect)
+  * [Champs d'édition](#edit_text_fields)
+  * [Boites de dialogue](#dialog_boxes)
   * [Boutons de fermeture](#boutons_close)
   * [Boutons expand/collapse](#boutons_toggle_next)
+  * [Boutons d'aide](#boutons_daide)
+  * [Élément toujours visible dans container scrollable](#rend_always_visible)
 * [Documents de l'analyse](#documents_analyse)
   * [Quatre types de documents](#les_types_de_documents)
   * [Édition d'un fichier quelconque](#edit_any_file)
@@ -45,6 +51,7 @@
   * [Script d'assemblage](#script_assemblage_analyse)
   * [Messages de suivi](#assemblage_messages_suivis)
 * [Test de la l'application](#test_application)
+* [Les FITests](#les_fitests)
 * [Les « Hand-Tests », test manuels de l'application](#tests_manuels)
   * [Lancement des hand-tests](#running_hand_tests)
     * [Astuce pour toujours commencer par le test en cours](#tip_start_with_current_test)
@@ -128,7 +135,7 @@ On peut charger des modules en inscrivant leur balise `<script>` dans le documen
 
 L'avantage de ce système — contrairement à `require` —, c'est que tout le contenu du code est exposé à l'application. Si une classe `FADocument` est définie, elle sera utilisable partout, à commencer par les modules chargés.
 
-C'est cette formule qu'on utilise par exemple pour charger le *FAWriter* qui permet de rédiger les textes.
+C'est cette formule qu'on utilise par exemple pour charger le *PorteDocuments* qui permet de rédiger les textes.
 
 ### Chargement de dossiers JS au lancement de l'application {#load_folders_at_launching}
 
@@ -555,10 +562,87 @@ $('a#<idlien>').on('click', this.constructor.edit.bind(this.constructor,'<id>'))
 
 ```
 
+### Fonctionnement en panneaux {#data_editor_panels}
+
+Le data-editeur peut aussi fonctionner en panneaux mais, dans ce cas, les données et les méthodes sont beaucoup plus complexes. On ne le fera que si c'est vraiment nécessaire. Ça l'est, par exemple, pour les fondamentales.
+
+#### Définition des panneaux
+
+Les panneaux sont définis comme des `dataField`s normaux mais ils possèdent la propriété `type` réglée à `panel`. Ils définissent aussi une sous-propriété `dataFields` qui définit les champs.
+
+Chaque panneau doit impérativement correspondre à un object/une classe qui sera traitée comme un item particulier possédant les propriétés définies.
+
+Dans ce cas, notamment, chaque `id` de panneau doit correspondre à une méthode de l'item qui retournera l'élément à modifier. Par exemple, pour l'objectif dans les Fondamentales, il appartient à la deuxième fondamentale. Le panneau a pour id `fd2`, qui permet de récupérer la deuxième fondamentale, et c'est dans cette deuxième fondamentale qu'on définit `get/set objectif`.
+
+
+## KWindows, choix d'élément par les touches {#les_keyswindows}
+
+Les « keys-windows » (class `KWindow`) permettent d'afficher une liste de choses quelconques (comme des marqueurs) et de les sélectionner avec les touches. Elles permettent aussi de supprimer des éléments dans la liste.
+
+Soit un objet `MonObjet` contenant des items.
+
+```javascript
+
+  MonObjet.kwindow = new KWindow(MonObjet, {
+      id:   'identifiant-valide-unique-et-universel'
+    , items: [<liste des items, cf. ci-dessous>]
+    , title: 'TITRE DE LA FENÊTRE' // par exemple "Se rendre au marqueur…"
+    , width:    XXX // largeur de la fenêtre (400 par défaut)
+                // Unité : pixel
+    , onChoose: /* methode à appeler quand on choisit un élément
+                    Le premier argument est l'ID de l'item
+                */
+    , onCancel: /* méthode appelée quand on renonce (touche escape) */
+    , onRemove: /* méthode appelée quand on détruit un élément (touche Backspace)
+                   Le premier argument est l'ID de l'item
+                   Note : c'est la Kwindow elle-même qui se charge d'afficher
+                   la confirmation et d'appeler la méthode si la confirmation de
+                   destruction a été donnée.
+                */
+  })
+
+```
+
+La liste des items doit être une liste `Array` de paires `[valeur, titre]`. C'est le `titre` qui sera affiché et c'est la `valeur` (ou identifiant) qui sera envoyé aux méthodes.
+
+Sur chaque rangée, il peut cependant y avoir deux valeurs, la valeur par défaut et une valeur alternative. Par exemple, pour les nœuds structurels, on a à gauche le nœud absolu et à droite le nœud relatif à l'analyse. On définit cette valeur alternative simplement en définissant une troisième valeur dans la paire ci-dessus : `[valeur, titre, titre_alternatif]`.
+
+Pour afficher la liste, on fait :
+
+```javascript
+
+MonObjet.kwindow.show()
+
+```
+
+Ensuite, il suffit d'utiliser les flèches et la touche retour pour choisir et sélectionner un item en particulier. Tout est géré de façon automatique.
+
+La méthode qui reçoit le `onChoose`, l'item choisi, doit recevoir en premier argument la valeur, c'est-à-dire le premier élément de la paire `[valeur, titre]` :
+
+```javascript
+
+methodeOnChoose(valeur){
+  /* traitement de `valeur` */
+}
+
+```
+
+Si c'est une rangée double — i.e. avec une valeur alternative —, la méthode doit recevoir un second argument qui est `true` lorsque la valeur envoyée doit concerner l'élément alternatif.
+
+```javascript
+
+methodeOnChoose(valeur, forAlt){
+  /* traitement de `valeur` pour l'élément alternatif */
+}
+
+```
+
+Pour les nœuds structurels par exemple, `forAlt` sera `true` ci-dessus si c'est le nœud relatif qu'on veut rejoindre.
+
 
 ## Actualisation automatique des éléments affichés lors des modifications {#autoupdate_after_edit}
 
-Le système adopté pour actualiser automatiquement l'affichage lors de modification est de fonctionner avec une classe qui contienne la définition de ce qu'est l'élément.
+Le système adopté pour actualiser automatiquement l'affichage lors de modifications est de fonctionner avec une classe qui contienne la définition de ce qu'est l'élément.
 
 Un exemple tout simple, avec les personnages. Lorsqu'un personnage est modifié, disons son pseudo, automatiquement, tous les éléments (span essentiellement) possédant la classe `perso-<ID perso>-pseudo` sont modifiés pour refléter le changement.
 
@@ -603,7 +687,7 @@ Pour rendre une classe *associable*, les requis sont les suivants.
 * Définir l'élément qui sera déplaçable (peut-être le même) pour associer l'élément avec un autre élément droppable :
         `$(element).draggable(DATA_ASSOCIATES_DRAGGABLE)`
 * Définir les propriétés obligatoires (requis pour tous les éléments) :
-  * `CLASSE#type`, propriété d'instance qui retourne le type de l'élément.
+  * `CLASSE#type`, propriété d'instance qui retourne le type de l'élément (qui doit être le nom minuscule de la classe).
   * `CLASSE#id` propriété d'instance qui retourne l'identifiant de l'élément (celui qui permettra de le récupérer en utilisant la méthode de classe `get` — cf. ci-dessous).
 * Définir les méthodes obligatoires :
   * `CLASSE#toString()`, méthode d'instance qui retourne la référence simplifiée de l'élément (sert pour le helper qu'on déplacera pour dragguer l'élément). Cette méthode sert aussi pour tous les messages traitant de l'élément.
@@ -642,6 +726,63 @@ La table `ASSOCIATES_COMMON_METHODS` et la table `ASSOCIATES_COMMON_PROPERTIES` 
       ```
 * La propriété `associatesCounter` qui retourne le nombre courant d'associés.
 
+
+### Helpers de drag {#assocations_helper_drag}
+
+Pour ne pas avoir d'helper de drag qui passe sous les autres éléments, entendu que le `z-index` de jQuery est une horreur, on peut utiliser la méthode utile `DHelper(...)` pour produire un helper qui restera toujours au-dessus.
+
+Pour ce faire, on définit les données du drag en mettant :
+
+```javascript
+
+element.draggable({
+  //...
+  , helper: function(e){ // ne pas utiliser (e) => {...}
+      if ( isUndefined(this._draghelper) ) {
+        let target = $(e.target)
+        this._draghelper = DHelper('<inner texte>', {<data>})
+      }
+      return this._draghelper
+    }
+  //...
+  // Pour supprimer l'helper à la fin du drag :
+  , stop: function(e){ // ne pas utiliser (e) => {...}
+      this._draghelper.remove()
+    }
+})
+```
+
+Les `<data>` ci-dessus est une table qui contiendra en clé les `propriétés-data` à définir dans le helper. Par exemple, la commande
+
+```javascript
+
+  DHelper("mon texte", {id: 12, type: 'document'})
+```
+
+produira le code
+
+```HTML
+
+  <div class="draghelper" data-id="12" data-type="document">mon texte</div>
+
+```
+
+Noter que la classe CSS `.draghelper` doit être définie. Une définition possible est :
+
+```
+
+div.draghelper
+  display: inline-block
+  width: auto
+  background-color: darkblue !important
+  color: white
+  white-space: nowrap
+  padding: 1px 8px
+  font-size: 13pt
+  z-index: 5000
+
+```
+
 ---------------------------------------------------------------------
 
 ## La vidéo {#la_video}
@@ -662,7 +803,7 @@ La méthode `Locator.actualizeAll` :
 * actualise les horloges avec le temps courant
 * actualise le Reader pour afficher les events au temps courant (`Locator.actualizeReader`)
 * actualise les marques de structure (`Locator.actualizeMarkersStt`)
-* actualise la marque de scène courante (`actualizeCurrentScene`)
+* actualise la marque de scène courante (`actualizeMarkScene`)
 * actualise le Banc Timeline en positionnant le curseur.
 
 Note : à l'avenir, il faudrait pouvoir décider ce que l'on actualise pour alléger le travail. La méthode `actualizeALL` ne sert plus qu'à tout actualiser lorsque l'on s'arrête ou qu'on choisit un temps.
@@ -677,7 +818,9 @@ Ces préférences sont définies dans le menu « Options » jusqu'à définiti
 
 Pour définir une nouvelle préférences (donc une options globale) :
 
-1. Définir la valeur par défaut et le nom de l'option dans le fichier `./js/system/Options.js:14`, dans la constante `DEFAULT_DATA`. S'inspirer des autres options.
+1. (faut-il vraiment le faire pour une préférence *globale* ?…) Définir la valeur par défaut et le nom de l'option dans le fichier `./js/system/Options.js:14`, dans la constante `DEFAULT_DATA`. S'inspirer des autres options.
+
+1.bis Dans `main-process/Prefs`, ajouter la préférence à `USER_PREFS_DEFAULT` avec une valeur par défaut.
 
 2. Créer un nouveau menu dans le submenu de "Options" (fichier `/main-process/menu.js:427`) avec les données suivantes :
 
@@ -688,8 +831,17 @@ Pour définir une nouvelle préférences (donc une options globale) :
     , type:     'checkbox'
     , checked:  false
     , click:    ()=>{
-        var check = this.getMenu('<id_indispensable_et_universel>').checked
-        mainW.webContents.executeJavaScript(`FAnalyse.setGlobalOption('<id_indispensable_et_universel>',${checked?'true':'false'})`)
+        var c = ObjMenus.getMenu('<id_indispensable_et_universel>').checked ? 'true' : 'false'
+        /**
+          LA DIFFÉRENCE NOTOIRE ENTRE PREFÉRENCE ET OPTIONS SE JOUE ICI
+
+          POUR UNE PRÉFÉRENCE GLOBALE TOUCHANT TOUTES LES ANALYSE
+        **/
+        execJS(`FAnalyse.setGlobalOption('<id_indispensable_et_universel>',${c})`)
+        /**
+          OU POUR UN OPTION DE L'ANALYSE COURANTE
+        **/
+        // execJsOnCurrent(`options.set('<id_indispensable_et_universel>',${c})`)
     }
   }
 ```
@@ -712,7 +864,7 @@ Pour définir une nouvelle préférences (donc une options globale) :
 
 Si la valeur par défaut doit être false, il n'y a rien d'autres à faire. Sinon, il faut définir sa valeur par défaut dans `Prefs` (fichier `.../main-process/Prefs.js:26` comme ci-dessous), dans la constante `USER_PREFS_DEFAULT`.
 
-Noter que les préférences générales, lorsqu'elles sont modifiées, sont enregistrées dans le fichier `$LIBRARY/Application\ Support/Film-Analyzer/user-preferences.json` quand on quitte l'application.
+Noter que les préférences générales, lorsqu'elles sont modifiées, sont enregistrées aussitôt qu'une modification est produite, dans le fichier `$LIBRARY/Application\ Support/Film-Analyzer/user-preferences.json`.
 
 
 ### Utilisation des préférences globales {#use_global_prefs}
@@ -722,6 +874,14 @@ Pour connaitre la valeur d'une option globale — donc d'une préférence —,
 ```javascript
 
 var opt = current_analyse.options.get('<id de l’option>')
+
+```
+
+On peut aussi faire :
+
+```javascript
+
+const opt = Prefs.get('<id_options>')
 
 ```
 
@@ -804,6 +964,73 @@ Utiliser la classe CSS `no-user-selection` pour empêcher un élément de l'inte
 
 > Note : une fois cette classe appliquée, les textes contenus ne peuvent pas être sélectionnés par l'user.
 
+### Champs d'édition {#edit_text_fields}
+
+Tous les champs d'édition sont automatiquement observés par l'observation de la mutation du DOM (cf. `ui.js`).
+
+Les deux méthodes utilisées par défaut sont `UI.onFocusTextField` (au focus dans le champ) et `UI.onBlurTextField` (quand on quitte le champ).
+
+On peut néanmoins définir d'autres méthodes en cas de besoin. Pour cela, il suffit de définir les attributs `data-onfocus-fn` et `data-onblur-fn` dans la balise du champ d'édition, dont la valeur doit être la méthode `UI` à appeler (et obligatoire une méthode de l'objet `UI`).
+
+Par exemple, le `TEXTAREA` du porte-documents, qui a besoin de ses propres méthodes, est défini par :
+
+```html
+
+  <TEXTAREA
+    id="porte_documents"
+    data-onblur-fn="onBlurPorteDocumentTextarea"
+    ></TEXTAREA>
+
+```
+
+Quand on quitte ce champ, c'est donc la méthode `UI.onBlurPorteDocumentTextarea` qui sera invoquée. Cette méthode appelle la fonction `PorteDocuments.observeKeys()` qui définit la combinaison de raccourcis de nom `PORTE-DOCS`.
+
+### Boites de dialog {#dialog_boxes}
+
+Des boites de dialogue asynchrone permettent de confirmer des opérations ou de demander des valeurs. On les utilise avec les méthodes `confirm` et `prompt`.
+
+Définition et utilisation :
+
+```javascript
+
+// Demander une confirmation avant d'utiliser une méthode
+confirm({
+    message: 'Le message de confirmation ?'
+  , defaultAnswer: 'Si défini, c’est une prompt'
+  , buttons: ['bouton defaut 0', 'bouton OK 1', 'bouton 2']
+  , defaultButtonIndex: 0
+  , okButtonIndex: 1 // celui qui lancera methodOnOK
+  , cancelButtonIndex: 2 // celui qui lancera methodOnCancel
+  , methodOnOK: Ma.methode.bind(Ma)
+  , methodOnCancel: Ma.cancelMethod.bind(Ma)
+
+})
+```
+
+La méthode `prompt` est un alias de `confirm`, en fait, mais elle requiert de définir `defaultAnswer` qui sera la réponse affichée par défaut. De la même manière, alors que la méthode `methodOnOK` n'attend aucun argument pour `confirm`, elle reçoit la réponse donnée par l'utilisateur pour `prompt`.
+
+```javascript
+class Ma {
+  static okMethod(uvalue /* la valeur est reçue ici */) {
+    uvalue = parseInt(uvalue,10)
+    if ( uvalue > 0 && uvalue < 11) console.log("Bien !")
+    else console.log("C'est un raté")
+  }
+}
+prompt({
+    message: "Donne-moi un message entre 1 et 10"
+  , defaultAnswer: "0"
+  , buttons: ["Renoncer", "OK"]
+  , methodOnOK: Ma.okMethod.bind(Ma)
+})
+
+```
+
+Les méthodes ont des valeurs par défaut, donc il suffit bien souvent de définir le `message` et la `methodOnOK`.
+
+> Note : pour que la touche `Return` active le bouton OK, il faut faire coïncider `okButtonIndex` et `defaultButtonIndex` (mettre le même index, celui du bouton correspondant à « OK »). Pour que la touche `Escape` active le bouton d'annulation (appelé traditionnellement Cancel), il faut faire coïncider `cancelButtonIndex` et `defaultButtonIndex` (mettre le même index, celui du bouton correspondant à « Cancel »).
+
+
 ### Boutons de fermeture {#boutons_close}
 
 Pour faire un bouton rouge de fermeture « à la Mac », il suffit de placer dans l'entête de l'élément un `button` de classe `btn-close` :
@@ -879,14 +1106,33 @@ On peut viser un autre nœud que le nœud suivant grâce à l'attribut `containe
 
 ```
 
+### Boutons d'aide {#boutons_daide}
+
+Pour afficher un picto « ? » cliquable.
+
+```javascript
+
+  DCreate(AIDE, '<message d’aide à afficher>')
+
+```
+
+Pour observer ce bouton (régler le clic souris qui doit ouvrir le message), il faut appeler la méthode `UI.setPictosAide(container)` en envoyant le container du bouton.
+
+### Élément toujours visible dans container scrollable {#rend_always_visible}
+
+Pour qu'un élément soit toujours visible dans son parent scrollable, on doit utiliser la méthode `UI.rendVisible(element)`.
+
+Ne pas oublier de mettre `position: relative` au container, donc à la liste.
+
+---------------------------------------------------------------------
 
 ## Documents de l'analyse {#documents_analyse}
 
-Les documents de l'analyse sont entièrement gérés, au niveau de l'écriture, par les modules contenus dans le dossier `./app/js/composants/faWriter`. Ce dossier est le premier qui a été chargé par la nouvelle méthode `System#loadJSFolders` (par le biais de `FAnalyse.loadWriter`) qui travaille avec des balises `<script>` afin d'exposer facilement tous les objets, constantes et autres.
+Les documents de l'analyse sont entièrement gérés, au niveau de l'écriture, par les modules contenus dans le dossier `./app/js/composants/PorteDocuments`. Ce dossier est le premier qui a été chargé par la nouvelle méthode `System#loadJSFolders` (par le biais de `FAnalyse.loadWriter`) qui travaille avec des balises `<script>` afin d'exposer facilement tous les objets, constantes et autres.
 
 Ces documents permettent de construire l'analyse de trois façons différentes :
 
-* en les rédigeant dans le *FAWriter* (qui s'ouvre grâce au menu « Documents »),
+* en les rédigeant dans le *PorteDocuments* (qui s'ouvre grâce au menu « Documents »),
 * en les peuplant grâce à l'[éditeur de données](#data_editor),
 * en en créant le code de façon dynamique pour ce qui est des stats, des PFA et autres notes au fil du texte.
 
@@ -901,13 +1147,13 @@ Il faut comprendre qu'il y a 4 types de documents, même s'ils sont tous accessi
 
 ### Édition quelconque d'un fichier {#edit_any_file}
 
-Le `FAWriter` permet d'éditer un fichier quelconque, par exemple une liste de valeurs programme, et même, pourquoi pas, un fichier de code.
+Le `PorteDocuments` permet d'éditer un fichier quelconque, par exemple une liste de valeurs programme, et même, pourquoi pas, un fichier de code.
 
 On utilise alors la méthode `openAnyDoc`.
 
 ```javascript
 
-  FAWriter.openAnyDoc('<path/absolue/to/document.ext>')
+  PorteDocuments.editDocument('<path/absolue/to/document.ext>')
 
 ```
 
@@ -1044,6 +1290,10 @@ Les types de message sont :
 Pour tester l'application en la programmant, le plus simple est d'utiliser les `Tests manuels`. Ce sont des tests qui sont semi-automatiques, c'est-à-dire que certaines opérations peuvent s'exécuter et se tester toutes seules, tandis que d'autres nécessitent une action réelle (jusqu'à ce que tout puisse être pris en charge, ce qui est le but à long terme).
 
 ---------------------------------------------------------------------
+
+## Les FITests {#les_fitests}
+
+Cf. le manuel dans le dossier `./FITests`.
 
 ## Les « Hand-Tests », test manuels de l'application {#tests_manuels}
 

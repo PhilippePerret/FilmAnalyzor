@@ -10,6 +10,13 @@
 class FAElement {
 // ---------------------------------------------------------------------
 //  CLASSE
+
+static reset(){
+  delete this._a
+  delete this._iofile
+  delete this._modified
+}
+
 static get modified(){return this._modified || false}
 static set modified(v){
   this._modified = v
@@ -87,6 +94,7 @@ static update(){
 static exists(){return fs.existsSync(this.path)}
 static get iofile(){return this._iofile || defP(this,'_iofile', new IOFile(this))}
 static get a(){return this._a || defP(this,'_a', current_analyse)}
+
 
 // ---------------------------------------------------------------------
 //  INSTANCE

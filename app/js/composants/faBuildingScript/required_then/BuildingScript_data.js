@@ -71,12 +71,21 @@ const BUILDING_SCRIPT_DATA = {
     , fname: 'themes'
   }
 
-, pfa: {
-      hname: 'Paradigme de Field'
+, pfa_1: {
+      hname: 'PFA principal'
+    , realType: STRpfa
   }
-
-, pfa_alt: {
-      hname: 'PFA alternatif'
+, pfa_2: {
+      hname: 'PFA secondaire'
+    , realType: STRpfa
+  }
+, pfa_3: {
+      hname: 'PFA tiertiaire'
+    , realType: STRpfa
+  }
+, pfa_4: {
+      hname: 'PFA quaternaire'
+    , realType: STRpfa
   }
 
 , brins: {

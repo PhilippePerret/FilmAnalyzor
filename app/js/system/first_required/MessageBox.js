@@ -46,9 +46,12 @@ class MessageBox {
     this.type       = data.type || 'alert' // 'alert', 'confirm' // inusité
     this.width      = data.width
     this.message    = data.message
-    this.defaultButtonIndex = data.defaultButtonIndex || 1
-    this.cancelButtonIndex  = data.cancelButtonIndex  || 0
-    this.okButtonIndex      = data.okButtonIndex      || 1
+    this.defaultButtonIndex = data.defaultButtonIndex
+    defaultize(this,'defaultButtonIndex',1)
+    this.cancelButtonIndex  = data.cancelButtonIndex
+    defaultize(this,'cancelButtonIndex',0)
+    this.okButtonIndex      = data.okButtonIndex
+    defaultize(this,'okButtonIndex',1)
     this.defaultAnswer      = data.defaultAnswer
 
     this.methodOnCancel = data.methodOnCancel
@@ -89,7 +92,7 @@ class MessageBox {
   }
 
   onOK(e){
-    // F.notify("Bouton OK cliqué -- ou Return")
+    F.notify("Bouton OK cliqué -- ou Return")
     if ( this.isPrompt() ) {
       this.methodOnOK(this.getAnswer(), 1)
     } else {
@@ -102,21 +105,25 @@ isPrompt(){return isDefined(this.defaultAnswer)}
 
 // Quand on relève une touche dans la réponse
 onKeyUpAnswer(e){
-  if ( e.key === STREnter ) {
-    UI.onBlurTextField.bind(UI)() // car pas déclenché au blur du answer field
-    e.stopPropagation(e)
-    this.onOK(e)
-    return false
-    // return stopEvent(e)
-  } else if (e.key === STREscape) {
-    return stopEvent(e)
-  } else if (e.key === STRTab) {
-    e.stopPropagation()
-    this.onCancel(e)
-    return false
-  } else {
-    e.stopPropagation()
-    return true
+  e.stopPropagation(e)
+  switch (e.key) {
+    case STREnter:
+      UI.onBlurTextField.bind(UI)() // car pas déclenché au blur du answer field
+      if ( this.okButtonIndex === this.defaultButtonIndex) {
+        this.onOK(e)
+      } else if (this.cancelButtonIndex === this.defaultButtonIndex) {
+        this.onCancel(e)
+      }
+      return false
+    case ESCAPE:
+      return stopEvent(e)
+    case TABULATION:
+      e.stopPropagation()
+      this.onCancel(e)
+      return false
+    default:
+      e.stopPropagation()
+      return true
   }
 }
 onKeyDownAnswer(e){
@@ -198,13 +205,18 @@ observe(){
 }
 
   onKeyUp(e)    {
-    if(e.key === STREscape) this.onCancel()
-    else if (e.key === STREnter) this.onOK()
+    if(e.key === ESCAPE) this.onCancel()
+    else if (e.key === ENTER){
+      if ( this.okButtonIndex === this.defaultButtonIndex) {
+        this.onOK(e)
+      } else if (this.cancelButtonIndex === this.defaultButtonIndex) {
+        this.onCancel(e)
+      }
+    }
     return stopEvent(e)
   }
   onKeyDown(e)  { return stopEvent(e) }
   onClickBackground(e){
-    console.log("Fond cliqué")
     return stopEvent(e)
   }
 

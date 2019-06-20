@@ -2,32 +2,39 @@
 
 ### Traiter :
 
-* Garder toujours le curseur visible (faire l'essai en zoomant et en passant du début à la fin du film)
-* Ré-étudier le survol de la timeline pour que ça ne court-circuite pas le déplacement des marqueurs, marqueurs de début et fin, etc.
+RÉFLEXIONS SUR LES FITests
+- Ne pourrait-on pas distinguer les opérations des vérifications ? Ça ne changerait pas grand-chose au niveau programmation peut-être, mais ça pourrait éclaircir le code.
+  Un autre avantage serait qu'on pourrait mettre les choses dans l'ordre qu'on voudrait. L'application de tests appellerait toujours dans l'ordre : `preliminaires`, `tests_preliminaires`, `operation`, `verification`, mais on pourrait, dans la définition du case, commencer par la vérification, ensuite mettre l'opération et seulement à la fin les préliminaires, qui sont moins importants que le reste.
+Par exemple :
 
-* Bien travailler les calculs de position pour que tout soit bien
-  - On ne doit pas pouvoir dépasser la fin de la vidéo (setTime doit contrôler)
-  - quand on veut se rendre à un temps précis
+```javascript
 
-* Liste des marqueurs : utiliser une Helper, pas une liste normale d'éléments
+      this.case("Un cas étudié", async () => {
+          preliminaires(() => {
+            /* ... les préliminaires à exécuter */
+            })
+          tests_preliminaires( () => {
+            /* ... les tests à faire sur l'état initial */
+          })
 
-* Fenêtres (Helpers) indiquant les raccourcis de base :
-  Les ajouter au menu "Raccourcis". S'inspirer des éléments présents
+          await operation( async () => {
+            /* ... L'opération proprement dite */
+          })
 
-* Généraliser l'affichage facile de tout un tas de panneaux avec la classe `Helper`.
+          verifications( () => {
+            /* les vérifications après l'opération */
+          })
 
-* Dans un champ d'édition, la touche escape doit permettre d'annuler l'édition après confirmation.
+        })
+
+```
+
+* Garder toujours le curseur visible dans le banc-timeline (faire l'essai en zoomant et en passant du début à la fin du film)
 
 * Traiter les observeurs de keyup/keydown différemment en fonction du propriétaire (rappel : l'observer de mutations met dans la propriété "data-owner-id" l'identifiant du DOMElement qui contient le champ de saisie. C'est 'writer' lorsque c'est le writer)
 
-* Supprimer les boutons de commande de la vidéo (prendre l'option "tout clavier" pour l'application, pour forcer l'utilisateur à les utiliser)
-
-* Traiter la sélection courante de l'interface, qui peut être n'importe quoi, un marqueur, une fiche, un document, etc. Pouvoir agir dessus (supprimer, éditer, déplacer)
-
 Faire un controleur pour chaque partie de l'interface et notamment pour la colonne de droite qui doit s'ouvrir/se refermer, recevoir un élément à afficher, etc.
   - FAIT Il faut maintenant l'utiliser.
-
-
 
 * Documenter la façon de charger un tool complexe (ou même n'importe quel objet) en utilisant la technique de mode_banc_timeline.js : on définit l'objet (const BancTimeline = {...}) puis on requiert tous les éléments du dossier en faisant :
   Object.assign(BancTimeline, require('./dossier/fichier'))
@@ -68,50 +75,20 @@ Avec possibilité de boucle pour charger tous les fichiers voulus.
 * BAN TIMELINE
   - Faire le menu "Banc Timeline" en reprenant TOUS les raccourcis
   - Implémenter les méthodes onkeyup et onkeydown lorsque l'on est dans des champs d'édition (reprendre les méthodes utilisées ailleurs et les mettre dans `banc_timeline/observers_methods.js`)
-  - [BUG] Quand on fait CMD-Flèche, ça saute deux scènes
-  - Écrire les infos sur la scène courante quelque part
-    (en fait, il suffit de modifier le style du bloc existant)
-  - pouvoir définir un marqueur avec "m" (comment passer en revue les marqueurs ?)
-    Peut-être : CMD-M pour créer le marqueur (si ça coupe bien le comportement par défaut)
-    et "m" pour aller de marqueur en marqueur et "MAJ-m" pour faire apparaitre la liste des marqueurs
 
 * Script d'assemblage
-  - définir comment on va partir de l'id enregistré dans le fichier script, et
-    arriver à la méthode de construction. Comme avant, avec les BUILD et
-    autre ajout.
-    - Comment le faire, surtout, avec les éléments aléatoires (custom-docs)
   - traiter les brins (pouvoir les glisser depuis la liste)
     + mettre juste un élément, seulement clickable, pour l'explication, dans la liste
   - voir comment on peut faire des "blocs" si nécessaire
   - traiter l'insertion d'images (on doit pouvoir les glisser de puis leur liste, mais alors, pourquoi ne pas faire ça avec le reste ?)
 
-
-* Faire le mode "Mode Ban Timeline" qui permet de transformer l'interface en sorte de ban de montage, avec des fenêtres fixes
-  - placer les scènes sur une ligne unique (en bas), en résorbant les problèmes éventuels de longueur (même si ça n'a pas d'importance puisqu'elles sont placées sur la même rangée)
-  - voir comment "économiser" de la place sur la timeline en imbriquant les éléments qui sont en lien avec d'autres déjà placés. En gros, l'idée, c'est que si une note concerne une information placée (si l'information est son parent) alors on afficher la note seulement lorsqu'on survole l'information.
-    => Il faut bien développer la notion de parent, qui pour le moment n'est pas encore très utilisée
-    => Ne pas inclure les scènes dans ce principe, sinon tous les éléments appartiendraient à ces scènes.
-
+* Banctimeline
   - surveiller onresize de la fenêtre principale et recalculer la taille de l'interface
-    - une méthode isolée pour calculer les tailles.
-  - régler les widths en fonction des durées
-  - rendre les éléments éditables
-  - pouvoir les déplacer et changer leur temps
-  - ligne différente suivant type d'event
-  - une image graduée pour déplacer le curseur
+  - pouvoir déplacer les events (drag) et changer leur temps (resize)
 
-* Dans le mode "ban timeline", il faudrait fonctionner en "tout raccourci". Aucune action souris ne serait possible autre que les déplacements pour mettre les éléments dans les autres
-  - supprimer la nécessité de la touche CMD pour j, k, l => bloquer ce comportement lorsque l'on se trouve dans un champ de texte => focus dans un champs de texte entraine la mise en place des keyup de champs de texte, blur d'un champ de texte entraine la mise en place des keyup hors champ de texte.
   - Raccourci pour passer en revue les stop-points
-  - raccourci pour retourner au début
-  - raccourci pour afficher la liste des raccourcis (+ menu)
-  - combinaison pour passer en revue les events dans la timeline (ENTER => éditer la sélection)
-  - combinaison pour passer de scène en scène (dans la timeline)(ENTER => mettre en route à cette scène)
 
 * Puisque System.loadTruc inscrit des balises <script> dans le document, on peut l'utiliser pour charger tous les scripts, sans avoir à faire de require et toute la complication qui va avec
-
-* Pour les associés qui n'existent plus, utiliser la classe `FAUnknownElement`
-  - Faut-il faire un check régulier, partout ?
 
 - Réimplémenter le check des résolutions des QRD pour qu'il se fasse seulement quand toutes les classes sont chargées — + quand on vient d'en créer une. Il faut appeler `FAEqrd#checkResolution()`. Voir aussi sur les procédés à résolution ?
 

@@ -10,16 +10,21 @@ class Options {
 constructor(analyse){
   this.a = this.analyse = analyse
 }
-get class(){return 'Options'}
-get type(){return 'object'}
+get class() {return 'Options' }
+get type()  {return 'object'  }
 
   // Options par défaut
 static get DEFAULT_DATA(){
   return {
       'option_start_when_time_choosed':       true
     , 'option_lock_stop_points':              false
-    , 'video_size':                           "medium"
+    // , 'run_tests_at_startup':         false // globale
     , 'video_speed':                          1
+    , 'ui.section.reader.width':              null
+    , 'ui.section.timeline.height':           null
+    , 'ui.section.video.height':              null
+    , 'ui.section.video.width':               null
+    , 'ui.row.c1r1.height':                   null
     , 'option_start_3secs_before_event':      false
     , 'option_edit_in_mini_writer':           false
     , 'option_duree_scene_auto':              true
@@ -48,8 +53,19 @@ get(opid, defValue){
 set(opid, value, dont_save){
   this.data[opid] = value
   this.onSetByApp(opid, value)
-  if(dont_save !== true) this.save() // je préfère sauver tout de suite
-  // this.modified = true
+  isTrue(dont_save) || this.save()
+}
+
+/**
+  Méthode qui mémorise les tailles des sections de l'UI
+**/
+memorizeUIsizes(){
+  this.set('ui.section.reader.width',     UI.sectionReader.width(),     true)
+  this.set('ui.section.timeline.height',  UI.sectionTimeline.height(),  true)
+  this.set('ui.section.video.height',     UI.sectionVideo.height(),     true)
+  this.set('ui.section.video.width',      UI.sectionVideo.width(),      true)
+  this.set('ui.row.c1r1.height',          UI.C1R1.height())
+  // F.notify('Mémorisation des dimensions de l’interface OK.')
 }
 
 /**
@@ -79,14 +95,10 @@ change(opid, value, dont_save){
 onSetByApp(opid, value){
   // console.log("Options#onSetByApp", opid, value)
   switch (opid) {
-    case 'video_size':
-      return this.a.videoController.setSize(value)
     case 'video_speed':
       return this.a.videoController.setSpeed(value)
     case 'option_edit_in_mini_writer':
       return UI.miniWriterizeTextFields(null, value)
-    case 'option_banc_timeline':
-      return UI.toggleModeBancTimeline(value)
   }
 }
 
@@ -124,10 +136,10 @@ setInMenus(){
   let set_option = 'set-option'
   ipc.send(set_option, {menu_id: 'option_start_when_time_choosed', property:STRchecked, value: this.startWhenTimeChosen})
   ipc.send(set_option, {menu_id: 'option_lock_stop_points', property:STRchecked, value: this.lockStopPoints})
+  ipc.send(set_option, {menu_id: 'run_tests_at_startup', property:STRchecked, value: this.lockStopPoints})
   ipc.send(set_option, {menu_id: 'option_start_3secs_before_event', property:STRchecked, value: this.start3SecondsBefore})
   // Options propres à l'analyse courante
   let midSize = VideoController.VIDEO_SIZES[this.videoSize] ? this.videoSize : 'custom'
-  ipc.send(set_option, {menu_id: `size-video-${midSize}`, property:STRchecked, value: true})
   ipc.send(set_option, {menu_id: `video-speed-rx${this.videoSpeed}`, property:STRchecked, value:true})
   ipc.send(set_option, {menu_id: 'option-locked', property:STRchecked, value: this.appLocked})
   log.info('<- Options#setInMenus')
@@ -140,12 +152,12 @@ set data(v){this._data = v}
 // ---------------------------------------------------------------------
 // Toutes les valeurs, pour raccourcis
 get appLocked(){ return !!this.a.locked }
-get videoSize(){return this.get('video_size')}
 set videoSize(v){this.set('video_size', v)}
 get videoSpeed(){return this.get('video_speed')}
 set videoSpeed(v){this.set('video_speed', v)}
 get startWhenTimeChosen(){return !!this.get('option_start_when_time_choosed')}
 get lockStopPoints(){return !!this.get('option_lock_stop_points')}
+get runTestsAtStartUp(){return !!this.get('run_tests_at_startup')}
 get start3SecondsBefore(){return !!this.get('option_start_3secs_before_event')}
 
 // /fin valeurs d'options

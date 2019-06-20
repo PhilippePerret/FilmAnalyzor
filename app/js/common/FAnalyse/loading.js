@@ -22,8 +22,9 @@ Object.assign(FAnalyse,{
       this.isDossierAnalyseValid(aFolder) || raise(T('invalid-folder', {fpath: aFolder}))
       this.resetAll()
       window.current_analyse = new FAnalyse(aFolder)
+      FAnalyse.current = window.current_analyse
       isDefined(fn_afterLoading) && (
-        window.current_analyse.methodAfterLoadingAnalyse = fn_afterLoading
+        current_analyse.methodAfterLoadingAnalyse = fn_afterLoading
       )
       current_analyse.load()
       log.info(`<- FAnalyse::load(folder:${aFolder})`)
@@ -42,23 +43,31 @@ Object.assign(FAnalyse,{
 , resetAll(){
     log.info("-> [FAnalyse::resetAll] Réinitialisation complète")
     // On détruit la section vidéo de l'analyse courante
-    if ( window.current_analyse ) {
-      // <= Il y a une analyse courante
-      // => On doit tout initialiser
-      FAReader.reset()
-      EventForm.reset() // notamment destruction des formulaires
-      FAEscene.reset()
-      FABrin.reset()
-      FAPersonnage.reset()
-      FADocument.reset()
-      FAEventer.reset()
-      FATexte.reset()
 
+    FAElement.reset()
+    FAReader.reset()
+    EventForm.reset() // notamment destruction des formulaires
+    FAEscene.reset()
+    FABrin.reset()
+    FAPersonnage.reset()
+    FADocument.reset()
+    FAEventer.reset()
+    FATexte.reset()
+    TimeMap.reset()
+    FAImage.reset()
+    BancTimeline.reset()
+    Markers.reset()
+    FAProcede.reset()
+    FAEqrd.reset()
+    FAPersonnage.reset()
+
+    if ( current_analyse ) {
       delete current_analyse.videoController
       delete current_analyse.locator
       delete current_analyse.reader
       delete current_analyse.stater
     }
+
     log.info("<- [FAnalyse::resetAll] Réinitialisation complète")
   }
 
@@ -120,23 +129,51 @@ load(){
     my.init()
     my.locator.init()
     my.locator.stop_points = my.stopPoints
-    FAProcede.reset().init()
-    FABrin.reset().init()
+    this.markers.load()
+    FAProcede.init()
+    FABrin.init()
     EventForm.init()
     FAEscene.init()
     FAImage.init()
-    FAEqrd.reset().init()
-    FAPersonnage.reset().init()
+    FAEqrd.init()
+    FAPersonnage.init()
     my.options.setInMenus()
     my.videoController.init()
-    // Les marqueurs
-    Markers.reset()
     // Les raccourcis clavier "universels"
     UI.toggleKeyUpAndDown(/* out texte field */ true)
     // On met en route le timer de sauvegarde
     my.runTimerSave()
+
+    log.info('<- FAnalyse.onReady')
+  }
+
+, onVideoReady(){
+    let my = this
+
+    // On règle les sections de l'interface aux dernières dimensions
+    // enregistrées
+    UI.setUIsections()
+
+    // On définit la time-map
+    // Tous les events et autres éléments temporels vont être placés
+    // dans une table dont les clés sont les secondes, qui permettront de
+    // connaitre, à un temps donné, tous les éléments qu'on trouve.
+    TimeMap.update()
+
+    log.info('-> FAnalyse.onVideoReady')
     try {
-      // On peuple le reader avec les events et les images
+      // On peuple la timeline avec les events
+      BancTimeline.init()
+    } catch (e) {
+      log.error("Impossible de peupler la timeline (voir l'erreur ci-dessous)")
+      log.error(e)
+    }
+
+    BancTimeline.positionneMarkFilmStartEnd()
+    this.markers.build()
+
+    // On peuple le reader avec les events et les images
+    try {
       my.reader.init() // notamment : construction du reader
       my.reader.show()
       my.reader.peuple()
@@ -144,6 +181,21 @@ load(){
       log.error("Impossible de peupler le reader (voir l'erreur ci-dessous)")
       log.error(e)
     }
+
+    // On fixe la taille du reader
+    // TODO: Plus tard on pourra envoyer en argument de cette méthode la
+    // taille en pixels à donner à la section.
+    UI.fixeSectionReaderWidth()
+
+    // Au cours du dispatch des données, la méthode modified a été invoquée
+    // de nombreuses fois. Il faut revenir à l'état normal.
+    this.modified = false
+    UI.stopWait()// toujours, au cas où
+
+    // Si un dernier temps était mémorisé, on replace le curseur à
+    // cet endroit (dans la timeline)
+    var lastCurTime = new OTime(my.lastCurrentTime)
+    lastCurTime && my.locator.setTime(lastCurTime, true)
 
     // Si une méthode après le chargement est requise, on
     // l'invoque.
@@ -153,38 +205,11 @@ load(){
       my.methodAfterLoadingAnalyse()
     }
 
-
-    log.info('<- FAnalyse.onReady')
-  }
-
-, onVideoReady(){
-    let my = this
-    log.info('-> FAnalyse.onVideoReady')
-    try {
-      // On peuple la timeline avec les events
-      BancTimeline.init()
-    } catch (e) {
-      log.error("Impossible de peupler la timeline (voir l'erreur ci-dessous)")
-      log.error(e)
-    }
-    log.info('<- FAnalyse.onVideoReady')
-
-    BancTimeline.positionneMarkFilmStartEnd()
-    this.markers.load().build()
-
-    // Si un dernier temps était mémorisé, on replace le curseur à
-    // cet endroit (dans la timeline)
-    var lastCurTime = new OTime(my.lastCurrentTime)
-    lastCurTime && my.locator.setTime(lastCurTime, true)
-
-    // Au cours du dispatch des données, la méthode modified a été invoquée
-    // de nombreuses fois. Il faut revenir à l'état normal.
-    this.modified = false
-    UI.stopWait()// toujours, au cas où
-
     // On appelle la méthode `window.WhenAllIsReallyReady` qui permet de
     // jouer du code pour essai à la toute fin
     WhenAllIsReallyReady()
+
+    log.info('<- FAnalyse.onVideoReady')
   }
 
 // Charger le fichier +path+ pour la propriété +prop+ de façon

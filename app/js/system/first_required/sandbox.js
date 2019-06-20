@@ -5,7 +5,7 @@
   est appelée lorsque l'application est prête.
   Par exemple, quand ce bac à sable a été créé, c'était pour
   tester le MiniWriter. Elle ouvrait un event en édition et
-  jouait le mini-writer sur son contenu.
+  jouait le miniwriter sur son contenu.
 **/
 const Sandbox = {
 

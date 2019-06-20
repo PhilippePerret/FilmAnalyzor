@@ -24,6 +24,88 @@
   */
 
 class DOMHorloge {
+// CLASSE
+
+/**
+  Prend un temps quelconque exprimé en horloge, en opération, en chiffres et
+  virgules et retourne le nombre de secondes correspondant.
+**/
+static string2seconds(str){
+  var members, n, m, frs
+  // On commence par supprimer tous les espaces
+  // console.log(`Traitement de : ${str}`)
+  str = str.trim().replace(/ /g,'')
+  // Le formatage doit être bon
+  if ( str.replace(/[0-9\*\.\,\/\+\-\(\)]/g,'') !== '' ) raise("Le nombre fourni est mal formaté.")
+  if ( str.match(/^[0-9]+$/) ) return parseFloat(str)
+  // var members = str.split(',')
+  str = str.replace(/\(([^)]+)\)/g, (tout, groupe) => {
+    return this.string2seconds(groupe)
+  })
+
+  if ( str.match(/,/) ) {
+    // console.log("Str avec virgule : ", str)
+    members = str.split(',')
+    if ( members[members.length-1].match(/\./) ) {
+      [m, frs] = members[members.length-1].split('.')
+      members[members.length-1] = m
+      frs = (parseInt(frs,10) * 100/24) / 100 // 24 -> 100  => 1 = 100/24
+    } else {
+      // Pas de frames
+      frs = 0
+    }
+    for(var i = 0, len = members.length; i < len ; ++i){
+      // console.log("Traitement de ", members[i], typeof(members[i]))
+      members[i] = this.string2seconds(members[i])
+      // console.log("Résultat ", members[i], typeof(members[i]))
+    }
+    members.reverse()
+    // console.log("members:", members)
+    n = Math.round(members[0] + (members[1]||0) * 60 + (members[2]||0) * 3600) + frs
+    // console.log("n final:", n)
+    return n
+  } else if ( str.match(/\./) ) {
+    // <= le string contient un point mais pas de virgule, comme dans 20.12
+    members = str.split('.')
+    frs = (parseInt(members.pop(),10) * 100/24) / 100 // 24 -> 100  => 1 = 100/24
+    n = 0
+    members.map( m => n += this.string2seconds(m))
+    return n + frs
+  }
+
+  if ( str.match(/\*/) ) {
+    // console.log("Str contient *")
+    members = str.split('*').map(m => this.string2seconds(m) )
+    n = 1
+    members.forEach(m => n = n * m )
+    // console.log("[*] n = ", n)
+    return n
+  } else if ( str.match(/\//) ) {
+    // console.log("Str contient /")
+    members = str.split('/').map(m => this.string2seconds(m) )
+    n = members.shift()
+    members.forEach(m => n = n / m )
+    // console.log("[/] n = ", n)
+    return n
+  } else if ( str.match(/\+/) ) {
+    // console.log("Str contient +")
+    members = str.split('+').map(m => this.string2seconds(m) )
+    n = 0
+    members.forEach(m => n += m )
+    // console.log("n = ", n)
+    return n
+  } else if ( str.match(/\-/) ) {
+    // console.log("Str contient -")
+    members = str.split('-').map(m => this.string2seconds(m) )
+    n = 0
+    members.forEach(m => n -= m )
+    // console.log("n = ", n)
+    return n
+  }
+  return parseFloat(str)
+}
+
+// INSTANCE
   constructor(domElement){
     this.domObj = domElement
 
@@ -85,14 +167,16 @@ class DOMHorloge {
   // ---------------------------------------------------------------------
   //  Méthodes d'évènements
 
+  // Note : maintenant, cette méthode ne sert plus que pour les horloges, pas
+  // les durée, qui ont leur propre traitement
   observe(){
-    this.domObj.addEventListener('mousedown', this.onActivateEdition.bind(this))
+    this.domObj.addEventListener(STRmousedown, this.onActivateEdition.bind(this))
   }
 
   onActivateEdition(ev){
-    $(STRbody).unbind('mouseup') // au cas où
-    $(STRbody).bind('mouseup', this.onEndMoving.bind(this))
-    $(STRbody).bind('mousemove', this.onMoving.bind(this))
+    $(STRbody).unbind(STRmouseup) // au cas où
+    $(STRbody).bind(STRmouseup, this.onEndMoving.bind(this))
+    $(STRbody).bind(STRmousemove, this.onMoving.bind(this))
     // console.log(ev)
     this.initStartMoving(ev, this.time)
     // console.log("this.movingStartTime=",this.movingStartTime)
@@ -160,6 +244,35 @@ class DOMDuration extends DOMHorloge {
     super(domEl)
   }
 
+/**
+  Méthode d'observation propre
+**/
+observe(){
+  this.domObj.addEventListener(STRclick, this.onActivateEdition.bind(this))
+}
+onActivateEdition(){
+  prompt({
+      message: 'Nouvelle durée :'
+    , defaultAnswer: this.duree
+    , methodOnOK: this.changeDuree.bind(this)
+    , helper: 'On peut utiliser les opérations ("2 * 60", "(30 + 12).2" pour 30 + 12 secondes et 2 frames) ou les virgules ("1,20,3.12" pour "une heure, vingt minutes, 3 secondes et 12 frames")'
+  })
+}
+changeDuree(newDuree){
+  try {
+    let dureeSecond = DOMHorloge.string2seconds(newDuree)
+    if ( isDefined(dureeSecond) && dureeSecond != this.duree ) {
+      // TODO Il faut vérifier que la durée ne dépasse pas la fin du film
+      if ( this.startTime + dureeSecond > current_analyse.duree ) raise("Durée trop longue. Elle déborde de la fin du film.")
+      this.duree = dureeSecond
+      this.modified = true
+    }
+  } catch (e) {
+    F.notify(e, {error:true})
+  }
+
+}
+
   get startTime(){ return this._startTime }
   set startTime(v){ this._startTime = v }
 
@@ -168,17 +281,15 @@ class DOMDuration extends DOMHorloge {
   get endTime(){ return this.startTime + this.time }
 
   get duree(){
-    if(undefined === this._duree){
-      this._duree = parseFloat(this.domObj.getAttribute('value'))
-    }
-    return this._duree
+    return parseFloat(this.domObj.getAttribute(STRvalue))
   }
   set duree(v){
     // console.log("-> set duree", v)
     v = v.round(2)
     this._endTime = this.startTime + v
-    this.domObj.setAttribute('value', v)
+    this.domObj.setAttribute(STRvalue, v)
     this._duree = v
+    this.showTime()
   }
 
   // Surclasse la méthode principale
@@ -205,6 +316,6 @@ class DOMDuration extends DOMHorloge {
 }
 
 module.exports = {
-  DOMHorloge: DOMHorloge
-, DOMDuration: DOMDuration
+  DOMHorloge:   DOMHorloge
+, DOMDuration:  DOMDuration
 }

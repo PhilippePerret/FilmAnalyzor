@@ -16,7 +16,7 @@ constructor(dataEditor, data){
 }
 
 addField(field){
-  if(undefined === this._fields) this._fields = []
+  if ( isUndefined(this._fields) ) this._fields = []
   this._fields.push(field)
 }
 

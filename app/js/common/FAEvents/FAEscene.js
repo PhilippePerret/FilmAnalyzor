@@ -5,8 +5,8 @@ class FAEscene extends FAEvent {
 //  CLASSE
 
 // Les propriétés propres aux instances (constante de classe)
-static get OWN_PROPS(){return ['numero', ['decor', 'shorttext1'], ['sous_decor', 'shorttext2'],'lieu','effet','sceneType']}
-static get OWN_TEXT_PROPS(){ return ['decor', 'sous_decor']}
+static get OWN_PROPS(){return [STRnumero, [STRdecor, 'shorttext1'], ['sous_decor', 'shorttext2'],'lieu','effet','sceneType']}
+static get OWN_TEXT_PROPS(){ return [STRdecor, 'sous_decor']}
 static get TEXT_PROPERTIES(){return this._tprops||defP(this,'_tprops',FAEvent.tProps(this.OWN_TEXT_PROPS))}
 
 /**
@@ -24,11 +24,17 @@ static init(analyse){
   scènes.
 **/
 static updateAll(){
-  // console.log("-> FAEscene::updateAll")
+  log.info("-> FAEscene::updateAll")
   this.reset()
+
+  // On actualise la map par secondes
+  TimeMap.update()
+
   // this.updateNumerosScenes() // sera automatiquement affecté en updatant les listes
   // this.updateDureeScenes() // sera automatiquement redéfini en updatant les listes
   this.a.modified = true
+
+  log.info("<- FAEscene::updateAll")
 }
 
 static reset(){
@@ -39,6 +45,7 @@ static reset(){
   delete this._sortedByDuree
   delete this._count
   delete this._current
+  delete this._klisting
 }
 
 /**
@@ -47,11 +54,11 @@ static reset(){
   @returns {FAEscene} La scène courante dans le film visionné
 **/
 static get current(){return this._current||defP(this,'_current',this.getCurrent())}
-static set current(s){
-  if(s instanceof(FAEscene)) log.info(`Scène courante de FAEscene mise à ${s} (${s.numero})`)
-  this._current = s
-  UI.markCurrentScene.html(s ? s.asPitch().innerHTML : '...')
-}
+// static set current(s){
+//   if(s instanceof(FAEscene)) log.info(`Scène courante de FAEscene mise à ${s} (${s.numero})`)
+//   this._current = s
+//   s && this.a.locator.actualizeMarkScene(s)
+// }
 static getCurrent(){
   if (this.count === 0) return
   return this.at(this.a.locator.currentTime)
@@ -99,6 +106,36 @@ static getByNumero(num){
 //  Les listes de scènes
 
 /**
+  La KWindow affichant les scènes pour les choisir et s'y rendre
+**/
+static get klisting(){return this._klisting || defP(this,'_klisting', this.defineKWindow())}
+static defineKWindow(){
+  return new KWindow(this, {
+      id: 'scenes-list'
+    , title: 'Se rendre à la scène…'
+    , onChoose: this.goToSceneByNumero.bind(this)
+    , items: this.scenesAsValueTitle()
+    , width: 500
+  })
+}
+/**
+  Méthode permettant de se rendre à la scène de numéro +numero+
+  NOte : utilisé par la KWindow présentant la liste des scènes.
+**/
+static goToSceneByNumero(numero){
+  this.a.locator.setTime(this.getByNumero(numero).otime)
+}
+/**
+  Retourne la liste des scènes sous forme de listes de [clé, valeur] pour
+  la KWindow
+**/
+static scenesAsValueTitle(){
+  var arr = []
+  this.forEachSortedScene( sc => arr.push([sc.numero, sc.fullPitch]))
+  return arr
+}
+
+/**
   Retourne la table des scènes
   C'est un Hash avec en clé le numéro de la scène et en
   valeur l'instance FAEscene.
@@ -117,7 +154,7 @@ static get decorsCount(){return FADecor.count}
   Private méthode qui établit toutes les listes à savoir :
     FAEscene.byId      Hash avec en clé l'id de l'event
     FAEscene.byNumero  Hash avec en clé le numéro de la scène
-    FAEscene.byTime    Hash avec en clé le temps de la scène
+    FAEscene.byTime    Array des scènes classées par temps
 **/
 static doLists(){
   let fe = new EventsFilter(this, {filter: {eventTypes:[STRscene]}})
@@ -180,7 +217,7 @@ static doLists(){
   Détruit la scène de numéro +numero+
 **/
 static destroy(numero){
-  if(undefined === this.scenes[numero]) return
+  if ( isUndefined(this.scenes[numero]) ) return
   delete this.scenes[numero]
   this.updateAll()
 }
@@ -192,7 +229,7 @@ static destroy(numero){
 **/
 static forEachScene(fn){
   for(var num in this.scenes){
-    if(false === fn(this.scenes[num])) break // pour pouvoir interrompre
+    if( isFalse(fn(this.scenes[num])) ) break // pour pouvoir interrompre
   }
 }
 
@@ -202,62 +239,28 @@ static forEachScene(fn){
 static forEachSortedScene(fn){
   for(var scene of this.sortedByTime){
     // console.log("Boucle avec scène:", scene)
-    if(false === fn(scene)) break // pour pouvoir interrompre
+    if ( isFalse(fn(scene)) ) break // pour pouvoir interrompre
   }
 }
 
 /**
- * Retourne l'instance FAEscene de la scène au temps +time+
- *
- * +time+ est le temps par rapport au début défini du film, PAS le début
- * de la vidéo
- * @param   time  Le temps à considérer
- * @returns {FAEscene|Undefined}  undefined si c'est un temps avant le début
-                                  du film
+  Retourne l'instance FAEscene de la scène au temps +time+
+
+  @param   {OTime} time  Le temps à considérer
+  @returns {FAEscene|Undefined}  La scène ou undefined si pas de scène
  */
 static at(otime){
-  if ( this.count === 0 ) return
-  // Même temps cherché que dernier => retourner la dernière scène trouvée
-  if ( otime.vtime == this.lastTimeSearched ) return this.lastSceneFound
-  // Pas de scène si on est avant le début du film
-  if ( otime.vtime < this.a.filmStartTime ) return
-  // Pas de scène si on se trouve après le temps de fin
-  if ( otime.vtime > this.a.filmEndTime ) return
-  // Pas de scène si le temps dépasse le temps de fin de la dernière scène
-  if ( otime > this.lastScene.endAt ) return
-  // Sinon, on cherche la scène
-  var prevSceneNumero
-  this.forEachSortedScene(scene => {
-    if ( scene.time > otime ) return false // pour interrompre
-    prevSceneNumero = scene.numero
-  })
-  this.lastSceneFound   = this.get(prevSceneNumero)
-  this.lastTimeSearched = otime.vtime
-  return this.lastSceneFound
+  return TimeMap.sceneAt(otime)
 }
 
 // Retourne la scène qui commence avant le temps otime (ou rien)
 static before(otime){
-  if ( this.count === 0) return
-  for(var i = 0 ; i < this.count ; ++i){
-    // console.log({
-    //     operation: "Recherche scène before"
-    //   , rtime: otime.rtime
-    //   , i: i
-    //   , 'this.sortedByTime[i]': this.sortedByTime[i]
-    //   , 'startAt': this.sortedByTime[i].startAt
-    // })
-    if (this.sortedByTime[i].startAt >= otime.vtime) return this.sortedByTime[i - 1]
-  }
-  // Cas où le curseur se trouve après la dernière scène définie
-  return this.lastScene
+  return TimeMap.sceneBefore(otime)
 }
 
 // Retourne la scène qui commence après le temps otime (ou rien)
 static after(otime){
-  for(var i = 0; i < this.count; ++i){
-    if (this.sortedByTime[i].startAt > otime.vtime) return this.sortedByTime[i]
-  }
+  return TimeMap.sceneAfter(otime)
 }
 
 /**

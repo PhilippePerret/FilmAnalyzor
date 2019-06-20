@@ -18,7 +18,7 @@ section#section-qrd-pp
   display: none
 
 // En attendant
-section#section-writer
+section#section-porte-documents
   display: none
 
 
@@ -78,7 +78,8 @@ div#whole-ui
         width: 70%
         background-color: #222222
         border: 2px solid black // red
-
+        height: max-content
+        
       // La section reader
       section#C1-R1-C2-section-reader
         flex: 1 1 auto
@@ -86,7 +87,7 @@ div#whole-ui
         border: 2px solid black // red
         overflow: auto
         padding: 15px
-        height: inherit
+        height: 100%
 
     // C1-R2 : contient le banc timeline
     section#C1-R2-banc-timeline
@@ -94,6 +95,7 @@ div#whole-ui
       border: 2px solid black // red
       background-color: #333333
       height: max-content // permet aux enfants de faire height: 100%
+      position: relative // pour le calque PFA
 
   // C2 : colonne à droite qui contient deux rangées pour mettre par
   //      exemple les formulaires d'édition et la liste des QRD ou procédés

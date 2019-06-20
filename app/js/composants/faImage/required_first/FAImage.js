@@ -7,8 +7,30 @@ class FAImage extends FAElement {
 
 static get PROPS(){return [STRid,'legend','size','position',STRtime,'path','fname','associates']}
 
+static reset(){
+  log.info("-> FAImages::reset")
+
+  delete this._a
+  delete this._iofile
+  delete this._path
+  delete this._images
+  delete this._byTimes
+  delete this.listing
+  delete this._takeashot
+
+  log.info("<- FAImages::reset")
+}
+
+static init(){
+  log.info("-> FAImages::init")
+
+  this.getAllPictures()
+
+  log.info("<- FAImages::init")
+}
+
 static get positionsValues(){
-  if(undefined === this._positionsvalues){
+  if ( isUndefined(this._positionsvalues) ) {
     this._positionsvalues = {
       '':'Mettre…'
     , 'float-left': 'Flottant à gauche'
@@ -23,7 +45,7 @@ static get positionsValues(){
   Retourne l'image d'identifiant +img_id+ (instance {FAImage})
 **/
 static get(img_id){
-  if(undefined === this._images) this.getAllPictures()
+  isDefined(this._images) || this.getAllPictures()
   return this._images[img_id]
 }
 
@@ -37,7 +59,7 @@ static show(image_id){
   @param {OTime|Number} time  Le temps à prendre ou le temps courant par défaut
 **/
 static shotFrame(time, options){
-  if(undefined === time) time = this.a.locator.currentTime
+  isDefined(time) || ( time = this.a.locator.currentTime )
   this.takeAShot(time, options)
   // TODO Une méthode qui remplace la source de cette image par la valeur,
   // pour forcer son chargement
@@ -62,7 +84,6 @@ static add(image_fname){
 }
 
 static destroy(image_id){
-  if(false == confirm()) return
   confirm({
       message:`Veux-tu vraiment détruire DÉFINITIVEMENT l'image « ${image_id} » (donnée + fichier image) ?`
     , buttons:['Renoncer','Détruire l’image']
@@ -82,9 +103,6 @@ static execDestroyImage(image_id){
   this.save()
 }
 
-static init(){
-  this.getAllPictures()
-}
 
 /**
   Méthode qui actualise la donnée _byTimes qui présente les images classées
@@ -100,7 +118,7 @@ static updateByTimes(){
 }
 
 static updateListingIfNecessary(){
-  if(undefined === this.listing) return
+  if ( isUndefined(this.listing) ) return
   this.listing.items = Object.values(this.images)
   this.listing.update()
 }
@@ -120,13 +138,13 @@ static imagesAt(time){
 
 static forEachImage(fn){
   for(var imgid in this.images){
-    if(false === fn(this.images[imgid])) break
+    if ( isFalse(fn(this.images[imgid])) ) break
   }
 }
 
 static forEachByTime(fn){
   for(var duo of this.byTimes){// duo = {time: temps, id:identifiant, fname: nom fichier}
-    if(false === fn(duo)) break
+    if ( isFalse(fn(duo)) ) break
   }
 }
 
@@ -135,7 +153,7 @@ static get byTimes(){ return this._byTimes ||defP(this,'_byTimes',this.updateByT
 
 // Reçoit un temps et retourne le nom de l'image correspondante
 static time2fname(time){
-  if(!(time instanceof(OTime))) time = new OTime(time)
+  isTrue(time instanceof(OTime)) || ( time = new OTime(time) )
   return `at-${time.vhorloge_simple.replace(/[\:\.]/g,'')}.jpeg`
 }
 
@@ -177,7 +195,7 @@ static decomposeData(data){
 }
 
 static dataByTimesFor(faimg){
-  return {time:faimg.otime.seconds, id:faimg.id, fname:faimg.fname}
+  return {time:faimg.otime.seconds, id:faimg.id, fname:faimg.fname, affixe:faimg.affixe}
 }
 
 /**
@@ -204,7 +222,6 @@ static getData(){
   this.forEachByTime(img => h[img.id] = this.images[img.id].dataEpured())
   return h
 }
-// static get iofile(){return this._iofile || defP(this,'_iofile', new IOFile(this))}
 static get path(){return this._path || defP(this,'_path', path.join(this.a.folder,'images_data.json'))}
 // ---------------------------------------------------------------------
 //  INSTANCE

@@ -7,9 +7,15 @@ Object.assign(DataEditor.prototype,{
   }
 // Méthode qui place les valeurs dans le formulaire
 , setFormValues(){
-    var prop, fval
+    var prop, fval, pan
     this.dataFields.map(dField => {
-      fval = this.currentItem[dField.prop]
+      if ( this.hasPanels ) {
+        // Si l'objet marche par panneau (comme les fondamentales)
+        [pan, prop] = dField.key.split('-')
+        fval = this.currentItem[pan][prop]
+      } else {
+        fval = this.currentItem[dField.prop]
+      }
       if(dField.setValueMethod) fval = dField.setValueMethod(fval)
       dField.set(fval)}
     )

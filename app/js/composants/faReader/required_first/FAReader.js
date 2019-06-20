@@ -18,71 +18,6 @@ static reset(){
   UI.sectionReader.html('')
 }
 
-/**
-  Révèle l'élément +item+ dans le reader
-
-  @param {AnyElement} item  event, image, etc. qui doit répondre à la
-                            propriété `jqReaderObj` qui est l'objet du
-                            reader de l'itme.
-  @param {Object} options   Diverses options
-                            fadeOut: si true, on le fait disparaitre au
-                            bout de quelques secondes.
-**/
-static reveal(item, options){
-  isDefined(options) || ( options = {} )
-  if(isNotEmpty(item.jqReaderObj)){
-    item.jqReaderObj.show()
-    // Un timer qui permet :
-    //  1. de savoir lorsque l'item visible est précisément survolé
-    //  2. lorsque le temps est dépassé et qu'il faut retirer l'élément
-    this.startWatchingItem(item)
-
-    try {
-      item.jqReaderObj[0].parentNode.scrollTop = item.jqReaderObj[0].offsetTop
-    } catch(e){
-      log.error(e)
-    }
-  } else {
-    log.warn(`L'élément ${item} n'a pas d'objet reader défini (jqReaderObj). Impossible de le révéler.`)
-  }
-}
-
-/**
-  Toutes les secondes, on va vérifier si le temps courant survole
-  l'item +item+ (event ou image). Si c'est le cas, on le met en exergue.
-  Si le temps de fin de l'item est dépassé depuis plus de cinq seconde,
-  on le fait disparaitre et on arrête de le surveiller.
-
-  Noter que ça ne le fait que lorsqu'il est visible.
-
-  @param {FAEvent|FAImage} item   Image ou event à surveiller
-**/
-static startWatchingItem(item){
-  isDefined(this.watchedItems) || ( this.watchedItems = {} )
-  this.restartWatchingItem(item)
-  this.watchedItems[`${item.type}:${item.id}`] = item
-}
-static restartWatchingItem(item){
-  item.timerWatchingTime = setInterval(this.watchItem.bind(this, item), 1000)
-}
-static watchItem(item){
-  var rtime = this.a.locator.currentTime
-  let iscur = rtime >= item.time - 2 && rtime <= item.end + 2
-    , isover = item.end < rtime + 5
-  if(item.isCurrent != iscur){
-    item.isCurrent = !!iscur
-    item.jqReaderObj[item.isCurrent?'addClass':'removeClass']('current')
-  }
-  if ( isover ){
-    item.hide() // la méthode appelle aussi stopWatchingItem
-    this.stopWatchingItem(item)
-  }
-}
-static stopWatchingItem(item){
-  clearInterval(item.timerWatchingTime)
-  delete item.timerWatchingTime
-  delete this.watchedItems[`${item.type}:${item.id}`]
-}
 
 static get a(){return current_analyse}
 
@@ -109,6 +44,64 @@ afterBuilding(){
 }
 
 /**
+  Toutes les secondes, on va vérifier si le temps courant survole
+  l'item +item+ (event ou image). Si c'est le cas, on le met en exergue.
+  Si le temps de fin de l'item est dépassé depuis plus de cinq seconde,
+  on le fait disparaitre et on arrête de le surveiller.
+
+  Noter que ça ne le fait que lorsqu'il est visible.
+
+  @param {FAEvent|FAImage} item   Image ou event à surveiller
+**/
+startWatchingItems(item){
+  this.timerWatchingItems = setInterval(this.revealAndHideElements.bind(this), 1000)
+}
+
+revealAndHideElements(){
+  // console.log("-> revealAndHideElements")
+
+  // On prend les events courants qui commencent et on les affiche
+  TimeMap.allStartAt(this.currentTime).map( he => {
+    // console.log("Reader revèle : ", he)
+    $(`#reader-${TYP_TIMEMAP_TO_TYP[he.type]}-${he.id}`).show()
+  })
+
+  // On prend les events courants qui finissent et on les affiche
+  TimeMap.allEndAt(this.currentTime).map( he => {
+    // console.log("Reader masque : ", he)
+    $(`#reader-${TYP_TIMEMAP_TO_TYP[he.type]}-${he.id}`).hide()
+  })
+
+  // console.log("<- revealAndHideElements")
+}
+stopWatchingItems(){
+  if ( isDefined(this.timerWatchingItems) ) {
+    clearInterval(this.timerWatchingItems)
+    delete this.timerWatchingItems
+  }
+}
+
+/**
+  Révèle et masque les éléments au point temps +curt+. Contrairement à la
+  méthode `revealAndHideElements` qui fonctionne toutes les secondes, celle-ci
+  permet d'afficher les éléments visibles à un moment M quelconques.
+**/
+revealAndHideElementsAt(curt) {
+  // On commence par tout masquer
+  this.reader.find('> div').hide()
+  TimeMap.allAt(curt).map( he => {
+    $(`#reader-${TYP_TIMEMAP_TO_TYP[he.type]}-${he.id}`).show()
+    if ( he.scene ) {
+      this.a.locator.actualizeMarkScene(curt)
+    } else if ( he.stt ) {
+
+    }
+  })
+}
+
+get currentTime(){ return this.a.locator.currentTime }
+
+/**
   Quand on charge une autre analyse, il faut détruire le
   reader de l'analyse courante.
   Ce qui revient à détruire sa flying-window.
@@ -117,52 +110,59 @@ remove(){ this.fwindow.remove() }
 
 /**
   Vide tout le reader
-  Ne pas la confondre avec la méthode `resetBeyond` suivante
  */
-reset(){ this.reader.html('')}
+reset(){
+  log.info("-> FAReader.reset (vide le reader)")
+  this.reader.html('')
+}
 
 /**
   Lorsqu'une analyse est chargée, on appelle cette méthode pour mettre
-  tous les events dans le reader
+  tous les éléments dans le reader. Il s'agit pour le moment :
+    - des events (avec les scènes comme event particulier)
+    - les images
+    - les marqueurs
 
   Note : on n'utilise pas la méthode this.append qui vérifierait chaque
   fois l'emplacement. Ici, on peut les mettre les uns après les autres
 **/
 peuple(){
-  let hImages = [...FAImage.byTimes]
-  var hNextImage = hImages.shift(), nextImage
-    , currentTime = 0
+
+  // Boucle pour écrire tous les events
   this.a.forEachEvent(ev => {
-    // Si la prochaine image est inférieure au temps courant, on doit
-    // l'insérer à cet endroit.
-    while ( hNextImage && hNextImage.time < currentTime ) {
-      nextImage = FAImage.get(hNextImage.id)
-      this.reader.append(nextImage.div)
-      nextImage.observe()
-      nextImage.jqReaderObj.hide()
-      hNextImage = hImages.shift()
-    }
-    this.reader.append(ev.div)
+    this.reader.append(ev.div)  // Attention, ici, l'ajout se fait dans le DOM
+                                // Ça n'est pas la méthode `FAReader.append`
+                                // qui est appelée
     ev.observe()
     ev.jqReaderObj.hide()
-    currentTime = ev.otime.vtime
   })
-}
 
-/**
- * Vide le reader, mais seulement en supprimant les évènements qui se trouvent
- * avant +from_time+ et après +to_time+
- *
- * Note : les temps sont exprimés en temps par rapport au film, pas par
- * rapport à la vidéo (comme tous les temps normalement)
- */
-resetBeyond(from_time, to_time){
-  var ti, id, my = this
-  this.forEachEventNode(function(o){
-    ti  = parseFloat(o.getAttribute(STRdata_time))
-    id  = parseInt(o.getAttribute(STRdata_id),10)
-    if ( ti < from_time || ti > to_time){my.analyse.ids[id].hide()}
+  // Boucle pour écrire toutes les IMAGES et tous les MARKERS
+  let aImages   = FAImage.byTimes.map( himg => FAImage.get(himg.id) )
+    , aMarkers  = [...this.a.markers.arrayItems]
+  var nextImage, nextMarker, o, time
+
+  nextImage   = aImages.shift()
+  nextMarker  = aMarkers.shift()
+
+  this.reader.find('> div').each( (i, o) => {
+    if ( isUndefined(nextImage) && isUndefined(nextMarker)) return // accélération
+    o = $(o)
+    time = parseFloat(o.data(STRtime))
+    if ( nextImage && time > nextImage.time ) {
+      $(nextImage.div).insertBefore(o)
+      nextImage.observe()
+      nextImage.jqReaderObj.hide()
+      nextImage = aImages.shift()
+    }
+    if ( nextMarker && time > nextMarker.time ) {
+      $(nextMarker.divReader).insertBefore(o)
+      nextMarker.observeInReader()
+      nextMarker.jqReaderObj.hide()
+      nextMarker = aMarkers.shift()
+    }
   })
+
 }
 
 /**
@@ -173,6 +173,7 @@ resetBeyond(from_time, to_time){
   @param {FAEvent(typé)} ev Event qu'il faut insérer
 **/
 append(ev){
+  log.info("-> FAReader.append")
   let my = this
     , div = ev.div
 
@@ -185,8 +186,8 @@ append(ev){
   var hasBeenInserted = false
   this.forEachEventNode(function(ne){
     if(parseFloat(ne.getAttribute(STRdata_time)) > ev.time){
+      $(div).insertBefore(ne)
       hasBeenInserted = true
-      my.reader.insertBefore(div, ne)
       return false // pour interrompre la boucle
     }
   })
@@ -194,6 +195,7 @@ append(ev){
 
   // Pour observer l'event dans le reader
   ev.observe()
+  log.info("<- FAReader.append")
 }
 
 /**
@@ -252,6 +254,14 @@ displayAll(){
 get fwindow(){
   return this._fwindow || defP(this,'_fwindow', new FWindow(this, {id:'reader', name:ReaderFWindowName, draggable:false, container:UI.sectionReader, x:0, y:0}))
 }
-get reader(){return this._reader || defP(this,'_reader', this.fwindow.jqObj)}
+get reader(){
+  if ( isUndefined(this._reader) ) {
+    this._reader = this.fwindow.jqObj
+    if ( isEmpty(this._reader) ) {
+      throw new Error("Impossible de trouver le reader… Je dois m'arrêter là.")
+    }
+  }
+  return this._reader
+}
 
 }

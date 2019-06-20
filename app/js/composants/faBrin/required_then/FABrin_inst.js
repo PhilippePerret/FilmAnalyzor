@@ -44,13 +44,10 @@ Object.defineProperties(FABrin.prototype,{
 **/
 , scenes:{
     get(){
-      if(undefined === this._scenes){
+      if( isUndefined(this._scenes)){
         // Note : on met d'abord les scènes dans une table avec en clé le
         // numéro de la scène, pour ne pas les doubler ou avoir à vérifier
         var sc, arr = {}, ev
-        // console.log("this:", this)
-        // console.log("this.associates:", this.associates)
-        // console.log("this.times:", this.times)
         for(var time of this.times){
           sc = FAEscene.at(time)
           arr[sc.numero] = sc

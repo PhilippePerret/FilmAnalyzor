@@ -118,7 +118,7 @@ const AnalyseState = {
         l = document.createElement('LABEL')
         l.innerHTML = data.label
         d.appendChild(l)
-        v = document.createElement('SPAN')
+        v = document.createElement(SPAN)
         v.className = 'value'
         v.innerHTML = this.calcValueOf(prop)
         d.appendChild(v)

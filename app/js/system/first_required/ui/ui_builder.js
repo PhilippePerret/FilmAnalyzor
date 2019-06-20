@@ -13,11 +13,6 @@ const UIBuilder = {
 
     this.a = this.analyse = current_analyse // peut-être undefined
 
-    // Dorénavant, le mode d'affichage de l'écran est toujours
-    // le mode "banc de montage". On pourra supprimer définitivement
-    // cette propriété lorsqu'elle aura disparu partout.
-    this.ModeBancTimeline = true
-
     // On définit tous les noms des éléments de l'interface,
     // colonnes, rangées, sections principales
     this.defineFirstUIComponants()
@@ -46,6 +41,9 @@ const UIBuilder = {
     // Le container principal de toute la page
     UI.wholeUI = $('body > div#whole-ui')
 
+    // La rangée de vidéo et de reader
+    UI.C1R1 = $('div#C1-R1')
+
     // Section Vidéo
     UI.sectionVideo = $('section#C1-R1-C1-section-video')
 
@@ -61,8 +59,8 @@ const UIBuilder = {
     // La barre d'état en bas de la fenêtre
     UI.stateBar = $('#analyse-state-bar')
 
-    // Le div qui contiendra les writer
-    UI.sectionWriter = $('#section-writer')
+    // Le div qui contiendra les porte_documents
+    UI.sectionWriter = $('#section-porte-documents')
 
   }
 //
@@ -83,35 +81,17 @@ const UIBuilder = {
     // changement de dimension de la fenêtre
     UI.wholeUI.height(H)
 
-    UI.sectionTimeline.height(200)
-
   }
 //
 
 , buildSectionVideo(){
     require('./ui_builder/video_controller.js').bind(this)()
-    // On redéfinit les tailles "humaines" de la vidéo (large, medium, vignette)
-    VideoController.redefineVideoSizes()
   }
 , buildSectionReader(){
     // Rien à faire pour le moment
   }
 , buildSectionTimeline(){
-    // Le banc timeline lui-même
-    UI.sectionTimeline.append(DCreate(SECTION,{id:'banctime-banc-timeline', append:[
-        // bande pour déposer les éléments
-        DCreate(DIV,{id:'banctime-tape',append:[
-          // bande pour positionner le curseur et les marqueurs
-          DCreate(DIV,{id:'banctime-timeRuler', append:[
-              // On place les marques amovibles de début et de fin de film
-              DCreate(SPAN,{class:'mark-film mark-film-start'})
-            , DCreate(SPAN,{class:'mark-film mark-film-end'})
-          ]})
-         // curseur de timeline
-        , DCreate(DIV,{id:'banctime-cursor'})
-        ]})
-      ]}))
-
+    require('./ui_builder/banc_timeline.js').bind(this)()
   }
 //
 
@@ -120,6 +100,15 @@ const UIBuilder = {
     // La réglette des temps dans le banc timeline (là où l'on
     // clique pour placer le curseur)
     UI.timeRuler = UI.sectionTimeline.find('div#banctime-timeRuler')
+
+    // Bande de la timeline, sous la timeRuler (réglette de temps), qui va
+    // contenir la "tape" des events ou les pfa.
+    UI.timelineBanc = UI.sectionTimeline.find('section#banctime-banc-timeline')
+
+    // La bande (tape) sur laquelle sont répartis les events.
+    // Note : c'est cette bande qui sera remplacée par la bande des pfa pour les
+    // voir
+    UI.timelineTape = UI.timelineBanc.find('div#banctime-tape')
 
     // La vidéo proprement dite (attention DOMElement, pas jqSet)
     UI.video = UI.sectionVideo.find('video#section-video-body-video-1')[0]
@@ -133,13 +122,18 @@ const UIBuilder = {
     UI.msgWaitingLoop = $('span#waiting-loop-message')
     UI.divWaitingLoop = $('div#waiting-loop')
 
+    // La barre d'état (pour le moment, elle est construite en dur)
+    UI.stateBar = $('div#analyse-state-bar')
+
     // La marque des raccourcs courants
-    UI.markShortcuts = UI.sectionVideo.find('#banctime-mode-shortcuts')
+    UI.markShortcuts = UI.stateBar.find('#mode-shortcuts')
 
     // Les marques de début et de fin de film
     UI.markFilmStart  = UI.timeRuler.find('span.mark-film-start')
     UI.markFilmEnd    = UI.timeRuler.find('span.mark-film-end')
 
+    // La section contenant les eventers
+    UI.sectionEventers = $('#section-eventers')
   }
 
 /**
@@ -152,16 +146,23 @@ const UIBuilder = {
     $('#C1').resizable({
       handles:'e'
     })
-    $('#C1-R1').resizable({
-        handles:'s'
-      , alsoResize: '#section-video-body, #section-video-body-video-1'
+
+    UI.C1R1.resizable({
+        handles: 's'
+      , stop: (e) => {
+          current_analyse.options.memorizeUIsizes()
+        }
     })
 
     UI.sectionForms.resizable({
       handles:'s'
     })
     UI.sectionVideo.resizable({
-      handles:'e'
+        handles:'e'
+      , stop: (e) => {
+          UI.fixeSectionReaderWidth()
+          current_analyse.options.memorizeUIsizes()
+        }
     })
 
     // On enclenche la captation de touches pressées
@@ -170,8 +171,7 @@ const UIBuilder = {
     // On observe les mutations du DOM
     UI.observeMutations()
 
-    // Observers click et mouseover sur la timeRuler (la réglette
-    // de temps où sont placés les marqueurs par exemple)
+    // Observation de la timeRuler (réglette de temps)
     UI.timeRuler
       // La bande métrée est sensible au clic pour permettre de se
       // déplacer dans le film
@@ -179,7 +179,7 @@ const UIBuilder = {
       // Un survol de la timeRuler modifie l'horloge principale
       .on(STRmouseover, BancTimeline.onMouseOverTimeRuler.bind(BancTimeline))
 
-    // On rend draggable les marques de début et de fin de film
+    // On rend draggable les marques de début et de fin de film sur la timeRuler
     UI.timeRuler.find('.mark-film').draggable({
         axis:'x'
       , drag: (e) => {

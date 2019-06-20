@@ -6,6 +6,7 @@
  */
 
 let SttNode = null
+  , PFA
 
 window.current_analyse = null // définie au ready
 
@@ -20,10 +21,11 @@ static set current(v){this._current = v}
 
 // Voir si les préférences demandent que la dernière analyse soit chargée
 // et la charger si elle est définie.
+// Sauf si les tests sont demandés au chargement (c'est une autre option)
 static checkLast(){
-  var dprefs = Prefs.get(['load_last_on_launching', 'last_analyse_folder'])
+  var dprefs = Prefs.get(['load_last_on_launching', 'last_analyse_folder', 'run_tests_at_startup'])
   // console.log("prefs:", dprefs)
-  if (!dprefs['load_last_on_launching']) return
+  if (!dprefs['load_last_on_launching'] || dprefs['run_tests_at_startup']) return
   if (!dprefs['last_analyse_folder']) return
   var apath = path.resolve(dprefs['last_analyse_folder'])
   if(fs.existsSync(apath)){
@@ -33,7 +35,7 @@ static checkLast(){
 
   } else {
     // console.log("Impossible de trouver le dossier :", apath)
-    F.error(`Impossible de trouver le dossier de l'analyse à charger :<br>${apath}`)
+    F.error(T('unfound-analyse-folder',{path:apath}))
     Prefs.set({'last_analyse_folder':null})
   }
 }
@@ -134,13 +136,21 @@ goToLastScene(){
 }
 
 get PFA(){
-  if(undefined === this._PFA){
-    SttNode   = require('./js/common/PFA/SttNode.js')
-    this._PFA = require('./js/common/PFA/PFA.js')
-    this._PFA.init()
+  if ( isUndefined(this._PFA) ) {
+    SttNode = tryRequire('./js/common/PFA/SttNode.js')
+    PFA     = tryRequire('./js/common/PFA/PFA.js')
+    this._PFA = new Map
+    this._PFA.set(1, new PFA(1))
+    this._PFA.set(2, new PFA(2))
+    this._PFA.set(3, new PFA(3))
+    this._PFA.set(4, new PFA(4))
   }
   return this._PFA
 }
+get pfa1(){return this._pfa1 || defP(this,'_pfa1', this.PFA.get(1))}
+get pfa2(){return this._pfa2 || defP(this,'_pfa2', this.PFA.get(2))}
+get pfa3(){return this._pfa3 || defP(this,'_pfa3', this.PFA.get(3))}
+get pfa4(){return this._pfa4 || defP(this,'_pfa4', this.PFA.get(4))}
 
 get Fonds(){return this._mainfonds||defP(this,'_mainfonds',new Fondamentales(this.fondsFilePath))}
 
@@ -162,11 +172,12 @@ get protocole(){return this._protocole||defP(this,'_protocole',new FAProtocole(t
 onVideoLoaded(){
   // console.log("-> FAnalyse#onVideoLoaded")
 
+  // On peut indiquer aux menus qu'il y a une analyse chargée
+  ipc.send('current-analyse-exist', true)
+
   // On peut marquer l'état d'avancement de l'analyse
   this.setupState()
 
-  // On peut indiquer aux menus qu'il y a une analyse chargée
-  ipc.send('current-analyse-exist', true)
   // Si une fonction a été définie pour la fin du chargement, on
   // peut l'appeler maintenant.
   isFunction(this.methodeAfterLoading) && this.methodeAfterLoading()
@@ -198,7 +209,12 @@ init(){
   this.setMarkModified()
 
   if (this.videoPath){
-    this.videoController.load(this.videoPath)
+    const fullVideoPath = path.resolve(this.folder, this.videoPath)
+    if ( fs.existsSync(fullVideoPath) ) {
+      this.videoController.load(fullVideoPath)
+    } else {
+      F.error(T('unfound-video-path', {path: this.videoPath}))
+    }
   } else {
     F.error(T('video-path-required'))
     this.onVideoLoaded()
@@ -220,11 +236,6 @@ exportAs(format){
 
 // Pour afficher le protocole de l'analyse
 toggleProtocole(){this.protocole.toggle()}
-
-/**
-* Pour afficher la Timeline
-**/
-displayTimeline(){MainTimeline.toggle()}
 
 /**
  * Méthode appelée quand on clique sur le menu "Affichage > Analyse complète"
@@ -253,10 +264,14 @@ displayLastReport(){
   FAReport.showLast()
 }
 
-
-displayPFA(){
-  this.PFA.toggle()
+// Afficher le paradigme de Field d'index +index_pfa+
+displayPFA(index_pfa){ this.PFA.get(index_pfa).toggle() }
+// Afficher le calque du paradigme de Field absolu
+displayCalcPFA(){
+  NONE === typeof PFA_Calque && ( window.PFA_Calque = App.require('common/PFA/PFA-calque') )
+  PFA_Calque.toggle()
 }
+
 togglePanneauInfosFilm(){
   if(NONE === typeof(InfosFilm)) return this.loadInfosFilm(this.togglePanneauInfosFilm.bind(this))
   InfosFilm.current.toggle()
@@ -267,9 +282,12 @@ togglePanneauFondamentales(){
 }
 togglePanneauPersonnages(opened, perso_id){
   FAPersonnage.listing || App.loadTool('building/listing_personnages')
-  FAPersonnage.listing && FAPersonnage.listing.toggle(opened, perso_id) // seulement si valide
+  FAPersonnage.listing && FAPersonnage.listing.toggle(opened, perso_id)
 }
-
+togglePanneauDocuments(opened){
+  FADocument.listing || App.loadTool('building/listing_documents')
+  FADocument.listing && FADocument.listing.toggle(opened)
+}
 togglePanneauDecors(opened){
   // window.iPanelDecors = window.iPanelDecors || App.loadTool('building/decors')
   // iPanelDecors.toggle()
@@ -294,9 +312,7 @@ togglePanneauBrins(opened, e){
   }
 }
 togglePanneauStatistiques(){
-  if(undefined === window.PanelStatistiques){
-    window.PanelStatistiques = require('./js/tools/building/statistiques.js')
-  }
+  defaultize(window,'PanelStatistiques',require('./js/tools/building/statistiques.js'))
   PanelStatistiques.toggle()
 }
 
@@ -308,34 +324,44 @@ newVersionRequired(){
 }
 
 /**
- * Méthode qui ouvre le writer
+ * Méthode qui ouvre le porte_documents
  */
-openDocInWriter(dtype){
-  if(dtype){
-    if(dtype.startsWith('fondamentales') && NONE === typeof(Fondamentales)){
-      return this.loadFondamentales(this.openDocInWriter.bind(this, dtype))
-    } else if (dtype == 'building_script') {
-      // Maintenant, on ouvre le building script avec son éditeur propre
-      if(NONE == typeof(FABuildingScript)) return System.loadComponant('faBuildingScript', this.openDocInWriter.bind(this,dtype))
+editDocumentInPorteDocuments(docId) {
+  switch (docId) {
+    case 13:
+    case 14:
+      if ( NONE === typeof(Fondamentales) ) {
+        return this.loadFondamentales(this.openDocInDataEditor.bind(this, docId))
+      }
+      break
+    case 9:
+      if ( NONE == typeof(FABuildingScript) ) return System.loadComponant('faBuildingScript', this.editDocumentInPorteDocuments.bind(this, docId))
       return FABuildingScript.toggle()
-    }
   }
-  if(!FAWriter.inited) FAWriter.init()
-  FAWriter.openDoc(dtype)
+  PorteDocuments.inited || PorteDocuments.init()
+  PorteDocuments.editDocument(docId)
 }
 
 /**
   Méthode qui ouvre le DataEditor
 **/
-openDocInDataEditor(dtype){
-  if(dtype.startsWith('fondamentales') && NONE === typeof(Fondamentales)){
-    return this.loadFondamentales(this.openDocInDataEditor.bind(this, dtype))
-  } else if(dtype == 'infos' && NONE === typeof(InfosFilm)){
-    return this.loadInfosFilm(this.openDocInDataEditor.bind(this, dtype))
-  } else if (dtype === 'variables'){
-    return F.notify("Pas d'édition avec le data-editor pour les variables pour le moment. Utiliser le document complet.")
+openDocInDataEditor(docId){
+  switch (docId) {
+    case 13: // fondamentales
+    case 14:
+      if ( NONE === typeof(Fondamentales) ) {
+        return this.loadFondamentales(this.openDocInDataEditor.bind(this, docId))
+      }
+      break
+    case 20: // infos
+      if ( NONE === typeof(InfosFilm) ) {
+        return this.loadInfosFilm(this.openDocInDataEditor.bind(this, docId))
+      }
+      break
+    case 30: // variables
+      return F.notify("Pas d'édition avec le data-editor pour les variables pour le moment. Utiliser le document complet.")
   }
-  DataEditor.openPerType(dtype)
+  DataEditor.openDocument(docId)
 }
 
 /**
@@ -388,70 +414,13 @@ forEachEvent(method, options){
   donc parfaitement valide ici.
 
  */
-addEvent(nev) {
-  (this._addEvent||requiredChunk(this,'addEvent')).bind(this)(nev)
-  FAStater.update()
-}
+
 
 // Pour éditer le document d'identifiant +doc_id+
 // Note : on pourrait y aller directement, mais c'est pour compatibiliser
 // les choses
 editDocument(dtype, doc_id){
-  return FAWriter.openDoc(dtype, doc_id)
-}
-
-/**
- * Procédure de description de l'event
- */
-destroyEvent(event_id, form_instance){
-  (this._destroyEvent||requiredChunk(this,'destroyEvent')).bind(this)(event_id, form_instance)
-  FAStater.update()
-}
-/**
- * Méthode appelée à la modification d'un event
- *
- * [1]  En règle générale, si une opération spéciale doit être faite sur
- *      l'event, il vaut mieux définir sa méthode d'instance `onModify` qui
- *      sera automatiquement appelée après la modification.
- */
-updateEvent(ev, options){
-  log.info("-> FAnalyse#updateEvent")
-  var new_idx = undefined
-  if (options && options.initTime != ev.time){
-    var idx_init      = this.indexOfEvent(ev.id)
-    var next_ev_old   = this.events[idx_init + 1]
-    var idx_new_next  = this.getIndexOfEventAfter(ev.time)
-    var next_ev_new   = this.events[idx_new_next]
-    if( next_ev_old != next_ev_new){
-      // => Il faut replacer l'event au bon endroit
-      this.events.splice(idx_init, 1)
-      var new_idx = this.getIndexOfEventAfter(ev.time)
-      this.events.splice(new_idx, 0, ev)
-    }
-  }
-  // [1]
-  if (ev.type === STRscene){
-    FAEscene.updateAll()
-    FADecor.resetAll()
-  }
-  // On actualise tous les autres éléments (par exemple l'attribut data-time)
-  ev.updateInUI()
-  // On marque l'analyse modifiée
-  this.modified = true
-  // Enfin, s'il est affiché, il faut updater son affichage dans le
-  // reader (et le replacer si nécessaire)
-  ev.updateInReader(new_idx)
-  // Et enfin on actualise l'état d'avancement
-  FAStater.update()
-  next_ev_old = null
-  next_ev_new = null
-
-  log.info("<- FAnalyse#updateEvent")
-}
-
-getEventById(eid){
-  console.warn("DEPRECATED: Il vaut mieux utiliser la méthode FAEvent.get() que FAnalyse#getEventById")
-  return this.ids[eid]
+  return PorteDocuments.editDocument(docId)
 }
 
 getSceneNumeroAt(time){
@@ -471,18 +440,14 @@ getIndexOfEventAfter(time){
   for(i;i<len;++i) { if(this.events[i].time > time) { return i } }
   return len
 }
+
 /**
- * Retourne l'index de l'event d'identifiant +event_id+
- *
- * Noter que cette méthode peut devenir extrêmement lente avec de nombreux
- * events dans l'analyse. Il faudrait opter pour un autre système, peut-être
- * depuis des `event_after` et `event_before`
- * TODO Voir d'abord où on se sert exactement de la liste this.events comme
- * liste.
- */
+  Retourne l'index de l'event d'identifiant +event_id+
+**/
 indexOfEvent(event_id){
-  var i = 0, len = this.events.length ;
-  for(;i<len;++i) { if(this.events[i].id == event_id) { return i } }
+  let e = FAEvent.get(event_id)
+  isDefined(e.__index) || PrevNext.prepareListeEvents()
+  return e.__index
 }
 
 // --- FONCTIONS I/O ----------------------------------------------
@@ -523,7 +488,7 @@ saveIfModified(){
  * Méthode appelée pour sauver l'analyse courante
  */
 save() {
-  if(this.locked) return F.notify(T('analyse-locked-no-save'), {error: true})
+  if ( this.locked ) return F.notify(T('analyse-locked-no-save'), {error: true})
   if(this.saveTimer){
     // <= L'enregistrement automatique est activé
     // => Il faut l'interrompre
@@ -536,6 +501,8 @@ save() {
   // des modifiés (seuls les events modifiés à cette session sont
   // enregistrés)
   FAEvent.saveModifieds()
+  // On sauve la liste des personnages si elle a été modifiée
+  FAPersonnage.saveIfModify()
   // On sauve les options toutes seules, ça se fait de façon synchrone
   this.options.saveIfModified()
   this.savers = 0
@@ -673,7 +640,7 @@ set eventsIO(eventsData){
   log.info("-> FAnalyse#[set]eventsIO")
   var my = this
     , ev
-  EventForm.lastId = -1
+  EventForm.lastId = 0
   my.ids    = {}
   my.events = eventsData.map(eventData => {
     ev = FAEvent.instanceOf(eventData)
@@ -728,9 +695,6 @@ get eventsFilePath(){
 }
 get dataFilePath(){
   return this._dataFilePath || defP(this,'_dataFilePath', this.pathOf('data.json'))
-}
-get pfaFilePath(){
-  return this._pfaFilePath || defP(this,'_pfaFilePath', this.pathOf('pfa.json'))
 }
 get fondsFilePath(){
   return this._fondsFilePath || defP(this,'_fondsFilePath', this.filePathOf('fondamentales.yaml'))
@@ -831,14 +795,14 @@ get folderFiles(){
 }
 
 get folderReports(){
-  if(undefined === this._folderReports) defP(this,'_folderReports', path.join(this.folder,'reports'))
+  isDefined(this._folderReports) || defP(this,'_folderReports', path.join(this.folder,'reports'))
   // On construit le dossier s'il n'existe pas
   if(!fs.existsSync(this._folderReports)) fs.mkdirSync(this._folderReports)
   return this._folderReports
 }
 
 get folderExport(){
-  if(undefined === this._folderExport){
+  if ( isUndefined(this._folderExport) ){
     this._folderExport = path.join(this.folder,'exports')
     if(!fs.existsSync(this._folderExport)){
       fs.mkdirSync(this._folderExport)

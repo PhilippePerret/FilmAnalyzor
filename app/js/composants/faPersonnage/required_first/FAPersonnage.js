@@ -12,6 +12,9 @@ class FAPersonnage extends FAElement {
 static get modified(){return this._modified}
 static set modified(v){
   this._modified = v
+  // Si c'est pour marquer modifié, on marque aussi modifié l'analyse pour
+  // produire l'enregistrement
+  v && ( this.a.modified = v )
 }
 
 static show(perso_id){
@@ -21,12 +24,16 @@ static show(perso_id){
 
 static destroy(perso_id){
   delete this.data[perso_id]
+  this.update()
+  this.modified = true
+}
+
+static update() {
   this.reset()
-  if(this.listing){
+  if ( this.listing ) {
     this.listing._items = this.personnages
     this.listing.update()
   }
-  this.modified = true
 }
 
 /**
@@ -35,7 +42,7 @@ static destroy(perso_id){
 **/
 static forEachPersonnage(fn){
   for(var personnage of this.personnages){
-    if(false === fn(personnage)) break
+    if ( isFalse(fn(personnage)) ) break
   }
 }
 
@@ -47,6 +54,8 @@ static init(){
       F.error(`Une erreur est survenue en chargeant les données personnages (${this.path})${RC+RC}Lig. ${e.mark.line} : ${e.message}.${RC+RC}Consulter le log pour de plus amples détails.${RC}<span class="small">(il est vivement conseillé de ne pas modifier les données en dehors de l'application, au risque de produire ce genre d'erreur)</span>`)
       console.error(e)
     }
+  } else {
+    this._data = []
   }
 }
 
@@ -74,8 +83,11 @@ static reset(){
   renvoie (souvent pour les diminutifs eux-mêmes)
 **/
 static get diminutifs(){
-  if(!this.exists()) return {}
-  if(isUndefined(this._diminutifs)){
+  if ( not(this.exists() ) ){
+    // console.log("Le fichier personnages n'existe pas => pas de diminutifs")
+    return {}
+  }
+  if( isUndefined(this._diminutifs) ){
     this._diminutifs = {}
     for(var pseudo in this.data){
       if(this.data[pseudo].dim){
@@ -97,8 +109,8 @@ static get(pseudo){
 static get personnages(){
   if(isUndefined(this._personnages)){
     var ipersonnage
-    this._personnages = []
-    this._hpersonnages = {}
+    this._personnages   = []
+    this._hpersonnages  = {}
     for(var pid in this.data){
       this.data[pid].id = pid
       ipersonnage = new FAPersonnage(current_analyse, this.data[pid])
@@ -110,12 +122,12 @@ static get personnages(){
 }
 
 static get hpersonnages(){
-  if(undefined === this._hpersonnages) this.personnages
+  isDefined(this._hpersonnages) || this.personnages
   return this._hpersonnages
 }
 
 static saveIfModify(){
-  if(!this.modified) return
+  if ( not(this.modified) ) return
   // On doit reconstituer this._data
   var hdata = {}
   this.forEachPersonnage(perso => hdata[perso.id] = perso.getData())
@@ -145,8 +157,7 @@ static getPersonnagesIn(str){
 
 // Retourne le nombre de personnages
 static get count(){return this._count||defP(this,'_count', Object.keys(this.data).length)}
-
-static get data(){return this._data || {}}
+static get data(){return this._data || defP(this,'_data', YAML.safeLoad(fs.readFileSync(this.path,'utf8')))}
 static get path(){return this._path||defP(this,'_path',this.a.filePathOf('dpersonnages.yaml'))}
 
 // ---------------------------------------------------------------------
@@ -177,8 +188,8 @@ getData(){
 }
 
 static get PROPS(){
-  if(undefined === this._props){
-    this._props = ['id','pseudo','dim','prenom','nom','dimensions','ages','description','fonctions','associates']
+  if( isUndefined(this._props) ){
+    this._props = [STRid,'pseudo','dim','prenom','nom','dimensions','ages','description','fonctions','associates']
   }
   return this._props
 }
@@ -187,7 +198,7 @@ set modified(v){
   this._modified = v
   this.constructor.modified = v
   if(v) this.onUpdate()
-  if(PanelPersos.opened) PanelPersos.btnOK.html(v ? 'Enregistrer' : OK)
+  if(PanelPersos.opened) PanelPersos.btnOK.html(v ? STREnregistrer : OK)
 }
 
 get pseudo(){return this._pseudo}

@@ -4,8 +4,15 @@ const MODE_TEST = process.env.MODE_TEST == "true"
 
 // Pour requérir un élément du dossier
 function FReqGet(name){
-  return require(`./js/system/first_required/${name}.js`)
+  // return tryRequire(`js/system/first_required/${name}`, __dirname)
+  return require(`./js/system/first_required/${name}`)
 }
+
+require('./js/system/Console')
+
+require('./js/system/utils')
+
+FReqGet('Map_extension')
 
 const WindowController = FReqGet('ui/WindowController')
 const MessageBox = FReqGet('MessageBox')
@@ -14,12 +21,12 @@ const MessageBox = FReqGet('MessageBox')
 const FADrop = FReqGet('FADrop')
 
 const {
-  ASSOCIATES_COMMON_METHODS
-, ASSOCIATES_COMMON_PROPERTIES
-, DATA_ASSOCIATES_DRAGGABLE
-, DATA_ASSOCIATES_DROPPABLE
-, TEXTFIELD_ASSOCIATES_METHS
-, TEXTFIELD_ASSOCIATES_PROPS
+    ASSOCIATES_COMMON_METHODS
+  , ASSOCIATES_COMMON_PROPERTIES
+  , DATA_ASSOCIATES_DRAGGABLE
+  , DATA_ASSOCIATES_DROPPABLE
+  , TEXTFIELD_ASSOCIATES_METHS
+  , TEXTFIELD_ASSOCIATES_PROPS
 } = require('./js/system/first_required/FA_associates.js')
 
 const System = FReqGet('System')
@@ -43,6 +50,7 @@ Object.assign(FAElement.prototype, TEXTFIELD_ASSOCIATES_METHS)
 Object.defineProperties(FAElement.prototype, TEXTFIELD_ASSOCIATES_PROPS)
 
 const FWindow = FReqGet('FlyingWindow')
+const KWindow = FReqGet('KeysWindows')
 
 // Pour le développement
 const Sandbox = FReqGet('Sandbox')

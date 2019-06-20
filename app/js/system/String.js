@@ -2,6 +2,8 @@
 
 const RC = `
 `
+
+const REG_MULTI_RC = new RegExp(`${RC}(${RC})+`,'g')
 /**
  * Extension de la classe String
  */

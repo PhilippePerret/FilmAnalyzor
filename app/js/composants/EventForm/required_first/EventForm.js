@@ -1,20 +1,21 @@
 'use strict'
 
 /**
- * Class EventForm
- * ---------------
- * Gère le formulaire d'édition et de création d'un évènement de tout type
- *
- * Note : on part du principe qu'il n'y a qu'un EventForm en tant que classe,
- * qui gère seulement l'analyse courante. Quand il y aura plusieurs analyses
- * étudiées en même temps, on ne pourra plus utiliser cet objet, il faudra
- * en créer un par analyse active.
+  Class EventForm
+  ---------------
+  Gère le formulaire d'édition et de création d'un évènement de tout type
+
+  Note : on part du principe qu'il n'y a qu'un EventForm en tant que classe,
+  qui gère seulement l'analyse courante. Quand il y aura plusieurs analyses
+  étudiées en même temps, on ne pourra plus utiliser cet objet, il faudra
+  en créer un par analyse active.
+
  */
 class EventForm {
 
 static init(){}
 
-static get a(){return current_analyse}
+static get a(){ return current_analyse }
 
 static reset(){
   $('form.form-edit-event').remove()
@@ -23,7 +24,27 @@ static reset(){
   this.videoWasPlaying = false
 }
 
-static get videoController(){ return this.a.videoController }
+
+/**
+  Méthode appelée pour éditer un event
+
+  Notes
+    :: on ne conserve plus le formulaire une fois fermé.
+    :: En revanche, on s'assure que l'event n'est pas déjà en mode d'édition.
+
+**/
+static editEvent(ev){
+  isNumber(ev) && ( ev = this.a.ids[ev] )
+  this.playing && this.a.locator.togglePlay()
+  // Soit le formulaire existe déjà (il est ouvert), soit il faut l'instancier.
+  isDefined(ev.form) || ( ev.form = new EventForm(ev))
+  // On le met en formulaire courant et on l'active
+  this.currentForm = ev.form
+  this.currentForm.activate()
+
+}
+
+static get current(){return this.currentForm}
 
 //
 static onClickNewEvent(e, eventType){
@@ -79,21 +100,10 @@ static filmHasSceneNearCurrentPos(){
   if (sceneFound) return [sceneFound, Math.abs(curOtime - sceneFound.time)]
 }
 
-/**
-  Méthode appelée pour éditer un event
-  Note : on ne conserve plus le formulaire une fois fermé.
-**/
-static editEvent(ev){
-  isNumber(ev) && ( ev = this.a.ids[ev] )
-  this.playing && this.a.locator.togglePlay()
-  this.currentForm = new EventForm(ev)
-  this.currentForm.toggleForm()
-  // (this.currentForm = new EventForm(ev)).toggleForm()
-}
-
 // Pour obtenir un nouvel identifiant pour un nouvel event
+// Note : maintenant, c'est 1-start, il n'y a plus de zéro
 static newId(){
-  isDefined(this.lastId) || ( this.lastId = -1 )
+  isDefined(this.lastId) || ( this.lastId = 0 )
   return ++ this.lastId
 }
 
@@ -104,8 +114,8 @@ static newId(){
                     exister.
 **/
 static optionsTypes(typ){
-  isDefined(this._optionsTypes) || ( this._optionsTypes = {} )
-  if(isUndefined(this._optionsTypes[typ])){
+  defaultize(this, '_optionsTypes', {})
+  if ( isUndefined(this._optionsTypes[typ]) ) {
     var p = path.join(APPFOLDER,'app','js','data',`data_${typ}.yaml`)
     if(false == fs.existsSync(p)) return '' // "dépeuplera" le menu
     let dataE = YAML.safeLoad(fs.readFileSync(p,'utf8'))
@@ -125,6 +135,8 @@ static optionsTypes(typ){
 **/
 static get lastLeft(){ return this._lastLeft || 200 }
 static set lastLeft(v){ this._lastLeft = v }
+static get videoController(){ return this.a.videoController }
+
 
 // ---------------------------------------------------------------------
 //  INSTANCE
@@ -141,7 +153,8 @@ static set lastLeft(v){ this._lastLeft = v }
 constructor(foo){
   this.isNew    = false
   this.analyse = this.a = current_analyse // pourra être redéfini plus tard
-  switch (typeof foo) {
+  // console.log("Instanciation de EventForm avec ",foo, typeof(foo))
+  switch (typeof(foo)) {
     case STRstring:
       // <= Un type
       // => C'est une création
@@ -179,7 +192,7 @@ submit(){
   // Si c'est une modification, on prend le temps initial pour savoir
   // s'il a bougé. S'il n'a pas bougé, il sera inutile de faire l'update
   // dans l'analyse courante
-  var initTime = this.isNew ? null : Math.round(this.event.time)
+  var initTime = this.isNew ? null : this.event.time.round(2)
 
   var all_data = this.getFormValues()
   this.isNew = all_data.is_new
@@ -194,7 +207,6 @@ submit(){
     this.event.dispatch(all_data)
   }
   // Et on dispatche les autres données
-
 
   if (this.event.isValid) {
     if(this.isNew){
@@ -225,27 +237,22 @@ submit(){
   my = null
 }// /submit
 
-get inited(){ return this._initied || false}   // mis à true à l'initialisation
+get inited(){ return this._inited || false}
 set inited(v){ this._inited = v }
 
 get modified(){return this._modified || false}
 set modified(v){
   this._modified = v
-  this.jqObj[v?'addClass':'removeClass']('modified')
+  // la fenêtre conteneur (pour le header et le footer)
+  this.fwindow.jqObj[v?'addClass':'removeClass']('modified')
 }
 
-get event(){ return this._event }
-get id(){
-  if(undefined === this._id){this._id = this.event.id}
-  return this._id
-}
-get type(){
-  if(undefined === this._type){this._type = this.event.type}
-  return this._type
-}
-get time(){
-  if(undefined === this._time){this._time = this.event.time}
-  return this._time
+get event() { return this._event }
+get id()    { return this._id   || defP(this,'_id',   this.event.id) }
+get type()  { return this._type || defP(this,'_type', this.event.type) }
+get time()  {
+  if ( isUndefined(this._time) && isDefined(this.event) ) this._time = this.event.time
+  return this._time || 0
 }
 
 /**
@@ -254,8 +261,8 @@ get time(){
  */
 init(){
   // console.log("-> EventForm#init")
-  if(this.initied){throw("Je ne dois pas pouvoir initier deux fois le formulaire…")}
-  if(!this.built) this.fwindow.build().observe()
+  isFalse(this.inited)  || raise("Je ne dois pas pouvoir initier deux fois le formulaire…")
+  isTrue(this.built)    || this.fwindow.build().observe()
   if (this.isNew){
     if(this.type === STRscene) this.setNumeroScene()
   } else {
@@ -272,8 +279,17 @@ init(){
    * Pour basculer des boutons d'évènements au formulaire
    */
 toggleForm(){
-  if(!this.inited){this.init()}
+  if ( isFalse(this.inited) ) this.init()
   this.fwindow.toggle.bind(this.fwindow)()
+}
+
+/**
+  Nouvelle méthode appelée par le constructor pour soi construire le formulaire
+  et l'afficher soit le remettre au premier plan.
+**/
+activate(){
+  if ( isFalse(this.inited) ) this.toggleForm()
+  else FWindow.setCurrent(this.fwindow)
 }
 
 onShow(){
@@ -286,13 +302,25 @@ onShow(){
  * Méthode qui construit le formulaire pour l'évènement
  */
 build(){
-  return DCreate(FORM, {
-    id: `form-edit-event-${this.id}`
-  , class: 'form-edit-event'
-  , inner: this.formsByType(this.type)
-            .replace(/__EID__/g, this.id)
-            .replace(/__SAVE_BUTTON_LABEL__/,this.isNew?'CRÉER':'MODIFIER')
-  })
+  let form = DCreate(FORM, {
+      id: `form-edit-event-${this.id}`
+    , class: 'form-edit-event'
+    , inner: this.formsByType(this.type)
+              .replace(/__EID__/g, this.id)
+              .replace(/__SAVE_BUTTON_LABEL__/,this.isNew?'CRÉER':'MODIFIER')
+    })
+  return [
+      DCreate(SECTION,{class:STRheader, append:[
+          DCreate(BUTTON, {type:BUTTON, class:'btn-close'})
+        , DCreate(H3,{class:'event-type', inner:this.type.toUpperCase()})
+        ]})
+    , DCreate(SECTION,{class:`${STRbody} plain`, append:[form]})
+    , DCreate(SECTION,{class:STRfooter, append:[
+        DCreate(SPAN, {class:'event-type', inner:this.type.toUpperCase()})
+      , DCreate(SPAN, {class:'event-id', inner:`#${this.id}`})
+      , DCreate(SPAN, {class:'event-time', inner:(this.event ? this.event.otime.horloge : '---')})
+      ]})
+  ]
 }
 afterBuilding(){
   var jqo = this.jqObj
@@ -306,36 +334,20 @@ afterBuilding(){
   this.jqf('is_new').val(this.isNew?'1':'0')
   this.jqf('destroy').css('visibility',this.isNew?STRhidden:STRvisible)
   this.jqf(STRtime).html(this.a.locator.currentTime.seconds)
-  this.jqf('duree').html(this.duree)
+  this.jqf(STRduree).html(this.duree)
   jqo.find('.footer .event-id').html(`event #${eid}`)
   jqo.find('.footer .event-time').html(new OTime(this.time).horloge)
 
   // On règle les boutons Play (mais seulement si l'event est défini)
   this.isNew || BtnPlay.setAndWatch(jqo, eid)
 
-  // On rend les champs horlogeable et dureeables
-  let horloges = UI.setHorlogeable(jqo[0])
-  // L'horloge de position de l'évènement
-  this.horlogePosition = horloges[`event-${eid}-time`]
-  this.horlogePosition.dispatch({
-      time: this.time
-    , synchroVideo: true
-    , parentModifiable: this
-  }).showTime()
-
-  let hdurees = UI.setDurationable(jqo[0])
-  // L'horloge de durée de l'évènement
-  this.horlogeDuration = hdurees[`event-${eid}-duree`]
-  this.horlogeDuration.dispatch({
-      duree: this.duree || 10
-    , startTime: parseFloat(this.time)
-    , synchroVideo: true
-    , parentModifiable: this
-  }).showTime()
+  // Régler les pictos d'aide
+  UI.setPictosAide(jqo)
 
   // Si c'est pour un nœud structurel, il faut peupler le menu des types
   if (typ === STRstt){
-    var dataStt = (this.a._PFA || require('./js/common/PFA/PFA-mini')).DATA_STT_NODES
+    // isDefined(window.DATA_STT_NODES) || tryRequire('./app/js/common/PFA/data_PFA')
+    var dataStt = DATA_STT_NODES
     var mstt = jqo.find('.stt-types')
     mstt.append(DCreate(OPTION, {value: '', inner: 'Choisir l’ID du nœud'}))
     for(var nid in dataStt){
@@ -397,7 +409,7 @@ updateMenusProcedes(){
   }
 }
 implementeMenuForProcedes(domMenu, fn_onchange, value){
-  if (undefined === value) value = ''
+  value = value || ''
   let menuproc = this.jqObj.find('.div-proc-types select')
   menuproc.off('change')
   menuproc.replaceWith(domMenu)
@@ -500,13 +512,13 @@ get menuSousDecors(){return this._menuSousDecors||defP(this,'_menuSousDecors', t
 
 /**
   Méthode pour éditer les types +typ+ en ouvrant leur fichier
-  dans le writer
+  dans le porte_documents
 
   Note : le nom 'data_<typ>' correspond au nom du fichier
 **/
 modifyDataTypes(e, typ){
   typ = typ || this.type
-  FAWriter.openAnyDoc(path.join(APPFOLDER,'app','js','data',`data_${typ}.yaml`))
+  PorteDocuments.editDocument(path.join(APPFOLDER,'app','js','data',`data_${typ}.yaml`))
 }
 
 updateTypes(e, typ){
@@ -584,7 +596,10 @@ cancel(){
 endEdition(){
   this.fwindow.remove()
   this.videoWasPlaying && this.a.locator.togglePlay()
+  delete this.event.form
   delete EventForm.currentForm
+  // Dans tous les cas on repasse en mode de raccourci out-field
+  UI.toggleKeyUpAndDown(true /* vers OUT */)
 }
 
 // ---------------------------------------------------------------------
@@ -622,27 +637,27 @@ setFormValues(){
     // elle-même (donc un string), soit par un duet avec en première valeur
     // le nom de la propriété, et en seconde valeur le nom du champ qui doit
     // recevoir la valeur de cette propriété
-    if('string' === typeof(prop)){ // cf. la définition des OWN_PROPS
+    if( isString(typeof(prop)) ){ // cf. la définition des OWN_PROPS
       fieldSufid = prop
     } else {
       [prop, fieldSufid] = prop
     }
 
-    if(null === this.event[prop] || undefined === this.event[prop]) continue
+    if( isNullish(this.event[prop]) ) continue
 
     switch(prop){
       case 'tps_reponse':
-        // Note : contrairement à 'duree' et STRtime, qui sont des 'horlogeables'
+        // Note : contrairement à STRduree et STRtime, qui sont des 'horlogeables'
         // tps_reponse est un simple input-text pour entrer une horloge.
         otime = new OTime(this.event[prop])
         this.jqf(fieldSufid).val(otime.horloge_simple)
         break
-      case 'duree':
+      case STRduree:
       case STRtime:
         try {
           otime = new OTime(this.event[prop])
-          this.jqf(fieldSufid).html(prop == 'duree' ? this.event.hduree : otime.horloge)
-          this.jqf(fieldSufid).attr('value', this.event[prop].round(2))
+          this.jqf(fieldSufid).html(prop == STRduree ? this.event.hduree : otime.horloge)
+          this.jqf(fieldSufid).attr(STRvalue, this.event[prop].round(2))
         } catch (e) {
           log.error(`[setFormValues] Problème en essayant de régler une valeur dans le formulaire de l'event`, {
             prop: prop, otime: otime, fieldSufid:fieldSufid, error: e,
@@ -706,7 +721,7 @@ getFormValues(){
             return parseInt(val,10)
           // // Tout ce qui doit être transformé en flottant
           // case STRtime:
-          // case 'duree':
+          // case STRduree:
           //   return parseFloat(val).round(2)
           case 'is_new':
             return val == '1'
@@ -722,7 +737,7 @@ getFormValues(){
       // console.log({id:id, prop:prop, val: val})
     })
     // Les temps
-    for(prop of [STRtime, 'duree']){
+    for(prop of [STRtime, STRduree]){
       var o = $(`form#form-edit-event-${this.id} #event-${this.id}-${prop}`)
       // Si ce champ existe, on prend la valeur, qui se trouve dans l'attribut
       // HTML `value`
@@ -737,7 +752,6 @@ getFormValues(){
 
   my = null
   return all_data // pour le moment
-
 
 }
 //getFormValues
@@ -800,7 +814,7 @@ get btnSubmit(){return this.jqObj.find('.btn-form-submit')}
 
 // La flying-window contenant le formulaire
 get fwindow(){
-  return this._fwindow || defP(this,'_fwindow', new FWindow(this,{container: document.body, x: this.left, y:80}))
+  return this._fwindow || defP(this,'_fwindow', new FWindow(this,{name:'AEVENTFORM', class:'event-form', container: document.body, x: this.left, y:80}))
 }
 // Position left de la fenêtre du formulaire, pour qu'elle soit bien placée
 // à côté de la boite de bouton => Il suffit de déplacer la boite de bouton

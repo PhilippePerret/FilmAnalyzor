@@ -21,15 +21,14 @@ const electron = require('electron')
 const {app} = require('electron')
 const path  = require('path')
 const fs    = require('fs')
-const ipc   = electron.ipcMain
 
 const GOTODATA = require('../system/prefs/gotodata')
 
 const USER_PREFS_DEFAULT = {
-    'load_last_on_launching':   true
-  , 'last_analyse_folder':      null
-  , 'option_duree_scene_auto':  true
-  // Définition des raccourcis pour se déplacer avec les flèches
+    'load_last_on_launching'      : true
+  , 'last_analyse_folder'         : null
+  , 'option_duree_scene_auto'     : true
+  , 'run_tests_at_startup': false
 }
 for(var dsc of GOTODATA){
   USER_PREFS_DEFAULT[`goto-${dsc.type}`] = dsc.dataArrowComb
@@ -83,6 +82,7 @@ const Prefs = {
     *   Soit {<clé pref>: {type: <'user'|'analyse'>, value: <valeur>}, ...}
     */
 , set(anyPref, kpref, vpref){
+    let forPrefs = anyPref === 'user'
     if ('string' === typeof anyPref){
       switch (anyPref) {
         case 'analyse':
@@ -114,7 +114,8 @@ const Prefs = {
         this.set(type, kpref, valu)
       }
     }
-    this.modified = true
+    if ( forPrefs ) this.save() // maintenant on sauve tout de suite
+    else this.modified = true
   }
 
   /**
@@ -134,9 +135,9 @@ const Prefs = {
    * Sauver les préférences
    */
 , save(){
-    console.log("Sauvegarde des préférences")
+    console.log("-> Prefs.save", this.userPrefs)
     fs.writeFileSync(this.userPrefsPath, JSON.stringify(this.userPrefs), 'utf8')
-    console.log("Préférences User actualisées.", this.userPrefs)
+    console.log("<- Prefs.save")
   }
 
   /**
@@ -151,8 +152,6 @@ const Prefs = {
       // this.userPrefs = require(this.userPrefsPath)
       // Pour toujours ajouter les nouvelles préférences définies
       this.userPrefs = Object.assign(USER_PREFS_DEFAULT, require(this.userPrefsPath))
-      // log.info("this.userPrefs: ", this.userPrefs)
-      console.log("this.userPrefs: ", this.userPrefs)
     } else {
       // Les valeurs par défaut
       this.userPrefs = USER_PREFS_DEFAULT
@@ -181,20 +180,21 @@ const Prefs = {
     ObjMenus.getMenu('option_edit_in_mini_writer').checked = this.get('option_edit_in_mini_writer')
     ObjMenus.getMenu('option_start_3secs_before_event').checked = this.get('option_start_3secs_before_event')
     ObjMenus.getMenu('option_lock_stop_points').checked = this.get('option_lock_stop_points')
+    ObjMenus.getMenu('run_tests_at_startup').checked = this.get('run_tests_at_startup')
   }
 }
-
 
 /**
  * Pour les préférences
  */
+const ipc   = electron.ipcMain
 ipc.on('get-pref', (ev, data) => {
   ev.returnValue = Prefs.get(data)
 })
 ipc.on('set-pref', (ev, data) => {
+  console.log("-> set-pref", data)
   ev.returnValue = Prefs.set(data)
 })
-
 
 
 module.exports = Prefs

@@ -6,8 +6,37 @@ class FAEstt extends FAEvent {
 //  CLASSE
 
 // Propriétés propres
-static get OWN_PROPS(){return [ ['sttID', 'sttType'] ]}
+static get OWN_PROPS(){return [ ['sttID', 'sttType'], 'idx_pfa' ]}
 
+// Instance KWindow qui permet d'afficher les noeuds dramatiques (absolus et
+// relatifs) pour pouvoir s'y rendre.
+static get klisting(){return this._klisting || defP(this,'_klisting', this.defineKListing())}
+// Construction de la KWindow
+static defineKListing(){
+  // Préparation des items
+  var items = [], ter
+  this.a.pfa1.forEachAbsNode( node => {
+    ter = [node.id, node.hname]
+    if ( node.isDefined ) ter.push('RELATIF')
+    items.push(ter)
+  })
+
+  // Instanciation de la KWindow
+  return new KWindow(this,{
+      id: 'noeud-stt-list'
+    , title: 'Se rendre au nœud…'
+    , onChoose: this.goToSttNodeByEventId.bind(this)
+    , items: items
+  })
+}
+
+/**
+  Méthode, utilisée pour le moment exclusivement par la KWindow, pour se
+  rendre au noeud dramatique dont l'event a l'identifiant +evid+
+**/
+static goToSttNodeByEventId(nid, rel){
+  this.a.pfa1.node(nid).goToAndMarkCursor(rel)
+}
 // ---------------------------------------------------------------------
 //  INSTANCE
 constructor(analyse, data){
@@ -16,17 +45,20 @@ constructor(analyse, data){
 
 get isValid(){
   var errors = []
-  // console.log("-> isValid")
-  if(!this.sttID){
-    errors.push({msg: "L'ID structurel est indispensable et doit être choisi avec soin.", prop: 'sttType'})
+  if ( isUndefined(this.sttID) ) {
+    errors.push({msg:T('stt-id-structurel-required'), prop: 'sttType'})
+    // Note : normalement, si on se sert du formulaire, ça ne devrait jamais arriver
+  } else if ( isUndefined(this.idx_pfa) ) {
+    errors.push({msg:T('stt-index-pfa-required'), prop:'idx_pfa'})
   } else {
     // On ne peut pas créer une propriété qui existe déjà
-    var nstt = this.analyse.PFA.node(this.sttID)
+    var nstt = this.pfa.node(this.sttID)
     if (nstt.event_id && nstt.event_id != this.id){
-      errors.push({msg: `Il existe déjà un nœud structurel « ${nstt.hname} » défini à ${nstt.event.horloge} (${nstt.event.link})`})
+      errors.push({msg:T('stt-noeud-already-exists', {name:nstt.hname, at:nstt.event.horloge, link:nstt.event.link})})
     } else {
-      // Définir ici les validité
-      this.content || errors.push({msg: "La description du nœud structurel est indispensable.", prop: 'longtext1'})
+      // Définir ici les validités
+      // En fait, pour les noeuds STT, on ne demande rien d'autre que le
+      // paradigme et le noeud.
     }
   }
 
@@ -35,7 +67,13 @@ get isValid(){
   return errors.length == 0
 }
 
-get sttNode(){return this._sttNode || defP(this,'_sttNode',this.analyse.PFA.node(this.sttID))}
+get sttNode(){return this._sttNode || defP(this,'_sttNode',this.pfa.node(this.sttID))}
+
+// Retourne l'instance PFA du noeud
+get pfa(){ return this._pfa || defP(this,'_pfa',this.a.PFA.get(this.idx_pfa))}
+
+get idx_pfa(){return this._idx_pfa || defP(this,'_idx_pfa',1/* par défaut*/)}
+set idx_pfa(v){this._idx_pfa = parseInt(v,10)}
 
 // Mise en forme du contenu propre à ce type d'event
 formateContenu(){

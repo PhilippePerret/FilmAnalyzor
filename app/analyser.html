@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="./css/jquery-ui.min.css">
     <link rel="stylesheet" href="./css/flash.css" />
     <link rel="stylesheet" href="./css/brins.css" />
-    <link rel="stylesheet" href="./css/elements_fa.css" />
     <link rel="stylesheet" href="./css/faListing.css" />
     <link rel="stylesheet" href="./css/event.css" />
     <link rel="stylesheet" href="./css/timeline.css" />
@@ -47,13 +46,17 @@
 
 
 
-    <!-- WRITER -->
-    <section id="section-writer">
-      <div id="writer-doc-visualizor"></div><!-- Pour visualiser le code -->
+    <!-- PORTE-DOCUMENTS -->
+    <section id="section-porte-documents">
+      <div id="porte_documents-doc-visualizor"></div><!-- Pour visualiser le code -->
     </section>
 
     <!-- Section des boutons pour ajouter un nouvel évènement -->
     <div id="analyse-state-bar">
+      <div id="div-statebar-current-shortcuts">
+        <label for="statebar-current-shortcuts" class="statebar-label">Mode raccourcis</label>
+        <span id="mode-shortcuts" class="statebar-value">OUTFIELD</span>
+      </div>
       <span id="modified-indicator" class="off">•</span>
       <label for="statebar-jauger" class="statebar-label">Avancement</label>
       <span id="statebar-jauger"><span id="statebar-jauge"></span></span>
@@ -88,12 +91,10 @@
     <script type="text/javascript" src="./js/system/Number.js"></script>
     <script type="text/javascript" src="./js/system/String.js"></script>
     <script type="text/javascript" src="./js/lecteur/VideoController.js"></script>
-    <script type="text/javascript" src="./js/lecteur/MainTimeline.js"></script>
     <script type="text/javascript" src="./js/composants/FATimeline.js"></script>
     <script type="text/javascript" src="./js/common/FAnalyse.js"></script>
     <script type="text/javascript" src="./js/common/FAEvent.js"></script>
     <script type="text/javascript" src="./js/common/EventsFilter.js"></script>
-    <script type="text/javascript" src="./js/common/BtnsEvents.js"></script>
     <script type="text/javascript" src="./js/common/FATexte.js"></script>
     <script type="text/javascript" src="./js/common/FADecor.js"></script>
     <script type="text/javascript" src="./js/common/Locator.js"></script>

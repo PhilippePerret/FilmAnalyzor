@@ -11,20 +11,33 @@ const ERRORS = {
 
 , "--- INTERFACE ---":""
 , "ui-init-only-once": "On ne doit initier l'interface qu'une seule fois…"
+, "unknown-front-fwindow-cant-close":"Je ne sais pas ce qu'est la fenêtre au premier plan, je ne peux donc pas la fermer."
+
+, "--- KEYWINDOW ---":""
+, "kwindow-func-after-choose-required": "La fonction à appeler après le choix d'un item est absolument requise et doit être définies dans la propriété `onChoose`."
+, "kwindow-no-remove-function": "Aucune fonction de destruction n'est défini pour cette liste. Définir la méthode `onRemove` dans les données du second argument le cas échéant."
+, "kwindown-no-item-to-show": "Aucun élément n'est à afficher. Il faut en créer au moins un."
+, "kwindow-edit-fn-required": "La méthode `%{classe}%{sep}edit(item_id)` est absolument requise pour pouvoir éditer cet élément."
 
 , "--- ANALYSE ---":""
 , "analyse-locked-no-save": "L'analyse est verrouillée, impossible de la modifier."
 , "invalid-folder": "Le dossier \"%{fpath}\" n’est pas un dossier d’analyse valide."
+, "unfound-analyse-folder": "Le dossier d'analyse \"%{path}\" est introuvable."
 , "already-analyse-folder": "Ce dossier est déjà un dossier d'analyse ! Utiliser le menu « Ouvrir… » pour l'ouvrir."
 
 , "--- FILM ---":""
 , "export-infos-film-not-defined":"Les informations sur le film ne sont pas définis, je ne peux pas les inscrire. Il faudra absolument le faire pour connaitre le film et pouvoir régler la vidéo."
 
+, "--- TIME MAP ---":""
+, "timemap-unknown-second-cant-add-element": "L'élément %{e} ne peut être ajouté à la TimeMap à la seconde %{s}, car cette seconde n'existe pas…"
+
 , "--- DOCUMENTS ---":""
+, "id-or-path-required-for-doc": "Impossible d'instancier un document sans ID ou PATH."
 , "ask-for-save-document-modified": "Le document courant, de type « %{type} », a été modifié. Voulez-vous enregistrer les changements ou les ignorer ?"
 , "new-custom-document-created": "Document créé. Sa première ligne définit son titre."
 , "same-document-no-association": "Un document ne peut pas être associé avec lui-même, désolé."
 , "no-association-event-in-doc": "Pour lier un event à un document, il faut le glisser dans son texte."
+, "docpath-unfound": "Le path \"%{path}\" est introuvable. Je ne peux pas éditer ce document."
 
 , "--- FILES ---": ""
 , "code-to-save-is-empty":"Le code à sauver est vide, malheureusement."
@@ -38,6 +51,7 @@ const ERRORS = {
 , "--- VIDÉO ---": ""
 , "video-path-required": "Il faut indiquer la vidéo du film, en actionnant le menu « Analyse > Choisir la vidéo du film »."
 , "video-required": "La vidéo du film est absolument requise pour analyser le film…<br>Astuce : utilisez une autre vidéo si vous voulez travailler « à blanc »."
+, "unfound-video-path": "La vidéo à l'adresse \"%{path}\" est introuvable…"
 
 , "---- SCÈNES ---":""
 , "scene-too-close": "Une scène se trouve à moins de 2 secondes. Impossible d'en créer une autre si proche…"
@@ -58,6 +72,10 @@ const ERRORS = {
 , "idee-setup-required":"L'installation de l'idée est requise"
 , "no-event-with-filter":"Aucun event n'a été trouvé avec le filtre demandé."
 , "explaination-cur-image":"Si cette case est cochée, l'event est lié à l'image de son temps courant, c'est-à-dire que cette image sera affichée en regard de l'affichage de l'event.\n\nOn pourra définir une légende, une taille et une position en éditant l'image depuis le listing des images."
+, "stt-id-structurel-required":"L'ID structurel est indispensable et doit être choisi avec soin."
+, "stt-index-pfa-required":"L'index du Paradigme de Field Augmenté est requis."
+, "stt-noeud-already-exists":"Il existe déjà un nœud structurel « %{name} » défini à %{at} (%{link})"
+, "event-modified-cant-close-form": "L'event a été modifié mais pas enregistré. Pour fermer la fenêtre et abandonner les changements, cliquez sur le bouton à la souris. Sinon, faites CMD-S pour enregistrer et fermer."
 
 , "--- FLYING WINDOW ---":""
 , "fwindow-required-owner": "Pour instancier une flying-window (FWindow), le propriétaire est requis en premier argument."
@@ -85,6 +103,7 @@ const ERRORS = {
 , "deditor-must-have-prop-dataEditor": "La classe %{classe} devrait avoir une propriété objet `dataEditor` (qui définira tout)."
 , "deditor-fields-undefined": "`%{classe}.dataEditor.dataFields` doit définir les champs permettant d'éditer un élément."
 , "deditor-function-required": "La classe %{classe} devrait définir la fonction `%{function}()`?"
+, "deditor-item-modified-cant-close": "Il faut enregistrer les modifications ou fermer la fenêtre à la souris pour renoncer à ces changements."
 
 , "--- FA LISTING ---":""
 , "falist-data-required": "REQUIS : %{classe}.DataFAListing\n\nLa classe propriétaire doit définir la propriété `DataFAListing`."
@@ -96,6 +115,7 @@ const ERRORS = {
 , "faliste-owner-save-required": "REQUIS : %{classe}::save(item_id)\n\nLa méthode `save` doit exister, qui permettra de sauver les associations, notamment."
 , "faliste-destroy-fct-require": "REQUIS : %{classe}::destroy(item_id)\n\nPour être destructible, la classe de l'item doit répondre à la méthode `destroy` qui recevra en premier et seul argument l'identifiant de l'item."
 , "confirm-destroy-brin": "Voulez-vous vraiment détruire à tout jamais le %{ref} ?"
+, "no-selected-item-user-arrow": "Aucun élément n'est sélectionné. Utilisez les flèches."
 
 , "--- IMAGES ---":""
 , "explication-images-listing": "Pour ajouter des images, se placer à l'endroit voulu dans le film et utiliser le menu « Vidéo > Prendre l'image courante »."
@@ -104,6 +124,12 @@ const ERRORS = {
 
 , "--- DIVERS ---":""
 , "otime-arg-required": "Cette méthode requiert un argument temps de type OTime"
+, "settime-time-undefined": "Le temps est indéfini (undefined), dans %{method}."
+, "marker-undefined": "Le marker d'identifiant '%{id}' est inconnu de nos services, désolé…"
+
+, "--- BANC TIMELINE ---":""
+, "no-row-for-item": "Impossible de trouver une rangée libre pour %{item}. Il est placé sous la ligne des scènes."
+
 }
 const MESSAGES = {
   "--- UI ---":""
@@ -134,7 +160,7 @@ const MESSAGES = {
 }
 
 /**
- * Gestion des "translation"
+ * Gestion des "translations"
  * Les messages sont définis dans ERRORS et MESSAGES, on envoie à cette
  * méthode la clé +lid+ (pour "Locale Id"), avec éventuellement la table
  * des remplacement +lrep+ (pour "Locales Replacement") et la méthode retourne
@@ -142,12 +168,19 @@ const MESSAGES = {
  *
  * Les variables s'écrivent `%{<variable name>}` dans le texte (comme les
  * template ruby).
+
+  Note : maintenant (juin 2019), la méthode ne produit jamais d'erreur. Elle
+  est capable de recevoir un string normal pour procéder à une translation.
+
+    T('Je dis %{what}', {what: "« Bonjour ! »"})
+    // => "Je dis « Bonjour ! »"
+
  */
 const T = function(lid, lrep){
-  var str = ERRORS[lid] || MESSAGES[lid]
-  if(undefined===str){
-    throw(`L'identifiant de message/error "${lid}" est inconnu de nos services…`)
-  }
+  var str = ERRORS[lid] || MESSAGES[lid] || lid
+  // if(undefined===str){
+  //   throw(`L'identifiant de message/error "${lid}" est inconnu de nos services…`)
+  // }
   if(lrep){
     for(var k in lrep){
       var reg = new RegExp(`%\{${k}\}`, 'g')

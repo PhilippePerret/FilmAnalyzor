@@ -4,8 +4,8 @@ class FAEqrd extends FAEvent {
 // ---------------------------------------------------------------------
 //  CLASSE
 
-static get OWN_PROPS(){return [['question', 'shorttext1'], ['reponse', 'shorttext2'], 'tps_reponse',['exploit', 'longtext3']]}
-static get OWN_TEXT_PROPS(){ return ['question', 'reponse', 'exploitation']}
+static get OWN_PROPS(){return [[STRquestion, 'shorttext1'], [STRreponse, 'shorttext2'], 'tps_reponse',[STRexploit, 'longtext3']]}
+static get OWN_TEXT_PROPS(){ return [STRquestion, STRreponse, STRexploitation]}
 static get TEXT_PROPERTIES(){return this._tprops||defP(this,'_tprops',FAEvent.tProps(this.OWN_TEXT_PROPS))}
 
 
@@ -36,12 +36,12 @@ static get section(){return $('section#section-qrd-pp')}
 **/
 static forEachQRD(fn){
   for(var qrd of this.qrds){
-    if(false === fn(qrd)) break // pour interrompre
+    if ( isFalse(fn(qrd)) ) break // pour interrompre
   }
 }
 static forEachSortedQRD(fn){
   for(var qrd of this.sortedQrds){
-    if(false === fn(qrd)) break // pour interrompre
+    if ( isFalse(fn(qrd)) ) break // pour interrompre
   }
 }
 
@@ -79,7 +79,7 @@ get isValid(){
   this.content  || errors.push({msg: "La description de cette QRD est requise.", prop: 'longtext1'})
   if(this.reponse){
     this.tps_reponse || errors.push({msg: "Le temps de la réponse est requis.", prop: 'tps_reponse'})
-    'number' === typeof(this.tps_reponse) || errors.push({msg: "Le temps de réponse devrait être un nombre", prop: 'tps_reponse'})
+    isNumber(this.tps_reponse) || errors.push({msg: "Le temps de réponse devrait être un nombre", prop: 'tps_reponse'})
   }
 
   if(errors.length){super.onErrors(this, errors)}
@@ -91,8 +91,8 @@ get isValid(){
   le cas échéant, l'inscrit dans la "warning-section"
 **/
 checkResolution(){
-  if(undefined != this.reponse && this.reponse.length) return
-  UI.warningSection.append(DCreate('DIV', {inner: this.as(STRshort, EDITABLE|LABELLED)}))
+  if ( isDefined(this.reponse) && isNotEmpty(this.reponse) ) return
+  UI.warningSection.append(DCreate(DIV, {inner: this.as(STRshort, EDITABLE|LABELLED)}))
 }
 
 /**
@@ -113,13 +113,13 @@ isComplete(){
                    la QUESTION dramatique
 **/
 get sceneQ(){
-  if(undefined === this._sceneQ) this._sceneQ = FAEscene.at(this.time)
+  isDefined(this._sceneQ) || ( this._sceneQ = FAEscene.at(this.time) )
   return this._sceneQ
 }
 
 get sceneR(){
   if(!this.tps_reponse) return
-  if(undefined === this._sceneR) this._sceneR = FAEscene.at(this.tps_reponse)
+  isDefined(this._sceneR) || ( this._sceneR = FAEscene.at(this.tps_reponse) )
   return this._sceneR
 }
 

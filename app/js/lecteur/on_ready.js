@@ -20,16 +20,22 @@ function WhenAllIsReallyReady(){
   // FABrin.dataEditor.open()
   // current_analyse.openDocInDataEditor('fondamentales')
   // current_analyse.openDocInDataEditor('infos')
-  // current_analyse.openDocInWriter('building_script')
-  // current_analyse.openDocInWriter()
+  // current_analyse.editDocumentInPorteDocuments('building_script')
+  // current_analyse.editDocumentInPorteDocuments()
   // current_analyse.togglePanneauDecors()
   // current_analyse.togglePanneauBrins()
   // setTimeout(current_analyse.togglePanneauBrins.bind(current_analyse),1000)
   // current_analyse.togglePanneauImages()
   // current_analyse.togglePanneauPersonnages()
 
+  // // Pour afficher le premier paradigme de Field
+  // current_analyse.displayPFA(1)
+
   // // Construire l'analyse
   // current_analyse.displayFullAnalyse(/*forcer update = */true)
+
+  // Afficher la liste des markers
+  // current_analyse.markers.showListing()
 }
 
 $(document).ready(() => {

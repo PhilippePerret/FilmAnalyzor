@@ -1,5 +1,27 @@
 'use strict'
 
+/**
+  Pour requérir un module en ayant un backtrace en cas d'erreur.
+
+  Le mieux est de toujours envoyé `__dirname` en second argument et de définir
+  le +rpath+ en fonction de l'endroit courant.
+      let maConstante = tryRequire('./insamefolder', __dirname)
+
+**/
+global.tryRequire = function(rpath, folder){
+  try {
+    isDefined(folder) && ( rpath = [folder,rpath].join(path.sep) )
+    return require(rpath)
+  } catch (e) {
+    if ( NONE !== typeof(log) ) {
+      log.error("[LOG] ERROR REQUIRE AVEC LE PATH", rpath)
+      log.error(e)
+    } else {
+      console.error("[CONSOLE] ERROR REQUIRE AVEC LE PATH", rpath)
+      console.error(e)
+    }
+  }
+}
 
 function confirm(msg, options){
   let mbox = new MessageBox(isString(msg) ? Object.assign(options, {message: msg}) : msg)
@@ -10,28 +32,27 @@ function confirm(msg, options){
 // définit `defaultAnswer` qui permet de savoir que c'est un prompt
 function prompt(msg, args){ return confirm(msg, args) }
 
-function isUndefined(foo){
-  return STRundefined === typeof(foo)
-}
-function isNumber(foo){return STRnumber === typeof(foo)}
-function isNotNumber(foo){return false === isNumber(foo)}
+window.isUndefined = function(foo){ return STRundefined === typeof(foo) }
+// function isDefined(foo){ return false === isUndefined(foo) }
+window.isDefined = function(foo){ return false === isUndefined(foo) }
 
-function isNull(foo){ return null === foo }
-function isNotNull(foo){ return isFalse(isNull(foo)) }
-function isNullish(foo){ return isNull(foo) || isUndefined(foo) }
-function isNotNullish(foo){ return false === isNullish(foo) }
+window.isBoolean = function(foo){return STRboolean === typeof foo }
+window.isNumber = function(foo){return STRnumber === typeof(foo)}
+window.isNotNumber = function(foo){return false === isNumber(foo)}
 
-function isFalse(foo){ return false === foo }
-function isNotFalse(foo) { return isFalse(isFalse(foo))}
-function not(foo){ return false == foo }
+window.isNull = function(foo){ return null === foo }
+window.isNotNull = function(foo){ return isFalse(isNull(foo)) }
+window.isNullish = function(foo){ return isNull(foo) || isUndefined(foo) }
+window.isNotNullish = function(foo){ return false === isNullish(foo) }
 
-function isTrue(foo){ return true === foo }
-function isNotTrue(foo){return isFalse(isTrue(foo))}
+window.isFalse = function(foo){ return false === foo }
+window.isNotFalse = function(foo) { return isFalse(isFalse(foo))}
+window.not = function(foo){ return false == foo }
 
-function isDefined(foo){
-  return false === isUndefined(foo)
-}
-function isEmpty(foo){
+window.isTrue = function(foo){ return true === foo }
+window.isNotTrue = function(foo){return isFalse(isTrue(foo))}
+
+window.isEmpty = function(foo){
   if(!foo) return true
   if(isDefined(foo.length) /* string ou array */){
     return 0 == foo.length
@@ -39,22 +60,20 @@ function isEmpty(foo){
     return 0 == Object.keys(foo).length
   }
 }
-function isNotEmpty(foo){
+window.isNotEmpty = function(foo){
   if(!foo) return false
   return false === isEmpty(foo)}
-function isNotAscii(str){
-  return str.replace(/[a-zA-Z0-9_]/g,'') != ''
-}
-function isFunction(foo){ return STRfunction === typeof(foo) }
-function isNotFunction(foo){ return false === isFunction(foo) }
-function isString(foo)  { return STRstring === typeof(foo) }
-function isNotString(foo){return false === isString(foo)}
-function isObject(foo)  { return STRobject == typeof(foo) && !isArray(foo) }
-function isArray(foo)   { return Array.isArray(foo) }
+window.isNotAscii = function(str){ return str.replace(/[a-zA-Z0-9_]/g,'') != '' }
+window.isFunction = function(foo){ return STRfunction === typeof(foo) }
+window.isNotFunction = function(foo){ return false === isFunction(foo) }
+window.isString = function(foo)  { return STRstring === typeof(foo) }
+window.isNotString = function(foo){return false === isString(foo)}
+window.isObject = function(foo)  { return STRobject == typeof(foo) && !isArray(foo) }
+window.isArray = function(foo)   { return Array.isArray(foo) }
 
 // Fonction utiles pour le dom
 
-function isTextarea(foo){
+window.isTextarea = function(foo){
   if(isDefined(foo.length)) foo = foo[0] // jquerySet
   if(isDefined(foo.tagName)) return foo.tagName === 'TEXTAREA'
   return false
@@ -82,8 +101,6 @@ function isDOMElementWithAttribute(jqObj, attr, valOpt){
   }
 }
 
-
-
 function asPourcentage(expected, actual){
   return `${pourcentage(expected,actual)} %`
 }
@@ -92,7 +109,7 @@ function pourcentage(expected, actual){
 }
 
 /**
- * Retourne la fonction voulu
+ * Retourne la fonction voulue
  *
  * Note : pour le moment, ça ne fonctionne que pour des instances. Il faudrait
  * faire un test pour voir si bindee.constructor existe.
@@ -119,15 +136,21 @@ function requiredChunk(bindee, methodName){
     this._propriete || defP(this, '_propriete', valeur)
     return this._propriete
   */
-function defP(obj, prop, val){
+window.defP = function(obj, prop, val){
   obj[prop] = val
   return val
 }
+// function defP(obj, prop, val){
+//   obj[prop] = val
+//   return val
+// }
 
 /**
   Remplace la tournure :
     if (undefined === objet.property) objet.property = default_value
   Et retourne la valeur de la propriété
+  Note : quand c'est possible, préférer :
+    `variable = variable || valeurDefaut`
 **/
 function defaultize(objet, property, default_value){
  isDefined(objet[property]) || ( objet[property] = default_value)
@@ -150,8 +173,8 @@ function defaultize(objet, property, default_value){
 function raise(msg){throw(msg)}
 
 // Pour mettre dans le presse-papier
-const { clipboard } = electron.remote
 function clip(str){
+  const { clipboard } = electron.remote
   clipboard.writeText(str) ;
   F.notify(`${str} -> presse-papier`)
 };
@@ -223,9 +246,18 @@ function DGet(DOMId){
               Si une valeur est strictement égale à NULL, l'attribut n'est pas
               inscrit (utile par exemple pour les checked)
 
+  Pour obtenir un picto "?" qui doit afficher une aide, on utilise simplement :
+  DCreate(AIDE, "Message d'aide à afficher, sans guillemets doubles droits.")
+
+  Il faut que la méthode qui construit appelle UI.setPictosAide(<container>)
+
 **/
 function DCreate(typeElement, params){
   // console.log("DCreate params:", params)
+  if ( typeElement === AIDE ) {
+    typeElement = IMG
+    params = {class:'picto-aide', alt:'?', src:'img/picto_info_dark.png', attrs:{'data-message':params}}
+  }
   var e = document.createElement(typeElement)
   if(undefined === params) return e
   if(params.id)     e.id = params.id
@@ -254,6 +286,18 @@ function DCreate(typeElement, params){
 }
 
 /**
+  Retourne un Helper (de drag) qu'il est sûr de garder au-dessus de tous
+  les autres éléments
+  Cf. le manuel de développement pour l'utilisation car c'est très particulier
+**/
+function DHelper(inner, data) {
+  var hdata = {}
+  for(var k in data){ hdata[`data-${k}`] = data[k]}
+  let helper = DCreate(DIV,{class:'draghelper', inner:inner, attrs:hdata})
+  $(document.body).append(helper)
+  return helper
+}
+/**
   Retourne
 **/
 function DLibVal(obj, property, libelle, widths, options){
@@ -265,8 +309,8 @@ function DLibVal(obj, property, libelle, widths, options){
     else if(undefined !== widths) css += ` ${widths /* p.e. w40-60 */}`
     else css += ' normal'
     obj[ghostProp] = DCreate('DIV', {class: css, append:[
-        DCreate((widths ? 'SPAN' : 'LABEL'), {class: (widths ? 'label' : null), inner: libelle})
-      , DCreate('SPAN', {class:'value', inner: DFormater(obj[property])})
+        DCreate((widths ? SPAN : 'LABEL'), {class: (widths ? 'label' : null), inner: libelle})
+      , DCreate(SPAN, {class:'value', inner: DFormater(obj[property])})
     ]})
   }
   return obj[ghostProp]
@@ -316,7 +360,7 @@ function listenMDown(cible, objet, method, param){listen(cible,'mousedown',objet
 function listenMUp(cible, objet, method, param){listen(cible,'mouseup',objet,method, param)}
 
 
-
+const $ = require('jquery')
 $.fn.extend({
   insertAtCaret: function(myValue) {
     if(undefined === myValue || null === myValue) return

@@ -1,0 +1,114 @@
+//
+//   Styles pour les paradigmes de Field
+//
+section.pfa
+  border: 1px solid grey
+
+
+  div.pfa-part
+    width: 25%
+    height: 200px
+    border: 1px solid grey
+
+    span.pfa-part-name
+      opacity: 0.5
+
+
+  .quart
+    width: 25%
+  .huiti
+    width: 12.5%
+  .douzi
+    width: 8.33%
+  .iem24
+    width: 4.16%
+
+section.pfa-absolute
+
+div#PFA-CALQUE
+  position: absolute
+  top: 240px
+  left: 0
+  background-color: rgba(255,255,255,0.1)
+  width: 100%
+  height: calc(100%)
+  z-index: 100
+  transition: top 1s
+
+  > div
+    &:before
+      position: absolute
+      color: white
+      top: 60px
+      left: -20px
+      font-size: 11pt
+      display: inline-block
+      text-align: center
+      background-color: rgba(0,0,0,0.25)
+      width: 40px
+
+  div.part
+    position: absolute
+    top: 0
+    width: 25%
+    border: 1px solid red
+    text-align: center
+    height: calc(100%)
+    padding-top: 6em
+    text-shadow: 2px 1px 6px black
+    color: white
+
+    &#CPFA-part-EXPO
+      left: 0
+    &#CPFA-part-DEV1
+      left: 25%
+      &:before
+        content: '1/4'
+    &#CPFA-part-DEV2
+      left: 50%
+      &:before
+        content: '1/2'
+    &#CPFA-part-DNOU
+      left: 75%
+      &:before
+        content: '3/4'
+
+  div#CPFA-tiers1, div#CPFA-tiers2
+    position: absolute
+    top: 0
+    height: calc(100%)
+    width: 2px
+    background-color: yellowgreen
+
+  div#CPFA-tiers1
+    left: 33.33%
+    &:before
+      content: '1/3'
+  div#CPFA-tiers2
+    left: 66.66%
+    &:before
+      content: '2/3'
+
+  div.huitieme
+    position: absolute
+    top: 0
+    height: calc(100%)
+    width: 2px
+    background-color: steelblue
+
+  div#CPFA-huit1
+    left: 12.5%
+    &:before
+      content: '1/8'
+  div#CPFA-huit2
+    left: 37.5%
+    &:before
+      content: '3/8'
+  div#CPFA-huit3
+    left: 62.5%
+    &:before
+      content: '5/8'
+  div#CPFA-huit4
+    left: 87.5%
+    &:before
+      content: '7/8'

@@ -15,7 +15,7 @@ static get type(){return this._type || defP(this,'_type','decor')}
 
 // Pour donner un ID volatile au décor
 static newId(){
-  if(undefined === this.lastid) this.lastid = 0
+  defaultize(this,'lastid',0)
   return ++ this.lastid
 }
 
@@ -42,7 +42,7 @@ static get data(){
   nombre de scènes.
 **/
 static get sortedDecors(){
-  if(undefined === this._sortedDecors){
+  if ( isUndefined(this._sortedDecors) ) {
     this._sortedDecors = Object.values(this.data)
     this._sortedDecors.sort((a,b) => b.scenes.length - a.scenes.length)
     // console.log("this._sortedDecors:", this._sortedDecors)
@@ -55,7 +55,7 @@ static get sortedDecors(){
   décors
 **/
 static optionsDecors(){
-  if(undefined === this._optionsDecors){
+  if ( isUndefined(this._optionsDecors) ) {
     let my = this
       , sorteds = this.sortedDecors
       // Note : il faut que je prenne sortedDecors ici, sinon
@@ -99,7 +99,7 @@ static getDataDecors(){
       nombre_decors = decors.length
 
       for(dec of decors){
-        if(undefined === dinst[dec]){
+        if( isUndefined(dinst[dec]) ){
           dinst[dec] = new FADecor(dec)
         }
         dinst[dec].addScene(scene.numero, nombre_decors)
@@ -114,7 +114,7 @@ static getDataDecors(){
           nombre_sdecors = sdecors.length
 
           for(sdec of sdecors){
-            if(undefined === dinst[dec].sousDecor(sdec)){
+            if ( isUndefined(dinst[dec].sousDecor(sdec)) ) {
               dinst[dec].addSousDecor(sdec)
             }
             dinst[dec].sousDecor(sdec).addScene(scene.numero, nombre_sdecors)
@@ -132,7 +132,7 @@ static get count(){
 }
 static forEachDecor(fn){
   for(var decor in this.data){
-    if(false === fn(this.data[decor] /* instance FADecor */)) break
+    if( isFalse(fn(this.data[decor] ) /* instance FADecor */)) break
   }
 }
 
@@ -188,7 +188,7 @@ resetForSort(){
 }
 
 get sousDecorsSorted(){
-  if(undefined === this._sousDecorsSorted){
+  if ( isUndefined(this._sousDecorsSorted) ) {
     this._sousDecorsSorted = Object.values(this.sousDecors)
     this._sousDecorsSorted.sort((a,b) => b.scenesCount - a.scenesCount)
   }
@@ -196,7 +196,7 @@ get sousDecorsSorted(){
 }
 
 optionsSousDecors(){
-  if(undefined === this._optionsSousDecors){
+  if ( isUndefined(this._optionsSousDecors) ) {
     this._optionsSousDecors = ['<option value="">Choisir le sous-décor…</option>']
     for(var sdecor of this.sousDecorsSorted){
       this._optionsSousDecors.push(`<option value="${sdecor.name}">${sdecor.name} (${sdecor.scenesCount})</option>`)
@@ -212,7 +212,7 @@ optionsSousDecors(){
 **/
 forEachSousDecor(fn){
   for(var sname in this.sousDecors){
-    if(false === fn(this.sousDecors[sname])) break
+    if ( isFalse(fn(this.sousDecors[sname])) ) break
   }
 }
 
@@ -222,7 +222,7 @@ forEachSousDecor(fn){
 forEachScene(fn){
   for(var dscene of this.scenes){
     // console.log("dscene:", dscene)
-    if(false === fn(FAEscene.getByNumero(dscene[0]))) break
+    if ( isFalse(fn(FAEscene.getByNumero(dscene[0]))) ) break
   }
 }
 
@@ -253,7 +253,7 @@ class FASousDecor {
 // ---------------------------------------------------------------------
 //  CLASS
 static newId(){
-  if(undefined === this.lastid) this.lastid = 0
+  defaultize(this, 'lastid', 0)
   return ++ this.lastid
 }
 
@@ -286,7 +286,7 @@ addScene(numero, nbsdec){
 **/
 forEachScene(fn){
   for(var dscene of this.scenes){
-    if(false === fn(FAEscene.getByNumero(dscene[0]))) break
+    if( isFalse(fn(FAEscene.getByNumero(dscene[0]))) ) break
   }
 }
 get scenesCount(){return this.scenes_numeros.length}

@@ -34,7 +34,7 @@ Object.defineProperties(FAnalyse.prototype,{
         , filmStartTime:      this.filmStartTime
         , filmEndTime:        this.filmEndTime
         , filmEndGenericFin:  this.filmEndGenericFin
-        , videoPath:          this.videoPathAsRelative
+        , videoPath:          this.videoPath // this.videoPathAsRelative
         , lastCurrentTime:    this.lastCurrentTime
         , stopPoints:         spoints
       }
@@ -50,7 +50,7 @@ Object.defineProperties(FAnalyse.prototype,{
       this.filmStartTime        = v.filmStartTime || 0
       this.filmEndTime          = v.filmEndTime
       this.filmEndGenericFin    = v.filmEndGenericFin
-      this._videoPath           = v.videoPath ? this.resolvePath(v.videoPath) : undefined
+      this._videoPath           = v.videoPath
       this.lastCurrentTime      = v.lastCurrentTime || 0
       this.stopPoints           = (v.stopPoints || []).map(st => new OTime(st))
     }
@@ -139,13 +139,15 @@ Object.assign(FAnalyse.prototype, {
     // Note : filmEndTime essaie déjà d'être défini en prenant
     // la fin de la vidéo. Mais si la vidéo n'est pas définie,
     // filmEndTime ne l'est pas non plus.
-    if(!this.filmEndTime) return null
-    return this.filmEndTime - this.filmStartTime
+    if ( isNaN(UI.video.duration) ) {
+      console.error("Problème avec la vidéo : sa durée est NaN…")
+    }
+    return (this.filmEndTime||UI.video.duration) - this.filmStartTime
   }
 
 , calcFilmEndTime(){
     delete this._filmEndTime
-    this.videoPath && (this._filmEndTime = this.videoController.video.duration)
+    this.videoPath && (this._filmEndTime = UI.video.duration)
     return this._filmEndTime
   }
 

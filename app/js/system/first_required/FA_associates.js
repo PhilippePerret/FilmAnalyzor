@@ -22,7 +22,7 @@ let ASSOCIATES_COMMON_METHODS = {
     À partir de cette liste, on construit toutes les listes des types,
     personnages:[], brins:[] etc.
   **/
-  types_associates: [STRevent,STRpersonnage, STRdocument, STRtime, STRbrin, STRimage]
+  types_associates: [STRevent, STRpersonnage, STRdocument, STRtime, STRbrin, STRimage]
 
   /**
 
@@ -35,19 +35,19 @@ let ASSOCIATES_COMMON_METHODS = {
 , forEachAssociate(type, fn){
     if(type === STRtime){
       for(var assoEvent of this[`${type}s`]){
-        if(false === fn(new OTime(assoEvent))) break;
+        if ( isFalse(fn(new OTime(assoEvent))) ) break;
       }
     } else {
       for(var iAsso of this[`instances_${type}s`]){
-        if(false === fn(iAsso)) break;
+        if ( isFalse(fn(iAsso)) ) break;
       }
     }
   }
 
 , acceptableTypes(){
-    if(undefined === this._acceptabletypes){
+    isDefined(this._acceptabletypes) || (
       this._acceptabletypes = this.types_associates.map(t => `.${t}`).join(', ')
-    }
+    )
     return this._acceptabletypes
   }
 
@@ -55,7 +55,9 @@ let ASSOCIATES_COMMON_METHODS = {
 //  MÉTHODES D'HELPER
 
 , dragHelper(){
-    return `<div class="${this.metaType||this.type} draghelper" data-type="${this.metaType||this.type}" data-id="${this.id}">${this.toString()}</div>`
+    let div = `<div id="draghelper" style="z-index:5000;" class="${this.metaType||this.type} draghelper" data-type="${this.metaType||this.type}" data-id="${this.id}">${this.toString()}</div>`
+    $(document.body).append($(div))
+    return $('#draghelper')
   }
 
 
@@ -86,14 +88,14 @@ let ASSOCIATES_COMMON_METHODS = {
                               éléments associés.
 **/
 , divsAssociates(options){
-    if(undefined === options) options = {}
-    if(undefined === options.as) options.as = 'string'
-    if(Object.keys(this.associates).length == 0) return options.as == 'string' ? '' : undefined
+    options = options || {}
+    isDefined(options.as) || ( options.as = STRstring )
+    if ( isEmpty(this.associates) ) return options.as == STRstring ? '' : undefined
 
     var divs = []
 
     if(options.title){
-      if(true === options.title) options.title = 'Éléments associés'
+      isTrue(options.title) && ( options.title = 'Éléments associés' )
       divs.push(DCreate(H3,{inner:options.title}))
     }
     if(this.associatesCounter){
@@ -124,13 +126,13 @@ let ASSOCIATES_COMMON_METHODS = {
       divs.push(DCreate(DIV,{class:'italic small indent2', inner:'(Aucun élément associé)'}))
     }
 
-    if (options.as == 'string' || options.inDiv){
+    if ( options.as == STRstring || options.inDiv ) {
       divs = DCreate(DIV,{class:`associates ${this.domId}-associates`, append:divs})
     }
 
     // On retourne le résultat
     switch (options.as) {
-      case 'string':
+      case STRstring:
         return divs.innerHTML
       default:
         return divs // liste des divs ou le div
@@ -143,18 +145,19 @@ let ASSOCIATES_COMMON_METHODS = {
 , associer(element){
     if (this.addToAssoList(element.type, element.id)){
       ++ this.associatesCounter
-      this.updateInReader()
+      isFunction(this.updateInReader) && this.updateInReader()
     }
   }
 /**
   @param {Instance} element Contrairement à `associer`, ici, la méthode reçoit
-                            l'instance de l'élément — qui existe forcément —
+                            l'instance de l'élément (*)
                             pour pouvoir notamment demander confirmation.
+                            (*) qui peut être un FAUnknownElement
 **/
 , dissocier(element){
     if (this.remToAssoList(element.type, element.id)){
       -- this.associatesCounter
-      this.updateInReader()
+      isFunction(this.updateInReader) && this.updateInReader()
     }
   }
 
@@ -164,7 +167,7 @@ let ASSOCIATES_COMMON_METHODS = {
 , addToAssoList(list_id, asso_id){
     // Modification peut-être nécessaire de l'id
     asso_id = this.realAssoId(list_id, asso_id)
-    if(undefined === this.associates[list_id]) this.associates[list_id] = []
+    isDefined(this.associates[list_id]) || ( this.associates[list_id] = [] )
     if(this.associates[list_id].indexOf(asso_id) < 0){
       log.info(`   Ajout id #${asso_id} à liste ${list_id} de ${this.toString()}`)
       this.associates[list_id].push(asso_id)
@@ -181,7 +184,7 @@ let ASSOCIATES_COMMON_METHODS = {
 , remToAssoList(list_id, asso_id){
     asso_id = this.realAssoId(list_id, asso_id)
     var idx
-    if(undefined === this.associates[list_id]) this.associates[list_id] = []
+    isDefined(this.associates[list_id]) || ( this.associates[list_id] = [] )
     if((idx = this.associates[list_id].indexOf(asso_id)) > -1){
       log.info(`   Retrait de id #${asso_id} à liste ${list_id} de ${this.toString()}`)
       this.associates[list_id].splice(idx,1)
@@ -213,7 +216,7 @@ let ASSOCIATES_COMMON_METHODS = {
     for(var atype in this.associates){
       if(this.associates[atype].length) h[atype] = this.associates[atype]
     }
-    if(Object.keys(h).length == 0) return
+    if ( isEmpty(h) ) return
     return h
   }
 
@@ -235,14 +238,14 @@ let ASSOCIATES_COMMON_PROPERTIES = {
   **/
   associates:{
     get(){
-      if (undefined === this._associates) {
+      if ( isUndefined(this._associates) ) {
         this._associates = {}
         ASSOCIATES_COMMON_METHODS.types_associates.map(typ => {
           this._associates[typ] = []
         })
-      } else if (undefined === this._associates_inited){
+      } else if ( isUndefined(this._associates_inited) ){
         ASSOCIATES_COMMON_METHODS.types_associates.map(typ => {
-          if(undefined === this._associates[typ]) this._associates[typ] = []
+          isDefined(this._associates[typ]) || ( this._associates[typ] = [] )
         })
         this._associates_inited = true
       }
@@ -256,7 +259,7 @@ let ASSOCIATES_COMMON_PROPERTIES = {
 **/
 , associatesCounter:{
     get(){
-      if(undefined === this._associatesCounter){
+      if( isUndefined(this._associatesCounter) ){
         this._associatesCounter = 0
         for(var atype in this.associates){
           this._associatesCounter += this.associates[atype].length
@@ -311,7 +314,7 @@ const DATA_ASSOCIATES_DRAGGABLE = {
   , cursorAt:{left:40, top:20}
   , start: e => {
       let container = $(e.target).parent()
-      if(container){
+      if ( container ) {
         container.old_overflow = container.css('overflow')
         container.css('overflow',STRvisible)
       }
@@ -361,7 +364,7 @@ const TEXTFIELD_ASSOCIATES_METHS = {
   c'est juste dans le champ qu'on va coller la balise de l'élément
 **/
 , setTextFieldsAssociableIn(container, owner){
-    let jqSet = $(container).find('TEXTAREA, INPUT[type="text"]')
+    let jqSet = $(container).find(TEXT_TAGNAMES)
     // console.log("this.dataDroppableTF:", this.dataDroppableTF)
     jqSet.droppable(this.dataDroppableTF)
     if( isDefined(owner) ){
@@ -393,7 +396,7 @@ const TEXTFIELD_ASSOCIATES_METHS = {
 
     if (this.droppedAndReceiverAreSameElement(target, helper)) return
 
-    let isHorloge = eltype == 'time' && target.hasClass('horloge')
+    let isHorloge = eltype == STRtime && target.hasClass(STRhorloge)
 
     var balise, textAdded
 
@@ -460,10 +463,6 @@ const TEXTFIELD_ASSOCIATES_PROPS = {
   }}
 }
 
-
-// console.log("ASSOCIATES_COMMON_PROPERTIES:", ASSOCIATES_COMMON_PROPERTIES)
-
-
 module.exports = {
   ASSOCIATES_COMMON_PROPERTIES: ASSOCIATES_COMMON_PROPERTIES
 , ASSOCIATES_COMMON_METHODS: ASSOCIATES_COMMON_METHODS
@@ -472,8 +471,3 @@ module.exports = {
 , TEXTFIELD_ASSOCIATES_METHS: TEXTFIELD_ASSOCIATES_METHS
 , TEXTFIELD_ASSOCIATES_PROPS: TEXTFIELD_ASSOCIATES_PROPS
 }
-
-/**
-
-  Does javascript create a new instance each time we create a string litteral?
-**/

@@ -6,27 +6,39 @@ Object.assign(DataEditor,{
 
 // Retourne un nouvel ID pour le dataEditor
  newId(){
-    if(undefined === this.lastId) this.lastId = 0
+    this.lastId = this.lastId || 0
     return ++ this.lastId
   }
 
 /**
-  Méthode appelée par les menus
-  @param {String} dtype   Le type, par exemple dpersonnages, ou dbrins, etc.
-  @param {String|Number} argCurrent   L'élément courant à afficher
+Méthode appelée par les menus
+
+  @param {String} docId   L'id du document dans DATA_DOCUMENTS.
+  @param {String|Number}  argCurrent   L'élément courant à afficher, if any
+
 **/
-, openPerType(dtype, argCurrent){
-    let [owner, current] = (typ => {
-      switch(typ){
-        case 'dpersonnages':      return [FAPersonnage]
-        case 'dbrins':            return [FABrin]
-        case 'fondamentales':     return [Fondamentales, typ]
-        case 'fondamentales_alt': return [Fondamentales, typ]
-        case 'infos':             return [InfosFilm, 'infos']
+, openDocument(docId, argCurrent){
+    // Quelques cas particulier. par exemple, pour les fondamentales, avant
+    // de les éditer il faut s'assurer qu'elles aient été chargée
+    switch (docId) {
+      case 13:
+        if ( isNotTrue(this.a.Fonds.loaded) ){
+          this.a.Fonds.methodAfterLoaded = this.openDocument.bind(this, docId, argCurrent)
+          return
+        }
+        break
+    }
+    let [owner, current] = (id => {
+      switch(id){
+        case 11: return [FAPersonnage]
+        case 12: return [FABrin]
+        case 13: return [Fondamentales, 'fondamentales']
+        case 14: return [Fondamentales, 'fondamentales_alt']
+        case 20: return [InfosFilm, 'infos']
       }
       return [null]
-    })(dtype)
-    owner || raise(`Le possesseur de type ${dtype} est inconnu…`)
+    })(docId)
+    owner || raise(`Le document d'identifiant #${docId} est inconnu…`)
     this.init(owner, undefined, argCurrent||current).open()
   }
 , open(classe, current){
@@ -75,4 +87,7 @@ Object.assign(DataEditor,{
     }
     return true
   }
+})
+Object.defineProperties(DataEditor,{
+  a:{get(){return current_analyse}}
 })

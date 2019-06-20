@@ -87,9 +87,9 @@ Nombre personnages   ${FAPersonnage.count}
 
     var decorsList = []
     decorsList.push(DCreate('DIV', {class:'libval w60-20-20', append:[
-      DCreate('SPAN', {inner: 'Décor/sous-décor', class: 'label'})
-    , DCreate('SPAN', {inner: 'Scènes', class: 'label center'})
-    , DCreate('SPAN', {inner: 'Durée',   class: 'label center'})
+      DCreate(SPAN, {inner: 'Décor/sous-décor', class: 'label'})
+    , DCreate(SPAN, {inner: 'Scènes', class: 'label center'})
+    , DCreate(SPAN, {inner: 'Durée',   class: 'label center'})
     ]}))
 
     FADecor.forEachDecor(function(decor){
@@ -147,7 +147,7 @@ FAEscene.perMaxLongueur = function(){
     if(undefined === sc) break
     // divs.push(DCreate('DIV', {class: 'libval first-small', append:[
     //     DCreate('LABEL',  {class:'bold', inner: sc.hduree})
-    //   , DCreate('SPAN',   {inner: sc.as(STRshort, FORMATED)})
+    //   , DCreate(SPAN,   {inner: sc.as(STRshort, FORMATED)})
     // ]}))
     lignesScenes.push(`${sc.hduree.padStart(7)}   ${sc.as(STRshort, FORMATED)}`)
   }
@@ -166,7 +166,7 @@ FAEscene.perMinLongueur = function(){
     if(undefined === sc) break
     // divs.push(DCreate('DIV', {class: 'libval first-small', append:[
     //   DCreate('LABEL',  {class:'bold', inner: sc.hduree})
-    // , DCreate('SPAN',   {inner: sc.as(STRshort, FORMATED)})
+    // , DCreate(SPAN,   {inner: sc.as(STRshort, FORMATED)})
     // ]}))
     lignesScenes.push(`${sc.hduree.padStart(7)}   ${sc.as(STRshort, FORMATED)}`)
   }
@@ -237,9 +237,9 @@ FADecor.prototype.asStats = function(){
   }
   return DCreate('DIV', {append:[
     DCreate('DIV', {class: 'libval w60-20-20', append:[
-        DCreate('SPAN', {inner: this.name})
-      , DCreate('SPAN', {inner: this.scenesCount, class: 'center'})
-      , DCreate('SPAN', {inner: this.hduree, class: 'center'})
+        DCreate(SPAN, {inner: this.name})
+      , DCreate(SPAN, {inner: this.scenesCount, class: 'center'})
+      , DCreate(SPAN, {inner: this.hduree, class: 'center'})
       ]})
   , DCreate('DIV', {append: divsSousDecors})
   ]})
@@ -247,10 +247,10 @@ FADecor.prototype.asStats = function(){
 
 FASousDecor.prototype.asStats = function(){
   return DCreate('DIV', {class: 'libval w10-50-20-20', append:[
-    DCreate('SPAN', {inner: ' '})
-  , DCreate('SPAN', {inner: this.name})
-  , DCreate('SPAN', {inner: this.scenesCount, class: 'center'})
-  , DCreate('SPAN', {inner: this.hduree, class: 'center'})
+    DCreate(SPAN, {inner: ' '})
+  , DCreate(SPAN, {inner: this.name})
+  , DCreate(SPAN, {inner: this.scenesCount, class: 'center'})
+  , DCreate(SPAN, {inner: this.hduree, class: 'center'})
   ]})
 }
 
