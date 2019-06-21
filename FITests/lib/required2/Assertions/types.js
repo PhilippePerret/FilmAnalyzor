@@ -2,21 +2,20 @@
 
 Object.assign(FITExpectation.prototype,{
 
-  is_typeof(value, options){
+  is_typeof(expectedValue, options){
     let resultat = this.newResultat({
         verbe:'est', comp_verbe:'de type'
-      , objet: value.name.toLowerCase()
+      , objet: expectedValue.name.toLowerCase(), options:options
     })
-    resultat.validIf(typeof(this.sujet) === value.name.toLowerCase())
+    resultat.validIf(typeof(this.actualValue) === expectedValue.name.toLowerCase())
     assert(resultat)
   }
-, is_instanceof(value, options){
+, is_instanceof(expectedValue, options){
     let resultat = this.newResultat({
         verbe:'est', comp_verbe:'une instance de'
-      , options:options||{}
-      , objet: value.name
+      , objet: expectedValue.name, options:options
     })
-    resultat.validIf(this.sujet instanceof(value))
+    resultat.validIf(this.actualValue instanceof(expectedValue))
     assert(resultat)
   }
 

@@ -17,19 +17,19 @@ constructor(){
 // ---------------------------------------------------------------------
 //  ASSERTIONS
 
-is(attrs, options){
+is(expectedAttrs, options){
   let resultat = this.newResultat({
         verbe:'a', comp_verbe:'un ID de'
-      , options:options, objet:`#${JSON.stringify(attrs)}`
+      , options:options, objet:`#${JSON.stringify(expectedAttrs)}`
   })
-  var all_attrs_ok = true
-  for (var att in attrs ){
-    if ( this.element.getAttribute(att) != attrs[att]){
-      all_attrs_ok = false
+  var all_expectedAttrs_ok = true
+  for (var att in expectedAttrs ){
+    if ( this.element.getAttribute(att) != expectedAttrs[att]){
+      all_expectedAttrs_ok = false
       break
     }
   }
-  resultat.validIf(all_attrs_ok)
+  resultat.validIf(all_expectedAttrs_ok)
   assert(resultat)
 }
 

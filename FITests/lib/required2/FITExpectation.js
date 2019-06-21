@@ -6,14 +6,6 @@
 **/
 global.expect = function(){return new FITExpectation(...arguments)}
 
-/**
-  Méthode d'attente
-**/
-global.wait = function(wTime, wMsg){
-  undefined === wMsg || console.log(wMsg)
-  Tests.dureeWaits += wTime
-  return new Promise(ok => {setTimeout(ok, wTime)})
-}
 
 global.FITExpectation = class {
 
@@ -23,42 +15,42 @@ global.FITExpectation = class {
   @param {FITSubject|Any} sujet   Le sujet de l'expectation, la valeur à tester,
                                   en général
 **/
-constructor(sujet, options){
-  this.sujet = sujet
+constructor(sujval, options){
 
-  // Pour garder toujours une trace du sujet original envoyé
-  this.actual = sujet
+  // Au début, on part du principe que la valeur actuelle et le sujet affiché
+  // sont identiques et fournis en premier. C'est le cas par exemple pour un
+  // nombre
+  this.sujet        = sujval
+  this.actualValue  = sujval
 
   if ( 'string' === typeof options) {
-    // C'est le titre seul qui a été donné en string
-    this.options = {subject:options}
+    // Si le second argument est un string, c'est le sujet humain seul
+    this.options = {sujet:options}
   } else {
     this.options = options || {}
   }
 
-  this.value = undefined
+  // console.log("this.options:", this.options)
 
-  // Si le sujet est une classe héritante de FITSubject, on doit la
+  // Si l'argument est une classe héritante de FITSubject, on doit la
   // traiter de façon particulière
   // Sinon, on la transforme toujours en FITSubject pour pouvoir avoir
   // un traitement similaire pour tout le monde
-  if (sujet && sujet.classe === 'FITSubject') {
+  if (sujval && sujval.classe === 'FITSubject') {
     this.isFitSubject   = true
-    this.fitSubject     = sujet // pour pouvoir définir 'positive'
-    this.value = sujet.subject_value || sujet.value
-    sujet.subject_message && ( this.subject = this.options.subject || sujet.subject_message )
-    sujet.assertions      && Object.assign(this, sujet.assertions)
-    sujet.options         && Object.assign(this.options, sujet.options)
-    console.log("this.options:", this.options)
-    // this.fitSubject.sujet = this.options.subject || sujet
+    this.fitSubject     = sujval // pour pouvoir définir 'positive'
+    this.actualValue    = sujval.actualValue
+    Object.assign(this, sujval.assertions || {})
+    Object.assign(this.options, sujval.options || {})
   } else {
     this.fitSubject = new FITSubject('any')
-    this.fitSubject.sujet = this.options.subject || sujet
+    this.fitSubject.sujet = this.options.sujet || sujval
     // Quand le sujet n'est pas un FITSubject original, il faut binder
     // les méthodes de FITSubject
     this.bindFITSubjectMethods()
   }
 
+  this.fitSubject.sujet     = this.options.sujet || sujval
   this.fitSubject.positive  = true
   this.fitSubject.strict    = false
 
@@ -84,12 +76,6 @@ get strictly() {
 bindFITSubjectMethods(){
   this.newResultat = this.fitSubject.newResultat.bind(this.fitSubject)
 }
-
-// // Le sujet du test (à écrire)
-// get subject(){
-//   return this.options.subject || this._subject || this.options.sujet || this.sujet
-// }
-// set subject(v){this._subject = v}
 
 /**
   Pour ajouter des expectations générales propres à l'application

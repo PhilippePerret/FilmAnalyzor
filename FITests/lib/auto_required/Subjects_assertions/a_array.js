@@ -5,10 +5,10 @@ class a_Subject extends FITSubject {
 constructor(){
   super('Array a')
   const params = arguments
-  if ( params.length === 1 ) this.actual = params[0]
-  else this.actual = [...params]
-  this.sujet = `a(${JSON.stringify(this.actual)})`
-  // console.log("[a] actual:", this.actual)
+  if ( params.length === 1 ) this.actualValue = params[0]
+  else this.actualValue = [...params]
+  this.sujet = `a(${JSON.stringify(this.actualValue)})`
+  // console.log("[a] actualValue:", this.actualValue)
   Object.assign(this.assertions,{
       rien: null
     , is: this.is.bind(this)
@@ -17,34 +17,34 @@ constructor(){
 }
 
 checkValiditySujet(){
-  if ( Array.isArray(this.actual) ) return true
+  if ( Array.isArray(this.actualValue) ) return true
   else throw new Error('not-a-array')
 }
 
 // ---------------------------------------------------------------------
 //  ASSERTIONS
 
-is(expected, options){
+is(expectedValue, options){
   this.checkValiditySujet()
   let resultat = this.newResultat({
-      verbe:'est', comp_verbe:'égal à', objet:JSON.stringify(expected)
+      verbe:'est', comp_verbe:'égal à', objet:JSON.stringify(expectedValue)
     , options:options
   })
-  resultat.validIf(Array.is(this.actual, expected))
+  resultat.validIf(Array.is(this.actualValue, expectedValue))
   return assert(resultat)
 }
 
-contains(expected, options){
+contains(expectedValue, options){
   // On checke la validité du sujet ici
   this.checkValiditySujet()
   let resultat = this.newResultat({
-    verbe:'contient', objet:JSON.stringify(expected)
+    verbe:'contient', objet:JSON.stringify(expectedValue)
     , options:options
   })
-  if( ! Array.isArray(expected) ) expected = [expected]
+  if( ! Array.isArray(expectedValue) ) expectedValue = [expectedValue]
   var contentOK = true, bads = []
-  for ( var el of expected ){
-    if ( ! this.actual.includes(el) ) {
+  for ( var el of expectedValue ){
+    if ( ! this.actualValue.includes(el) ) {
       bads.push(JSON.stringify(el))
       contentOK = false
     }

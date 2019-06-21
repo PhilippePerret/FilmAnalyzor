@@ -861,6 +861,25 @@ On peut se servir de ce mot-clé, par exemple, pour définir rapidement tous les
 
 Les tests des FITests se trouvent dans `./__TestsFIT__/FIT`. Pour les lancer, il suffit donc de régler `onlyFolders: ['FIT']` dans `config.json`.
 
+### Rationnalisation des termes
+
+Les termes sont rationnalisés pour tous les tests :
+
+`actualValue`
+: Valeur actuelle réelle à comparer à `expectedValue`.
+: Elle est souvent passée en premier argument de `expect` mais c'est loin d'être toujours le cas.
+
+`expectedValue`
+: Valeur attendue réelle. À comparer à `actualValue`.
+
+`sujet`
+: Le sujet humain à écrire dans les messages.
+
+`objet`
+: L'objet humain à écrire dans les messages. C'est parfois la valeur attendue, `expectedValue`, stringifiée ou JSONisée.
+
+### Expectations d'expectations
+
 Dans ces tests, pour dire qu'un test doit produire un succès ou, particulièrement, un échec (donc pour produire un succès qui dit qu'un test aurait du être un échec), on utilise le [sujet complexe](#les_sujets_complexes) `x`. Par exemple :
 
 ```javascript

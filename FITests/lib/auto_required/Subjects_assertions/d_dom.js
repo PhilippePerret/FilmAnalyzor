@@ -14,7 +14,7 @@ async exists(options){
       verbe:'existe', objet: 'dans le DOM'
     , options:options
   })
-  const pass = await DOM.exists(this.actual)
+  const pass = await DOM.exists(this.actualValue)
   resultat.validIf(pass)
   return assert(resultat)
 }
@@ -34,8 +34,8 @@ constructor(suj){
   super('d Subject')
   this.initialSujet = this.sujet = suj
   this.invalidSujet = false
-  this.actual = this.getActualFromSujet(suj)
-  this.invalidSujet || (this.sujet = this.getShortSujetFrom(this.actual))
+  this.actualValue = this.getActualFromSujet(suj)
+  this.invalidSujet || (this.sujet = this.getShortSujetFrom(this.actualValue))
   // console.log("this.sujet = ", this.sujet)
   Object.assign(this.assertions,{
       exists:     this.exists.bind(this)

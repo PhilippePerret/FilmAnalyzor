@@ -27,3 +27,12 @@ global.waitFor = async function(waitingMethod, options){
     throw new ExpectationError(options.failure || "Attente vaine.")
   }
 }
+
+/**
+  Méthode d'attente
+**/
+global.wait = function(wTime, wMsg){
+  undefined === wMsg || console.log(wMsg)
+  Tests.dureeWaits += wTime
+  return new Promise(ok => {setTimeout(ok, wTime)})
+}

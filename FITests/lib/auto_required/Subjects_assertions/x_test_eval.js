@@ -4,39 +4,40 @@
 
   Note : il est très compliqué de produire un test sur un test asynchrone.
   Consulter le mode d'emploi.
-  
+
 **/
 class x_Subject extends FITSubject {
-constructor(value){
+constructor(sujval){
   super(name)
-  this.sujet = `\`${value}\``
+  this.sujet = `\`${sujval}\``
 
-  if ( 'string' === typeof value ) {
-    if ( value.match(/\(\)$/) ) {
-      this.actual = value.replace(/\)$/,'{onlyReturn:true})')
+  if ( 'string' === typeof sujval ) {
+    if ( sujval.match(/\(\)$/) ) {
+      this.initValue = sujval.replace(/\)$/,'{onlyReturn:true})')
     } else {
-      this.actual = value.replace(/\)$/,', {onlyReturn:true})')
+      this.initValue = sujval.replace(/\)$/,', {onlyReturn:true})')
     }
-  } else if ( 'function' === typeof value ) {
-    this.actual = value
+  } else if ( 'function' === typeof sujval ) {
+    this.initValue = sujval
+  } else {
+    throw new ArgumentError("L'argument du x_Subject est invalide", sujval)
   }
-  // console.log("this.actual evalué :", this.actual)
+  // console.log("this.actualValue evalué :", this.actualValue)
   Object.assign(this.assertions,{
       fails:    this.fails.bind(this)
     , succeeds: this.succeeds.bind(this)
   })
 }
 async evaluateActual(){
-  if ( 'string' === typeof(this.actual)) {
+  if ( 'string' === typeof(this.initValue)) {
     try {
-      this.actual = eval(this.actual)
+      this.actualValue = eval(this.initValue)
     } catch (e) {
       console.error(e)
     }
-  } else if ('function' === typeof this.actual ) {
-    this.actual = await this.actual.call()
+  } else if ('function' === typeof this.initValue ) {
+    this.actualValue = await this.initValue.call()
   }
-  return this.actual
 }
 
 // ---------------------------------------------------------------------
@@ -46,16 +47,16 @@ async succeeds(options){
   let resultat = this.newResultat({
     verbe: 'produit', objet:'un succès', options:options
   })
-  const pass = await this.evaluateActual()
-  resultat.validIf(pass === true)
+  await this.evaluateActual()
+  resultat.validIf(this.actualValue === true)
   return assert(resultat)
 }
 async fails(options){
   let resultat = this.newResultat({
     verbe: 'produit', objet:'un échec', options:options
   })
-  const pass = await this.evaluateActual()
-  resultat.validIf(pass === false)
+  await this.evaluateActual()
+  resultat.validIf(this.actualValue === false)
   return assert(resultat)
 }
 

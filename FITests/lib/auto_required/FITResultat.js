@@ -103,37 +103,38 @@ assertise(suj, verbe, complement_verbe, exp){
 **/
 positivise(verbe,comp_verbe){
   comp_verbe = comp_verbe || ''
-  let sujet = this.options.ref ?` (${this.sujet}::${typeof(this.sujet)}) `:''
+  // let designActual = this.options.ref ?` (${this.actualValue}::${typeof(this.actualValue)}) `:''
+  let designActual = ''
   switch (verbe) {
     case 'a':
       return {
-          success: `${this.positive? 'a bien' : sujet + 'n’a pas'} ${comp_verbe}`
-        , failure: `${this.positive? sujet + 'devrait avoir' : 'ne devrait pas avoir'} ${comp_verbe}`
+          success: `${this.positive?'a bien':'n’a pas'} ${comp_verbe}`
+        , failure: `${designActual}${this.positive?'devrait avoir':'ne devrait pas avoir'} ${comp_verbe}`
       }
     case 'est':
       return {
-          success: `${this.positive? 'est bien' : sujet + 'n’est pas'} ${comp_verbe}`
-        , failure: `${this.positive? sujet + 'devrait être' : 'ne devrait pas être'} ${comp_verbe}`
+          success: `${this.positive?'est bien':'n’est pas'} ${comp_verbe}`
+        , failure: `${designActual}${this.positive?'devrait être':'ne devrait pas être'} ${comp_verbe}`
       }
     case 'existe':
       return {
           success: `${this.positive?'existe bien':'n’existe pas'} ${comp_verbe}`
-        , failure: `${this.positive?'devrait exister':'ne devrait pas exister'} ${comp_verbe}`
+        , failure: `${designActual}${this.positive?'devrait exister':'ne devrait pas exister'} ${comp_verbe}`
       }
     case 'contient':
       return {
           success: `${this.positive?'contient bien':'ne contient pas'} ${comp_verbe}`
-        , failure: `${this.positive?'devrait contenir':'ne devrait pas contenir'} ${comp_verbe}`
+        , failure: `${designActual}${this.positive?'devrait contenir':'ne devrait pas contenir'} ${comp_verbe}`
       }
     case 'répond':
       return {
           success: `${this.positive?'répond bien':'ne répond pas'} ${comp_verbe}`
-        , failure: `${this.positive?'devrait répondre':'ne devrait pas répondre'} ${comp_verbe}`
+        , failure: `${designActual}${this.positive?'devrait répondre':'ne devrait pas répondre'} ${comp_verbe}`
       }
     case 'produit':
       return {
           success: `${this.positive?'produit bien':'ne produit pas'} ${comp_verbe}`
-        , failure: `${this.positive?'devrait produire':'ne devrait pas produire'} ${comp_verbe}`
+        , failure: `${designActual}${this.positive?'devrait produire':'ne devrait pas produire'} ${comp_verbe}`
       }
     default:
       console.error(`Dans "positivise", les cas ne connaissent pas le verbe "${verbe}".`)

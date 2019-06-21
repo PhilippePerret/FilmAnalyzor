@@ -1,10 +1,10 @@
 'use strict'
 
 class b_Subject extends FITSubject {
-constructor(value){
-  super('Boolean b')
-  this.actual = value
-  this.sujet  = `${value}`
+constructor(sujval){
+  super('<Boolean value>')
+  this.actualValue = sujval
+  this.sujet = `${sujval}`
   Object.assign(this.assertions,{
     is: this.is.bind(this)
   })
@@ -17,18 +17,18 @@ checkValiditySujet(){
 // ---------------------------------------------------------------------
 //  ASSERTION
 
-is(booleanValue, options){
+is(expectedValue, options){
   let resultat = this.newResultat({
-    verbe:'est', objet: `${booleanValue}`
+    verbe:'est', objet: `${expectedValue}`
     , options:options
   })
-  resultat.validIf(this.actual === booleanValue)
+  resultat.validIf(this.actualValue === expectedValue)
   return assert(resultat)
 }
 
 }
 
 
-global.b = function(value){
-  return new b_Subject(value)
+global.b = function(sujval){
+  return new b_Subject(sujval)
 }
