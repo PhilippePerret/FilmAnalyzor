@@ -6,29 +6,11 @@
 
 **/
 global.FITSubject = class {
-constructor(name){
-  this.name = name
-  this.assertions = {
-      raises:       this.raises.bind(this)
-    , responds_to:  this.responds_to.bind(this)
-  }
-}
-
-toString(){ return this.name }
-toValue() { return this.actualValue }
-
-newResultat(data){
-  if ( undefined === data.options ) data.options = {}
-  // console.log("this.sujet dans FITSubject:", this.sujet)
-  return new FITResultat(this, Object.assign(data,{sujet: this.sujet}))
-}
-
-get classe() {return 'FITSubject'}
-
 // ---------------------------------------------------------------------
-//  ASSERTIONS COMMUNES
-// Si une assertion est ajoutée, il faut l'ajouter au constructeur ci-dessu
-
+//  ASSERTIONS (dont héritent toutes les sous-classers)
+//
+// Si une assertion est ajoutée, il faut l'ajouter au constructeur
+// ci-dessous
 
 raises(exception, options){
   let resultat = this.newResultat({
@@ -52,6 +34,38 @@ responds_to(fn, options){
   resultat.validIf('function' === typeof(this[fn]))
   return assert(resultat)
 }
+
+instanceof(expectedClass, options){
+  let resultat = this.newResultat({
+    verbe:'est', comp_verbe:'une instance de', objet:`${expectedClass.name}`
+    , options:options
+  })
+  resultat.validIf(this instanceof expectedClass)
+  return assert(resultat)
+}
+// /ASSERTIONS
+// ---------------------------------------------------------------------
+
+constructor(name){
+  this.name = name
+  this.assertions = {
+      raises:       this.raises.bind(this)
+    , responds_to:  this.responds_to.bind(this)
+    , instanceof:   this.instanceof.bind(this)
+  }
+}
+
+toString(){ return this.name }
+toValue() { return this.actualValue }
+static get name(){return 'FITSubject'}
+
+newResultat(data){
+  if ( undefined === data.options ) data.options = {}
+  // console.log("this.sujet dans FITSubject:", this.sujet)
+  return new FITResultat(this, Object.assign(data,{sujet: this.sujet}))
+}
+
+get classe() {return 'FITSubject'}
 
 
 }

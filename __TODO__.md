@@ -2,6 +2,14 @@
 
 ### Traiter :
 
+FILES
+  - vider le dossier `support/files` en début de test, toujours
+  - dans `f_Subject`, distinguer les dossiers des fichiers, faire une méthode différente pour chacun :
+    contentFolder (retourne la liste des fichiers)/   contentFile (retourne le contenu)
+    containsFolder /  containsFolder
+  - pouvoir faire une recherche par expression régulière
+
+
 RÉFLEXIONS SUR LES FITests
 - Ne pourrait-on pas distinguer les opérations des vérifications ? Ça ne changerait pas grand-chose au niveau programmation peut-être, mais ça pourrait éclaircir le code.
   Un autre avantage serait qu'on pourrait mettre les choses dans l'ordre qu'on voudrait. L'application de tests appellerait toujours dans l'ordre : `preliminaires`, `tests_preliminaires`, `operation`, `verification`, mais on pourrait, dans la définition du case, commencer par la vérification, ensuite mettre l'opération et seulement à la fin les préliminaires, qui sont moins importants que le reste.

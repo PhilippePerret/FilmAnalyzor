@@ -72,7 +72,7 @@ global.Tests = {
 **/
 , loadSupportFiles(){
     // Tout le support de l'application courante
-    this.requireFolder(path.join(this.appPath,'__TestsFIT__','support'))
+    this.requireFolder(path.join(this.testsFolder,'support'))
   }
 
 /**
@@ -183,6 +183,9 @@ Object.defineProperties(Tests,{
 , afterTestsFile:{get(){
     return path.join(this.testsFolder,'after_tests.js')
   }}
+, supportTestsFolder:{get(){
+    return path.join(this.testsFolder,'support')
+}}
 , testsFolder:{get(){
     return path.join(this.appPath,'__TestsFIT__')
   }}
