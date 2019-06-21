@@ -1,8 +1,8 @@
 {
-  "onlyFolders": ["FilmAnalyzor/EventForm"]
+  "onlyFolders": ["FIT/Complex_subjects"]
 , "random":     false
 , "fail_fast":  true
-, "regFiles":   "modification_event"
+, "regFiles":   null
 , "regNames": null
 , "regCases": null
 , "exemple regFiles": "only.test.js"

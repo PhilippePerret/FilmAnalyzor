@@ -30,13 +30,13 @@ constructor(sujet, options){
   this.actual = sujet
 
   if ( 'string' === typeof options) {
-    // C'est le titre seul qui a été donné
+    // C'est le titre seul qui a été donné en string
     this.options = {subject:options}
   } else {
     this.options = options || {}
   }
 
-  this.value    = undefined
+  this.value = undefined
 
   // Si le sujet est une classe héritante de FITSubject, on doit la
   // traiter de façon particulière
@@ -46,9 +46,11 @@ constructor(sujet, options){
     this.isFitSubject   = true
     this.fitSubject     = sujet // pour pouvoir définir 'positive'
     this.value = sujet.subject_value || sujet.value
-    sujet.subject_message && ( this.subject = sujet.subject_message )
+    sujet.subject_message && ( this.subject = this.options.subject || sujet.subject_message )
     sujet.assertions      && Object.assign(this, sujet.assertions)
     sujet.options         && Object.assign(this.options, sujet.options)
+    console.log("this.options:", this.options)
+    // this.fitSubject.sujet = this.options.subject || sujet
   } else {
     this.fitSubject = new FITSubject('any')
     this.fitSubject.sujet = this.options.subject || sujet

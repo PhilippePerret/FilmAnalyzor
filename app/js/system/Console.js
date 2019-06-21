@@ -5,7 +5,7 @@ const RC     = `
 `
 const STYLE1     = 'font-weight:bold;font-size:1.2em;' // Titre principal/fin
 // const STYLE2     = 'margin-top:2em;border:1px solid black;padding:2px 4px;font-size:1.21em;font-weight:bold;' // Tests
-const STYLE2     = 'margin-top:2em;border:1px solid white;padding:2px 4px;font-size:1.21em;font-weight:bold;' // Tests
+const STYLE2     = 'margin-top:2em;border:1px solid white;padding:4px 8px;font-size:1.21em;font-weight:bold;' // Tests
 const PATHSTYLE  = 'font-size:0.85;color:grey;font-style:italic;margin-left:400px;'//path
 const STYLE3     = 'font-size:1.1em;font-weight:bold;' // Case
 const REDBOLD    = 'font-weight:bold;color:red;'

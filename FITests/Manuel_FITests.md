@@ -1,6 +1,9 @@
 # Manuel des tests
 
 * [Introduction](#introduction)
+  * [Principaux généraux fondateurs](#principes_generaux_fondateurs)
+    * [De l'intérieur](#from_inside_tests)
+    * [Sujet complexe une lettre](#principe_complex_subject_one_lettre)
 * [Utilisation des FITests](#utilisation)
 * [Configurer les tests](#configurer_les_tests)
 * [Définition d'une feuille de test](#define_test_sheet)
@@ -19,8 +22,9 @@
   * [Assertions usuelles](#usual_assertions)
   * [Création d'une assertion](#create_new_assertions)
   * [Options des assertions](#options_assertions)
-  * [Sujets complexes (`expect(sujet)`)](#complexes_subjects)
+  * [Sujets complexes (`expect(sujet)`)](#les_sujets_complexes)
 * [Sujets complexes existants](#tests_own_complex_subjects)
+  * [Sujets complexes une lettre](#complex_subjects_one_letter)
   * [Élément DOM courant (`FocusedElement`)](#active_dom_element)
 * [Méthodes pratiques](#les_methodes_pratiques)
   * [Simuler des touches clavier](#simulate_keyboard)
@@ -28,10 +32,23 @@
 * [Textes écrits dans le suivi](#textes_suivis)
   * [Cas entièrement à implémenter (`pending`)](#pending)
   * [Test à implémenter plus tard (`tester`)](#test_to_define)
+* [Tests des FITests](#tests_of_fitests)
 
 # Introduction {#introduction}
 
-Les « FITests » (« From Inside Tests ») permettent de lancer des tests de l'intérieur même de l'application. De ce fait, leur utilisation est simplissime en regard des autres tests qui, pour les tests unitaires, d'intégration et fonctionnels nécessite toujours des réglages particuliers.
+Les « FITests » (« From Inside Tests ») permettent de lancer des tests de l'intérieur même de l'application. De ce fait, leur utilisation est simplissime en regard des autres tests qui, pour les tests unitaires, d'intégration et fonctionnels nécessitent toujours des réglages particuliers et délicats.
+
+## Principaux généraux fondateurs {#principes_generaux_fondateurs}
+
+### De l'intérieur {#from_inside_tests}
+
+Comme indiqué, les tests se lancent de l'intérieur même de l'application à tester, c'est-à-dire qu'ils ont accès à tous ce que peut atteindre l'application. Pas de modules à requérer, etc.
+
+### Sujet complexe une lettre {#principe_complex_subject_one_lettre}
+
+La plupart des [sujets complexes)](#les_sujets_complexes) utilisés dans la formule `expect(<sujet complexe>)` fonctionnent en une lettre minuscule. Par exemple, si l'on parle d'un élément du dom, ce sera la lettre `d` comme « DOM » : `d("#monDiv")`. Si c'est un fichier, ce sera `f` comme « file » : `f("mon/path")`. Voir [tous les « sujets complexes une lettre »](#complex_subjects_one_letter)
+
+> Noter de ce fait qu'il ne faut pas utiliser des méthodes en une lettre minuscule dans l'application (il ne faut donc pas tester une application uglifiée et minifyisée).
 
 # Utilisation des FITests {#utilisation}
 
@@ -118,6 +135,8 @@ t.case("Un autre cas particulier du test, asynchrone", async () => {
 
   // Pour gérer l'asynchronicité
   await expect(domId).toExistsInDom({success: 'Le truc existe', onlySuccess:true})
+  // OU :
+  await expect(domId).toExistsInDom({onlySuccess:'Le truc existe'})
   // ... on poursuit les tests avec…
 
 })
@@ -200,7 +219,7 @@ expect(sujet[, options])
 
 ```
 
-Le sujet peut être un [sujet complexe](#complexes_subjects) ou tout autre élément qui peut être comparé.
+Le sujet peut être un [sujet complexe](#les_sujets_complexes) ou tout autre élément qui peut être comparé.
 
 `options`, pour le moment, ne sert qu'à décrire comment sera présenté le sujet dans les messages. Au plus simple, on peut mettre simplement en string la valeur dont l'on veut voir désigner le sujet.
 
@@ -263,7 +282,7 @@ FITExpectation.add(MesAssertions)
 
 ```
 
-Noter qu'avec la définition ci-dessus, les assertions seront utilisables pour n'importe quel sujet. Pour faire des assertions propres à des sujets particuliers, utiliser les [sujets complexes](#complexes_subjects).
+Noter qu'avec la définition ci-dessus, les assertions seront utilisables pour n'importe quel sujet. Pour faire des assertions propres à des sujets particuliers, utiliser les [sujets complexes](#les_sujets_complexes).
 
 Ensuite, on peut tout simplement faire :
 
@@ -275,6 +294,8 @@ describe("En utilisation mes assertions", function(){
   })
   this.case("J'utilise la seconde", async () => {
     expect('monsujet').not.uneAutreAssertion({onlyFailure:true})
+    // OU :
+    expect('monsujet').not.uneAutreAssertion({onlyFailure:'Le message d’échec'})
   })
   this.case("J'utilise la seconde", async () => {
     expect('monsujet').strictly.unestrict({onlySuccess:true})
@@ -402,15 +423,16 @@ equals(expected, options){
 
 ### Options des assertions {#options_assertions}
 
-> Note : pour les [sujets complexes](#complexes_subjects), on peut définir toutes ces valeurs dans la propriété `options`.
+> Note : pour les [sujets complexes](#les_sujets_complexes), on peut définir toutes ces valeurs dans la propriété `options`.
 
 `onlyFailure`
-: si `true`, le succès reste silencieux, seul la failure écrit un message.
+: si `true` (ou le message d'échec), le succès reste silencieux, seul la failure écrit un message.
 
 `onlySuccess`
-: si `true`, la failure reste silencieuse, seul le succès écrit un message.
+: si `true` (ou le message de succès), la failure reste silencieuse, seul le succès écrit un message.
 
 `success`, `failure`
+: Forcer un message de succès ou d'échec différent du message par défaut.
 : On peut aussi mettre explicitement `success:false` ou `failure:false` dans les options (dernier argument de l'assertion) pour indiquer de ne pas écrire de message.
 
 `noRef`
@@ -418,7 +440,7 @@ equals(expected, options){
 : Par exemple, pour l'égalité, au lieu du message "La somme (2+2:number) est juste", on obtiendra "la somme est juste".
 
 
-### Sujets complexes (`expect(sujet)`) {#complexes_subjects}
+### Sujets complexes (`expect(sujet)`) {#les_sujets_complexes}
 
 Les « sujets complexes » sont une des fonctionnalités les plus puissantes des *FITests*. Il permet de définir un comportement propre à l'application de façon très simple.
 
@@ -546,6 +568,34 @@ Il suffit ensuite de l'utiliser comme :
 ---------------------------------------------------------------------
 
 ## Sujets complexes existants {#tests_own_complex_subjects}
+
+### Sujets complexes une lettre {#complex_subjects_one_letter}
+
+`a` `a([Array|List])`
+: Un Array. `a(1,2,3)`
+
+`b` `b(Boolean)`
+: Un booléen.
+: Pour estimer si c'est vrai ou faux.
+
+`d` `d(String|DOMElement|jQuerySet)`
+: Un élément DOM. `d("div#monDiv")`
+
+`f` `f(String|File)`
+: Un fichier. `f("/path/to/my/folder/")`
+
+`n` `n(Number|Integer|Float)`
+: Un nombre. `n(12+23)`
+
+`o` `o(Object)`
+: Un objet. `o({prop:value,prop:value})`
+
+`x` `x('test à évaluer')`
+: Une expectation — et seulement une expectation — à évaluer.
+: Utile uniquement pour les tests de FITests.
+: P.e. `expect(x('expect(a(12,2))).contains(12)').succeeds()`
+: Noter que `{onlyReturn:true}` sera ajouté à la fin pour que l'évaluation ne produise pas de résultat écrit. Sinon, une failure attendue apparaitrait comme une failure.
+: Les deux assertions possibles sont `succeeds` (quand une réussite est attendue) et `fails` (quand un échec est attendu).
 
 ### Élément DOM courant (`FocusedElement`) {#active_dom_element}
 
@@ -805,3 +855,45 @@ Lorsqu'un test ponctuel — à l'intérieur d'un cas long — est compliqué o
 C'est le message `<message du test à faire>` qui apparaitra en rouge gras dans le suivi des tests, indiquant clairement que ce test sera à implémenter.
 
 On peut se servir de ce mot-clé, par exemple, pour définir rapidement tous les tests à faire. Puis les implémenter dans un second temps.
+
+
+## Tests des FITests {#tests_of_fitests}
+
+Les tests des FITests se trouvent dans `./__TestsFIT__/FIT`. Pour les lancer, il suffit donc de régler `onlyFolders: ['FIT']` dans `config.json`.
+
+Dans ces tests, pour dire qu'un test doit produire un succès ou, particulièrement, un échec (donc pour produire un succès qui dit qu'un test aurait du être un échec), on utilise le [sujet complexe](#les_sujets_complexes) `x`. Par exemple :
+
+```javascript
+
+expect(x('expect(12).is(13)')).fails()
+
+```
+
+Cette expectation évalue en silence `expect(12).is(13)`, qui retourne false, conformément à ce que demande `fails()`.
+
+Mais les choses sont beaucoup plus complexe pour les tests des tests asynchrone. Il faut alors transmettre une méthode à `x`. Sa forme générale est :
+
+```javascript
+
+expect(x(
+  async function(){return await expect(...).assertion(..., {onlyReturn:true})}
+)).fails()
+
+```
+
+Bien noter les `async`, `return` et `await` qui sont tous indispensables. Surtout le `return` qu'on risque de facilement oublier et qui porduirait un échec chaque fois.
+
+Pour que le `sujet` affiché ne soit pas la fonction, on peut utiliser :
+
+```javascript
+
+expect(
+  x(
+    async function(){return await expect(...).assertion(..., {onlyReturn:true})}
+  ),
+  'expect(...).assertion(...)'
+).fails()
+
+```
+
+> Noter qu'on ne remet pas le `{onlyReturn:true}` qui ne sert qu'à faire un test silencieux, donc qui ne produira pas de message de succès ou d'échec.

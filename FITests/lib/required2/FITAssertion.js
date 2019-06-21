@@ -10,7 +10,7 @@ constructor(pass, success_msg, failure_msg, options){
     this.pass = this.resultat.valid
     this.success_message = this.resultat.messages.success
     this.failure_message = this.resultat.messages.failure
-    this.options = this.resultat.options
+    this.options = this.resultat.options || {}
   } else {
     this.pass = pass
     this.success_message = success_msg
@@ -34,7 +34,7 @@ write(){
 }
 writeSuccess(){
   if ( this.options.onlyFailure ) return
-  Console.success(this.options.success || this.success_message)
+  Console.success(this.options.success || this.options.onlySuccess || this.success_message)
 }
 writeFailure(){
   if ( this.options.onlySuccess ) return
@@ -48,7 +48,7 @@ writeFailure(){
   Cette méthode est utile pour l'erreur produite en cas d'erreur
 **/
 get finalFailureMessage() {
-  var msg = this.options.failure || this.failure_message
+  var msg = this.options.failure || this.options.onlyFailure || this.failure_message
   if ( this.options && this.options.details ){
     msg += `\n${this.options.details.join(', ')}`
   }
@@ -64,9 +64,14 @@ get finalFailureMessage() {
   cas d'échec.
 **/
 global.assert = function(){
-  let a = new FITAssertion(...arguments)
-  a.add()
-  if ( false === a.pass ) {
-    throw new ExpectationError(a.finalFailureMessage)
+  let ass = new FITAssertion(...arguments)
+  // Si on a juste besoin de la valeur de l'assertion, sans l'écrire en
+  // tant qu'échec ou succès, on la retourne.
+  if ( ass.options.onlyReturn ) return ass.pass
+  // Sinon, on l'écrit et on produit une failure le cas échéant.
+  ass.add()
+  if ( false === ass.pass ) {
+    throw new ExpectationError(ass.finalFailureMessage)
   }
+  return ass.pass
 }

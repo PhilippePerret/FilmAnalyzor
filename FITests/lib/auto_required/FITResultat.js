@@ -130,6 +130,11 @@ positivise(verbe,comp_verbe){
           success: `${this.positive?'répond bien':'ne répond pas'} ${comp_verbe}`
         , failure: `${this.positive?'devrait répondre':'ne devrait pas répondre'} ${comp_verbe}`
       }
+    case 'produit':
+      return {
+          success: `${this.positive?'produit bien':'ne produit pas'} ${comp_verbe}`
+        , failure: `${this.positive?'devrait produire':'ne devrait pas produire'} ${comp_verbe}`
+      }
     default:
       console.error(`Dans "positivise", les cas ne connaissent pas le verbe "${verbe}".`)
       return {
