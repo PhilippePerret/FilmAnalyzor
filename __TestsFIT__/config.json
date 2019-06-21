@@ -2,7 +2,7 @@
   "onlyFolders": ["FIT/Complex_subjects"]
 , "random":     false
 , "fail_fast":  true
-, "regFiles":   "d.test"
+, "regFiles":   null
 , "regNames": null
 , "regCases": null
 , "exemple regFiles": "only.test.js"

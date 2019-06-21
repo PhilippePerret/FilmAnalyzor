@@ -9,8 +9,8 @@ global.FITSubject = class {
 constructor(name){
   this.name = name
   this.assertions = {
-      raises:this.raises.bind(this)
-    , responds_to:this.responds_to.bind(this)
+      raises:       this.raises.bind(this)
+    , responds_to:  this.responds_to.bind(this)
   }
 }
 
@@ -19,6 +19,7 @@ toValue() { return this.actualValue }
 
 newResultat(data){
   if ( undefined === data.options ) data.options = {}
+  // console.log("this.sujet dans FITSubject:", this.sujet)
   return new FITResultat(this, Object.assign(data,{sujet: this.sujet}))
 }
 

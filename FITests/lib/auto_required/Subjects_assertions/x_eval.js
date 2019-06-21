@@ -8,10 +8,12 @@
 **/
 class x_Subject extends FITSubject {
 constructor(sujval){
-  super(name)
-  this.sujet = `\`${sujval}\``
+  super('<Expectation value>')
+
+  this.options = {}
 
   if ( 'string' === typeof sujval ) {
+    this.options.sujet = `\`${sujval}\``
     if ( sujval.match(/\(\)$/) ) {
       this.initValue = sujval.replace(/\)$/,'{onlyReturn:true})')
     } else {
@@ -22,6 +24,9 @@ constructor(sujval){
   } else {
     throw new ArgumentError("L'argument du x_Subject est invalide", sujval)
   }
+
+  // console.log("this.sujet", this.sujet)
+
   // console.log("this.actualValue evalué :", this.actualValue)
   Object.assign(this.assertions,{
       fails:    this.fails.bind(this)
