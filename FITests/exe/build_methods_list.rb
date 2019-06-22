@@ -136,6 +136,11 @@ class MethodFile
 end
 
 class AideFile
+  class << self
+    def current
+      @current ||= new()
+    end
+  end
   def path
     @path ||= File.join(FIT_FOLDER,'Manuel','Manuel_FITests_METHS.html')
   end
@@ -159,6 +164,7 @@ class AideFile
   def addFile path
     ancre = path.gsub(/[^a-z]/i,'')
     name  = File.basename(path,File.extname(path))
+    path  = path.sub(/^#{FIT_FOLDER}/,'.')
     add "<div id=\"#{ancre}\" class=\"file\"><span class=\"name\">#{name}</span><span class=\"path\">#{path}</span></div>"
     addTdm(path, name, ancre)
   end
@@ -185,7 +191,7 @@ class AideFile
 end
 
 def aidefile
-  @aidefile ||= AideFile.new()
+  @aidefile ||= AideFile.current
 end
 
 # Initialisation du fichier qui va contenir toutes les méthodes
@@ -195,8 +201,8 @@ begin
   Dir["#{FIT_FOLDER}/**/*.js"].each do |path|
     File.read(path).match(/\@method/) || next
     aidefile.addFile(path)
-    mfile = MethodFile.new(path)
-    mfile.treate
+    MethodFile.new(path).treate
+    # break
   end
 
 rescue Exception => e

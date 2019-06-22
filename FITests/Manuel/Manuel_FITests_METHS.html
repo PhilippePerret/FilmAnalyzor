@@ -7,11 +7,36 @@
     </head>
     <body>
       <section id="tdm">
-        <a href="#UsersphilippeperretProgrammationFilmAnalyzorFITestslibrequireddivershandiesfilesjs">Files</a>
+        <a href="#UsersphilippeperretProgrammationFilmAnalyzorFITestslibrequireddivershandieskeysjs">Keys</a><a href="#UsersphilippeperretProgrammationFilmAnalyzorFITestslibrequireddivershandiesfilesjs">Files</a>
       </section>
-<div id="UsersphilippeperretProgrammationFilmAnalyzorFITestslibrequireddivershandiesfilesjs" class="file"><span class="name">files</span><span class="path">/Users/philippeperret/Programmation/FilmAnalyzor/FITests/lib/required1/divers/handies/files.js</span></div>
-</body>
-</html><div class="method">
+<div id="UsersphilippeperretProgrammationFilmAnalyzorFITestslibrequireddivershandieskeysjs" class="file"><span class="name">keys</span><span class="path">./lib/required1/divers/handies/keys.js</span></div><div class="method">
+  <div class="method-name">keyPress(key, options)</div>
+  <div class="method-description">Simule une touche pressée (down et up)</div>
+      <div class="method-provided"><div class="param"><span class="param-name">key</span><span class="param-type">String</span><span class="param-description">La touche à presser, par exemple "k"</span></div><div class="param"><span class="param-name">options</span><span class="param-type">Objet</span><span class="param-description">Table des options, pour indiquer les modificateurs et la cible, avec `metaKey:true`, `shiftKey:true`, etc. :on permet aussi d'indiquer sur quel DOMElement il faut trigger la touche.</span></div></div>
+
+  
+      <div class="method-usage"><span class="usage">keyPress('c', {shiftKey:true, metaKey:true, on:'div#mondiv'})</span></div>
+
+  
+<div class="method">
+  <div class="method-name">keyDown(key, options)</div>
+  <div class="method-description">Pour simuler une touche pressée (mais pas relevée)</div>
+      <div class="method-provided"><div class="param"><span class="param-name">key</span><span class="param-type">String</span><span class="param-description">La touche pressée, par exemple 'c'</span></div><div class="param"><span class="param-name">options</span><span class="param-type">Object</span><span class="param-description">Table des options, pour indiquer les modificateurs et la cible, avec `metaKey:true`, `shiftKey:true`, etc. :on permet aussi d'indiquer sur quel DOMElement il faut trigger la touche.</span></div></div>
+
+  
+      <div class="method-usage"><span class="usage">keyDown('s', {altKey:true})</span></div>
+
+  
+<div class="method">
+  <div class="method-name">keyUp(key, options)</div>
+  <div class="method-description">Pour simuler une touche relevée (après avoir été pressée)</div>
+      <div class="method-provided"><div class="param"><span class="param-name">key</span><span class="param-type">String</span><span class="param-description">La touche relevée, par exemple 'c'</span></div><div class="param"><span class="param-name">options</span><span class="param-type">Object</span><span class="param-description">Table des options, pour indiquer les modificateurs et la cible, avec `metaKey:true`, `shiftKey:true`, etc. :on permet aussi d'indiquer sur quel DOMElement il faut trigger la touche.</span></div></div>
+
+  
+      <div class="method-usage"><span class="usage">keyDown('s', {altKey:true})</span></div>
+
+  
+<div id="UsersphilippeperretProgrammationFilmAnalyzorFITestslibrequireddivershandiesfilesjs" class="file"><span class="name">files</span><span class="path">./lib/required1/divers/handies/files.js</span></div><div class="method">
   <div class="method-name">(returned) makeFile(provided)</div>
   <div class="method-description">Crée un fichier dans le dossier `support/files` avec les données provided</div>
       <div class="method-provided"><div class="param"><span class="param-name">path</span><span class="param-type">String</span><span class="param-description">Le path éventuel</span></div><div class="param"><span class="param-name">in</span><span class="param-type">String</span><span class="param-description">Le path optionnel du dossier dans lequel placer le fichier</span></div><div class="param"><span class="param-name">folder</span><span class="param-type">String</span><span class="param-description">Alias de `in`</span></div><div class="param"><span class="param-name">filename</span><span class="param-type">String</span><span class="param-description">Le nom optionnel du fichier optionnel</span></div><div class="param"><span class="param-name">extension</span><span class="param-type">String</span><span class="param-description">L'extension optionnelle du fichier</span></div><div class="param"><span class="param-name">content</span><span class="param-type">String</span><span class="param-description">Le contenu optionnel du fichier</span></div><div class="param"><span class="param-name">content_length</span><span class="param-type">Number</span><span class="param-description">Longueur optionnelle du contenu voulu</span></div></div>
@@ -41,3 +66,6 @@
       <div class="method-usage"><span class="usage">let dfolder = await makeFolder({name:'Mon-dossier'})</span></div>
 
   
+
+</body>
+</html>

@@ -5,13 +5,21 @@ section#tdm {
   border: 1px solid #999999;
   border-radius: 1em;
   padding: 1.5em;
-  margin: 1em 0 2em 4em;
+  margin: 1em 0 0em 4em;
   display: inline-block;
   font-size: 0.82em;
+  min-width: 200px;
+}
+section#tdm a {
+  display:block;
 }
 div.file {
   font-weight:bold;font-size:1.0em;
   margin-bottom: 1em;
+  border-top: 1px solid;
+  border-bottom: 1px solid;
+  padding: 1em;
+  margin-top: 3em;
 }
 div.file span.name {
   margin-right:3em;
@@ -72,22 +80,30 @@ div.method div.method-usage:before {
 }
 
 div.method div.param {
-
+  display: grid;
+  grid-template-columns: 180px 120px auto;
 }
 
 div.method div.param span.param-name {
   color: #333399;
-  display:inline-block;
+  grid-column-start:1;
+  /* display:inline-block;
   width: 200px;
+  float: left; */
 }
 div.method div.param span.param-type {
   font-family: Courier;
   font-size: 0.77em;
   margin-right: 1em;
+  /* margin-left: 200px; */
+  grid-column-start: 2;
 }
 div.method div.param span.param-type:before {
   content:'{';
 }
 div.method div.param span.param-type:after {
   content:'}';
+}
+div.method div.param span.param-description {
+  grid-column-start:3;
 }
