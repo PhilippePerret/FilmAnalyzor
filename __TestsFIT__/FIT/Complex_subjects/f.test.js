@@ -34,48 +34,60 @@ describe("Complex Subject `f` (for « File »)", function(){
   //   await expect(f('./uncheminimpossiblepourvoir')).not.exists()
   //   await expect(f('/Users/')).exists()
   // })
+  //
+  // // Méthode constains
+  // // -----------------
+  // this.case("répond à `contains` qui permet de tester le contenu d'un fichier", async () => {
+  //   expect(f("mon/path"),'f(...)').responds_to('contains')
+  //
+  //   sumary(`
+  //     On met dans un fichier de path "path/to/mon/fichier" le texte
+  //     "Un texte pour voir".
+  //     Ensuite les tests suivants produiront :
+  //     `)
+  //   var datafile = await mkFile({content: "Un texte pour voir"})
+  //   // console.log("datafile = ", datafile)
+  //   var p = datafile.path
+  //
+  //   await expect(
+  //       x(async () => {
+  //         return await expect(f(p)).contains("Un texte pour", {onlyReturn:true})
+  //       })
+  //     , 'expect(f("path/to/mon/fichier")).contains("Un texte pour")'
+  //   ).succeeds()
+  //
+  //   await expect(
+  //       x(async () => {
+  //         return await expect(f(p)).not.contains("Un texte pour", {onlyReturn:true})
+  //       })
+  //     , 'expect(f("path/to/mon/fichier")).not.contains("Un texte pour")'
+  //   ).fails()
+  //
+  //   await expect(
+  //       x(async () => {
+  //         return await expect(f(p)).contains("pas dans le fichier", {onlyReturn:true})
+  //       })
+  //     , 'expect(f("path/to/mon/fichier")).contains("pas dans le fichier")'
+  //   ).fails()
+  //   await expect(
+  //       x(async () => {
+  //         return await expect(f(p)).not.contains("pas dans le fichier", {onlyReturn:true})
+  //       })
+  //     , 'expect(f("path/to/mon/fichier")).not.contains("pas dans le fichier")'
+  //   ).succeeds()
+  //
+  //   await expect(
+  //     x(async () => {
+  //       return await expect(f('/fichier/inex/istant')).contains('ça',{onlyReturn:true})
+  //     })
+  //     , 'expect(f("/fichier/inex/istant")).contains("ça")'
+  //   ).fails()
+  // })
 
-  // Méthode constains
-  // -----------------
-  this.case("répond à `contains` qui permet de tester le contenu", async () => {
-    expect(f("mon/path"),'f(...)').responds_to('contains')
 
-    var datafile = await mkFile({content: "Un texte pour voir"})
-    // console.log("datafile = ", datafile)
-    var p = datafile.path
-    await expect(f(p)).not.contains("Un texte pour")
-    // await expect(f(p)).not.contains("pas dans le fichier")
-
-    // await expect(
-    //     x(async () => {
-    //       return await expect(f(p)).contains("Un texte pour", {onlyReturn:true})
-    //     })
-    //   , 'f("path/to/file").contains("Un texte pour")'
-    // ).succeeds()
-    //
-    // await expect(
-    //     x(async () => {
-    //       return await expect(f(p)).not.contains("Un texte pour", {onlyReturn:true})
-    //     })
-    //   , 'f("path/to/file").not.contains("Un texte pour")'
-    // ).fails()
-    //
-    // await expect(
-    //     x(async () => {
-    //       return await expect(f(p)).contains("pas dans le fichier", {onlyReturn:true})
-    //     })
-    //   , 'f("path/to/file").contains("pas dans le fichier")'
-    // ).fails()
-    // await expect(
-    //     x(async () => {
-    //       return await expect(f(p)).not.contains("pas dans le fichier", {onlyReturn:true})
-    //     })
-    //   , 'f("path/to/file").not.contains("pas dans le fichier")'
-    // ).succeeds()
-
-    // expect(x(`f('${p}').contains('pas dans le fichier')`)).fails()
-    // // Avec un fichier inexistant
-    // expect(f('/fichierinexistant')).not.contains("texte pour voir")
-    // expect(x("f('/fichierunreal').contains('ça')")).fails()
+  this.case("`contains` permet de tester le contenu d'un dossier", async () => {
+    const datafolder = await makeFolder()
+      ,   datafile1 = await makeFile({in: datafolder.path})
+    expect(f())
   })
 })

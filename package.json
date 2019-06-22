@@ -5,6 +5,8 @@
   "description": "Application pour l'analyse de films",
   "main": "main.js",
   "scripts": {
+    "collect-fit-methods": "ruby FITests/exe/build_methods_list.rb",
+    "open-fit-methods": "open FITests/Manuel/Manuel_FITests_METHS.html",
     "start": "NODE_ENV=development electron .",
     "watch-sass": "node-sass -w --recursive --incluce-path=app/css/_sass_in_all/ app/css/a_index.sass app/css/all.css --output-style=compressed",
     "test": "jest",

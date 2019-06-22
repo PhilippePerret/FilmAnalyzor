@@ -1,0 +1,43 @@
+  <!DOCTYPE html>
+  <html lang="fr" dir="ltr">
+    <head>
+      <meta charset="utf-8">
+      <title>FITests Methodes et Expectations</title>
+      <link rel="stylesheet" href="./Manuel_FITests.css">
+    </head>
+    <body>
+      <section id="tdm">
+        <a href="#UsersphilippeperretProgrammationFilmAnalyzorFITestslibrequireddivershandiesfilesjs">Files</a>
+      </section>
+<div id="UsersphilippeperretProgrammationFilmAnalyzorFITestslibrequireddivershandiesfilesjs" class="file"><span class="name">files</span><span class="path">/Users/philippeperret/Programmation/FilmAnalyzor/FITests/lib/required1/divers/handies/files.js</span></div>
+</body>
+</html><div class="method">
+  <div class="method-name">(returned) makeFile(provided)</div>
+  <div class="method-description">Crée un fichier dans le dossier `support/files` avec les données provided</div>
+      <div class="method-provided"><div class="param"><span class="param-name">path</span><span class="param-type">String</span><span class="param-description">Le path éventuel</span></div><div class="param"><span class="param-name">in</span><span class="param-type">String</span><span class="param-description">Le path optionnel du dossier dans lequel placer le fichier</span></div><div class="param"><span class="param-name">folder</span><span class="param-type">String</span><span class="param-description">Alias de `in`</span></div><div class="param"><span class="param-name">filename</span><span class="param-type">String</span><span class="param-description">Le nom optionnel du fichier optionnel</span></div><div class="param"><span class="param-name">extension</span><span class="param-type">String</span><span class="param-description">L'extension optionnelle du fichier</span></div><div class="param"><span class="param-name">content</span><span class="param-type">String</span><span class="param-description">Le contenu optionnel du fichier</span></div><div class="param"><span class="param-name">content_length</span><span class="param-type">Number</span><span class="param-description">Longueur optionnelle du contenu voulu</span></div></div>
+
+      <div class="method-returned"><div class="param"><span class="param-name">path</span><span class="param-type">String</span><span class="param-description">Le chemin d'accès réel du fichier créé</span></div><div class="param"><span class="param-name">content</span><span class="param-type">String</span><span class="param-description">Le contenu placé dans le fichier.</span></div></div>
+    </div>
+
+      <div class="method-usage"><span class="usage">let dfile = await makeFile({...})</span></div>
+
+  
+<div class="method">
+  <div class="method-name">(void) removeAllFiles()</div>
+  <div class="method-description">Détruit tous les fichiers/dossiers du dossier `support/files`</div>
+  
+  
+      <div class="method-usage"><span class="usage">removeAllFiles()</span></div>
+
+  
+<div class="method">
+  <div class="method-name">(returned) makeFolder(provided)</div>
+  <div class="method-description">Crée un dossier, dans `support/files` avec les données fournies</div>
+      <div class="method-provided"><div class="param"><span class="param-name">path</span><span class="param-type">String</span><span class="param-description">Chemin d'accès optionnel au fichier</span></div><div class="param"><span class="param-name">name</span><span class="param-type">String</span><span class="param-description">Nom optionnel du fichier</span></div></div>
+
+      <div class="method-returned"><div class="param"><span class="param-name">path</span><span class="param-type">String</span><span class="param-description">Chemin d'accès au dossier créé.</span></div><div class="param"><span class="param-name">name</span><span class="param-type">String</span><span class="param-description">Nom du dossier créé.</span></div></div>
+    </div>
+
+      <div class="method-usage"><span class="usage">let dfolder = await makeFolder({name:'Mon-dossier'})</span></div>
+
+  

@@ -61,9 +61,30 @@ global.Tests = {
     this.tests_count      = 0
     this.cases_count      = 0
     this.instanciedTests  = 0
+
+    // Détruire tous les fichiers support/files créés à la volée
+    // aux tests précédents
+    removeAllFiles()
+
+    // Faire la liste des tests
     this.buildTestsFilesList()
     // on prépare tous les cases, en fonction des filtrages à opérer
     this.prepareAllCases()
+
+  }
+
+/**
+  Méthode inverse de "initTests" qui est appelée à la fin des tests,
+  principalement pour nettoyer le terrain.
+**/
+, desinitTests(){
+    const trace = this.config.trace === true
+      , dontTrace = !trace
+
+    // Détruire tous les fichiers support/files créés à la volée
+    // mais seulement si l'option `trace` n'a pas été activée dans les
+    // la configuration
+    dontTrace && removeAllFiles()
 
   }
 
@@ -183,6 +204,10 @@ Object.defineProperties(Tests,{
 , afterTestsFile:{get(){
     return path.join(this.testsFolder,'after_tests.js')
   }}
+// Dossier contenant les fichiers créés à la volée pour les tests
+, supportFilesFolder:{get(){
+  return path.join(Tests.supportTestsFolder,'files')
+}}
 , supportTestsFolder:{get(){
     return path.join(this.testsFolder,'support')
 }}

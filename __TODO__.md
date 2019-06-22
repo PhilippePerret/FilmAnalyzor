@@ -2,8 +2,10 @@
 
 ### Traiter :
 
+- Mettre les modules qui contiennent des méthodes test bien en évidence
+  Ou alors s'obliger à bien documenter
+
 FILES
-  - vider le dossier `support/files` en début de test, toujours
   - dans `f_Subject`, distinguer les dossiers des fichiers, faire une méthode différente pour chacun :
     contentFolder (retourne la liste des fichiers)/   contentFile (retourne le contenu)
     containsFolder /  containsFolder

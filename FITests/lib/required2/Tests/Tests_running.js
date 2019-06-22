@@ -66,6 +66,8 @@ module.exports = {
     await this.execAfterTests()
 
     this.termineAll()
+
+    this.desinitTests() // nettoyage
   }
 
 /**

@@ -33,6 +33,8 @@
   * [Cas entièrement à implémenter (`pending`)](#pending)
   * [Test à implémenter plus tard (`tester`)](#test_to_define)
 * [Tests des FITests](#tests_of_fitests)
+* [Toutes les méthodes pratiques](#all_handy_methods)
+* [Toutes les assertions](#all_assertions)
 
 # Introduction {#introduction}
 
@@ -88,6 +90,10 @@ Note : le fichier `config.json` va permettre de filtrer les tests à passer. Cf.
 ## Configurer les tests {#configurer_les_tests}
 
 On configure les tests dans le fichier `./__TestsFIT__/config.json`.
+
+`trace`
+: Si true, on garde au maximum tout ce qui a été créé/modifié à la fin des tests, pour pouvoir vérifier des choses.
+: Par exemple, à la fin des tests, les fichiers créés à la volée (dans support/files), ou les mails écrits (dans support/mails) sont automatiquement détruits. Si `trace` est mis à `true` dans la configuration des tests, tous ces éléments sont conservés à la fin des tests (mais détruits au prochain lancement).
 
 `onlyFolders`
 : Liste des seuls dossiers, dans `./__TestsFIT__/`, qu'il faut traiter.
@@ -916,3 +922,50 @@ expect(
 ```
 
 > Noter qu'on ne remet pas le `{onlyReturn:true}` qui ne sert qu'à faire un test silencieux, donc qui ne produira pas de message de succès ou d'échec.
+
+
+
+---------------------------------------------------------------------
+
+
+## Toutes les méthodes et expectations {#all_handy_methods}
+
+Les listes des méthodes et des expectations est tenue à jour dans un fichier HTML du dossier `FITests/Manuel`.
+
+Pour pouvoir actualiser la liste des méthodes et expectations de tests, on peut ajouter dans le fichier `pakcage.json` de l'application :
+
+```json
+
+"scripts":{  
+  "collect-fit-methods": "ruby FITests/exe/build_methods_list.rb",
+  "open-fit-methods": "open FITests/Manuel/Manuel_FITests_METHS.html",
+}
+
+```
+
+Puis jouer `npm run collect-fit-methods` pour actualiser la liste et `npm run open-fit-methods` pour ouvrir le fichier HTML contenant toutes les méthodes.
+
+### Description des méthodes et expectations
+
+Pour qu'une méthode ou une expectation soit répertoriée, il suffit de bien la définir au-dessus à l'aide des marques spéciales :
+
+```javascript
+
+/*
+  @method (returned) nomDeLaMethode(provided)
+  @description Ici une description de la méthode
+  @note Des notes éventuelles.
+  @provided
+    :arg1 {Type} Le premier argument
+    :arg2 {Type} Le deuxième argument
+    ...
+  @returned
+    :prop1 {Type} La première propriété retournée
+    :prop2 {Type} La seconde propriété
+    ...
+  @usage let res = await nomDeLaMethode(data)
+
+*/
+```
+
+Noter qu'il faut obligatoirement `/*` et `*/` pour encadrer la définition. S'il y a deux astérisques, ça ne fonctionnera pas.

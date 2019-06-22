@@ -1,0 +1,93 @@
+body{
+  font-size:15.3pt;
+}
+section#tdm {
+  border: 1px solid #999999;
+  border-radius: 1em;
+  padding: 1.5em;
+  margin: 1em 0 2em 4em;
+  display: inline-block;
+  font-size: 0.82em;
+}
+div.file {
+  font-weight:bold;font-size:1.0em;
+  margin-bottom: 1em;
+}
+div.file span.name {
+  margin-right:3em;
+  font-variant: small-caps;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+div.file span.path {
+  font-size: 9.1pt;
+}
+
+div.method {
+  margin-top: 2em;
+}
+div.method div.method-name {
+  font-family: Monospace;
+  font-weight: bold;
+}
+div.method div.method-description {
+  font-style:italic;
+  margin-left: 2em;
+}
+div.method div.method-usage {
+}
+div.method div.method-usage span.usage {
+  display: inline-block;
+  font-size: 0.8em;
+  font-family: Monospace;
+  color: white;
+  background-color: black;
+  padding: 4px 1em;
+}
+div.method div.method-provided,
+div.method div.method-returned,
+div.method div.method-usage
+{
+  margin-left:3em;
+  clear:both;
+}
+div.method div.method-provided:before,
+div.method div.method-returned:before,
+div.method div.method-usage:before
+{
+  font-style:italic;
+  font-size:0.9em;
+  color:#333333;
+  margin-left: -1em;
+}
+div.method div.method-provided:before {
+  content: 'provided';
+}
+div.method div.method-returned:before {
+  content: 'returned';
+}
+div.method div.method-usage:before {
+  content: 'usage';
+  display: block;
+}
+
+div.method div.param {
+
+}
+
+div.method div.param span.param-name {
+  color: #333399;
+  display:inline-block;
+  width: 200px;
+}
+div.method div.param span.param-type {
+  font-family: Courier;
+  font-size: 0.77em;
+  margin-right: 1em;
+}
+div.method div.param span.param-type:before {
+  content:'{';
+}
+div.method div.param span.param-type:after {
+  content:'}';
+}

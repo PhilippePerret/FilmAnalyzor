@@ -1,10 +1,11 @@
 {
   "onlyFolders": ["FIT/Complex_subjects"]
+, "trace":      false
 , "random":     false
 , "fail_fast":  true
 , "regFiles":   "f.test"
-, "regNames": null
-, "regCases": null
+, "regNames":   null
+, "regCases":   null
 , "exemple regFiles": "only.test.js"
 , "exemple regNames": "le filtrage"
 , "exemple regCases": "un wait"
