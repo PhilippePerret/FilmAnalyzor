@@ -13,12 +13,42 @@
 **/
 
 global.DOM = {
-  // async exists(el){
-  //   const o = new Dom(el)
-  //   const res = await o.exists()
-  //   return res
-  // }
-  async exists(el, options){
+  /*
+    @method (returned) DOM.get(from)
+    @description Retourne un DOM élément d'après la valeur fourni +from+ qui peut être un string (sélecteur), un set jQuery ou un élément DOM.
+    @provided
+      :from {String} Soit le sélecteur.
+      :from {jQuery} Soit le set jQuery (on renvoie le premier élément)
+      :from {DOMHtml} Soit l'élément DOM
+    @returned
+      :element {HTMLElement} Le DOM élément correspondant à +from+.
+    @usage DOM.get('#monContainer div#monDivCherched')
+   */
+  get(from){
+    if ( 'string' === typeof(from) ) return document.querySelector(from)
+    else if ( undefined != from.length && !Array.isArray(from) ) return from[0]
+    else if ( from instanceof HTMLElement ) return from
+    else return null
+  }
+
+  /*
+    @method (returned) DOM.exists(element, options)
+    @description Retourne true si l'élément +element+ existe dans le DOM.
+    @provided
+      :element {HTMLElement} Un DOM élément ou
+      :element {String} un sélecteur ou
+      :element {jQuery} un set jQuery
+      :options {Object} Options. {positive:boolean} Si false, on cherche l'absence
+    @returned
+      :valeur {Boolean} `true` si l'élément existe, `false` dans le cas contraire.
+    @usage await DOM.exists('#monDiv')
+   */
+, async exists(el, options){
+    if ( options && options.positive === false && $(el).length === 0){
+      // Si on veut vérifier que l'élément n'existe pas et qu'il n'existe
+      // pas, on peut retourner tout de suite la valeur.
+      return false
+    }
     var xtime = 16
     while( xtime -- > 0 ) {
       // console.log(`\$${el}.length = ${$(el).length}`)

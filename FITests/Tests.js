@@ -29,7 +29,8 @@ global.Tests = {
       this.require('lib/required2/FITest')
       // toutes les assertions
       this.requireFolder('lib/required2/Assertions')
-
+      this.requireFolder('lib/_tests_utilities')
+      
       this.initTestsMethods() // pour exposer 'pending', 'tester' etc.
     }
     this.initTests()

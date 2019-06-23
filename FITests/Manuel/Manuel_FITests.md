@@ -431,6 +431,9 @@ equals(expected, options){
 
 > Note : pour les [sujets complexes](#les_sujets_complexes), on peut définir toutes ces valeurs dans la propriété `options`.
 
+`onlyReturn`
+: Si `true`, on ne produit pas de résultat, on renvoie seulement la valeur booléenne de l'assertion.
+
 `onlyFailure`
 : si `true` (ou le message d'échec), le succès reste silencieux, seul la failure écrit un message.
 
@@ -441,9 +444,9 @@ equals(expected, options){
 : Forcer un message de succès ou d'échec différent du message par défaut.
 : On peut aussi mettre explicitement `success:false` ou `failure:false` dans les options (dernier argument de l'assertion) pour indiquer de ne pas écrire de message.
 
-`noRef`
-: si `true`, on n'indique pas la valeur du sujet dans certaines assertions.
-: Par exemple, pour l'égalité, au lieu du message "La somme (2+2:number) est juste", on obtiendra "la somme est juste".
+`ref`
+: si `true`, on indique la valeur du sujet dans certaines assertions.
+: Par exemple, pour l'égalité, au lieu du message "La somme est juste", on obtiendra "la somme (2+2:number) est juste".
 
 
 ### Sujets complexes (`expect(sujet)`) {#les_sujets_complexes}

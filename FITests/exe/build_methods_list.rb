@@ -63,7 +63,7 @@ class TestMethod
     HTML
 
     <<-EOF
-<div class="method">
+<div id="#{@data[:id]}" class="method">
   <div class="method-name">#{@data[:method]}</div>
   <div class="method-description">#{@data[:description]}</div>
   #{block_provided}
@@ -75,10 +75,11 @@ class TestMethod
   def analyze
     @data = {
       :method => nil, :description => nil, :note => nil,
-      :usage => nil,
+      :usage => nil, :id => nil,
       :provided => [], :returned => []
     }
     current_rubrique = nil
+    last_property = nil
     @lines.each do |line|
       line = line.strip
       line.empty? && next
@@ -93,11 +94,17 @@ class TestMethod
         when 'description'  then @data[:description]  = rest_line
         when 'note'         then @data[:note]         = rest_line
         when 'usage'        then @data[:usage]        = rest_line
+        when 'id'           then @data[:id]           = rest_line
         end
         current_rubrique = rubrique.to_sym
       elsif line.start_with?(':')
         property = first_mot[1..-1]
         # puts "current_rubrique: #{current_rubrique}"
+        if property == last_property # autre type
+          property = ''
+        else
+          last_property = property
+        end
         @data[current_rubrique] << MParam.new(property, rest_line)
       end
     end
@@ -173,7 +180,23 @@ class AideFile
     @tdm << "<a href=\"##{ancre}\">#{name}</a>"
   end
   def add str
-    rf.write(str)
+    rf.write(correct(str))
+  end
+  # Avant d'ajouter un string au fichier, on le corrige toujours
+  def correct str
+    # Correction des liens façon Markdown
+    if str.match(/\]\(/) # "](" => lien
+      # Le string contient des liens markdown
+      str.gsub!(/\[(.*?)\]\((.*?)\)/){
+        sujet = $1
+        lien  = $2
+        "<a href=\"#{lien}\">#{sujet}</a>"
+      }
+    end
+
+    # Correction des textes-code backstick
+    str.gsub!(/\`(.*?)\`/, '<code>\1</code>')
+    str
   end
   def close
     add "\n</body>\n</html>"

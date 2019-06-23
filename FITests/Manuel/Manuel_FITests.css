@@ -1,5 +1,5 @@
 body{
-  font-size:15.3pt;
+  font-size:13.7pt;
 }
 section#tdm {
   border: 1px solid #999999;
@@ -36,7 +36,9 @@ div.method {
 }
 div.method div.method-name {
   font-family: Monospace;
-  font-weight: bold;
+  background-color: rgb(2, 91, 94);
+  color: white;
+  padding: 2px 0.5em;
 }
 div.method div.method-description {
   font-style:italic;
@@ -106,4 +108,10 @@ div.method div.param span.param-type:after {
 }
 div.method div.param span.param-description {
   grid-column-start:3;
+}
+
+code {
+  background-color:#DFDFDF;
+  border-radius:2px;
+  padding:0 4px;
 }
