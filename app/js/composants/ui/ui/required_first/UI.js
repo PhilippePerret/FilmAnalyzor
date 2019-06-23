@@ -287,7 +287,15 @@ const UI = {
         return false
       case STRl: // partout, hors champ, la touche "l" démarre la video
         if ( this.isOutTextField ) {
-          F.notify("Je dois démarrer la vidéo.")
+          if ( current_analyse ) {
+            if ( current_analyse.locator.playing ) {
+              // La vidéo joue déjà, on doit s'accélérer
+              const vid = current_analyse.videoController
+              vid.setSpeed(vid.getSpeed() + 0.5)
+            } else {
+              current_analyse.locator.togglePlay()
+            }
+          }
           return false
         } else {
           // F.notify("Je suis dans un champ de saisie, je ne démarre pas la vidéo.")
