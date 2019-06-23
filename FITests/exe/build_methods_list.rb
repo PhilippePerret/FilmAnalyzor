@@ -169,7 +169,7 @@ class AideFile
     HTML
   end
   def addFile path
-    ancre = path.gsub(/[^a-z]/i,'')
+    ancre = path.gsub(/#{FIT_FOLDER}/,'').gsub(/[^a-z]/i,'')
     name  = File.basename(path,File.extname(path))
     path  = path.sub(/^#{FIT_FOLDER}/,'.')
     add "<div id=\"#{ancre}\" class=\"file\"><span class=\"name\">#{name}</span><span class=\"path\">#{path}</span></div>"

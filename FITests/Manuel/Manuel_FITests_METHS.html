@@ -7,9 +7,9 @@
     </head>
     <body>
       <section id="tdm">
-        <a href="#UsersphilippeperretProgrammationFilmAnalyzorFITestslibtestsutilitiesKeysjs">Keys</a><a href="#UsersphilippeperretProgrammationFilmAnalyzorFITestslibtestsutilitiesFilesjs">Files</a><a href="#UsersphilippeperretProgrammationFilmAnalyzorFITestslibtestsutilitiesDomjs">Dom</a><a href="#UsersphilippeperretProgrammationFilmAnalyzorFITestslibtestsutilitiesxdictionnairejs">X_dictionnaire</a><a href="#UsersphilippeperretProgrammationFilmAnalyzorFITestslibtestsutilitiesSubjectsassertionsffilejs">F_file</a><a href="#UsersphilippeperretProgrammationFilmAnalyzorFITestslibtestsutilitiesSubjectsassertionsddomjs">D_dom</a><a href="#UsersphilippeperretProgrammationFilmAnalyzorFITestslibtestsutilitiesSubjectsassertionsaarrayjs">A_array</a><a href="#UsersphilippeperretProgrammationFilmAnalyzorFITestslibtestsutilitiesSubjectsassertionsbbooleanjs">B_boolean</a><a href="#UsersphilippeperretProgrammationFilmAnalyzorFITestslibtestsutilitiesMiscellanousjs">Miscellanous</a><a href="#UsersphilippeperretProgrammationFilmAnalyzorFITestslibrequiredAssertionsDomjs">Dom</a>
+        <a href="#libtestsutilitiesKeysjs">Keys</a><a href="#libtestsutilitiesFilesjs">Files</a><a href="#libtestsutilitiesDomjs">Dom</a><a href="#libtestsutilitiesxdictionnairejs">X_dictionnaire</a><a href="#libtestsutilitiesSubjectsassertionsffilejs">F_file</a><a href="#libtestsutilitiesSubjectsassertionsddomjs">D_dom</a><a href="#libtestsutilitiesSubjectsassertionsaarrayjs">A_array</a><a href="#libtestsutilitiesSubjectsassertionsbbooleanjs">B_boolean</a><a href="#libtestsutilitiesMiscellanousjs">Miscellanous</a><a href="#librequiredAssertionsDomjs">Dom</a>
       </section>
-<div id="UsersphilippeperretProgrammationFilmAnalyzorFITestslibtestsutilitiesKeysjs" class="file"><span class="name">Keys</span><span class="path">./lib/_tests_utilities/Keys.js</span></div><div id="" class="method">
+<div id="libtestsutilitiesKeysjs" class="file"><span class="name">Keys</span><span class="path">./lib/_tests_utilities/Keys.js</span></div><div id="" class="method">
   <div class="method-name">keyPress(key, options)</div>
   <div class="method-description">Simule une touche pressée (down et up)</div>
       <div class="method-provided"><div class="param"><span class="param-name">key</span><span class="param-type">String</span><span class="param-description">La touche à presser, par exemple "k"</span></div><div class="param"><span class="param-name">options</span><span class="param-type">Objet</span><span class="param-description">Table des options, pour indiquer les modificateurs et la cible, avec <code>metaKey:true</code>, <code>shiftKey:true</code>, etc. :on permet aussi d'indiquer sur quel DOMElement il faut trigger la touche.</span></div></div>
@@ -36,12 +36,12 @@
       <div class="method-usage"><span class="usage">keyDown('s', {altKey:true})</span></div>
 
   
-<div id="UsersphilippeperretProgrammationFilmAnalyzorFITestslibtestsutilitiesFilesjs" class="file"><span class="name">Files</span><span class="path">./lib/_tests_utilities/Files.js</span></div><div id="" class="method">
+<div id="libtestsutilitiesFilesjs" class="file"><span class="name">Files</span><span class="path">./lib/_tests_utilities/Files.js</span></div><div id="" class="method">
   <div class="method-name">(returned) makeFile(provided)</div>
   <div class="method-description">Crée un fichier dans le dossier <code>support/files</code> avec les données provided</div>
       <div class="method-provided"><div class="param"><span class="param-name">path</span><span class="param-type">String</span><span class="param-description">Le path éventuel</span></div><div class="param"><span class="param-name">in</span><span class="param-type">String</span><span class="param-description">Le path optionnel du dossier dans lequel placer le fichier</span></div><div class="param"><span class="param-name">folder</span><span class="param-type">String</span><span class="param-description">Alias de <code>in</code></span></div><div class="param"><span class="param-name">filename</span><span class="param-type">String</span><span class="param-description">Le nom optionnel du fichier optionnel</span></div><div class="param"><span class="param-name">extension</span><span class="param-type">String</span><span class="param-description">L'extension optionnelle du fichier</span></div><div class="param"><span class="param-name">content</span><span class="param-type">String</span><span class="param-description">Le contenu optionnel du fichier</span></div><div class="param"><span class="param-name">content_length</span><span class="param-type">Number</span><span class="param-description">Longueur optionnelle du contenu voulu</span></div></div>
 
-      <div class="method-returned"><div class="param"><span class="param-name">path</span><span class="param-type">String</span><span class="param-description">Le chemin d'accès réel du fichier créé</span></div><div class="param"><span class="param-name">content</span><span class="param-type">String</span><span class="param-description">Le contenu placé dans le fichier.</span></div></div>
+      <div class="method-returned"><div class="param"><span class="param-name">path</span><span class="param-type">String</span><span class="param-description">Le chemin d'accès réel du fichier créé</span></div><div class="param"><span class="param-name">name</span><span class="param-type">String</span><span class="param-description">Le nom du fichier créé</span></div><div class="param"><span class="param-name">content</span><span class="param-type">String</span><span class="param-description">Le contenu placé dans le fichier.</span></div></div>
     </div>
 
       <div class="method-usage"><span class="usage">let dfile = await makeFile({...})</span></div>
@@ -58,7 +58,7 @@
 <div id="" class="method">
   <div class="method-name">(returned) makeFolder(provided)</div>
   <div class="method-description">Crée un dossier, dans <code>support/files</code> avec les données fournies</div>
-      <div class="method-provided"><div class="param"><span class="param-name">path</span><span class="param-type">String</span><span class="param-description">Chemin d'accès optionnel au fichier</span></div><div class="param"><span class="param-name">name</span><span class="param-type">String</span><span class="param-description">Nom optionnel du fichier</span></div></div>
+      <div class="method-provided"><div class="param"><span class="param-name">path</span><span class="param-type">String</span><span class="param-description">Chemin d'accès optionnel au fichier</span></div><div class="param"><span class="param-name">name</span><span class="param-type">String</span><span class="param-description">Nom optionnel du fichier</span></div><div class="param"><span class="param-name">in</span><span class="param-type">String</span><span class="param-description">Le path optionnel du dossier dans lequel placer le dossier</span></div></div>
 
       <div class="method-returned"><div class="param"><span class="param-name">path</span><span class="param-type">String</span><span class="param-description">Chemin d'accès au dossier créé.</span></div><div class="param"><span class="param-name">name</span><span class="param-type">String</span><span class="param-description">Nom du dossier créé.</span></div></div>
     </div>
@@ -66,7 +66,7 @@
       <div class="method-usage"><span class="usage">let dfolder = await makeFolder({name:'Mon-dossier'})</span></div>
 
   
-<div id="UsersphilippeperretProgrammationFilmAnalyzorFITestslibtestsutilitiesDomjs" class="file"><span class="name">Dom</span><span class="path">./lib/_tests_utilities/Dom.js</span></div><div id="" class="method">
+<div id="libtestsutilitiesDomjs" class="file"><span class="name">Dom</span><span class="path">./lib/_tests_utilities/Dom.js</span></div><div id="" class="method">
   <div class="method-name">click(obj)</div>
   <div class="method-description">Simule un click sur l'objet DOM +obj+</div>
       <div class="method-provided"><div class="param"><span class="param-name">obj</span><span class="param-type">DOMHTML|jQuery|String</span><span class="param-description">DOM Élément ou set jQuery qui doit être cliqué.</span></div></div>
@@ -75,7 +75,7 @@
       <div class="method-usage"><span class="usage">click('div#monDiv');click(document.querySelector('#monDiv'));click($('#monDiv'))</span></div>
 
   
-<div id="UsersphilippeperretProgrammationFilmAnalyzorFITestslibtestsutilitiesxdictionnairejs" class="file"><span class="name">x_dictionnaire</span><span class="path">./lib/_tests_utilities/x_dictionnaire.js</span></div><div id="options_assertions" class="method">
+<div id="libtestsutilitiesxdictionnairejs" class="file"><span class="name">x_dictionnaire</span><span class="path">./lib/_tests_utilities/x_dictionnaire.js</span></div><div id="options_assertions" class="method">
   <div class="method-name">assertion(..., options)</div>
   <div class="method-description">Contenu des <code>options</code>, dernier paramètre des assertions.</div>
       <div class="method-provided"><div class="param"><span class="param-name">success</span><span class="param-type">String</span><span class="param-description">Le message personnalisé à afficher en cas de succès.</span></div><div class="param"><span class="param-name">failure</span><span class="param-type">String</span><span class="param-description">Le message personnalisé à afficher en cas d'échec.</span></div><div class="param"><span class="param-name">ref</span><span class="param-type">Boolean</span><span class="param-description">Si true, on affiche la valeur et le type du sujet entre parenthèses après sa valeur humaine.</span></div><div class="param"><span class="param-name">onlyReturn</span><span class="param-type">Boolean</span><span class="param-description">Si true, aucun résultat de test n'est écrit, on renvoie simplement la valeur de l'assertion (<code>true</code> ou <code>false</code>).</span></div><div class="param"><span class="param-name">onlyFailure</span><span class="param-type">Boolean</span><span class="param-description">Si true, on ne produit un résultat qu'en cas d'échec</span></div><div class="param"><span class="param-name"></span><span class="param-type">String</span><span class="param-description">Si défini, le message à afficher en cas d'échec. Pas de résultat en cas de succès.</span></div><div class="param"><span class="param-name">onlySuccess</span><span class="param-type">Boolean</span><span class="param-description">Si true, on ne produit un résultat qu'en cas de succès, pas d'échec.</span></div><div class="param"><span class="param-name"></span><span class="param-type">String</span><span class="param-description">Si défini, le message à afficher en cas de succès, pas de résultat en cas d'échec.</span></div></div>
@@ -84,7 +84,7 @@
       <div class="method-usage"><span class="usage">expect(...).to(..., {onlyReturn:true})</span></div>
 
   
-<div id="UsersphilippeperretProgrammationFilmAnalyzorFITestslibtestsutilitiesSubjectsassertionsffilejs" class="file"><span class="name">f_file</span><span class="path">./lib/_tests_utilities/Subjects_assertions/f_file.js</span></div><div id="" class="method">
+<div id="libtestsutilitiesSubjectsassertionsffilejs" class="file"><span class="name">f_file</span><span class="path">./lib/_tests_utilities/Subjects_assertions/f_file.js</span></div><div id="" class="method">
   <div class="method-name">expect(f(...)).exists(options)</div>
   <div class="method-description">Produit un succès si le sujet file <a href="#f_subject">f(...)</a> existe (donc si le fichier ou le dossier existe).</div>
       <div class="method-provided"><div class="param"><span class="param-name">options</span><span class="param-type">Object</span><span class="param-description"><a href="#options_assertions">Options classiques des assertions</a></span></div></div>
@@ -111,7 +111,7 @@
       <div class="method-usage"><span class="usage">expect(f('mon/fichier.md')).exists() => produit un succès si le fichier existe.</span></div>
 
   
-<div id="UsersphilippeperretProgrammationFilmAnalyzorFITestslibtestsutilitiesSubjectsassertionsddomjs" class="file"><span class="name">d_dom</span><span class="path">./lib/_tests_utilities/Subjects_assertions/d_dom.js</span></div><div id="" class="method">
+<div id="libtestsutilitiesSubjectsassertionsddomjs" class="file"><span class="name">d_dom</span><span class="path">./lib/_tests_utilities/Subjects_assertions/d_dom.js</span></div><div id="" class="method">
   <div class="method-name">expect(d(...)).exists(options)</div>
   <div class="method-description">Produit un succès si le DOM contient l'élément sujet <a href="#d_subject"><code>d(...)</code></a></div>
       <div class="method-provided"><div class="param"><span class="param-name">options</span><span class="param-type">Object</span><span class="param-description"><a href="#options_assertions">Options classiques des assertions</a></span></div></div>
@@ -147,7 +147,7 @@
       <div class="method-usage"><span class="usage">d('#monDiv');d(document.querySelector('#monDiv'));d(${'#monDiv'})</span></div>
 
   
-<div id="UsersphilippeperretProgrammationFilmAnalyzorFITestslibtestsutilitiesSubjectsassertionsaarrayjs" class="file"><span class="name">a_array</span><span class="path">./lib/_tests_utilities/Subjects_assertions/a_array.js</span></div><div id="" class="method">
+<div id="libtestsutilitiesSubjectsassertionsaarrayjs" class="file"><span class="name">a_array</span><span class="path">./lib/_tests_utilities/Subjects_assertions/a_array.js</span></div><div id="" class="method">
   <div class="method-name">expect(a(...)).is(expected, options)</div>
   <div class="method-description">Produit un succès si le Array sujet est égal à +expected+</div>
       <div class="method-provided"><div class="param"><span class="param-name">expected</span><span class="param-type">Array</span><span class="param-description">La liste qu'on doit obtenir.</span></div><div class="param"><span class="param-name">options</span><span class="param-type">Object</span><span class="param-description">Les <a href="#options_assertions">options classiques des assertions</a>.</span></div></div>
@@ -165,7 +165,7 @@
       <div class="method-usage"><span class="usage">expect(a(2,'trois')).contains('trois') // => produit un succès</span></div>
 
   
-<div id="UsersphilippeperretProgrammationFilmAnalyzorFITestslibtestsutilitiesSubjectsassertionsbbooleanjs" class="file"><span class="name">b_boolean</span><span class="path">./lib/_tests_utilities/Subjects_assertions/b_boolean.js</span></div><div id="" class="method">
+<div id="libtestsutilitiesSubjectsassertionsbbooleanjs" class="file"><span class="name">b_boolean</span><span class="path">./lib/_tests_utilities/Subjects_assertions/b_boolean.js</span></div><div id="" class="method">
   <div class="method-name">expect(b(...)).is(expected, options)</div>
   <div class="method-description">Produit un succès sur la valeur booléenne sujet est égal à <code>expected</code>.</div>
       <div class="method-provided"><div class="param"><span class="param-name">expected</span><span class="param-type">Boolean</span><span class="param-description">Valeur attendue.</span></div><div class="param"><span class="param-name">options</span><span class="param-type">Object</span><span class="param-description"><a href="#options_assertions">Options classiques des assertions</a></span></div></div>
@@ -201,7 +201,7 @@
       <div class="method-usage"><span class="usage">expect(b(2.3)).is_close_to(2);expect(b("2")).is_close_to(2) // => produisent un succès</span></div>
 
   
-<div id="UsersphilippeperretProgrammationFilmAnalyzorFITestslibtestsutilitiesMiscellanousjs" class="file"><span class="name">Miscellanous</span><span class="path">./lib/_tests_utilities/Miscellanous.js</span></div><div id="" class="method">
+<div id="libtestsutilitiesMiscellanousjs" class="file"><span class="name">Miscellanous</span><span class="path">./lib/_tests_utilities/Miscellanous.js</span></div><div id="" class="method">
   <div class="method-name">await waitFor(method[,options])</div>
   <div class="method-description">Attend que la condition retournée par <code>method</code> soit true.</div>
       <div class="method-provided"><div class="param"><span class="param-name">method</span><span class="param-type">Function</span><span class="param-description">Méthode retournant une condition qui doit être <code>true</code> pour l'arrêter.</span></div><div class="param"><span class="param-name">options</span><span class="param-type">Object</span><span class="param-description">{message: "Le message à afficher", timeout: {Number (millisecondes)} temps limite, frequence: {Number (millisecondes)} fréquence de vérification, failure: {String} "Message en cas d'échec"}</span></div></div>
@@ -219,7 +219,7 @@
       <div class="method-usage"><span class="usage">await wait(3000, "J'attends trois secondes avant de continuer.")</span></div>
 
   
-<div id="UsersphilippeperretProgrammationFilmAnalyzorFITestslibrequiredAssertionsDomjs" class="file"><span class="name">Dom</span><span class="path">./lib/required2/Assertions/Dom.js</span></div><div id="" class="method">
+<div id="librequiredAssertionsDomjs" class="file"><span class="name">Dom</span><span class="path">./lib/required2/Assertions/Dom.js</span></div><div id="" class="method">
   <div class="method-name">(returned) DOM.get(from)</div>
   <div class="method-description">Retourne un DOM élément d'après la valeur fourni +from+ qui peut être un string (sélecteur), un set jQuery ou un élément DOM.</div>
       <div class="method-provided"><div class="param"><span class="param-name">from</span><span class="param-type">String</span><span class="param-description">Soit le sélecteur.</span></div><div class="param"><span class="param-name"></span><span class="param-type">jQuery</span><span class="param-description">Soit le set jQuery (on renvoie le premier élément)</span></div><div class="param"><span class="param-name"></span><span class="param-type">DOMHtml</span><span class="param-description">Soit l'élément DOM</span></div></div>

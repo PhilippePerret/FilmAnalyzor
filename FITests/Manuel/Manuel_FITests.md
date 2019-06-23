@@ -1,4 +1,4 @@
-# Manuel des tests
+# Manuel des tests FITests (From Inside Tests)
 
 * [Introduction](#introduction)
   * [Principaux généraux fondateurs](#principes_generaux_fondateurs)
@@ -599,6 +599,9 @@ Il suffit ensuite de l'utiliser comme :
 `o` `o(Object)`
 : Un objet. `o({prop:value,prop:value})`
 
+`t` `t(texte)`
+: Un texte à texter.
+
 `x` `x('test à évaluer')`
 : Une expectation — et seulement une expectation — à évaluer.
 : Utile uniquement pour les tests de FITests.
@@ -752,30 +755,7 @@ test.after_case( () => { /* code à exécuter avant chaque cas */ })
 
 ## Simuler des touches clavier {#simulate_keyboard}
 
-Pour simuler des touches clavier, on utilise :
-
-```javascript
-
-keyPress('<touche>'[, {options}])
-
-keyUp(idem)
-
-keyDown(idem)
-
-```
-
-On met dans les `options` les modifiers, par exemple `keyDown('n',{metaKey:true})`.
-
-Pour des tests plus clairs, on peut les utiliser en combinaison des actions :
-
-```javascript
-
-action("On joue CMD+N puis on confirme avec la touche Entrée", ()=>{
-    keyPress('n', {metaKey:true})
-    keyPress('Enter')
-  })
-
-```
+Pour toutes les méthodes de tests concernant les touches clavier, cf. [le fichier rassemblant toutes les méthodes](./Manuel_FITests_METHS.html#libtestsutilitiesKeysjs).
 
 ### Exécution d'une action (`action`) {#exec_action}
 

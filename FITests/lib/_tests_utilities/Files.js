@@ -17,6 +17,7 @@ const execSync = require('child_process').execSync
     :content_length {Number} Longueur optionnelle du contenu voulu
   @returned
     :path {String} Le chemin d'accès réel du fichier créé
+    :name {String} Le nom du fichier créé
     :content {String} Le contenu placé dans le fichier.
   @usage  let dfile = await makeFile({...})
 */
@@ -34,7 +35,7 @@ if ( global.makeFile) {
 
     // Dossier dans lequel mettre le fichier
     let filepath
-    data.in = data.folder
+    data.folder && ( data.in = data.folder )
     if ( data.in ) {
       if (!fs.existsSync(data.in)){
         throw new Error(`Impossible de créer le fichier dans ${data.in}. Ce dossier n'existe pas.`)
@@ -53,7 +54,7 @@ if ( global.makeFile) {
     return new Promise( (ok,ko) => {
       fs.writeFile(filepath, data.content, (err) => {
         if ( err ) console.error(err)
-        ok({path: filepath, content: data.content})
+        ok({path: filepath, content: data.content, name:data.filename })
       })
     })
   }
@@ -78,6 +79,7 @@ if ( global.makeFolder ) {
     @provided
       :path {String} Chemin d'accès optionnel au fichier
       :name {String}  Nom optionnel du fichier
+      :in {String} Le path optionnel du dossier dans lequel placer le dossier
     @returned
       :path {String} Chemin d'accès au dossier créé.
       :name {String} Nom du dossier créé.
@@ -90,7 +92,16 @@ if ( global.makeFolder ) {
     if ( undefined === data.name ) {
       data.name = `folder${Number(new Date())}${Math.rand(1000)}`
     }
-    const fpath = path.join(folderFiles, data.name)
+    let fpath
+    if ( undefined === data.in ) {
+      fpath = path.join(folderFiles, data.name)
+    } else {
+      if ( fs.existsSync(data.in) ) {
+        fpath = path.join(data.in, data.name)
+      } else {
+        throw new Error(`Impossible de créer un dossier dans "${data.in}", ce dossier n'existe pas.`)
+      }
+    }
 
     return new Promise( (ok,ko) => {
       fs.mkdir(fpath, (err) => {

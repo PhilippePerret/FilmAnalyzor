@@ -38,12 +38,20 @@ async contains(expected, options){
       verbe:'contient', objet: `"${expected}"`
     , options:options
   })
+  if (undefined === expected) {
+    throw new ExpectationError("l'élément attendu doit être défini, dans contains (premier argument).")
+  } else if ( 'string' !== typeof(expected) ) {
+    resultat.detailFailure = "l'élément attendu doit être de type String, dans contains (premier argument)."
+    resultat.validIf(!this.positive)
+    return assert(resultat)
+  }
   let pass
-  let existe = await this.checkForExistence()
+    , existe = await this.checkForExistence()
   if ( ! existe ){
     // console.log(`Le fichier ${this.path} n'existe pas.`)
     pass = false
   } else {
+
     if ( this.isFile ){
       let content = fs.readFileSync(this.path, 'utf8')
         , regExpected = new RegExp(RegExp.escape(expected))
@@ -51,14 +59,18 @@ async contains(expected, options){
       // Il faudrait pouvoir décider si on fait une recherche régulière ou non
       pass = content.includes(expected)
     } else if ( this.isFolder ) {
-      pass = fs.existsSync(path.join(this.path,expected))
+      // console.log("this.path", this.path)
+      // console.log("expected au départ:", expected)
+      // console.log("path.join(this.path, expected):", path.join(this.path, expected))
+      var reg = new RegExp(`^${this.path}\/`)
+      expected = expected.replace(reg,'')
+      // console.log("expected ensuite:", expected)
+      pass = fs.existsSync(path.join(this.path, expected))
     }
   }
   resultat.validIf(pass)
   return assert(resultat)
 }
-
-
 
 
 // /ASSERTIONS
@@ -93,17 +105,18 @@ constructor(sujval){
 }
 static get name(){return 'f_Subject'}
 
-get isFile(){ fs.statSync(this.path).isFile() }
+get isFile(){ return fs.statSync(this.path).isFile() }
 get isFolder(){return fs.statSync(this.path).isDirectory() }
 get path(){return this._path || this.actualValue }
 get actualValue(){
   if ( undefined === this._path) {
     const ini = this.initialValue
-    if ( 'string' !== typeof ini ){
-      this._path = null
-    } else {
+    if ( 'string' === typeof ini ){
       this._path = path.resolve(ini)
+    } else {
+      this._path = null
     }
+    // console.log("this._path = ", this._path)
   }
   return this._path
 }

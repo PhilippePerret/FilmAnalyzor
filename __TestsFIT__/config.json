@@ -3,7 +3,7 @@
 , "trace":      false
 , "random":     false
 , "fail_fast":  true
-, "regFiles":   "f.test"
+, "regFiles":   null
 , "regNames":   null
 , "regCases":   null
 , "exemple regFiles": "only.test.js"

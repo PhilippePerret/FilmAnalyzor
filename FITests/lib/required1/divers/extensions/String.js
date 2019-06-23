@@ -14,7 +14,62 @@ Object.assign(String,{
   }
 })
 
+// const REG_SIGNS = new RegExp("[\.\?\!\;\:\-\–\—\*\•\# \t \(\)\{\}\[\]]",'g')
+const REG_SIGNS = /[\.\?\!\;\:\-\–\—\*\•\# \t \(\)\{\}\[\]]/g
+Object.assign(String,{
+  ressemblance(a,b){
+    const al = a.length
+        , bl = b.length
+        , co = (al + bl) / 2
+        , cl = this.smartLevenshtein(a,b)
+    return Math.round((cl / co).round(2) * 100)
+  }
+, smartLevenshtein(a, b){
+    if ( a === b ) return 0
+    if ( a.toLowerCase() === b.toLowerCase() ) return 0.5
+    var ar = a.replace(REG_SIGNS,'')
+    var br = b.replace(REG_SIGNS,'')
+    if ( ar === br ) return 1
+    if ( ar.toLowerCase() === br.toLowerCase() ) return 1.5
+    return this.levenshtein(a,b)
+  }
+, levenshtein(a, b) {
+    const al = a.length
+    const bl = b.length
+
+    if(al === 0) return bl
+    if(bl === 0) return al
+
+    var matrix = []
+
+    // increment along the first column of each row
+    var i;
+    for(i = 0; i <= bl; i++){ matrix[i] = [i] }
+
+    // increment each column in the first row
+    var j;
+    for(j = 0; j <= al; j++){
+      matrix[0][j] = j;
+    }
+
+    // Fill in the rest of the matrix
+    for(i = 1; i <= bl; i++){
+      for(j = 1; j <= al; j++){
+        if(b.charAt(i-1) == a.charAt(j-1)){
+          matrix[i][j] = matrix[i-1][j-1];
+        } else {
+          matrix[i][j] = Math.min(matrix[i-1][j-1] + 1, // substitution
+                                  Math.min(matrix[i][j-1] + 1, // insertion
+                                           matrix[i-1][j] + 1)); // deletion
+        }
+      }
+    }
+
+    return matrix[bl][al];
+  }
+})
 Object.defineProperties(String,{
+
   simpleWords:{get(){
     return [
       'evolution','terre','bicyclette','rouge','brin','autonomie','enfant',

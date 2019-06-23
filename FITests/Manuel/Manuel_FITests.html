@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Manuel des tests FITests</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1 id="manuel-des-tests">Manuel des tests</h1>
+<ul>
+<li><a href="#introduction">Introduction</a>
+<ul>
+<li><a href="#principes_generaux_fondateurs">Principaux généraux fondateurs</a>
+<ul>
+<li><a href="#from_inside_tests">De l’intérieur</a></li>
+<li><a href="#principe_complex_subject_one_lettre">Sujet complexe une lettre</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#utilisation">Utilisation des FITests</a></li>
+<li><a href="#configurer_les_tests">Configurer les tests</a></li>
+<li><a href="#define_test_sheet">Définition d’une feuille de test</a>
+<ul>
+<li><a href="#describe_syntax">Syntaxe <code>describe</code></a></li>
+<li><a href="#not_keyword">Mot clé <code>not</code></a></li>
+<li><a href="#strictly_keyword">Mot clé <code>strictly</code></a></li>
+<li><a href="#les_assertions">Les Assertions</a></li>
+</ul></li>
+<li><a href="#tests_list">Liste des tests à lancer</a></li>
+<li><a href="#before_and_after_methods">Exécutions avant et après</a>
+<ul>
+<li><a href="#before_and_after_tests">Exécutions avant et après les tests</a></li>
+<li><a href="#before_and_after_testseul">Exécution avant et après le test courant</a></li>
+<li><a href="#before_and_after_each_case">Code à exécuter avant ou après chaque cas</a></li>
+</ul></li>
+<li><a href="#textes_suivis">Textes écrits dans le suivi</a>
+<ul>
+<li><a href="#sumarize_operations">Sommaire des opérations</a></li>
+</ul></li>
+<li><a href="#les_assertions">Les Assertions</a>
+<ul>
+<li><a href="#usual_assertions">Assertions usuelles</a></li>
+<li><a href="#create_new_assertions">Création d’une assertion</a></li>
+<li><a href="#options_assertions">Options des assertions</a></li>
+<li><a href="#les_sujets_complexes">Sujets complexes (<code>expect(sujet)</code>)</a></li>
+</ul></li>
+<li><a href="#tests_own_complex_subjects">Sujets complexes existants</a>
+<ul>
+<li><a href="#complex_subjects_one_letter">Sujets complexes une lettre</a></li>
+<li><a href="#active_dom_element">Élément DOM courant (<code>FocusedElement</code>)</a></li>
+</ul></li>
+<li><a href="#les_methodes_pratiques">Méthodes pratiques</a>
+<ul>
+<li><a href="#simulate_keyboard">Simuler des touches clavier</a></li>
+<li><a href="#exec_action">Exécution d’une action (<code>action</code>)</a></li>
+</ul></li>
+<li><a href="#textes_suivis">Textes écrits dans le suivi</a>
+<ul>
+<li><a href="#pending">Cas entièrement à implémenter (<code>pending</code>)</a></li>
+<li><a href="#test_to_define">Test à implémenter plus tard (<code>tester</code>)</a></li>
+</ul></li>
+<li><a href="#tests_of_fitests">Tests des FITests</a></li>
+<li><a href="#all_handy_methods">Toutes les méthodes pratiques</a></li>
+<li><a href="#all_assertions">Toutes les assertions</a></li>
+</ul>
+<h1 id="introduction">Introduction</h1>
+<p>Les « FITests » (« From Inside Tests ») permettent de lancer des tests de l’intérieur même de l’application. De ce fait, leur utilisation est simplissime en regard des autres tests qui, pour les tests unitaires, d’intégration et fonctionnels nécessitent toujours des réglages particuliers et délicats.</p>
+<h2 id="principes_generaux_fondateurs">Principaux généraux fondateurs</h2>
+<h3 id="from_inside_tests">De l’intérieur</h3>
+<p>Comme indiqué, les tests se lancent de l’intérieur même de l’application à tester, c’est-à-dire qu’ils ont accès à tous ce que peut atteindre l’application. Pas de modules à requérer, etc.</p>
+<h3 id="principe_complex_subject_one_lettre">Sujet complexe une lettre</h3>
+<p>La plupart des <a href="#les_sujets_complexes">sujets complexes)</a> utilisés dans la formule <code>expect(&lt;sujet complexe&gt;)</code> fonctionnent en une lettre minuscule. Par exemple, si l’on parle d’un élément du dom, ce sera la lettre <code>d</code> comme « DOM » : <code>d("#monDiv")</code>. Si c’est un fichier, ce sera <code>f</code> comme « file » : <code>f("mon/path")</code>. Voir <a href="#complex_subjects_one_letter">tous les « sujets complexes une lettre »</a></p>
+<blockquote>
+<p>Noter de ce fait qu’il ne faut pas utiliser des méthodes en une lettre minuscule dans l’application (il ne faut donc pas tester une application uglifiée et minifyisée).</p>
+</blockquote>
+<h1 id="utilisation">Utilisation des FITests</h1>
+<p>Pour utiliser les FIT-Tests (persos) comme ici, on doit :</p>
+<ul>
+<li>mettre le dossier <code>TestsFIT</code> dans un dossier librairie de l’application,</li>
+<li>le requérir avec <code>require("./path/to/fitests/folder/")</code>.</li>
+<li>créer un dossier <code>__TestsFIT__</code> à la racine de l’application pour définir les tests,</li>
+<li>définir dans le fichier <code>./__TestsFIT__/config.json</code> la configuration des tests. cf. <a href="#configurer_les_tests">Configurer les tests</a></li>
+<li><p>Dans <code>package.json</code> de l’application, on ajoute :</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb1-1" title="1"><span class="st">&quot;scripts&quot;</span><span class="op">:{</span></a>
+<a class="sourceLine" id="cb1-2" title="2">  <span class="co">//...</span></a>
+<a class="sourceLine" id="cb1-3" title="3">  <span class="st">&quot;testsfits&quot;</span><span class="op">:</span> <span class="st">&quot;MODE_TEST=true npm start&quot;</span></a>
+<a class="sourceLine" id="cb1-4" title="4">  <span class="co">//...</span></a>
+<a class="sourceLine" id="cb1-5" title="5"><span class="op">}</span></a></code></pre></div></li>
+<li>On peut définir dans <code>./__TestsFIT__/support/</code> les fichiers et méthodes utiles aux tests de l’application courante.</li>
+<li><p>On définit la méthode <code>App.runtests()</code> de cette manière (on peut définir une autre méthode dans un autre objet, mais alors il devra être accessible et utilisé pour lancer les tests) :</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb2-1" title="1"><span class="va">App</span>.<span class="at">runtests</span> <span class="op">=</span> <span class="kw">function</span>()<span class="op">{</span></a>
+<a class="sourceLine" id="cb2-2" title="2">    NONE <span class="op">===</span> <span class="kw">typeof</span>(Tests) <span class="op">&amp;&amp;</span> ( <span class="va">global</span>.<span class="at">Tests</span> <span class="op">=</span> <span class="at">require</span>(<span class="st">&#39;./path/to/folder/fitests&#39;</span>) )</a>
+<a class="sourceLine" id="cb2-3" title="3">    <span class="va">Tests</span>.<span class="at">run</span>()</a>
+<a class="sourceLine" id="cb2-4" title="4">  <span class="op">}</span></a></code></pre></div></li>
+<li><p>On définit les tests dans le dossier <code>./__TestsFIT__/</code>.</p></li>
+</ul>
+<h4 id="pour-lancer-les-tests">Pour lancer les tests :</h4>
+<ul>
+<li>Le plus simple est de faire un menu qui appelle la méthode <code>App.runtests()</code> (ou directement la méthode <code>Tests.run()</code> si l’objet <code>Tests</code> est déjà requis).</li>
+<li>On peut aussi lancer l’application et ouvrir la <code>console dev</code> dans laquelle on tape <code>App.runtests()</code>.</li>
+</ul>
+<p>Note : le fichier <code>config.json</code> va permettre de filtrer les tests à passer. Cf. <a href="#tests_list">Liste des tests à lancer</a> pour le détail. Pour le moment, on ne peut pas le faire en ligne de commande.</p>
+<hr />
+<h2 id="configurer_les_tests">Configurer les tests</h2>
+<p>On configure les tests dans le fichier <code>./__TestsFIT__/config.json</code>.</p>
+<dl>
+<dt><code>trace</code></dt>
+<dd>Si true, on garde au maximum tout ce qui a été créé/modifié à la fin des tests, pour pouvoir vérifier des choses.
+</dd>
+<dd>Par exemple, à la fin des tests, les fichiers créés à la volée (dans support/files), ou les mails écrits (dans support/mails) sont automatiquement détruits. Si <code>trace</code> est mis à <code>true</code> dans la configuration des tests, tous ces éléments sont conservés à la fin des tests (mais détruits au prochain lancement).
+</dd>
+<dt><code>onlyFolders</code></dt>
+<dd>Liste des seuls dossiers, dans <code>./__TestsFIT__/</code>, qu’il faut traiter.
+</dd>
+<dd>Ou null.
+</dd>
+<dt><code>random</code></dt>
+<dd>Si true, les tests et les cas sont traités en ordre aléatoire.
+</dd>
+<dd>Noter que pour les cas, ce sont seulement les cas d’un même test qui sont mélangés.
+</dd>
+<dt><code>fail_fast</code></dt>
+<dd>Si true, les tests s’arrêtent à la première failure rencontrée. Sinon, on va jusqu’au bout des tests.
+</dd>
+<dt><code>regFiles</code></dt>
+<dd>Expression régulière à utiliser pour filtrer les fichiers de test.
+</dd>
+<dd>Elle sera escapée, dont inutile de le faire.
+</dd>
+<dt><code>regNames</code></dt>
+<dd>Expression régulière à utiliser pour filtrer les tests à jouer.
+</dd>
+<dt><code>regCases</code></dt>
+<dd>Expression régulière à utiliser pour filtrer les cas à jouer.
+</dd>
+<dd>On peut utiliser par exemple “ONLY” et ajouter « ONLY » au seul cas qu’on veut traiter pour ne traiter que lui.
+</dd>
+</dl>
+<hr />
+<h2 id="define_test_sheet">Définition d’une feuille de test</h2>
+<p>On appelle « feuille de test » un fichier <code>js</code> définissant le ou les tests à exécuter pour un cas particulier (ou toute l’application, si elle est simplissime).</p>
+<p>La structure de ce fichier est :</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb3-1" title="1"><span class="st">&#39;use strict&#39;</span></a>
+<a class="sourceLine" id="cb3-2" title="2"></a>
+<a class="sourceLine" id="cb3-3" title="3"><span class="kw">var</span> t <span class="op">=</span> <span class="kw">new</span> <span class="at">Test</span>(<span class="st">&quot;Le titre du test (affiché en titre)&quot;</span>)</a>
+<a class="sourceLine" id="cb3-4" title="4"></a>
+<a class="sourceLine" id="cb3-5" title="5"><span class="va">t</span>.<span class="at">case</span>(<span class="st">&quot;Un cas particulier du test&quot;</span><span class="op">,</span> async <span class="co">/* [1] */</span> () <span class="op">=&gt;</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb3-6" title="6">  <span class="co">// ici les tests et assertions</span></a>
+<a class="sourceLine" id="cb3-7" title="7">  <span class="co">// [1] Si le cas contient des assertions asynchrones ou des waits.</span></a>
+<a class="sourceLine" id="cb3-8" title="8"><span class="op">}</span>)</a>
+<a class="sourceLine" id="cb3-9" title="9"></a>
+<a class="sourceLine" id="cb3-10" title="10"><span class="va">t</span>.<span class="at">case</span>(<span class="st">&quot;Un autre cas particulier du test, asynchrone&quot;</span><span class="op">,</span> <span class="at">async</span> () <span class="op">=&gt;</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb3-11" title="11">  <span class="co">// Ici les tests des autres cas</span></a>
+<a class="sourceLine" id="cb3-12" title="12"></a>
+<a class="sourceLine" id="cb3-13" title="13">  <span class="co">// Pour gérer l&#39;asynchronicité</span></a>
+<a class="sourceLine" id="cb3-14" title="14">  await <span class="at">expect</span>(domId).<span class="at">toExistsInDom</span>(<span class="op">{</span><span class="dt">success</span><span class="op">:</span> <span class="st">&#39;Le truc existe&#39;</span><span class="op">,</span> <span class="dt">onlySuccess</span><span class="op">:</span><span class="kw">true</span><span class="op">}</span>)</a>
+<a class="sourceLine" id="cb3-15" title="15">  <span class="co">// OU :</span></a>
+<a class="sourceLine" id="cb3-16" title="16">  await <span class="at">expect</span>(domId).<span class="at">toExistsInDom</span>(<span class="op">{</span><span class="dt">onlySuccess</span><span class="op">:</span><span class="st">&#39;Le truc existe&#39;</span><span class="op">}</span>)</a>
+<a class="sourceLine" id="cb3-17" title="17">  <span class="co">// ... on poursuit les tests avec…</span></a>
+<a class="sourceLine" id="cb3-18" title="18"></a>
+<a class="sourceLine" id="cb3-19" title="19"><span class="op">}</span>)</a>
+<a class="sourceLine" id="cb3-20" title="20"></a>
+<a class="sourceLine" id="cb3-21" title="21"><span class="va">t</span>.<span class="at">case</span>(<span class="st">&quot;Un cas avec une attente&quot;</span><span class="op">,</span> <span class="at">async</span> () <span class="op">=&gt;</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb3-22" title="22"></a>
+<a class="sourceLine" id="cb3-23" title="23">  await <span class="at">wait</span>(<span class="dv">2000</span>)</a>
+<a class="sourceLine" id="cb3-24" title="24">  <span class="co">// Le code à exécuter 2 secondes plus tard</span></a>
+<a class="sourceLine" id="cb3-25" title="25"></a>
+<a class="sourceLine" id="cb3-26" title="26"><span class="op">}</span>)</a>
+<a class="sourceLine" id="cb3-27" title="27"></a>
+<a class="sourceLine" id="cb3-28" title="28"><span class="co">// etc.</span></a>
+<a class="sourceLine" id="cb3-29" title="29"></a>
+<a class="sourceLine" id="cb3-30" title="30"><span class="va">module</span>.<span class="at">exports</span> <span class="op">=</span> [t]</a></code></pre></div>
+<p>Noter l’utilisation d’une fonction <code>async</code> pour pouvoir utiliser <code>await</code>.</p>
+<h3 id="describe_syntax">Syntaxe <code>describe</code></h3>
+<p>On peut utiliser aussi la syntaxe en <code>describe</code> qui ne nécessite pas d’export :</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb4-1" title="1"></a>
+<a class="sourceLine" id="cb4-2" title="2"><span class="at">describe</span>(<span class="st">&quot;Nom du test&quot;</span><span class="op">,</span> () <span class="op">=&gt;</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb4-3" title="3"></a>
+<a class="sourceLine" id="cb4-4" title="4">  <span class="kw">this</span>.<span class="at">before</span>(() <span class="op">=&gt;</span> <span class="op">{</span><span class="co">/* à faire au début (Promise) */</span><span class="op">}</span>)</a>
+<a class="sourceLine" id="cb4-5" title="5">  <span class="kw">this</span>.<span class="at">after</span>(()<span class="op">=&gt;</span> <span class="op">{</span><span class="co">/* à faire à la fin (Promise) */</span><span class="op">}</span>)</a>
+<a class="sourceLine" id="cb4-6" title="6"></a>
+<a class="sourceLine" id="cb4-7" title="7">  <span class="kw">this</span>.<span class="at">case</span>(<span class="st">&quot;nom du cas&quot;</span><span class="op">,</span> <span class="at">async</span> () <span class="op">=&gt;</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb4-8" title="8"></a>
+<a class="sourceLine" id="cb4-9" title="9">    <span class="co">/* ... les tests ici ... */</span></a>
+<a class="sourceLine" id="cb4-10" title="10"></a>
+<a class="sourceLine" id="cb4-11" title="11">  <span class="op">}</span>)</a>
+<a class="sourceLine" id="cb4-12" title="12"></a>
+<a class="sourceLine" id="cb4-13" title="13">  <span class="kw">this</span>.<span class="at">case</span>(<span class="st">&quot;Autre cas&quot;</span><span class="op">,</span> <span class="at">async</span> () <span class="op">=&gt;</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb4-14" title="14">    <span class="co">//...</span></a>
+<a class="sourceLine" id="cb4-15" title="15">  <span class="op">}</span>)</a>
+<a class="sourceLine" id="cb4-16" title="16"></a>
+<a class="sourceLine" id="cb4-17" title="17"><span class="op">}</span>)</a></code></pre></div>
+<h3 id="not_keyword">Mot clé <code>not</code></h3>
+<p>On utilise le mot clé <code>not</code> pour inverser le sens de l’assertion.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb5-1" title="1"></a>
+<a class="sourceLine" id="cb5-2" title="2"><span class="at">expect</span>(<span class="dv">2</span><span class="op">+</span><span class="dv">6</span>).<span class="at">equals</span>(<span class="dv">7</span>)</a>
+<a class="sourceLine" id="cb5-3" title="3"><span class="co">// =&gt; échec</span></a>
+<a class="sourceLine" id="cb5-4" title="4"></a>
+<a class="sourceLine" id="cb5-5" title="5"><span class="at">expect</span>(<span class="dv">2</span><span class="op">+</span><span class="dv">6</span>).<span class="va">not</span>.<span class="at">equals</span>(<span class="dv">7</span>)</a>
+<a class="sourceLine" id="cb5-6" title="6"><span class="co">// =&gt; succès</span></a></code></pre></div>
+<h3 id="strictly_keyword">Mot clé <code>strictly</code></h3>
+<p>On utilise le mot clé <code>strictly</code> pour demander une comparaison stricte.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb6-1" title="1"></a>
+<a class="sourceLine" id="cb6-2" title="2"><span class="at">expect</span>(<span class="st">&#39;12&#39;</span>).<span class="at">equals</span>(<span class="dv">12</span>)</a>
+<a class="sourceLine" id="cb6-3" title="3"><span class="co">// =&gt; succès</span></a>
+<a class="sourceLine" id="cb6-4" title="4"></a>
+<a class="sourceLine" id="cb6-5" title="5"><span class="at">expect</span>(<span class="st">&#39;12&#39;</span>).<span class="va">strictly</span>.<span class="at">equals</span>(<span class="dv">12</span>)</a>
+<a class="sourceLine" id="cb6-6" title="6"><span class="co">// =&gt; échec</span></a></code></pre></div>
+<h2 id="les_expectations">Les expectations</h2>
+<p>On appelle ici « expectation » la partie d’une assertion complète. Elle se résume à :</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb7-1" title="1"></a>
+<a class="sourceLine" id="cb7-2" title="2"><span class="at">expect</span>(sujet[<span class="op">,</span> options])</a></code></pre></div>
+<p>Le sujet peut être un <a href="#les_sujets_complexes">sujet complexe</a> ou tout autre élément qui peut être comparé.</p>
+<p><code>options</code>, pour le moment, ne sert qu’à décrire comment sera présenté le sujet dans les messages. Au plus simple, on peut mettre simplement en string la valeur dont l’on veut voir désigner le sujet.</p>
+<p>Par exemple :</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb8-1" title="1"></a>
+<a class="sourceLine" id="cb8-2" title="2"><span class="at">expect</span>(<span class="dv">2</span><span class="op">+</span><span class="dv">2</span>).<span class="at">is</span>(<span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb8-3" title="3"><span class="co">//=&gt; écrit &quot;4 est bien égal à 4&quot;</span></a>
+<a class="sourceLine" id="cb8-4" title="4"></a>
+<a class="sourceLine" id="cb8-5" title="5"><span class="at">expect</span>(<span class="dv">2</span><span class="op">+</span><span class="dv">2</span><span class="op">,</span><span class="st">&#39;2+2&#39;</span>).<span class="at">is</span>(<span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb8-6" title="6"><span class="co">// ou</span></a>
+<a class="sourceLine" id="cb8-7" title="7"><span class="at">expect</span>(<span class="dv">2</span><span class="op">+</span><span class="dv">2</span><span class="op">,{</span><span class="dt">sujet</span><span class="op">:</span><span class="st">&#39;2+2&#39;</span><span class="op">}</span>).<span class="at">is</span>(<span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb8-8" title="8"><span class="co">// =&gt; écrivent &quot;2+2 est bien égal à 4&quot;</span></a></code></pre></div>
+<h2 id="les_assertions">Les Assertions</h2>
+<p>Les assertions s’utilisent de cette manière :</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb9-1" title="1"></a>
+<a class="sourceLine" id="cb9-2" title="2">  <span class="at">expect</span>(<span class="op">&lt;</span>sujet<span class="op">|</span>valeur<span class="op">&gt;</span>).<span class="op">&lt;</span>assertion<span class="op">&gt;</span>(<span class="op">&lt;</span>valeur attendue<span class="op">&gt;</span>)</a></code></pre></div>
+<p>Par exemple, pour tester qu’une fonction existe pour un objet, on utilise l’assertion <code>responds_to</code> :</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb10-1" title="1"></a>
+<a class="sourceLine" id="cb10-2" title="2">  <span class="at">expect</span>(object).<span class="at">responds_to</span>(<span class="st">&#39;functionName&#39;</span>)</a></code></pre></div>
+<p>Toutes les assertions utilisables sont définies dans le dossier <code>required/Assertions/</code>.</p>
+<p>On peut définir dans le dossier <code>support/assertions</code> les assertions propres à l’application testée.</p>
+<h3 id="usual_assertions">Assertions usuelles</h3>
+<p>Les assertions usuelles, standards, sont définies dans le dossier <code>FITests/lib/required2/Assertions/</code>.</p>
+<h3 id="create_new_assertions">Création d’assertions</h3>
+<p>On crée les nouvelles assertions, propres à toute l’application dans le dossier <code>__TestsFIT__/support</code>, à l’aide de :</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb11-1" title="1"></a>
+<a class="sourceLine" id="cb11-2" title="2"><span class="kw">const</span> MesAssertions <span class="op">=</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb11-3" title="3">  <span class="at">uneAssertion</span>()<span class="op">{</span></a>
+<a class="sourceLine" id="cb11-4" title="4">    <span class="co">//...</span></a>
+<a class="sourceLine" id="cb11-5" title="5">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb11-6" title="6"><span class="op">,</span> <span class="at">uneAutreAssertion</span>()<span class="op">{</span></a>
+<a class="sourceLine" id="cb11-7" title="7">    <span class="co">//...</span></a>
+<a class="sourceLine" id="cb11-8" title="8">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb11-9" title="9"><span class="op">}</span></a>
+<a class="sourceLine" id="cb11-10" title="10"></a>
+<a class="sourceLine" id="cb11-11" title="11"><span class="va">FITExpectation</span>.<span class="at">add</span>(MesAssertions)</a></code></pre></div>
+<p>Noter qu’avec la définition ci-dessus, les assertions seront utilisables pour n’importe quel sujet. Pour faire des assertions propres à des sujets particuliers, utiliser les <a href="#les_sujets_complexes">sujets complexes</a>.</p>
+<p>Ensuite, on peut tout simplement faire :</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb12-1" title="1"></a>
+<a class="sourceLine" id="cb12-2" title="2"><span class="at">describe</span>(<span class="st">&quot;En utilisation mes assertions&quot;</span><span class="op">,</span> <span class="kw">function</span>()<span class="op">{</span></a>
+<a class="sourceLine" id="cb12-3" title="3">  <span class="kw">this</span>.<span class="at">case</span>(<span class="st">&quot;J&#39;utilise la première&quot;</span><span class="op">,</span> <span class="at">async</span> () <span class="op">=&gt;</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb12-4" title="4">    <span class="at">expect</span>(<span class="st">&#39;monsujet&#39;</span>).<span class="at">uneAssertion</span>()</a>
+<a class="sourceLine" id="cb12-5" title="5">  <span class="op">}</span>)</a>
+<a class="sourceLine" id="cb12-6" title="6">  <span class="kw">this</span>.<span class="at">case</span>(<span class="st">&quot;J&#39;utilise la seconde&quot;</span><span class="op">,</span> <span class="at">async</span> () <span class="op">=&gt;</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb12-7" title="7">    <span class="at">expect</span>(<span class="st">&#39;monsujet&#39;</span>).<span class="va">not</span>.<span class="at">uneAutreAssertion</span>(<span class="op">{</span><span class="dt">onlyFailure</span><span class="op">:</span><span class="kw">true</span><span class="op">}</span>)</a>
+<a class="sourceLine" id="cb12-8" title="8">    <span class="co">// OU :</span></a>
+<a class="sourceLine" id="cb12-9" title="9">    <span class="at">expect</span>(<span class="st">&#39;monsujet&#39;</span>).<span class="va">not</span>.<span class="at">uneAutreAssertion</span>(<span class="op">{</span><span class="dt">onlyFailure</span><span class="op">:</span><span class="st">&#39;Le message d’échec&#39;</span><span class="op">}</span>)</a>
+<a class="sourceLine" id="cb12-10" title="10">  <span class="op">}</span>)</a>
+<a class="sourceLine" id="cb12-11" title="11">  <span class="kw">this</span>.<span class="at">case</span>(<span class="st">&quot;J&#39;utilise la seconde&quot;</span><span class="op">,</span> <span class="at">async</span> () <span class="op">=&gt;</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb12-12" title="12">    <span class="at">expect</span>(<span class="st">&#39;monsujet&#39;</span>).<span class="va">strictly</span>.<span class="at">unestrict</span>(<span class="op">{</span><span class="dt">onlySuccess</span><span class="op">:</span><span class="kw">true</span><span class="op">}</span>)</a>
+<a class="sourceLine" id="cb12-13" title="13">  <span class="op">}</span>)</a>
+<a class="sourceLine" id="cb12-14" title="14"><span class="op">}</span>)</a></code></pre></div>
+<h3 id="codage-de-lassertion">Codage de l’assertion</h3>
+<p>Une assertion est composée de deux parties :</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb13-1" title="1"></a>
+<a class="sourceLine" id="cb13-2" title="2"><span class="at">affirmation</span>(expected[<span class="op">,</span> options])<span class="op">{</span></a>
+<a class="sourceLine" id="cb13-3" title="3">  <span class="co">/**</span></a>
+<a class="sourceLine" id="cb13-4" title="4"><span class="co">    Une instance pour travailler le résultat de façon plus souple</span></a>
+<a class="sourceLine" id="cb13-5" title="5"><span class="co">  **/</span></a>
+<a class="sourceLine" id="cb13-6" title="6">  <span class="kw">let</span> resultat <span class="op">=</span> <span class="kw">new</span> <span class="at">FITResultat</span>(<span class="kw">this</span><span class="op">,{</span></a>
+<a class="sourceLine" id="cb13-7" title="7">        <span class="dt">sujet</span><span class="op">:</span> <span class="st">&quot;Le sujet de l&#39;assertion&quot;</span><span class="op">,</span></a>
+<a class="sourceLine" id="cb13-8" title="8">      <span class="op">,</span> <span class="dt">verbe</span><span class="op">:</span> <span class="st">&quot;LeVerbe&quot;</span> <span class="co">// doit être connu de FITExpectation.positivise</span></a>
+<a class="sourceLine" id="cb13-9" title="9">      <span class="op">,</span> <span class="dt">comp_verbe</span><span class="op">:</span> <span class="st">&quot;complement optionnel&quot;</span> <span class="co">// p.e. &#39;visible&#39; si verbe &#39;est&#39;</span></a>
+<a class="sourceLine" id="cb13-10" title="10">      <span class="op">,</span> <span class="dt">objet</span><span class="op">:</span>  <span class="st">&quot;L&#39;objet traité par l&#39;assertion&quot;</span></a>
+<a class="sourceLine" id="cb13-11" title="11">      <span class="op">,</span> <span class="dt">options</span><span class="op">:</span> options <span class="op">||</span> <span class="op">{}</span></a>
+<a class="sourceLine" id="cb13-12" title="12">    <span class="op">}</span>)</a>
+<a class="sourceLine" id="cb13-13" title="13">    <span class="co">/**</span></a>
+<a class="sourceLine" id="cb13-14" title="14"><span class="co">      Estimation principale</span></a>
+<a class="sourceLine" id="cb13-15" title="15"><span class="co">      =====================</span></a>
+<a class="sourceLine" id="cb13-16" title="16"></a>
+<a class="sourceLine" id="cb13-17" title="17"><span class="co">      Estimation, comparaison de la valeur actuelle et attendue</span></a>
+<a class="sourceLine" id="cb13-18" title="18"><span class="co">      éventuellement en fonction de &#39;not&#39; et &#39;strictly&#39;</span></a>
+<a class="sourceLine" id="cb13-19" title="19"><span class="co">      Cette partie doit définir `pass` qui sera TRUE si c&#39;est un succès</span></a>
+<a class="sourceLine" id="cb13-20" title="20"><span class="co">      (quelle que soit la valeur de &#39;not&#39;) et FALSE si c&#39;est un échec.</span></a>
+<a class="sourceLine" id="cb13-21" title="21"></a>
+<a class="sourceLine" id="cb13-22" title="22"><span class="co">      On ne doit pas mettre de messages dans ce validIf, contrairement aux</span></a>
+<a class="sourceLine" id="cb13-23" title="23"><span class="co">      conditions suivantes.</span></a>
+<a class="sourceLine" id="cb13-24" title="24"><span class="co">    **/</span></a>
+<a class="sourceLine" id="cb13-25" title="25">    <span class="kw">let</span> estimation <span class="op">=</span> ...</a>
+<a class="sourceLine" id="cb13-26" title="26">    <span class="va">resultat</span>.<span class="at">validIf</span>(estimation)</a>
+<a class="sourceLine" id="cb13-27" title="27"></a>
+<a class="sourceLine" id="cb13-28" title="28">    <span class="co">/**</span></a>
+<a class="sourceLine" id="cb13-29" title="29"><span class="co">      Peut-être y a-t-il d&#39;autres conditions</span></a>
+<a class="sourceLine" id="cb13-30" title="30"><span class="co">    **/</span></a>
+<a class="sourceLine" id="cb13-31" title="31">    <span class="cf">if</span> ( <span class="va">resultat</span>.<span class="at">valid</span> <span class="op">&amp;&amp;</span> <span class="va">options</span>.<span class="at">doit_etre_grand</span> )<span class="op">{</span></a>
+<a class="sourceLine" id="cb13-32" title="32">      estimation <span class="op">=</span> <span class="co">/* est-il grand ? */</span></a>
+<a class="sourceLine" id="cb13-33" title="33">      <span class="va">resultat</span>.<span class="at">validIf</span>(estimation<span class="op">,</span> <span class="st">&quot;il est grand&quot;</span><span class="op">,</span> <span class="st">&quot;il n&#39;est pas grand&quot;</span>)</a>
+<a class="sourceLine" id="cb13-34" title="34">      <span class="co">// Le premier message sera ajouté si c&#39;est un succès, le second message,</span></a>
+<a class="sourceLine" id="cb13-35" title="35">      <span class="co">// précédé de &quot;mais&quot; sera ajouté en cas d&#39;échec</span></a>
+<a class="sourceLine" id="cb13-36" title="36">    <span class="op">}</span></a>
+<a class="sourceLine" id="cb13-37" title="37"></a>
+<a class="sourceLine" id="cb13-38" title="38">    <span class="co">/**</span></a>
+<a class="sourceLine" id="cb13-39" title="39"><span class="co">      D&#39;autres sous estimations…</span></a>
+<a class="sourceLine" id="cb13-40" title="40"><span class="co">    **/</span></a>
+<a class="sourceLine" id="cb13-41" title="41"></a>
+<a class="sourceLine" id="cb13-42" title="42">    <span class="co">/**</span></a>
+<a class="sourceLine" id="cb13-43" title="43"><span class="co">      Ajouts, en cas d&#39;échec, d&#39;un message plus complet qui permettra de</span></a>
+<a class="sourceLine" id="cb13-44" title="44"><span class="co">      vraiment comprendre d&#39;où vient l&#39;erreur.</span></a>
+<a class="sourceLine" id="cb13-45" title="45"><span class="co">    **/</span></a>
+<a class="sourceLine" id="cb13-46" title="46">    <span class="cf">if</span> ( <span class="va">resultat</span>.<span class="at">invalid</span> ) <span class="op">{</span></a>
+<a class="sourceLine" id="cb13-47" title="47">      <span class="va">resultat</span>.<span class="at">detailFailure</span> <span class="op">=</span> <span class="st">&quot;Le message détaillant l&#39;échec.&quot;</span></a>
+<a class="sourceLine" id="cb13-48" title="48">    <span class="op">}</span></a>
+<a class="sourceLine" id="cb13-49" title="49"></a>
+<a class="sourceLine" id="cb13-50" title="50">    <span class="co">/**</span></a>
+<a class="sourceLine" id="cb13-51" title="51"><span class="co">      On produit l&#39;assertion proprement dite, qui sera écrite dans le</span></a>
+<a class="sourceLine" id="cb13-52" title="52"><span class="co">      rapport d&#39;erreur comme un succès ou un échec</span></a>
+<a class="sourceLine" id="cb13-53" title="53"><span class="co">    **/</span></a>
+<a class="sourceLine" id="cb13-54" title="54">    <span class="at">assert</span>(resultat)</a>
+<a class="sourceLine" id="cb13-55" title="55"><span class="op">}</span></a></code></pre></div>
+<p>Version encore plus courte :</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb14-1" title="1"></a>
+<a class="sourceLine" id="cb14-2" title="2"><span class="at">affirmation</span>(expected<span class="op">,</span> options)<span class="op">{</span></a>
+<a class="sourceLine" id="cb14-3" title="3">  <span class="kw">const</span> esti <span class="op">=</span> ...</a>
+<a class="sourceLine" id="cb14-4" title="4">  <span class="kw">const</span> pass <span class="op">=</span> <span class="kw">this</span>.<span class="at">positive</span> <span class="op">===</span> esti</a>
+<a class="sourceLine" id="cb14-5" title="5">  <span class="kw">const</span> expe <span class="op">=</span> ... <span class="co">// expected à écrire</span></a>
+<a class="sourceLine" id="cb14-6" title="6">  <span class="kw">const</span> msgs <span class="op">=</span> <span class="kw">this</span>.<span class="at">assertise</span>(<span class="st">&#39;&lt;verbe&gt;&#39;</span><span class="op">,</span> <span class="st">&#39;&lt;complément&gt;&#39;</span><span class="op">,</span> <span class="kw">this</span>.<span class="at">subject</span><span class="op">,</span> expe)</a>
+<a class="sourceLine" id="cb14-7" title="7">  <span class="at">assert</span>(pass<span class="op">,</span> ...<span class="at">msgs</span><span class="op">,</span> options)</a>
+<a class="sourceLine" id="cb14-8" title="8"><span class="op">}</span></a></code></pre></div>
+<p>Les options peuvent déterminer si le message ne doit s’afficher que si la condition est <code>false</code>, pas exemple, avec <code>onlyFailure:true</code>. Cf. <a href="#options_assertions">Options des assertions</a>.</p>
+<h3 id="rédaction-des-messages-positifs-et-négatifs">Rédaction des messages positifs et négatifs</h3>
+<p>Pour simplifier la rédaction des messages de la méthode <code>assert</code>, on peut utiliser les méthodes <code>assertise</code> et <code>positivise</code> des instances de <code>FITExpectation</code> qui connait déjà un certain nombre de verbes. On lui envoie un verbe de base qu’elle doit connaitre (par exemple « est »), optionnellement un complément, et elle revoit les deux messages de succès (<code>success</code>) et d’échec (<code>failure</code>).</p>
+<blockquote>
+<p>Comme la méthode <code>positivise</code> est une méthode de l’instance <code>FITExpectation</code>, donc de l’expectation elle-même, elle sait si l’assertion est positive ou non et renvoie le message en conséquence.</p>
+</blockquote>
+<p>Par exemple, avec une assertion négative (<code>not</code>) :</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb15-1" title="1"></a>
+<a class="sourceLine" id="cb15-2" title="2"><span class="kw">this</span>.<span class="at">positivise</span>(<span class="st">&#39;est&#39;</span><span class="op">,</span> <span class="st">&#39;égal à&#39;</span>)</a>
+<a class="sourceLine" id="cb15-3" title="3"></a>
+<a class="sourceLine" id="cb15-4" title="4"><span class="co">// =&gt; {</span></a>
+<a class="sourceLine" id="cb15-5" title="5"><span class="co">//      success: &quot;n&#39;est pas égal à&quot;</span></a>
+<a class="sourceLine" id="cb15-6" title="6"><span class="co">//      failure: &quot;ne devrait pas être égal à&quot;</span></a>
+<a class="sourceLine" id="cb15-7" title="7"><span class="co">//    }</span></a></code></pre></div>
+<p>Je peux donc définir :</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb16-1" title="1"></a>
+<a class="sourceLine" id="cb16-2" title="2">  <span class="at">expect</span>(actual).<span class="at">strictly_equals</span>(expected)</a></code></pre></div>
+<p>J’implémente :</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb17-1" title="1"></a>
+<a class="sourceLine" id="cb17-2" title="2"><span class="at">equals</span>(expected<span class="op">,</span> options)<span class="op">{</span></a>
+<a class="sourceLine" id="cb17-3" title="3">  <span class="kw">const</span> esti <span class="op">=</span> <span class="kw">this</span>.<span class="at">strict</span> <span class="op">?</span> (<span class="kw">this</span>.<span class="at">sujet</span> <span class="op">===</span> expected) : (<span class="kw">this</span>.<span class="at">sujet</span> <span class="op">==</span> expected)</a>
+<a class="sourceLine" id="cb17-4" title="4">  <span class="kw">const</span> pass <span class="op">=</span> <span class="kw">this</span>.<span class="at">positive</span> <span class="op">===</span> esti</a>
+<a class="sourceLine" id="cb17-5" title="5">  <span class="kw">const</span> msgs <span class="op">=</span> <span class="kw">this</span>.<span class="at">assertise</span>(<span class="st">&#39;est&#39;</span><span class="op">,</span> <span class="st">&#39;égal à&#39;</span><span class="op">,</span> actual<span class="op">,</span> expected)</a>
+<a class="sourceLine" id="cb17-6" title="6">  <span class="at">assert</span>(pass<span class="op">,</span> ...<span class="at">msgs</span><span class="op">,</span> options)</a>
+<a class="sourceLine" id="cb17-7" title="7"><span class="op">}</span></a></code></pre></div>
+<h3 id="options_assertions">Options des assertions</h3>
+<blockquote>
+<p>Note : pour les <a href="#les_sujets_complexes">sujets complexes</a>, on peut définir toutes ces valeurs dans la propriété <code>options</code>.</p>
+</blockquote>
+<dl>
+<dt><code>onlyReturn</code></dt>
+<dd>Si <code>true</code>, on ne produit pas de résultat, on renvoie seulement la valeur booléenne de l’assertion.
+</dd>
+<dt><code>onlyFailure</code></dt>
+<dd>si <code>true</code> (ou le message d’échec), le succès reste silencieux, seul la failure écrit un message.
+</dd>
+<dt><code>onlySuccess</code></dt>
+<dd>si <code>true</code> (ou le message de succès), la failure reste silencieuse, seul le succès écrit un message.
+</dd>
+<dt><code>success</code>, <code>failure</code></dt>
+<dd>Forcer un message de succès ou d’échec différent du message par défaut.
+</dd>
+<dd>On peut aussi mettre explicitement <code>success:false</code> ou <code>failure:false</code> dans les options (dernier argument de l’assertion) pour indiquer de ne pas écrire de message.
+</dd>
+<dt><code>ref</code></dt>
+<dd>si <code>true</code>, on indique la valeur du sujet dans certaines assertions.
+</dd>
+<dd>Par exemple, pour l’égalité, au lieu du message “La somme est juste”, on obtiendra “la somme (2+2:number) est juste”.
+</dd>
+</dl>
+<h3 id="les_sujets_complexes">Sujets complexes (<code>expect(sujet)</code>)</h3>
+<p>Les « sujets complexes » sont une des fonctionnalités les plus puissantes des <em>FITests</em>. Il permet de définir un comportement propre à l’application de façon très simple.</p>
+<p>Les « sujets complexes » permettent de définir des sujets propres à l’application — donc des éléments à mettre en premier argument d’un <code>expect</code> — avec tout ce qu’il faut pour les estimer. Imaginons par exemple qu’une classe <code>EventForm</code> permette de générer des formulaires (instances). Soit <code>EventForm.current</code>, dans l’application, la propriété qui retourne l’instance du formulaire au premier plan, le formulaire courant. On peut faire un sujet de ce formulaire courant.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb18-1" title="1"></a>
+<a class="sourceLine" id="cb18-2" title="2"><span class="kw">class</span> CurrentFormSubject <span class="kw">extends</span> FITSubject <span class="op">{</span></a>
+<a class="sourceLine" id="cb18-3" title="3"><span class="at">constructor</span>()<span class="op">{</span></a>
+<a class="sourceLine" id="cb18-4" title="4">  <span class="kw">super</span>(<span class="st">&#39;CurrentEventForm&#39;</span>)</a>
+<a class="sourceLine" id="cb18-5" title="5">  <span class="kw">this</span>.<span class="at">assertions</span> <span class="op">=</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb18-6" title="6">      <span class="dt">is_opened</span><span class="op">:</span> <span class="kw">this</span>.<span class="va">is_opened</span>.<span class="at">bind</span>(<span class="kw">this</span>)</a>
+<a class="sourceLine" id="cb18-7" title="7">    <span class="op">,</span> <span class="dt">is_closed</span><span class="op">:</span> <span class="kw">this</span>.<span class="va">is_closed</span>.<span class="at">bind</span>(<span class="kw">this</span>)</a>
+<a class="sourceLine" id="cb18-8" title="8">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb18-9" title="9"><span class="op">}</span></a>
+<a class="sourceLine" id="cb18-10" title="10"><span class="at">is_opened</span>(options)<span class="op">{</span></a>
+<a class="sourceLine" id="cb18-11" title="11">  <span class="kw">let</span> resultat <span class="op">=</span> <span class="kw">this</span>.<span class="at">newResultat</span>(<span class="st">&#39;est&#39;</span><span class="op">,</span><span class="st">&#39;ouvert&#39;</span><span class="op">,</span>options)</a>
+<a class="sourceLine" id="cb18-12" title="12">  <span class="va">resultat</span>.<span class="at">validIf</span>(<span class="va">DOM</span>.<span class="at">displays</span>(<span class="st">&#39;#form....&#39;</span>))</a>
+<a class="sourceLine" id="cb18-13" title="13">  <span class="at">assert</span>(resultat)</a>
+<a class="sourceLine" id="cb18-14" title="14"><span class="op">}</span></a>
+<a class="sourceLine" id="cb18-15" title="15"><span class="at">is_closed</span>()<span class="op">{</span></a>
+<a class="sourceLine" id="cb18-16" title="16">  <span class="co">// ...</span></a>
+<a class="sourceLine" id="cb18-17" title="17">  <span class="at">assert</span>(resultat)</a>
+<a class="sourceLine" id="cb18-18" title="18"><span class="op">}</span></a>
+<a class="sourceLine" id="cb18-19" title="19"><span class="op">}</span></a>
+<a class="sourceLine" id="cb18-20" title="20"></a>
+<a class="sourceLine" id="cb18-21" title="21"><span class="co">// Pour obtenir une nouvelle instance chaque fois</span></a>
+<a class="sourceLine" id="cb18-22" title="22"><span class="va">Object</span>.<span class="at">defineProperties</span>(global<span class="op">,{</span></a>
+<a class="sourceLine" id="cb18-23" title="23">  <span class="dt">CurrentForm</span><span class="op">:{</span><span class="at">get</span>()<span class="op">{</span><span class="cf">return</span> <span class="kw">new</span> <span class="at">CurrentFormSubject</span>() <span class="op">}}</span></a>
+<a class="sourceLine" id="cb18-24" title="24"><span class="op">}</span>)</a></code></pre></div>
+<p>De cette manière, on pourra faire :</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb19-1" title="1"></a>
+<a class="sourceLine" id="cb19-2" title="2"><span class="at">expect</span>(CurrentForm).<span class="at">is_opened</span>()</a></code></pre></div>
+<p>Ci-dessous, c’est l’ancienne tournure :</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb20-1" title="1"></a>
+<a class="sourceLine" id="cb20-2" title="2"><span class="co">// Dans un fichier de `__TestsFIT__/support/`</span></a>
+<a class="sourceLine" id="cb20-3" title="3"><span class="kw">const</span> sub <span class="op">=</span> <span class="kw">new</span> <span class="at">FITSubject</span>(<span class="st">&quot;Le formulaire courant&quot;</span>)</a>
+<a class="sourceLine" id="cb20-4" title="4"></a>
+<a class="sourceLine" id="cb20-5" title="5"><span class="va">global</span>.<span class="at">CurrentForm</span> <span class="op">=</span> sub <span class="co">// pour l&#39;exposer</span></a></code></pre></div>
+<p>On va pouvoir déterminer plusieurs propriétés de cet instance dont les plus générales sont :</p>
+<ul>
+<li>la valeur (le premier argument habituel de <code>expect</code>) : <code>sub.value = ...</code></li>
+<li>le nom (à marquer dans les messages) : <code>sub.subject_message = "..."</code></li>
+<li>les assertions : <code>sub.assertions = ... objet contenant les assertions</code>.</li>
+<li>Les options : <code>sub.options = {prop:value, prop:value, ...}</code></li>
+</ul>
+<p>Par exemple :</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb21-1" title="1"></a>
+<a class="sourceLine" id="cb21-2" title="2"><span class="kw">const</span> sub <span class="op">=</span> <span class="kw">new</span> <span class="at">FITSubject</span>(<span class="st">&quot;Mon formulaire courant&quot;</span>)</a>
+<a class="sourceLine" id="cb21-3" title="3"><span class="va">sub</span>.<span class="at">value</span> <span class="op">=</span> <span class="va">EventForm</span>.<span class="at">current</span> <span class="co">// retourne l&#39;instance du formulaire courant</span></a>
+<a class="sourceLine" id="cb21-4" title="4"><span class="va">sub</span>.<span class="at">subject_message</span> <span class="op">=</span> <span class="st">&quot;Le formulaire courant&quot;</span></a>
+<a class="sourceLine" id="cb21-5" title="5"><span class="va">sub</span>.<span class="at">options</span> <span class="op">=</span> <span class="op">{</span><span class="dt">noRef</span><span class="op">:</span> <span class="kw">true</span><span class="op">}</span></a>
+<a class="sourceLine" id="cb21-6" title="6"><span class="va">sub</span>.<span class="at">assertions</span> <span class="op">=</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb21-7" title="7">  <span class="at">est_ouvert</span>()<span class="op">{</span></a>
+<a class="sourceLine" id="cb21-8" title="8">    <span class="co">//... on teste pour voir s&#39;il est ouvert</span></a>
+<a class="sourceLine" id="cb21-9" title="9">    <span class="at">assert</span>(</a>
+<a class="sourceLine" id="cb21-10" title="10">      ok<span class="op">,</span> ...</a>
+<a class="sourceLine" id="cb21-11" title="11">    )</a>
+<a class="sourceLine" id="cb21-12" title="12">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb21-13" title="13"><span class="op">,</span> <span class="at">est_bien_rempli</span>()<span class="op">{</span></a>
+<a class="sourceLine" id="cb21-14" title="14">    <span class="co">// ...</span></a>
+<a class="sourceLine" id="cb21-15" title="15">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb21-16" title="16"><span class="co">// etc.</span></a>
+<a class="sourceLine" id="cb21-17" title="17"><span class="op">}</span></a></code></pre></div>
+<p>Dans le cas où la valeur doit changer dynamiquement, on peut faire une sous-classe de <code>FITSubject</code>.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb22-1" title="1"></a>
+<a class="sourceLine" id="cb22-2" title="2"><span class="kw">class</span> MonSousSujet <span class="kw">extends</span> FITSubject <span class="op">{</span></a>
+<a class="sourceLine" id="cb22-3" title="3">  <span class="at">constructor</span>()<span class="op">{</span></a>
+<a class="sourceLine" id="cb22-4" title="4">    <span class="kw">super</span>(<span class="kw">this</span>.<span class="at">name</span>)</a>
+<a class="sourceLine" id="cb22-5" title="5">    <span class="kw">this</span>.<span class="at">name</span> <span class="op">=</span> <span class="st">&#39;Mon sous-sujet&#39;</span></a>
+<a class="sourceLine" id="cb22-6" title="6">    <span class="co">///...</span></a>
+<a class="sourceLine" id="cb22-7" title="7">    <span class="kw">this</span>.<span class="at">value</span> <span class="op">=</span> <span class="co">// une valeur dynamique, par exemple la fenêtre courante</span></a>
+<a class="sourceLine" id="cb22-8" title="8">    <span class="kw">this</span>.<span class="at">assertions</span> <span class="op">=</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb22-9" title="9">      <span class="at">est_bien</span>()<span class="op">{</span></a>
+<a class="sourceLine" id="cb22-10" title="10">        <span class="co">//...</span></a>
+<a class="sourceLine" id="cb22-11" title="11">        <span class="at">assert</span>(<span class="co">/*...*/</span>)</a>
+<a class="sourceLine" id="cb22-12" title="12">      <span class="op">}</span></a>
+<a class="sourceLine" id="cb22-13" title="13">    <span class="op">,</span> <span class="at">est_avant</span>(quoi)<span class="op">{</span><span class="co">/* ... */</span><span class="op">}</span></a>
+<a class="sourceLine" id="cb22-14" title="14">    <span class="op">}</span></a>
+<a class="sourceLine" id="cb22-15" title="15">    <span class="co">// Pour pouvoir utiliser les données et les méthodes de cette instance</span></a>
+<a class="sourceLine" id="cb22-16" title="16">    <span class="co">// car le mot `this` ne fera pas référence à cette instance (les méthodes</span></a>
+<a class="sourceLine" id="cb22-17" title="17">    <span class="co">// sont &quot;collées&quot; aux expectations)</span></a>
+<a class="sourceLine" id="cb22-18" title="18">    <span class="kw">this</span>.<span class="va">assertions</span>.<span class="at">i</span> <span class="op">=</span> <span class="kw">this</span></a>
+<a class="sourceLine" id="cb22-19" title="19">  <span class="op">}</span></a>
+<a class="sourceLine" id="cb22-20" title="20"><span class="op">}</span></a>
+<a class="sourceLine" id="cb22-21" title="21"></a>
+<a class="sourceLine" id="cb22-22" title="22"><span class="co">// Pour créer une nouvelle instance dynamique à chaque appel</span></a>
+<a class="sourceLine" id="cb22-23" title="23"><span class="va">Object</span>.<span class="at">defineProperties</span>(global<span class="op">,{</span></a>
+<a class="sourceLine" id="cb22-24" title="24">  <span class="co">// Créera une nouvelle instance à chaque appel</span></a>
+<a class="sourceLine" id="cb22-25" title="25">  <span class="dt">MonSousSujet</span><span class="op">:{</span><span class="at">get</span>()<span class="op">{</span><span class="cf">return</span> <span class="kw">new</span> <span class="at">MonSousSujet</span>()<span class="op">}}</span></a>
+<a class="sourceLine" id="cb22-26" title="26"><span class="op">}</span>)</a></code></pre></div>
+<p>Il suffit ensuite de l’utiliser comme :</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb23-1" title="1"></a>
+<a class="sourceLine" id="cb23-2" title="2">  <span class="kw">const</span> subj <span class="op">=</span> MonSousSujet <span class="co">// une instance toute fraiche, donc avec la fenêtre</span></a>
+<a class="sourceLine" id="cb23-3" title="3">  <span class="at">expect</span>(subj).<span class="at">est_bien</span>()</a>
+<a class="sourceLine" id="cb23-4" title="4">  <span class="at">expect</span>(subj).<span class="at">est_avant</span>(<span class="st">&#39;ca&#39;</span>)</a></code></pre></div>
+<hr />
+<h2 id="tests_own_complex_subjects">Sujets complexes existants</h2>
+<h3 id="complex_subjects_one_letter">Sujets complexes une lettre</h3>
+<dl>
+<dt><code>a</code> <code>a([Array|List])</code></dt>
+<dd>Un Array. <code>a(1,2,3)</code>
+</dd>
+<dt><code>b</code> <code>b(Boolean)</code></dt>
+<dd>Un booléen.
+</dd>
+<dd>Pour estimer si c’est vrai ou faux.
+</dd>
+<dt><code>d</code> <code>d(String|DOMElement|jQuerySet)</code></dt>
+<dd>Un élément DOM. <code>d("div#monDiv")</code>
+</dd>
+<dt><code>f</code> <code>f(String|File)</code></dt>
+<dd>Un fichier. <code>f("/path/to/my/folder/")</code>
+</dd>
+<dt><code>n</code> <code>n(Number|Integer|Float)</code></dt>
+<dd>Un nombre. <code>n(12+23)</code>
+</dd>
+<dt><code>o</code> <code>o(Object)</code></dt>
+<dd>Un objet. <code>o({prop:value,prop:value})</code>
+</dd>
+<dt><code>x</code> <code>x('test à évaluer')</code></dt>
+<dd>Une expectation — et seulement une expectation — à évaluer.
+</dd>
+<dd>Utile uniquement pour les tests de FITests.
+</dd>
+<dd>P.e. <code>expect(x('expect(a(12,2))).contains(12)').succeeds()</code>
+</dd>
+<dd>Noter que <code>{onlyReturn:true}</code> sera ajouté à la fin pour que l’évaluation ne produise pas de résultat écrit. Sinon, une failure attendue apparaitrait comme une failure.
+</dd>
+<dd>Les deux assertions possibles sont <code>succeeds</code> (quand une réussite est attendue) et <code>fails</code> (quand un échec est attendu).
+</dd>
+</dl>
+<h3 id="active_dom_element">Élément DOM courant (<code>FocusedElement</code>)</h3>
+<p>Le <a href="complexes_subjects">sujet complexe</a> <code>FocusedElement</code> permet de travailler et tester l’élément courant, par exemple pour voir si c’est bien le focus courant.</p>
+<p>À la base, pour tester si l’élément courant est le bon, on se sert de l’identifiant DOM et l’on fait :</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb24-1" title="1"></a>
+<a class="sourceLine" id="cb24-2" title="2"><span class="at">expect</span>(FocusedElement).<span class="at">is</span>(<span class="op">{</span><span class="dt">id</span><span class="op">:</span><span class="st">&#39;identifiant_attendu&#39;</span><span class="op">}</span>)</a></code></pre></div>
+<hr />
+<h2 id="les_methodes_pratiques">Méthodes pratiques</h2>
+<h3 id="waitdurée-message">wait(<code>&lt;durée&gt;</code>, <code>&lt;message&gt;</code>)</h3>
+<p>Permet d’attendre avant de poursuite.</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb25-1" title="1"></a>
+<a class="sourceLine" id="cb25-2" title="2"><span class="va">t</span>.<span class="at">case</span>(<span class="st">&quot;Un cas d&#39;attente&quot;</span><span class="op">,</span> <span class="at">async</span> () <span class="op">=&gt;</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb25-3" title="3">  <span class="co">// ...</span></a>
+<a class="sourceLine" id="cb25-4" title="4"></a>
+<a class="sourceLine" id="cb25-5" title="5">  await <span class="at">wait</span>(<span class="dv">3000</span><span class="op">,</span> <span class="st">&quot;J&#39;attends 3 secondes&quot;</span>)</a>
+<a class="sourceLine" id="cb25-6" title="6">  <span class="co">//... on peut poursuivre 3 secondes plus tard</span></a>
+<a class="sourceLine" id="cb25-7" title="7"></a>
+<a class="sourceLine" id="cb25-8" title="8"><span class="op">}</span>)</a></code></pre></div>
+<h3 id="méthode-waitfor">Méthode <code>waitFor</code></h3>
+<p>Attend qu’une condition soit vraie (premier argument) avant de poursuivre.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb26-1" title="1"></a>
+<a class="sourceLine" id="cb26-2" title="2">  await <span class="at">waitFor</span>(this_condition_must_be_true[<span class="op">,</span> options])</a></code></pre></div>
+<p><code>options</code> peut définir un <code>timeout</code> qui produira une erreur s’il est atteint. Sinon, on utilise le timeout général défini (<code>Tests.TIMEOUT</code>).</p>
+<h3 id="handy_method_on_files">Méthodes pratiques sur les fichiers/dossier</h3>
+<dl>
+<dt><code>removeFile(&lt;fpath&gt;[, &lt;humanName&gt;])</code></dt>
+<dd>Permet de détruire le fichier <code>fpath</code> désigné par <code>humanName</code>.
+</dd>
+<dd>Par exemple : <code>removeFile('./mon/fichier.js', "Mon fichier")</code>
+</dd>
+<dd>Note : la fonction produit une erreur fatale si le fichier n’a pas pu être détruit.
+</dd>
+</dl>
+<h2 id="tests_list">Liste des tests à lancer</h2>
+<p>Pour filtrer les tests à lancer, on se sert du <a href="#configurer_les_tests">fichier de configuration <code>config.json</code></a>.</p>
+<h2 id="before_and_after_methods">Exécutions avant et après</h2>
+<p>Noter la simplicité du nommage :</p>
+<ul>
+<li><code>before_tests</code> concerne le code à jouer avant tous les tests (<code>tests</code> au pluriel)</li>
+<li><code>before_test</code> (ou <code>before</code>) concerne le code à jouer avant un test particulier (<code>test</code> au singulier)</li>
+<li><code>before_case</code> concerne le code à jouer avant les cas (correspond au <code>before_each</code> des autres frameworks de test).</li>
+</ul>
+<h3 id="before_and_after_tests">Exécutions avant et après la suite entière de tests</h3>
+<p>Pour le code à évaluer avant le test courant, voir <a href="#before_and_after_testseul">exécution avant et après le test courant</a></p>
+<p>Pour définir le code à jouer avant ou après l’ensemble de la suite de <strong>tous les tests</strong>, on implémente les méthodes <code>beforeTests</code> et <code>afterTests</code> respectivement dans les fichiers <code>./__TestsFIT__/before_tests.js</code> et <code>./__TestsFIT__/after_tests.js</code>.</p>
+<p>Par exemple :</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb27-1" title="1"></a>
+<a class="sourceLine" id="cb27-2" title="2"><span class="co">// Dans before_tests.js</span></a>
+<a class="sourceLine" id="cb27-3" title="3"><span class="st">&#39;use strict&#39;</span></a>
+<a class="sourceLine" id="cb27-4" title="4"></a>
+<a class="sourceLine" id="cb27-5" title="5"><span class="va">module</span>.<span class="at">exports</span> <span class="op">=</span> async <span class="co">/* ou pas */</span> () <span class="op">=&gt;</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb27-6" title="6">  <span class="at">alert</span>(<span class="st">&quot;Je dois afficher ça.&quot;</span>)</a>
+<a class="sourceLine" id="cb27-7" title="7"><span class="op">}</span></a></code></pre></div>
+<p>Les deux méthodes, par défaut, sont considérées comme asynchrones.</p>
+<p>Par exemple, pour attendre deux secondes avant de lancer les tests, permettant au testeur de mettre l’application au premier plan :</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb28-1" title="1"><span class="co">// Dans ./__TestsFIT__/before_tests.js</span></a>
+<a class="sourceLine" id="cb28-2" title="2"></a>
+<a class="sourceLine" id="cb28-3" title="3"><span class="st">&#39;use strict&#39;</span></a>
+<a class="sourceLine" id="cb28-4" title="4"><span class="va">module</span>.<span class="at">exports</span> <span class="op">=</span> <span class="kw">function</span>()<span class="op">{</span></a>
+<a class="sourceLine" id="cb28-5" title="5">  <span class="va">Console</span>.<span class="at">bluebold</span>(<span class="st">&quot;Merci d&#39;activer l&#39;application&quot;</span>)</a>
+<a class="sourceLine" id="cb28-6" title="6">  <span class="cf">return</span> <span class="kw">new</span> <span class="at">Promise</span>((ok<span class="op">,</span>ko)<span class="op">=&gt;</span> <span class="op">{</span><span class="at">setTimeout</span>(ok<span class="op">,</span><span class="dv">2000</span>)<span class="op">}</span>)</a>
+<a class="sourceLine" id="cb28-7" title="7">  <span class="co">// ou :</span></a>
+<a class="sourceLine" id="cb28-8" title="8">  <span class="co">// return wait(2000)</span></a>
+<a class="sourceLine" id="cb28-9" title="9"><span class="op">}</span></a></code></pre></div>
+<h3 id="before_and_after_testseul">Exécution avant et après le test courant</h3>
+<p>Pour jouer du code avant et après la feuille de test courant, le test courant, utiliser les méthodes <code>after</code> (ou <code>after_test</code>) et <code>before</code> (ou <code>before_test</code>) :</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb29-1" title="1"></a>
+<a class="sourceLine" id="cb29-2" title="2">  <span class="kw">var</span> t <span class="op">=</span> <span class="kw">new</span> <span class="at">Test</span>(<span class="st">&quot;mon test&quot;</span>)</a>
+<a class="sourceLine" id="cb29-3" title="3"></a>
+<a class="sourceLine" id="cb29-4" title="4">  <span class="va">t</span>.<span class="at">before</span>(<span class="op">&lt;</span>promesse<span class="op">&gt;</span>)</a>
+<a class="sourceLine" id="cb29-5" title="5">  <span class="va">t</span>.<span class="at">after</span>(<span class="op">&lt;</span>promesse<span class="op">&gt;</span>)</a>
+<a class="sourceLine" id="cb29-6" title="6"></a>
+<a class="sourceLine" id="cb29-7" title="7">  <span class="va">t</span>.<span class="at">case</span>(...)</a>
+<a class="sourceLine" id="cb29-8" title="8">  <span class="va">t</span>.<span class="at">case</span>(...)</a></code></pre></div>
+<p>Le cas classique, dans Film-Analyzer, consiste à charger une analyse de film avant de procéder aux tests. On procède ainsi :</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb30-1" title="1"></a>
+<a class="sourceLine" id="cb30-2" title="2"><span class="kw">var</span> t <span class="op">=</span> <span class="kw">new</span> <span class="at">Test</span>(<span class="st">&quot;Mon test sur une analyse&quot;</span>)</a>
+<a class="sourceLine" id="cb30-3" title="3"></a>
+<a class="sourceLine" id="cb30-4" title="4"><span class="va">t</span>.<span class="at">before</span>(<span class="va">FITAnalyse</span>.<span class="va">load</span>.<span class="at">bind</span>(FITAnalyse<span class="op">,</span> <span class="st">&#39;dossier/test&#39;</span>))</a>
+<a class="sourceLine" id="cb30-5" title="5"></a>
+<a class="sourceLine" id="cb30-6" title="6"><span class="va">t</span>.<span class="at">case</span>(<span class="st">&quot;Premier test&quot;</span><span class="op">,</span> ()<span class="op">=&gt;{</span></a>
+<a class="sourceLine" id="cb30-7" title="7">  <span class="co">//... Je peux exécuter ici un tests sur l&#39;analyse chargée, après son</span></a>
+<a class="sourceLine" id="cb30-8" title="8">  <span class="co">//... chargement.</span></a>
+<a class="sourceLine" id="cb30-9" title="9"><span class="op">}</span>)</a></code></pre></div>
+<h3 id="before_and_after_each_case">Code à exécuter avant ou après chaque cas</h3>
+<p>Pour exécuter du code asynchrone ou non avant et après chaque cas, on utilise les méthodes de test <code>before_case</code> et <code>after_case</code> :</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb31-1" title="1"></a>
+<a class="sourceLine" id="cb31-2" title="2"><span class="kw">const</span> test <span class="op">=</span> <span class="kw">new</span> <span class="at">Test</span>(<span class="st">&quot;Mon test&quot;</span>)</a>
+<a class="sourceLine" id="cb31-3" title="3"></a>
+<a class="sourceLine" id="cb31-4" title="4"><span class="va">test</span>.<span class="at">before_case</span>( () <span class="op">=&gt;</span> <span class="op">{</span> <span class="co">/* code à exécuter avant chaque cas */</span> <span class="op">}</span>)</a>
+<a class="sourceLine" id="cb31-5" title="5"><span class="va">test</span>.<span class="at">after_case</span>( () <span class="op">=&gt;</span> <span class="op">{</span> <span class="co">/* code à exécuter avant chaque cas */</span> <span class="op">}</span>)</a></code></pre></div>
+<h2 id="simulate_keyboard">Simuler des touches clavier</h2>
+<p>Pour toutes les méthodes de tests concernant les touches clavier, cf. <a href="./Manuel_FITests_METHS.html#libtestsutilitiesKeysjs">le fichier rassemblant toutes les méthodes</a>.</p>
+<h3 id="exec_action">Exécution d’une action (<code>action</code>)</h3>
+<p>Pour mettre en valeur une action à exécuter (et s’assurer qu’elle fonctionne), on peut utiliser le mot-clé-fonction <code>action</code> :</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb32-1" title="1">  <span class="at">action</span>(<span class="st">&quot;L&#39;action que je dois faire&quot;</span><span class="op">,</span> ()<span class="op">=&gt;{</span></a>
+<a class="sourceLine" id="cb32-2" title="2">    <span class="co">// Le code de l&#39;action, par exemple :</span></a>
+<a class="sourceLine" id="cb32-3" title="3">  <span class="op">}</span>)</a></code></pre></div>
+<p>Par exemple :</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb33-1" title="1">  <span class="at">action</span>(<span class="st">&quot;L&#39;utilisateur clique sur le bouton OK&quot;</span><span class="op">,</span> () <span class="op">=&gt;</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb33-2" title="2">    <span class="at">$</span>(<span class="st">&#39;#monBoutonOK&#39;</span>).<span class="at">click</span>()</a>
+<a class="sourceLine" id="cb33-3" title="3">  <span class="op">}</span>)</a></code></pre></div>
+<p>De cette manière, dans l’énoncé des tests, on peut suivre toutes les actions accomplies.</p>
+<p>L’action peut être aussi asynchrone et doit alors être précédée du mot clé <code>await</code> :</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb34-1" title="1"></a>
+<a class="sourceLine" id="cb34-2" title="2">  await <span class="at">action</span>(<span class="st">&quot;Je fais une action asynchrone&quot;</span><span class="op">,</span> <span class="at">async</span> () <span class="op">=&gt;</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb34-3" title="3">    <span class="at">keyPress</span>(<span class="st">&#39;n&#39;</span>)</a>
+<a class="sourceLine" id="cb34-4" title="4">    <span class="at">wait</span>(<span class="dv">1000</span>)</a>
+<a class="sourceLine" id="cb34-5" title="5">    <span class="at">keyPress</span>(<span class="st">&#39;i&#39;</span>)</a>
+<a class="sourceLine" id="cb34-6" title="6">  <span class="op">}</span>)</a></code></pre></div>
+<hr />
+<h2 id="textes_suivis">Textes écrits dans le suivi</h2>
+<p>En dehors des messages des assertions elles-mêmes, on peut trouver ces textes dans le suivi du tests :</p>
+<ul>
+<li><a href="#pending">Cas entièrement à implémenter (<code>pending</code>)</a></li>
+<li><a href="#test_to_define">Test à implémenter plus tard (<code>tester</code>)</a> <!-- Reporter aussi au-dessus si ajout --></li>
+</ul>
+<h3 id="sumarize_operations">Sommaire des opérations</h3>
+<p>On peut écrire un sommaire des opérations qui sont testés, n’importe où (dans le describe, dans le case), à l’aide la méthode <code>sumarize</code> :</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb35-1" title="1"></a>
+<a class="sourceLine" id="cb35-2" title="2"><span class="at">describe</span>(<span class="st">&quot;Mon tests&quot;</span><span class="op">,</span> async <span class="kw">function</span>()<span class="op">{</span></a>
+<a class="sourceLine" id="cb35-3" title="3">  <span class="kw">this</span>.<span class="at">case</span>(<span class="st">&quot;Le cas courant&quot;</span><span class="op">,</span> <span class="at">async</span> () <span class="op">=&gt;</span> <span class="op">{</span></a>
+<a class="sourceLine" id="cb35-4" title="4">    <span class="at">sumarize</span>(<span class="vs">`</span></a>
+<a class="sourceLine" id="cb35-5" title="5"><span class="vs">      - on fait ceci pour voir cela</span></a>
+<a class="sourceLine" id="cb35-6" title="6"><span class="vs">      - et puis ensuite on teste ça</span></a>
+<a class="sourceLine" id="cb35-7" title="7"><span class="vs">      - et on devrait obtenir tel résultat.</span></a>
+<a class="sourceLine" id="cb35-8" title="8"><span class="vs">      `</span>)</a>
+<a class="sourceLine" id="cb35-9" title="9">  <span class="op">}</span>)</a>
+<a class="sourceLine" id="cb35-10" title="10"><span class="op">}</span>)</a></code></pre></div>
+<h3 id="pending">Cas entièrement à implémenter (<code>pending</code>)</h3>
+<p>On utilise le mot-clé-fonction <code>pending</code> pour déterminer un cas entièrement à implémenter.</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb36-1" title="1"></a>
+<a class="sourceLine" id="cb36-2" title="2">  <span class="va">t</span>.<span class="at">case</span>(<span class="st">&quot;Mon tests pas implémenté&quot;</span><span class="op">,</span> ()<span class="op">=&gt;{</span></a>
+<a class="sourceLine" id="cb36-3" title="3">    <span class="at">pending</span>(<span class="st">&quot;Faire ce test plus tard&quot;</span>)</a>
+<a class="sourceLine" id="cb36-4" title="4">  <span class="op">}</span>)</a></code></pre></div>
+<blockquote>
+<p>On peut ne rien mettre en paramètre, ce qui indiquera “TODO” dans les tests.</p>
+</blockquote>
+<p>Noter que contrairement à <a href="#test_to_define"><code>tester</code></a>, qui n’influence pas le résumé total des tests à la fin (sa couleur), ce <code>pending</code> empêche les tests de passer au vert.</p>
+<h3 id="test_to_define">Test à implémenter plus tard (<code>tester</code>)</h3>
+<p>Lorsqu’un test ponctuel — à l’intérieur d’un cas long — est compliqué ou délicat et qu’on ne veut pas l’implémenter tout de suite, on peut le remplacer par le mot-clé-fonction <code>tester</code>.</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb37-1" title="1">  <span class="at">tester</span>(<span class="st">&quot;&lt;message du test à faire&gt;&quot;</span>)</a></code></pre></div>
+<p>C’est le message <code>&lt;message du test à faire&gt;</code> qui apparaitra en rouge gras dans le suivi des tests, indiquant clairement que ce test sera à implémenter.</p>
+<p>On peut se servir de ce mot-clé, par exemple, pour définir rapidement tous les tests à faire. Puis les implémenter dans un second temps.</p>
+<h2 id="tests_of_fitests">Tests des FITests</h2>
+<p>Les tests des FITests se trouvent dans <code>./__TestsFIT__/FIT</code>. Pour les lancer, il suffit donc de régler <code>onlyFolders: ['FIT']</code> dans <code>config.json</code>.</p>
+<h3 id="rationnalisation-des-termes">Rationnalisation des termes</h3>
+<p>Les termes sont rationnalisés pour tous les tests :</p>
+<dl>
+<dt><code>actualValue</code></dt>
+<dd>Valeur actuelle réelle à comparer à <code>expectedValue</code>.
+</dd>
+<dd>Elle est souvent passée en premier argument de <code>expect</code> mais c’est loin d’être toujours le cas.
+</dd>
+<dt><code>expectedValue</code></dt>
+<dd>Valeur attendue réelle. À comparer à <code>actualValue</code>.
+</dd>
+<dt><code>sujet</code></dt>
+<dd>Le sujet humain à écrire dans les messages.
+</dd>
+<dt><code>objet</code></dt>
+<dd>L’objet humain à écrire dans les messages. C’est parfois la valeur attendue, <code>expectedValue</code>, stringifiée ou JSONisée.
+</dd>
+</dl>
+<h3 id="expectations-dexpectations">Expectations d’expectations</h3>
+<p>Dans ces tests, pour dire qu’un test doit produire un succès ou, particulièrement, un échec (donc pour produire un succès qui dit qu’un test aurait du être un échec), on utilise le <a href="#les_sujets_complexes">sujet complexe</a> <code>x</code>. Par exemple :</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb38-1" title="1"></a>
+<a class="sourceLine" id="cb38-2" title="2"><span class="at">expect</span>(<span class="at">x</span>(<span class="st">&#39;expect(12).is(13)&#39;</span>)).<span class="at">fails</span>()</a></code></pre></div>
+<p>Cette expectation évalue en silence <code>expect(12).is(13)</code>, qui retourne false, conformément à ce que demande <code>fails()</code>.</p>
+<p>Mais les choses sont beaucoup plus complexe pour les tests des tests asynchrone. Il faut alors transmettre une méthode à <code>x</code>. Sa forme générale est :</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb39-1" title="1"></a>
+<a class="sourceLine" id="cb39-2" title="2"><span class="at">expect</span>(<span class="at">x</span>(</a>
+<a class="sourceLine" id="cb39-3" title="3">  async <span class="kw">function</span>()<span class="op">{</span><span class="cf">return</span> await <span class="at">expect</span>(...).<span class="at">assertion</span>(...<span class="op">,</span> <span class="op">{</span><span class="dt">onlyReturn</span><span class="op">:</span><span class="kw">true</span><span class="op">}</span>)<span class="op">}</span></a>
+<a class="sourceLine" id="cb39-4" title="4">)).<span class="at">fails</span>()</a></code></pre></div>
+<p>Bien noter les <code>async</code>, <code>return</code> et <code>await</code> qui sont tous indispensables. Surtout le <code>return</code> qu’on risque de facilement oublier et qui porduirait un échec chaque fois.</p>
+<p>Pour que le <code>sujet</code> affiché ne soit pas la fonction, on peut utiliser :</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb40-1" title="1"></a>
+<a class="sourceLine" id="cb40-2" title="2"><span class="at">expect</span>(</a>
+<a class="sourceLine" id="cb40-3" title="3">  <span class="at">x</span>(</a>
+<a class="sourceLine" id="cb40-4" title="4">    async <span class="kw">function</span>()<span class="op">{</span><span class="cf">return</span> await <span class="at">expect</span>(...).<span class="at">assertion</span>(...<span class="op">,</span> <span class="op">{</span><span class="dt">onlyReturn</span><span class="op">:</span><span class="kw">true</span><span class="op">}</span>)<span class="op">}</span></a>
+<a class="sourceLine" id="cb40-5" title="5">  )<span class="op">,</span></a>
+<a class="sourceLine" id="cb40-6" title="6">  <span class="st">&#39;expect(...).assertion(...)&#39;</span></a>
+<a class="sourceLine" id="cb40-7" title="7">).<span class="at">fails</span>()</a></code></pre></div>
+<blockquote>
+<p>Noter qu’on ne remet pas le <code>{onlyReturn:true}</code> qui ne sert qu’à faire un test silencieux, donc qui ne produira pas de message de succès ou d’échec.</p>
+</blockquote>
+<hr />
+<h2 id="all_handy_methods">Toutes les méthodes et expectations</h2>
+<p>Les listes des méthodes et des expectations est tenue à jour dans un fichier HTML du dossier <code>FITests/Manuel</code>.</p>
+<p>Pour pouvoir actualiser la liste des méthodes et expectations de tests, on peut ajouter dans le fichier <code>pakcage.json</code> de l’application :</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode json"><code class="sourceCode json"><a class="sourceLine" id="cb41-1" title="1"></a>
+<a class="sourceLine" id="cb41-2" title="2"><span class="er">&quot;scripts&quot;:</span><span class="fu">{</span>  </a>
+<a class="sourceLine" id="cb41-3" title="3">  <span class="dt">&quot;collect-fit-methods&quot;</span><span class="fu">:</span> <span class="st">&quot;ruby FITests/exe/build_methods_list.rb&quot;</span><span class="fu">,</span></a>
+<a class="sourceLine" id="cb41-4" title="4">  <span class="dt">&quot;open-fit-methods&quot;</span><span class="fu">:</span> <span class="st">&quot;open FITests/Manuel/Manuel_FITests_METHS.html&quot;</span><span class="fu">,</span></a>
+<a class="sourceLine" id="cb41-5" title="5"><span class="fu">}</span></a></code></pre></div>
+<p>Puis jouer <code>npm run collect-fit-methods</code> pour actualiser la liste et <code>npm run open-fit-methods</code> pour ouvrir le fichier HTML contenant toutes les méthodes.</p>
+<h3 id="description-des-méthodes-et-expectations">Description des méthodes et expectations</h3>
+<p>Pour qu’une méthode ou une expectation soit répertoriée, il suffit de bien la définir au-dessus à l’aide des marques spéciales :</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb42-1" title="1"></a>
+<a class="sourceLine" id="cb42-2" title="2"><span class="co">/*</span></a>
+<a class="sourceLine" id="cb42-3" title="3"><span class="co">  @method (returned) nomDeLaMethode(provided)</span></a>
+<a class="sourceLine" id="cb42-4" title="4"><span class="co">  @description Ici une description de la méthode</span></a>
+<a class="sourceLine" id="cb42-5" title="5"><span class="co">  @note Des notes éventuelles.</span></a>
+<a class="sourceLine" id="cb42-6" title="6"><span class="co">  @provided</span></a>
+<a class="sourceLine" id="cb42-7" title="7"><span class="co">    :arg1 {Type} Le premier argument</span></a>
+<a class="sourceLine" id="cb42-8" title="8"><span class="co">    :arg2 {Type} Le deuxième argument</span></a>
+<a class="sourceLine" id="cb42-9" title="9"><span class="co">    ...</span></a>
+<a class="sourceLine" id="cb42-10" title="10"><span class="co">  @returned</span></a>
+<a class="sourceLine" id="cb42-11" title="11"><span class="co">    :prop1 {Type} La première propriété retournée</span></a>
+<a class="sourceLine" id="cb42-12" title="12"><span class="co">    :prop2 {Type} La seconde propriété</span></a>
+<a class="sourceLine" id="cb42-13" title="13"><span class="co">    ...</span></a>
+<a class="sourceLine" id="cb42-14" title="14"><span class="co">  @usage let res = await nomDeLaMethode(data)</span></a>
+<a class="sourceLine" id="cb42-15" title="15"></a>
+<a class="sourceLine" id="cb42-16" title="16"><span class="co">*/</span></a></code></pre></div>
+<p>Noter qu’il faut obligatoirement <code>/*</code> et <code>*/</code> pour encadrer la définition. S’il y a deux astérisques, ça ne fonctionnera pas.</p>
+</body>
+</html>
