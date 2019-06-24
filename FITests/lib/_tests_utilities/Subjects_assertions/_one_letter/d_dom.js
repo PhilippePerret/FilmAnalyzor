@@ -112,7 +112,7 @@ getActualFromSujet(suj){
     // <= C'est un HTMLElement
     // => on le renvoie tel quel
     this.invalidSujet = false
-  return suj
+    return suj
   } else if ( undefined !== suj.length && 'string' !== typeof(suj) && !Array.isArray(suj)) {
     // <= l'élément est un objet jQuery puisqu'il possède une propriété length
     // => Il faut renvoyer son premier élément (ou null)

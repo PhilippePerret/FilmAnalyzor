@@ -22,6 +22,13 @@ place(){
 }
 
 /**
+  Méthode qui détruit l'élément dans la timeline
+**/
+remove(){
+  this.jqObj.remove()
+}
+
+/**
   Méthode, appelée par exemple après un coup de zoom, qui repositionne l'élément
   en taille et sur l'axe des x.
 **/

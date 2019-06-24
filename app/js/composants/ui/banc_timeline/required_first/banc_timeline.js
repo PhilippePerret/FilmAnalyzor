@@ -140,9 +140,45 @@ const BancTimeline = {
 **/
 , append(ev) {
     var bte = new BancTimelineElement(ev)
-    BancTimeline.items.push(bte)
+    this.items.push(bte)
     this.searchRowForItem(bte)
     bte.place()
+  }
+
+/**
+  Destruction d'un event
+    -  sur la timeline (HTML Element)
+    - dans la liste this.items
+    - dans la map this.map
+**/
+, remove(ev){
+    let bte
+    var i = 0
+      , len = this.items.length
+    for(; i<len; ++i) {
+      var item = this.items[i]
+      if ( item.event.id === ev.id ){
+        bte = item
+        this.items.splice(i,1)
+        break
+      }
+    }
+
+    // On doit forcément trouver l'élément
+    bte || raise(`L'élément timeline correspondant à l'event #${ev.id} est introuvable…`)
+
+    bte.remove()
+
+    // On le retire de la map pour laisser l'espace vide
+    var ispace = 0
+      , len = this.map[bte.row].length
+    for(; ispace<len; ++ispace){
+      var space = this.map[bte.row][ispace]
+      if ( space.id === ev.id ) {
+        this.map[bte.row].splice(ispace,1)
+        break
+      }
+    }
   }
 // ---------------------------------------------------------------------
 //  MÉTHODES D'EVENTS
@@ -223,7 +259,7 @@ const BancTimeline = {
       for ( var space of drow ) {
         if ( space.start > item.event.endAt || space.end < item.event.startAt ) {
           // L'espace libre a été trouvé
-          drow.push({start: item.event.startAt, end:item.event.endAt})
+          drow.push({start: item.event.startAt, end:item.event.endAt, id:item.event.id})
           item.row = irow
           break
         }

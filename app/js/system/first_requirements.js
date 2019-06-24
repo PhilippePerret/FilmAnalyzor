@@ -9,9 +9,8 @@ function FReqGet(name){
 }
 
 require('./js/system/Console')
-
 require('./js/system/utils')
-
+FReqGet('Object')
 FReqGet('Map_extension')
 
 const WindowController = FReqGet('ui/WindowController')

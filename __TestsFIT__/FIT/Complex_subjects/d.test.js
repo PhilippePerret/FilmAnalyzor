@@ -22,10 +22,10 @@ describe("Sujet complexe `d` (DOM)", function(){
   })
 
   this.case("la méthode `exists`", async() => {
-    expect(d('Le sujet `d`'), "d(...)").responds_to('exists')
+    await expect(d('Lesujetd'), "d(...)").responds_to('exists')
     await expect(
        x(async ()=>{return await expect(d($(document))).exists({onlyReturn:true})})
-       , {sujet: 'd($(document)).exists()'}
+       , 'd($(document)).exists()'
     ).succeeds()
     await expect(
       x(async ()=>{return await expect(d($('body'))).exists({onlyReturn:true})})

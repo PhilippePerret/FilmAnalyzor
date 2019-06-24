@@ -135,6 +135,12 @@ Object.assign(FAnalyse.prototype, {
     this.events.splice(this.indexOfEvent(event_id),1)
     // console.log("this.events après:", this.events)
 
+    // Destruction dans la timeline et sa map
+    BancTimeline.remove(ev)
+
+    // Destruction dans le reader
+    this.reader.removeItem(ev)
+
     // Destruction dans la table par clé identifiants
     delete this.ids[event_id]
     this.ids[event_id] = undefined
@@ -174,10 +180,10 @@ Object.assign(FAnalyse.prototype, {
     FAEvent.addModified(event_id)
 
     F.notify("Event détruit avec succès.")
+    this.modified = true
 
     FAStater.update()
 
-    this.modified = true
   } // /destroyEvent
 
 })

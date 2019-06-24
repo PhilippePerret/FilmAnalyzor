@@ -199,6 +199,12 @@ append(ev){
 }
 
 /**
+  Détruit un élément dans le reader
+**/
+removeItem(item){
+  this.reader.find(`reader-${item.metaType||item.type}-${item.id}`).remove()
+}
+/**
   Exécuter une boucle sur les noeuds d'event du reader
   en exécutant la méthode +fn+ qui peut retourner false
   pour interrompre la boucle.
