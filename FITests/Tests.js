@@ -30,7 +30,7 @@ global.Tests = {
       // toutes les assertions
       this.requireFolder('lib/required2/Assertions')
       this.requireFolder('lib/_tests_utilities')
-      
+
       this.initTestsMethods() // pour exposer 'pending', 'tester' etc.
     }
     this.initTests()
@@ -49,9 +49,9 @@ global.Tests = {
     Object.assign(this.config, JSON.parse(fs.readFileSync(path.join(this.testsFolder,'config.json'),'utf8')))
     // Si des expressions régulières doivent être utilisées pour filtrer les fichiers ou les noms
     // de tests on les prépare.
-    if ( this.config.regFiles ) this.config.regFiles = new RegExp(RegExp.escape(this.config.regFiles))
-    if ( this.config.regNames ) this.config.regNames = new RegExp(RegExp.escape(this.config.regNames))
-    if ( this.config.regCases ) this.config.regCases = new RegExp(RegExp.escape(this.config.regCases))
+    if ( this.config.regFiles ) this.config.regFiles = new RegExp(this.config.regFiles)
+    if ( this.config.regNames ) this.config.regNames = new RegExp(this.config.regNames)
+    if ( this.config.regCases ) this.config.regCases = new RegExp(this.config.regCases)
     // Liste Array des instances Test des tests joués (et seulement les tests joués)
     this.tests = []
     this.loadSupportFiles()

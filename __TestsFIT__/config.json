@@ -6,7 +6,7 @@
 , "regFiles":   null
 , "regNames":   null
 , "regCases":   null
-, "exemple regFiles": "only.test.js"
+, "exemple regFiles": "^only\.test\.js"
 , "exemple regNames": "le filtrage"
 , "exemple regCases": "un wait"
 }
