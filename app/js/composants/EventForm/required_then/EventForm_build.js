@@ -318,10 +318,6 @@ Object.assign(EventForm.prototype,{
     // On rend l'entête du formulaire sensible au drop
     my.jqObj.find('.header').droppable(DATA_ASSOCIATES_DROPPABLE)
 
-    // Les champs d'édition répondent au cmd-enter pour soumettre le
-    // formulaire (enfin… façon de parler)
-    my.jqObj.find('textarea, input[type="text"], input[type="checkbox"], select').on('keydown', this.onKeyDownOnTextFields.bind(this))
-
     // Pour savoir si l'on doit éditer dans les champs de texte ou
     // dans le miniwriter
     UI.miniWriterizeTextFields(this.jqObj, this.a.options.get('option_edit_in_mini_writer'))

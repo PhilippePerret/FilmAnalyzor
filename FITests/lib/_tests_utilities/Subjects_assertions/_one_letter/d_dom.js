@@ -77,8 +77,7 @@ async contains(expected, options){
 constructor(suj){
   super('d Subject')
   this.initialSujet = this.sujet = suj
-  this.invalidSujet = false
-  this.actualValue = this.getActualFromSujet(suj)
+  this.actualValue  = this.getActualFromSujet(suj)
   this.invalidSujet || (this.sujet = this.getShortSujetFrom(this.actualValue))
   // console.log("this.sujet = ", this.sujet)
   Object.assign(this.assertions,{
@@ -106,15 +105,18 @@ getActualFromSujet(suj){
   if ( ! suj ) {
     this.invalidSujet = true
     return null
-  } else if ( 'string' === suj ) {
+  } else if ( 'string' === typeof suj ) {
+    this.invalidSujet = false
     return document.querySelector(suj)
   } else if ( suj instanceof HTMLElement ) {
     // <= C'est un HTMLElement
     // => on le renvoie tel quel
-    return suj
+    this.invalidSujet = false
+  return suj
   } else if ( undefined !== suj.length && 'string' !== typeof(suj) && !Array.isArray(suj)) {
     // <= l'élément est un objet jQuery puisqu'il possède une propriété length
     // => Il faut renvoyer son premier élément (ou null)
+    this.invalidSujet = false
     return suj[0] || null
   } else {
     // <= Ce n'est pas un élément valide

@@ -24,8 +24,26 @@ global.tryRequire = function(rpath, folder){
 }
 
 function confirm(msg, options){
+  options = options || {}
   let mbox = new MessageBox(isString(msg) ? Object.assign(options, {message: msg}) : msg)
   mbox.show()
+}
+/**
+  Contrairement à confirm, cette méthode s'utilise avec await :
+  if ( await confirmer(...) ){'
+    * Si on a choisi oui *
+  }' else {'
+    * si on a choisi non *
+  }
+**/
+function confirmer(msg, options){
+  options = options || {}
+  let mbox = new MessageBox(isString(msg) ? Object.assign(options, {message: msg}) : msg)
+  return new Promise((ok,ko)=>{
+    mbox.methodOnOK =     () => {ok(true)}
+    mbox.methodOnCancel = () => {ok(false)}
+    mbox.show()
+  })
 }
 // Demande une réponse
 // On utilise `confirm` parce que la seule différence, c'est que `args`

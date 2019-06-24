@@ -1,17 +1,17 @@
 'use strict'
 
-global.FITEventProcede = class extends FITEvent {
+global.FITEventProc = class extends FITEvent {
 // ---------------------------------------------------------------------
 // CLASSE
 static create(data){
   this.a = data.analyse
-  return new FITEventProcede(data)
+  return new FITEventProc(data)
 }
 
 // ---------------------------------------------------------------------
 // INSTANCE
 constructor(data){
-  data.type = 'procede'
+  data.type = 'proc'
   super(data)
 }
 
@@ -20,7 +20,7 @@ constructor(data){
 **/
 get data(){
   return Object.assign({}, super.defaultData, {
-    type: 'procede'
+    type: 'proc'
   })
 }
 

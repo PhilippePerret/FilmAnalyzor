@@ -587,12 +587,16 @@ checkIfSynchronizable(e){
 }
 
 /**
- * Demande de destruction de l'élément
+  Demande de destruction de l'élément
+  @asynchrone
  */
-destroy(){
-  if(!confirm(T('confirm-destroy-event'))) return
-  this.a.destroyEvent(this.id, this)
-  this.endEdition()
+async destroy(){
+  if ( await confirmer(T('confirm-destroy-event'),{id:`mbox-confirm-destroy-event-${this.id}`})){
+    this.a.destroyEvent(this.id, this)
+    this.endEdition()
+  } else {
+    /* Destruction abandonnée */
+  }
 }
 /**
  * En cas d'annulation de l'édition
@@ -783,27 +787,6 @@ setNumeroScene(){
 
 // ---------------------------------------------------------------------
 //  Méthodes d'évènements
-
-onKeyDownOnTextFields(e){
-  // console.log("-> EventForm#onKeyDownOnTextFields")
-  OBSOLÈTE
-  if(e.metaKey){
-    if(e.keyCode === KRETURN){
-      this.submit()
-      return stopEvent(e)
-    } else if (e.key == 't') {
-      // On doit inscrire le temps courant dans le champ
-      var otime = this.a.locator.currentTime
-      $(e.target).insertAtCaret(`{{time:${otime.seconds}|${otime.horloge_simple}}}`)
-    }
-    // else {
-    //   stopEvent(e)
-    //   console.log("e.keyCode, e.charCode, e.which, e.key", e.keyCode, e.charCode, e.which, e.key)
-    //   return false
-    // }
-  }
-  return true
-}
 
 /**
   Méthode appelée par FWindow à la fin d'un drag de la fenêtre

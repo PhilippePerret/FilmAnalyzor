@@ -1,11 +1,11 @@
 'use strict'
 
-global.FITEventDialo = class extends FITEvent {
+global.FITEventDialog = class extends FITEvent {
 // ---------------------------------------------------------------------
 // CLASSE
 static create(data){
   this.a = data.analyse
-  return new FITEventDialo(data)
+  return new FITEventDialog(data)
 }
 
 // ---------------------------------------------------------------------

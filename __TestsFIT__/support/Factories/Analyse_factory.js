@@ -32,9 +32,9 @@ static create(data){
   return ca
 }
 
-static createAndLoad(data){
-  const ca = this.create(data)
-  ca.load()
+static async createAndLoad(data){
+  const ca = await this.create(data)
+  await ca.load()
   return ca
 }
 
@@ -108,12 +108,13 @@ buildDataFile(){
 // Construction du fichier des events
 // Note : il faut toujours que ce fichier existe
 buildEventsFile(){
+  const my = this
   if ( undefined === this.pData.events ){
     this.pData.events = []
   } else if ( 'number' === typeof(this.pData.events) ) {
     var nombre = this.pData.events
     this.pData.events = []
-    while ( nombre -- ) this.pData.events.push(FITEvent.create(this))
+    while ( nombre -- ) this.pData.events.push(FITEvent.create({analyse:my}).data)
   } else {
     // Les events ont été fabriqués avec des données déterminées, mais il
     // faut s'assurer que ce sont ces données qui ont été transmises et non

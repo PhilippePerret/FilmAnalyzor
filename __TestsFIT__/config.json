@@ -1,12 +1,12 @@
 {
-  "onlyFolders": ["FIT/Complex_subjects"]
+  "onlyFolders": ["FilmAnalyzor/EventForm"]
 , "trace":      false
 , "random":     false
 , "fail_fast":  true
-, "regFiles":   null
+, "regFiles":   "destroy_event\\.test"
 , "regNames":   null
 , "regCases":   null
-, "exemple regFiles": "^only\.test\.js"
+, "exemple regFiles": "^only\\.test\\.js"
 , "exemple regNames": "le filtrage"
 , "exemple regCases": "un wait"
 }

@@ -12,8 +12,9 @@ static create(data){
   if ( !data.type ) {
     data.type = this.getAEventType()
   }
+  // console.log("data.type = ", data.type)
   let className = `FITEvent${data.type.titleize()}`
-  console.log("Class name pour la création de l'event : ", className)
+  // console.log("Class name pour la création de l'event : ", className)
   let classe = window[className]
   return classe.create(data)
 }
@@ -23,9 +24,11 @@ static create(data){
     return ++ this.lastId
   }
   static getAEventType(){
-    if ( undefined === this._eventTypes ) this._eventTypes = ['scene','dyna','note','idee','info','stt','procede','action','dialog']
-    if ( undefined === this._nombreeventtypes) this._nombreeventtypes = this._eventTypes.length
-    return this._eventTypes[Math.rand(this._nombreeventtypes)]
+    if ( undefined === this._eventTypes || this._eventTypes.length === 0 ){
+      this._eventTypes = ['scene','dyna','note','idee','info','stt','proc','action','dialog']
+      Array.shuffle(this._eventTypes)
+    }
+    return this._eventTypes.shift()
   }
   // Retourne un content aléatoire de longueur +len+
   static newContent(len){

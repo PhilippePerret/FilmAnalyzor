@@ -12,6 +12,7 @@
     <data> définissant :
       :message      Le message principal à afficher
   OPTIONNEL
+      :id           Identifiant (qui doit être unique) de la fenêtre à afficher
       :buttons      Liste Array des boutons, dans le même ordre qu'à l'écran
                     Par défaut : ['Annuler', 'OK']
       :title        Le titre de la fenêtre
@@ -42,6 +43,7 @@
 class MessageBox {
   constructor(data){
     this.data       = data
+    this.id         = data.id || `mbox${Number(new Date())}${Math.rand(1000)}`
     this.title      = data.title || data.titre
     this.type       = data.type || 'alert' // 'alert', 'confirm' // inusité
     this.width      = data.width
@@ -80,7 +82,7 @@ class MessageBox {
   get isConfirmBox(){return this.type === 'confirm'}
 
   onClickBtn(ibtn){
-    F.notify(`Bouton cliqué : ${ibtn}`)
+    // F.notify(`Bouton cliqué : ${ibtn}`)
     this.close()
   }
 
@@ -92,7 +94,7 @@ class MessageBox {
   }
 
   onOK(e){
-    F.notify("Bouton OK cliqué -- ou Return")
+    // F.notify("Bouton OK cliqué -- ou Return")
     if ( this.isPrompt() ) {
       this.methodOnOK(this.getAnswer(), 1)
     } else {
@@ -155,7 +157,7 @@ build(){
   // Ajout des boutons
   divs.push(DCreate(DIV,{class:'buttons', append:btns}))
 
-  this.jqObj = $(DCreate(DIV,{class:`message-box message-box-${this.type}`, append:divs}))
+  this.jqObj = $(DCreate(DIV,{id:this.id, class:`message-box message-box-${this.type}`, append:divs}))
   if ( isDefined(this.width) ) {
     this.jqObj.css('width', this.width)
     // Régler aussi la marge (mais seulement si la taille est donnée en %)
