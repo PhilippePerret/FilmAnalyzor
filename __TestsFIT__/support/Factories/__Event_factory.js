@@ -55,7 +55,8 @@ get defaultData(){
     this._defdata = {
       id:         this.pData.id       || FITEvent.newId()
     , type:       this.type
-    , time:       this.pData.time     || Math.rand(60*10)
+    , time:       this.time
+    , duree:      this.duree
     , titre:      this.pData.titre    || this.newTitre()
     , content:    this.pData.content  || this.c.newContent(100)
     , associates: this.associates
@@ -70,6 +71,18 @@ newTitre(len){
   return tit
 }
 
+get time(){
+  if ( undefined === this._time ){
+    this._time = this.pData.time || Math.rand(60*10)
+  }
+  return this._time
+}
+set time(v){this._time = v}
+get duree(){
+  if (undefined === this._duree) this._duree = this.pData.duree || 10 + Math.rand(300)
+  return this._duree
+}
+set duree(v){this._duree = v}
 get type(){return this.pData.type}
 get associates(){return this.pData.associates || ( this.pData.associates = this.c.getAssociates(this.a))}
 get c(){return this.constructor}

@@ -11,13 +11,11 @@ constructor(jqPath){
 }
 
 async exists(options){
-  console.log("Je teste si cet élément existe :", this.jqPath)
   let resultat = this.newResultat({
     verbe: 'existe', objet:'dans le DOM', options:options
   })
   const pass = await DOM.exists(this.jqPath)
-  resultat.validIf(pass)
-  assert(resultat)
+  assert(resultat.validIf(pass))
 }
 
 }

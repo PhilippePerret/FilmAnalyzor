@@ -14,9 +14,6 @@ calcValues(){
   this.currentTime  = this.a.locator.currentTime.vtime
   this.locked       = this.a.locked
 }
-get assertions(){
-
-}
 get a(){return current_analyse}
 }
 

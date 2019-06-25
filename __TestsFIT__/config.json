@@ -3,9 +3,10 @@
 , "onlyFolders": ["FilmAnalyzor/EventForm"]
 , "trace":      false
 , "random":     false
-, "fail_fast":  true
+, "fail_fast":  false
+, "--fail_fast":  true
 , "--regFiles":   "t\\.test"
-, "regFiles":   "edition_event\\.test"
+, "--regFiles":   "edition_event\\.test"
 , "regNames":   null
 , "regCases":   null
 , "exemple regFiles": "^only\\.test\\.js"

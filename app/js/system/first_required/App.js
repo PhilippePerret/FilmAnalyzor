@@ -6,6 +6,7 @@ const App = {
 , allComponantsLoaded: false
 , ready: false
 , runtests(){
+    MODE_TEST = true
     if ( NONE === typeof(Tests) ) require(path.join(APPFOLDER,'FITests'))
     Tests.run()
   }

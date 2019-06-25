@@ -1,6 +1,6 @@
 'use strict'
 
-const MODE_TEST = process.env.MODE_TEST == "true"
+let MODE_TEST = process.env.MODE_TEST == "true"
 
 // Pour requérir un élément du dossier
 function FReqGet(name){

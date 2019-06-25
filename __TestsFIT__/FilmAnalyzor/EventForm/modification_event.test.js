@@ -43,7 +43,7 @@ describe("Modification d'un event", function(){
 
     // await expect(FrontFWindow).is_event_form()
     const frontForm = FrontEventForm
-    console.log("frontForm:", frontForm)
+    // console.log("frontForm:", frontForm)
     expect(frontForm).complies_with({
       type: e1.type, isNew: true, time:e1.time,
       titre:e1.titre, longtext1:e1.content

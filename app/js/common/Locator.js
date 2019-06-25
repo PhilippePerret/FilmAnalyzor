@@ -78,7 +78,7 @@ togglePlay(ev){
         // Autoplay was prevented.
         // Show a "Play" button so that user can start playback.
         // Pouvoir mettre cette alerte, en cas de début fort
-        console.warn("Autoplay prevented, ok.")
+        MODE_TEST || console.warn("Autoplay prevented, ok.")
       });
     }
   }
