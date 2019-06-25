@@ -253,7 +253,7 @@ Object.defineProperties(FAEvent.prototype,{
         , inner: this.otime.horloge
         })
         var be = DCreate(BUTTON, {class: 'btn-edit', inner: '<img src="./img/btn/edit.png" class="btn" />'})
-        var br = DCreate(BUTTON, {class: 'btnplay left', attrs: {'size': 22}})
+        var br = DCreate(BUTTON, {class: 'btn-play left', attrs: {'size': 22}})
 
         var attrs = {'data-time':this.time}
         attrs[STRdata_id]   = this.id

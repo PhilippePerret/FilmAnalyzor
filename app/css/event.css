@@ -135,7 +135,7 @@ div.notes span.note-indice {
   font-size: 9.1pt;
 }
 
-.event .e-tools button:not(.btnplay) {
+.event .e-tools button:not(.btn-play) {
   position:relative;
   width:22px;
   height:22px;

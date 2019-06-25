@@ -1,11 +1,11 @@
 {
-  "onlyFolders": ["FIT"]
-, "-onlyFolders": ["FilmAnalyzor/EventForm"]
+  "--onlyFolders": ["FIT"]
+, "onlyFolders": ["FilmAnalyzor/EventForm"]
 , "trace":      false
 , "random":     false
 , "fail_fast":  true
-, "--regFiles":   "o\\.test"
-, "---regFiles":   "destroy_event\\.test"
+, "--regFiles":   "t\\.test"
+, "regFiles":   "edition_event\\.test"
 , "regNames":   null
 , "regCases":   null
 , "exemple regFiles": "^only\\.test\\.js"

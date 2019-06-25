@@ -6,7 +6,7 @@
   *
   * @usage
   *
-  * Mettre simplement dans le DOM un button de classe <button class="btnplay-<id>"></button>
+  * Mettre simplement dans le DOM un button de classe <button class="btn-play-<id>"></button>
   *
   */
 class BtnPlay {
@@ -50,11 +50,11 @@ class BtnPlay {
     isDefined(ev.type) || ( ev = current_analyse.ids[ev] )
     // On boucle sur chaque bouton trouvé qui n'a pas été préparé
     // On reconnait un bouton préparé au fait qu'il a une image (mais on
-    // pourrait aussi le reconnaitre à sa classe `btnplay-<id event>`)
+    // pourrait aussi le reconnaitre à sa classe `btn-play-<id event>`)
     // OBSOLÈTE, car on se sert de cette méthode, par exemple, pour
     // préparer les boutons des eventers. Donc, plutôt, on retire l'observer
     // qui se trouve peut-être sur le bouton et on le replace.
-    container.find('.btnplay').each((i,o) => {
+    container.find('.btn-play').each((i,o) => {
       $(o).off(STRclick)
       ev.btnPlay.set(o) // on le prépare
       $(o).on(STRclick, ev.btnPlay.togglePlay.bind(ev.btnPlay))
@@ -76,7 +76,7 @@ class BtnPlay {
 
   /**
    * Pour préparer un bouton. Dans le code, on ne trouve que
-   * `<button class="btnplay left" size=20></button>`
+   * `<button class="btn-play left" size=20></button>`
    */
   set(domB){
     domB.innerHTML = this.imgPlay(domB.getAttribute('size'))
@@ -169,7 +169,7 @@ class BtnPlay {
   //  Data DOM
 
   get domBtn(){return this._domBtn || defP(this,'_domBtn',this.jqBtn[0])}
-  get class(){return this._class  || defP(this,'_class',`btnplay-${this.id}`)}
+  get class(){return this._class  || defP(this,'_class',`btn-play-${this.id}`)}
   get size(){return this._size ||defP(this,'_size',parseInt(this.jqBtn.attr('size'),10))}
 
 

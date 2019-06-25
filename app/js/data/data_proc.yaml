@@ -7,6 +7,7 @@
 #
 # On part pour le moment sur 3 niveaux de données :
 #   procédé > sous-procédé > procédé-précis
+#   RUBRIQUE > Catégorie > procédé
 # Les trois niveaux sont marqués par trois graphies différentes :
 #   PROCÉDÉ > Procédé > procédé
 #
@@ -151,7 +152,7 @@ THEM:
         devautremoyen:
           hname: Développement par un autre moyen
           description: développement d'un des thèmes principaux par un autre moyen que le dialogue et l'action.
-          
+
 
 # --- IRONIE DRAMATIQUE ---
 IRDR:

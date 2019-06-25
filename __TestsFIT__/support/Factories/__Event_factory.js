@@ -57,7 +57,7 @@ get defaultData(){
     , type:       this.type
     , time:       this.pData.time     || Math.rand(60*10)
     , titre:      this.pData.titre    || this.newTitre()
-    , content:    this.pData.content  || this.pData.description || this.c.newContent(100)
+    , content:    this.pData.content  || this.c.newContent(100)
     , associates: this.associates
     }
   }

@@ -39,6 +39,7 @@ validIf(condition, bon, bad){
   this.valide = this.valide && condition
   bon && this.bonDetails.push(bon)
   bad && this.badDetails.push(bad)
+  return this // pour pouvoir faire `return assert(resultat.validIf(true))`
 }
 
 addBadDetail(str){
@@ -66,6 +67,10 @@ get detailFailure(){return this._detailFailure}
 set detailFailure(v){
   this._detailFailure = `\n\t\t${v.split("\n").join("\n\t\t")}`
 }
+get detailObjet(){return this._detailObjet}
+set detailObjet(v){
+  this._detailObjet = `\n\t\t${v.split("\n").join("\n\t\t")}`
+}
 
 get messages(){
   if (undefined === this._msgs){
@@ -74,6 +79,10 @@ get messages(){
     this._msgs.success = succ
     if ( this.bonDetails.length ) {
       this._msgs.success += ` (${this.bonDetails.join(', ')})`
+    }
+    if ( this.detailObjet ){
+      this._msgs.success += this.detailObjet
+      this._msgs.failure += this.detailObjet
     }
     this._msgs.failure = fail
     if ( this.badDetails.length ) {

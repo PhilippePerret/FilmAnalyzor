@@ -31,6 +31,31 @@ global.DOM = {
     else return null
   }
 
+/*
+  @method DOM.getValueOfField(fieldSelector)
+  @description Retourne la valeur du champ de selector +fieldSelector+ en la cherchant quel que soit son type, select, input-text, hidden field, checkbox (retourne true/false) ou tout autre champ contenant 'value' ou 'data-value'
+  @provided
+    :fieldSelector {String} Le sélector permettant de trouver l'élément dans le DOM. Si l'élément n'existe pas, null est retourné.
+  @returned
+    :returnedValue {Object|Null} Contenant {value:La valeur, type:tagName[, checked:true si checkbox coché]}
+ */
+, getValueOfField(fieldSelector){
+    var dom = document.querySelector(fieldSelector)
+    if ( undefined === dom ) return null
+    var returned = {value:null, tag:dom.tagName, type:dom.type, selector:fieldSelector}
+    var val
+    // Cas spécial des checkbox
+    if ( dom.tagName ==='INPUT' && dom.type === 'checkbox' ) {
+      return Object.assign(returned,{value:dom.checked?dom.value:undefined, checked:dom.checked === true})
+    }
+    val = dom.value || dom.getAttribute('value') || dom.getAttribute('data-value')
+    if ( undefined !== val ){
+      returned.value = val
+      return returned
+    }
+    return null
+  }
+
   /*
     @method (returned) DOM.exists(element, options)
     @description Retourne true si l'élément +element+ existe dans le DOM.

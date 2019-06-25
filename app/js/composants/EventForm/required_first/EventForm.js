@@ -32,7 +32,8 @@ static reset(){
     :: En revanche, on s'assure que l'event n'est pas déjà en mode d'édition.
 
 **/
-static editEvent(ev){
+static editEvent(ev, e){
+  e && stopEvent(e)
   isNumber(ev) && ( ev = this.a.ids[ev] )
   this.playing && this.a.locator.togglePlay()
   // Soit le formulaire existe déjà (il est ouvert), soit il faut l'instancier.
@@ -643,13 +644,13 @@ setParent(helper){
 setFormValues(){
   var prop, fieldSufid, otime
 
-  for(prop of this.event.constructor.ALL_PROPS){
+  for( prop of this.event.constructor.ALL_PROPS){
 
     // La propriété, dans ALL_PROPS, peut être définie soit par la propriété
     // elle-même (donc un string), soit par un duet avec en première valeur
     // le nom de la propriété, et en seconde valeur le nom du champ qui doit
     // recevoir la valeur de cette propriété
-    if( isString(typeof(prop)) ){ // cf. la définition des OWN_PROPS
+    if( isString(prop) ){ // cf. la définition des OWN_PROPS
       fieldSufid = prop
     } else {
       [prop, fieldSufid] = prop

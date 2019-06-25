@@ -31,7 +31,7 @@ is_modified(options){
  */
 contains_in_events_file(expected, options){
   let resultat = this.newResultat({
-    verbe:'contient',comp_verbe:'dans event.json', objet:`${JSON.stringify(expected)}`
+    verbe:'contient',comp_verbe:'dans son fichier event.json', objet:`un object contenant ${JSON.stringify(expected)}`
     , options:options
   })
   const hevents = JSON.parse(fs.readFileSync(this.a.eventsFilePath,'utf8'))
@@ -51,12 +51,45 @@ contains_in_events_file(expected, options){
 // /Assertions
 // ---------------------------------------------------------------------
 
+// ---------------------------------------------------------------------
+//  PUBLIC METHODS
+
+getEvent(event_id){
+  return this.byId.get(event_id)
+}
+
+
+// ---------------------------------------------------------------------
 constructor(analyse){
   super('L’analyse courante')
   this.a = analyse
   Object.assign(this.assertions,{
-    is_modified: this.is_modified.bind(this)
+      is_modified: this.is_modified.bind(this)
+    , contains_in_events_file: this.contains_in_events_file.bind(this)
   })
+}
+
+/**
+  Retourne la liste Array des CurrentAnalyseEvent de l'analyse
+**/
+get events(){
+  if ( undefined === this._events ){
+    this._events = []
+    current_analyse.events.forEach(ev => this._events.push(new CurrentAnalyseEvent(this,ev)))
+  }
+  return this._events
+}
+/**
+  Retourne la liste des events (Map) avec en clé l'identifiant de l'event
+  et en valeur son instance CurrentAnalyseEvent
+**/
+get byId(){
+  if ( undefined === this._byid ){
+    this._byid = new Map()
+    this.events.forEach( cae => this._byid.set(cae.id, cae) )
+    // console.log("this._byid = ", this._byid)
+  }
+  return this._byid
 }
 
 }

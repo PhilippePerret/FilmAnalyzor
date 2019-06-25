@@ -2,8 +2,13 @@
 
 ### Traiter :
 
-- Mettre les modules qui contiennent des méthodes test bien en évidence
-  Ou alors s'obliger à bien documenter
+CurrentAnalyse
+  - Elle contient une propriété `events` qui liste les instances d'event de type :
+  - CurrentAnalyseEvent
+    C'est une classe qui permettra d'avoir des méthodes comme :
+      clickEditButton
+      clickTimelineElement
+
 
 FILES
   - dans `f_Subject`, distinguer les dossiers des fichiers, faire une méthode différente pour chacun :

@@ -327,6 +327,15 @@ affirmation(expected[, options]){
       , options: options || {}
     })
     /**
+      Objet détaillé
+      ==============
+      On peut définir un objet attendu détaillé en définissant `detailObjet`
+      Cet objet détaillé sera placé en dessous du résultat. C'est utile par
+      exemple pour les objets longs, comme des hash de clé/valeur.
+    **/
+    resultat.detailObjet = `${JSON.stringify(expectedHash)}`
+    
+    /**
       Estimation principale
       =====================
 

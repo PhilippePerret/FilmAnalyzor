@@ -8,6 +8,20 @@ static create(data){
   return new FITEventNote(data)
 }
 
+/**
+  Retourne un type de note pour la note
+**/
+static getANoteType(){
+  if ( undefined === this.noteTypes ) {
+    this.dataNoteTypes = YAML.safeLoad(fs.readFileSync('./app/js/data/data_note.yaml','utf8'))
+    this.noteTypes = Object.keys(this.dataNoteTypes.types)
+  }
+  if ( undefined === this.unusedNoteTypes || this.unusedNoteTypes.length === 0){
+    this.unusedNoteTypes = Array.shuffle(this.noteTypes)
+  }
+  return this.unusedNoteTypes.shift()
+}
+
 // ---------------------------------------------------------------------
 // INSTANCE
 constructor(data){
@@ -20,7 +34,8 @@ constructor(data){
 **/
 get data(){
   return Object.assign({}, super.defaultData, {
-    type: 'note'
+      type: 'note'
+    , noteType: this.constructor.getANoteType()
   })
 }
 

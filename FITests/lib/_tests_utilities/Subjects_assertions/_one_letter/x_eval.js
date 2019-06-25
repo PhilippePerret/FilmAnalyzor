@@ -22,7 +22,7 @@ constructor(sujval){
   } else if ( 'function' === typeof sujval ) {
     this.initValue = sujval
   } else {
-    throw new ArgumentError("L'argument du x_Subject est invalide", sujval)
+    throw new Error("L'argument du x_Subject est invalide", sujval)
   }
 
   // console.log("this.sujet", this.sujet)

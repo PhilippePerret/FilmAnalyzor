@@ -88,12 +88,14 @@ describe("Destruction d'un event à l'aide du formulaire d'édition", async func
 
     // Le formulaire doit avoir été fermé et détruit
     await expect(FrontFWindow).not.is_event_form({onlyFailure:true})
-    await expect(d(`#form-edit-event-${event_id}`)).not.exists()
+    await expect(d(`#form-edit-event-${event_id}`),'Le formulaire d’event de l’event').not.exists()
 
 
   })
 
   this.case("La destruction d'une scène produit plus de travail", async ()=>{
     // TODO Le numéro des scènes doit avoir été corrigé
+    // TODO C'est la première scène, qu'on doit détruire
+    pending()
   })
 })

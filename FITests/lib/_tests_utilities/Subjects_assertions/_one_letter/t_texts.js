@@ -123,6 +123,22 @@ contains(expected, options){
   return assert(resultat)
 }
 
+/*
+  @method expect(t(...)).is_empty(options)
+  @description Produit un succès si le sujet string [t(...)](#t_subject) est vide.
+  @provided
+    :options {Object} Les [options classiques des assertions](#options_assertions)
+  @usage expect(t("mon texte")).is_empty() // => produit un échec
+ */
+is_empty(options){
+  this.checkValiditySujet()
+  let resultat = this.newResultat({
+    verbe:'est', comp_verbe:'vide', options:options
+  })
+  resultat.validIf(this.actualValue.trim().length === 0)
+  return assert(resultat)
+}
+
 // /Assertions
 // ---------------------------------------------------------------------
 constructor(string, hsujet){
@@ -135,6 +151,7 @@ constructor(string, hsujet){
     , equals: this.is.bind(this)
     , is_close_to: this.is_close_to.bind(this)
     , contains: this.contains.bind(this)
+    , is_empty: this.is_empty.bind(this)
   })
 }
 

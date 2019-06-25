@@ -195,4 +195,32 @@ describe("Complex Subject `t` (for « Text »)", function(){
       , "expect(t('string')).not.contains(/STR.Ng/)"
     ).fails()
   })
+
+  this.case("doit répondre à `is_empty` qui teste la longueur", () => {
+    expect(t('')).responds_to('is_empty')
+    expect(
+      x(
+        () => {return expect(t('')).is_empty({onlyReturn:true})}
+      ), "expect(t('')).is_empty()"
+    ).succeeds()
+    expect(
+      x(
+        () => {return expect(t('')).not.is_empty({onlyReturn:true})}
+      ), "expect(t('')).not.is_empty()"
+    ).fails()
+
+    expect(
+      x(
+        ()=>{return expect(t('non vide')).is_empty({onlyReturn:true})}
+      ), "expect(t('non vide')).is_empty()"
+    ).fails()
+    expect(
+      x(
+        () => {return expect(t('non vide')).not.is_empty({onlyReturn:true})}
+      ), "expect(t('non vide')).not.is_empty()"
+    ).succeeds()
+
+    // expect(t('')).is_empty()
+    // expect(t('non vide')).not.is_empty()
+  })
 })

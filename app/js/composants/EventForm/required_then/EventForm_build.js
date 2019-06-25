@@ -44,7 +44,7 @@ Object.assign(EventForm.prototype,{
     dom.push(DCreate(DIV, {class:'div-infos-temporelles no-user-selection', append:[
       // Le petit bouton droppable pour associer l'event nouveau ou modifié
         DCreate(SPAN, {class: 'event-btn-drop event', inner: '⎆', style: 'background:transparent;', attrs:attrs})
-      , DCreate(BUTTON, {class:'btnplay right', attrs:{size:30}})
+      , DCreate(BUTTON, {class:'btn-play right', attrs:{size:30}})
       , DCreate(LABEL, {inner: 'Position'})
       , DCreate(HORLOGE, {class:'small', id:my.fId(STRtime), value:'', inner: '...'})
       , DCreate(LABEL, {inner: 'Durée'})
