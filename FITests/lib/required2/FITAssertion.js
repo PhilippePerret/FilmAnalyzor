@@ -34,11 +34,24 @@ write(){
 }
 writeSuccess(){
   if ( this.options.onlyFailure ) return
-  Console.success(this.options.success || this.options.onlySuccess || this.success_message)
+  Console.success(this.finalMessage)
 }
 writeFailure(){
   if ( this.options.onlySuccess ) return
-  Console.failure(this.finalFailureMessage)
+  Console.failure(this.finalMessage)
+}
+
+/**
+  Le message final, que ce soit un échec ou un succès,
+**/
+get finalMessage() {
+  if ( this.pass ) {
+    // => SUCCÈS
+    return this.options.success || this.options.onlySuccess || this.success_message
+  } else {
+    // => ÉCHEC
+    return this.finalFailureMessage
+  }
 }
 /**
   Retourne le message final en fonction de :
@@ -57,17 +70,25 @@ get finalFailureMessage() {
 
 }// /class
 
+
+
 /**
   Méthode assert utilisée par tous les matchers et assertion pour ajouter
   un success ou une failure.
   C'est aussi cette méthode qui throw une erreur pour interrompre le case en
   cas d'échec.
+
+  [1] Quand on utilise les expectations/assertions seulement, sans tester une
+      application, il faut toujours se contenter de retourner true ou false et
+      le message éventuel.
 **/
 global.assert = function(){
   let ass = new FITAssertion(...arguments)
   // Si on a juste besoin de la valeur de l'assertion, sans l'écrire en
   // tant qu'échec ou succès, on la retourne.
-  if ( ass.options.onlyReturn ) return ass.pass
+  if ( Tests.EXPECT_ONLY_MODE /* [1] */ ) {
+    return {ok:ass.pass, message:ass.finalMessage}
+  } else if ( ass.options.onlyReturn) return ass.pass
   // Sinon, on l'écrit et on produit une failure le cas échéant.
   ass.add()
   if ( false === ass.pass ) {

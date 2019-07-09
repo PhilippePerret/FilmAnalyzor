@@ -4,12 +4,13 @@
   * [Principaux généraux fondateurs](#principes_generaux_fondateurs)
     * [De l'intérieur](#from_inside_tests)
     * [Sujet complexe une lettre](#principe_complex_subject_one_lettre)
-* [Utilisation des FITests](#utilisation)
+* [Utilisation des FITests](#utilisation_des_fitests)
 * [Configurer les tests](#configurer_les_tests)
 * [Définition d'une feuille de test](#define_test_sheet)
   * [Syntaxe `describe`](#describe_syntax)
   * [Mot clé `not`](#not_keyword)
   * [Mot clé `strictly`](#strictly_keyword)
+  * [`remember` et `compare`](#remember_and_compare)
   * [Les Assertions](#les_assertions)
 * [Liste des tests à lancer](#tests_list)
 * [Exécutions avant et après](#before_and_after_methods)
@@ -52,7 +53,7 @@ La plupart des [sujets complexes)](#les_sujets_complexes) utilisés dans la form
 
 > Noter de ce fait qu'il ne faut pas utiliser des méthodes en une lettre minuscule dans l'application (il ne faut donc pas tester une application uglifiée et minifyisée).
 
-# Utilisation des FITests {#utilisation}
+# Utilisation des FITests {#utilisation_des_fitests}
 
 Pour utiliser les FIT-Tests (persos) comme ici, on doit :
 
@@ -69,12 +70,15 @@ Pour utiliser les FIT-Tests (persos) comme ici, on doit :
   }
   ```
 * On peut définir dans `./__TestsFIT__/support/` les fichiers et méthodes utiles aux tests de l'application courante.
-* On définit la méthode `App.runtests()` de cette manière (on peut définir une autre méthode dans un autre objet, mais alors il devra être accessible et utilisé pour lancer les tests) :
+* On requiert le dossier `global.Tests = require('./path/to/folder/fitests')`
+* On appelle la méthode de lancement `Tests.run`
   ```javascript
-  App.runtests = function(){
-      NONE === typeof(Tests) && ( global.Tests = require('./path/to/folder/fitests') )
+
+    if ( process.env.MODE_TEST ){
+      require('le/dossier/fitests')
       Tests.run()
     }
+
   ```
 * On définit les tests dans le dossier `./__TestsFIT__/`.
 
@@ -243,6 +247,42 @@ expect(2+2,{sujet:'2+2'}).is(4)
 
 ```
 
+## `remember` et `compare` {#remember_and_compare}
+
+Les méthodes de test `remember` et `compare` fonctionnent de paire. La première permet de faire un test préliminaire, avant le test proprement dit (par exemple relever le nombre de rangées dans une table) et la seconde permet de vérifier que la valeur a changé suite au test (par exemple qu'une rangée a été ajoutée dans la table en question).
+
+### Définition de la méthode `remember`
+
+Pour définir la méthode `remember`, il faut :
+
+* Un identifiant humain, une phrase-sujet caractérisant la mémorisation à faire. Par exemple "table.nombre.rows"
+* Une méthode qui devra retourner la valeur à tester. Par exemple le nombre de rangées dans la table.
+* Une valeur initiale qui permettra de produire une erreur si la valeur ne correspond pas, ce qui interrompra le test.
+
+Par exemple :
+
+```javascript
+
+await remember('users.nombre.rows', async ()=>{return DG.count('users')}, 12)
+
+```
+
+On s'attend donc, au départ, à trouver 12 users.
+
+> Si la valeur finale n'est pas donnée (3e argument), on ne fait pas ce check initial.
+
+> Noter que la méthode peut être asynchrone.
+
+On va maintenant pouvoir faire le test, qui consiste ici, par exemple, à ajouter un utilisateur. On l'ajoute puis on fait :
+
+```javascript
+
+compare('users.nombre.rows', '+1')
+
+```
+
+Ce test signifie qu'on doit trouver 1 rangée de plus dans la table `users`. Si c'est le cas, un succès est produit, dans le cas contraire, c'est une erreur.
+
 ## Les Assertions {#les_assertions}
 
 Les assertions s'utilisent de cette manière :
@@ -334,7 +374,7 @@ affirmation(expected[, options]){
       exemple pour les objets longs, comme des hash de clé/valeur.
     **/
     resultat.detailObjet = `${JSON.stringify(expectedHash)}`
-    
+
     /**
       Estimation principale
       =====================

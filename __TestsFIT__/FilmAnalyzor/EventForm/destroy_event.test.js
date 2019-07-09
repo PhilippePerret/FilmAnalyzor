@@ -14,28 +14,46 @@ describe("Destruction d'un event à l'aide du formulaire d'édition", async func
   })
 
   this.case("Le formulaire permet de détruire un event", async () => {
-    expect(n(current_analyse.events.length),'Le nombre d’events dans FAnalyse#events').is(10)
-    expect(n(Object.keys(current_analyse.ids).length),'Le nombre d’events dans FAnalyse#ids').is(10)
 
     // On prend le premier event
-    const e = current_analyse.events[0]
-        , event_id = parseInt(e.id,10)
+    const eChecked = current_analyse.events[0]
+        , event_id = parseInt(eChecked.id,10)
 
     // CONTRE VÉRIFICATIONS
-    // Les contre vérifications qui seront faites plus tard
+    // Les contre vérifications qui seront faites plus tard. Ce serait bien de trouver
+    // une formule pour ça, comme pour rspec qui entoure de {}. Par exemple la
+    // méthode 'remember' qui fonctionnerait de cette manière :
+    // remember('analyse.modif', 'L’analyse courante n’est pas modifiée', CurrentAnalyse.modified == false)
+    // On en profiterait pour avoir un check sur le deuxième argument, qui ne
+    // produirait qu'un échec (rien en cas de succès)
+    // Puis, à la fin :
+    // checkRemember('analyse.modif','L’analyse courante est modifiée', '!')
+    remember('nombre.events', ()=>{return current_analyse.events.length}, 10)
+    remember('nombre.ids', ()=>{return Object.keys(current_analyse.ids).length}, 10)
     expect(CurrentAnalyse).not.is_modified()
+    await remember(
+        'event.is.on.banctimeline'
+      , async ()=>{return await expect(d(`#banctime-tape #banctime-event-${event_id}`)).exists({onlyReturn:true})}
+      , true
+    )
+    await remember(
+        'event.is.on.reader'
+      , ()=>{return expect(d(`#reader #reader-event-${event_id}`)).exists({onlyReturn:true})}
+      , true
+    )
+
     var arr = current_analyse.events.map(e => event_id)
     expect(a(arr),"La liste current_analyse.events (ids)").contains(event_id)
     expect(current_analyse.ids[event_id],`current_analyse.ids[${event_id}]`).is_defined()
-    expect(d(`#banctime-tape #banctime-event-${event_id}`)).exists()
-    expect(d(`#reader #reader-event-${event_id}`)).exists()
+
     // On prend le nombre actuel d'item sur la rangée de l'event dans la timeline
-    const btelement_row = e.btelement.row
+    await waitFor(()=>{return undefined !== eChecked.btelement})
+    const btelement_row = eChecked.btelement.row
         , init_nombre_on_row = BancTimeline.map[btelement_row].length
 
     // On édite le premier event
     // console.log("e:", e)
-    EventForm.editEvent(e)
+    EventForm.editEvent(eChecked)
     // Le formulaire d'event doit être au premier plan
     expect(FrontFWindow).is_event_form({onlyFailure:true})
     // On clique sur le bouton "Détruire"
@@ -66,6 +84,11 @@ describe("Destruction d'un event à l'aide du formulaire d'édition", async func
     // L'analyse a été marquée modifiée
     // TODO : cette vérification devrait être dans le support
     expect(CurrentAnalyse).is_modified()
+
+    compare('nombre.events', '-1')
+    compare('nombre.ids', '-1')
+    compare('event.is.on.banctimeline', 'inverse')
+    compare('event.is.on.reader', 'inverse')
 
     await expect(d(`#mbox-confirm-destroy-event-${event_id}`), 'La fenêtre de confirmation').not.exists()
     // Ne doit plus exister dans ca.events

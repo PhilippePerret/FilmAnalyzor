@@ -1,6 +1,32 @@
 'use strict'
 
-global.Tests = {
+if ( 'undefined' === typeof MESSAGES) {
+  global.path = require('path')
+  global.fs = require('fs')
+  // POUR LE MOMENT, JE METS DES PATHS ABSOLUS POUR POUVOIR UTILISER
+  // LES TESTS AILLEURS
+  // const APP_FOLDER = '/Users/philippeperret/Programmation/FilmAnalyzor'
+  const APP_FOLDER = path.dirname(__dirname)
+  const SYS_FOLDER = path.join(APP_FOLDER,'app','js','system')
+  const T_ERR_MSG = require(path.join(SYS_FOLDER,'first_required', 'messages_et_errors'))
+  Object.assign(global,{
+    glob: require('glob')
+    , Console: require(path.join(SYS_FOLDER,'console'))
+    , T: T_ERR_MSG.T
+    , ERRORS: T_ERR_MSG.ERRORS
+    , MESSAGES: T_ERR_MSG.MESSAGES
+  })
+}
+
+/**
+  |
+  |
+  | Constante Tests
+  |
+  |
+**/
+const Tests = {
+
   appPath: path.resolve('.')
 , config: {}
 , inited: false
@@ -11,34 +37,76 @@ global.Tests = {
   La méthode qui peut être appelée de l'extérieure avec `Tests.run()`
 **/
 , run(){
-    this.initAll().runAll()
+    this.init()
+      .resetCounters()
+      .initTests()
+      .clearAll() // nettoie la console
+      .runAll()
   }
 // ---------------------------------------------------------------------
 
-, initAll(){
-    if ( not(this.inited) ) {
-      this.MAINFOLDER = path.join(this.appPath,'FITests')
+/**
+
+  Voir pour l'atelier Icare par exemple
+**/
+, initForExpectOnly(name){
+    this.init().resetCounters()
+    this.currentTest = new Test(name || 'False test')
+    this.currentTest.init()
+    // Il faut indiquer aussi que les messages doivent être retournés
+    this.EXPECT_ONLY_MODE = true
+  }
+, init(){
+    if ( ! this.inited ) {
+      // this.MAINFOLDER = path.join(this.appPath,'FITests')
+      this.MAINFOLDER = __dirname
+      // console.log("__dirname", __dirname)
+      // console.log("this.MAINFOLDER = ", this.MAINFOLDER)
       this.require('lib/required2/FITSubject')
-      this.requireFolder('./lib/required1/divers', window)
+      // this.requireFolder('./lib/required1/divers', window)
+      this.requireFolder('lib/required1/divers', global)
       this.requireFolder('lib/auto_required')
-      if (undefined === FITResultat) throw new Error("FITResultat devrait être défini")
-      this.requireFolder('./lib/required2/Tests', this)
+      // if (undefined === FITResultat) throw new Error("FITResultat devrait être défini")
+      this.requireFolder('lib/required2/Tests', this)
       global.FITCase = this.require('lib/required2/FITCase')
       this.require('lib/required2/FITAssertion') // => function assert
-      this.require('lib/required2/FITExpectation') // => function expect
+      this.require('lib/required2/expect') // => function expect
+      this.require('lib/required2/remember') // => function remember
       this.require('lib/required2/FITest')
       // toutes les assertions
       this.requireFolder('lib/required2/Assertions')
       this.requireFolder('lib/_tests_utilities')
 
       this.initTestsMethods() // pour exposer 'pending', 'tester' etc.
+
+      this.loadSupportFiles()
+
+      this.inited = true
     }
-    this.initTests()
-    // console.log("config:", this.config)
-    this.inited = true
+
     return this // pour le chainage
   }
 
+/**
+  Initialisation des "compteurs"
+
+  Note : la méthode est isolée pour pouvoir utiliser les FITests sans FITests,
+  comme par exemple pour l'atelier Icare, où on n'appelle que init() pour
+  profiter des expectations
+
+**/
+, resetCounters(){
+    // Liste Array des instances Test des tests joués (et seulement les tests joués)
+    this.tests = []
+    this.success_count    = 0
+    this.failure_count    = 0
+    this.pending_count    = 0
+    this.files_count      = 0
+    this.tests_count      = 0
+    this.cases_count      = 0
+    this.instanciedTests  = 0
+    return this // pour le chainage
+  }
 /**
   Initialisation des tests proprement dits, c'est ici qu'on :
     * charge les fichiers de support propres à l'application
@@ -52,16 +120,6 @@ global.Tests = {
     if ( this.config.regFiles ) this.config.regFiles = new RegExp(this.config.regFiles)
     if ( this.config.regNames ) this.config.regNames = new RegExp(this.config.regNames)
     if ( this.config.regCases ) this.config.regCases = new RegExp(this.config.regCases)
-    // Liste Array des instances Test des tests joués (et seulement les tests joués)
-    this.tests = []
-    this.loadSupportFiles()
-    this.success_count    = 0
-    this.failure_count    = 0
-    this.pending_count    = 0
-    this.files_count      = 0
-    this.tests_count      = 0
-    this.cases_count      = 0
-    this.instanciedTests  = 0
 
     // Détruire tous les fichiers support/files créés à la volée
     // aux tests précédents
@@ -72,6 +130,7 @@ global.Tests = {
     // on prépare tous les cases, en fonction des filtrages à opérer
     this.prepareAllCases()
 
+    return this // pour le chainage
   }
 
 /**
@@ -145,7 +204,9 @@ global.Tests = {
   }
 
 , initTestsMethods(){
-    global.describe     = this.describe.bind(this)
+    if ( ! this.EXPECT_ONLY_MODE ){
+      global.describe     = this.describe.bind(this)
+    }
     global.action       = this.action.bind(this)
     global.pending      = this.pending.bind(this)
     global.tester       = this.tester.bind(this)
@@ -161,6 +222,12 @@ global.Tests = {
 
 , describe(sujet, fn){
     let test = new Test(sujet)
+    if ( undefined === this.newInstanciedTests ){
+      // Cela arrive lorsqu'on utilise FITests sans jouer ses propres tests,
+      // juste pour profiter des expectations et assertions, comme c'est le
+      // cas avec l'atelier Icare
+      this.newInstanciedTests = []
+    }
     this.newInstanciedTests.push(test)
     fn.bind(test).call()
   }
@@ -221,4 +288,5 @@ global.FITestExpectation = class {
   constructor(data){}
 }
 
+global.Tests = Tests
 module.exports = Tests

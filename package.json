@@ -9,8 +9,7 @@
     "open-fit-methods": "open FITests/Manuel/Manuel_FITests_METHS.html",
     "start": "NODE_ENV=development electron .",
     "watch-sass": "node-sass -w --recursive --incluce-path=app/css/_sass_in_all/ app/css/a_index.sass app/css/all.css --output-style=compressed",
-    "test": "jest",
-    "my-test": "MODE_TEST=true npm start",
+    "test": "echo 'Pour lancer les tests, ouvrir l’application normalement et jouer le menu « Outils > Jouer les Tests »'",
     "pack:osx": "electron-packager . $npm_package_productName --overwrite --out=dist/osx --platform=darwin --arch=x64 --prune=true --icon=dist/icons/macos/icon.icns"
   },
   "keywords": [

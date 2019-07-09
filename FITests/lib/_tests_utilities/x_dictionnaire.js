@@ -1,6 +1,6 @@
 'use strict'
 /**
-  Juste pour ajouter des explications
+  Juste pour ajouter des explications quand les méthodes sont rassemblées.
 **/
 
 /*

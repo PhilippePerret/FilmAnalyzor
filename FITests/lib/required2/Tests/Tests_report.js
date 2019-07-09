@@ -2,8 +2,16 @@
 
 module.exports = {
 
-  startAll(){
-    // Console.clear()
+  /**
+    Effaçage de la console. Mis ici pour pouvoir être appelé par le
+    module principal `FITests.Tests.js` afin de pouvoir être désactivé
+    facilement si on veut voir des erreurs qui se produisent avant.
+  **/
+  clearAll(){
+    Console.clear()
+    return this // chainage
+  }
+, startAll(){
     Console.space(3)
     Console.mainTitle(`=========== DÉBUT DES TESTS =============`,{time:true})
     this.startTime = (new Date()).getTime()

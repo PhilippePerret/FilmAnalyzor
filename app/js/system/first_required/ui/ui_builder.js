@@ -118,10 +118,6 @@ const UIBuilder = {
     UI.videoHorloge = UI.sectionVideo.find('div#bt-video-toolbox span.video-horloge')
     UI.markCurrentScene = UI.sectionVideo.find('div#section-video-header span#mark-current-scene')
 
-    // Pour la boucle d'attente
-    UI.msgWaitingLoop = $('span#waiting-loop-message')
-    UI.divWaitingLoop = $('div#waiting-loop')
-
     // La barre d'état (pour le moment, elle est construite en dur)
     UI.stateBar = $('div#analyse-state-bar')
 

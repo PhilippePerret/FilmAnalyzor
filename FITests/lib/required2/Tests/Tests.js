@@ -8,8 +8,12 @@ module.exports = {
 
 /**
   Retourne le chemin relatif au fichier +fpath+
+
+  Note : n'est pas défini quand FITests n'est utilisé que pour ses expectations,
+  comme dans l'atelier Icare
 **/
 , relativePathOf(fpath){
+    if (undefined === fpath) return '--sans/path--'
     var reg = new RegExp(`${Tests.appPath}/${Tests.config.TEST_FOLDER}\/`)
     return fpath.replace(reg,'./').trim()
   }

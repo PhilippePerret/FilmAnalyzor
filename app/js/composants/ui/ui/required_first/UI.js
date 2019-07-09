@@ -408,14 +408,18 @@ const UI = {
 , startWait(message){
     if (this.waiting) return
     isDefined(message) && (message += ' Merci de patienter…')
-    this.msgWaitingLoop.html(message || '')
-    this.divWaitingLoop.show()
+    if ( this.divWaitingLoop.length ) {
+      this.msgWaitingLoop.html(message || '')
+      this.divWaitingLoop.show()
+    }
     this.waiting = true
   }
 
 , stopWait(){
     if(!this.waiting) return
-    this.divWaitingLoop.hide()
+    if ( this.divWaitingLoop.length ) {
+      this.divWaitingLoop.hide()
+    }
     this.waiting = false
   }
 
@@ -589,8 +593,23 @@ const UI = {
 
 
 Object.defineProperties(UI,{
-  a:{get(){ return current_analyse }}
+  /**
+    |
+    |
+    | DOM Eléments de l'user-interface
+    |
+    |
+  **/
+
+  // Pour la boucle d'attente
+  msgWaitingLoop:{get(){return $('span#waiting-loop-message')}}
+, divWaitingLoop:{get(){return $('div#waiting-loop')}}
+  // La marque du curseur
 , oMarkCursor:{get(){return $('#banctime-cursor-mark')}}
+
+
+  // Référence à l'analyse courante (if any)
+, a:{get(){ return current_analyse }}
 
   // Note : la plupart des noms des éléments de l'interface
   // sont définis dans system/first_required/ui/ui_builder.js

@@ -10,6 +10,7 @@ const PATHSTYLE  = 'font-size:0.85;color:grey;font-style:italic;margin-left:400p
 const STYLE3     = 'font-size:1.1em;font-weight:bold;' // Case
 const REDBOLD    = 'font-weight:bold;color:red;'
 const BLUEBOLD   = 'color:blue;font-weight:bold;'
+const BLUELIGHT  = 'color:#87cefa;'
 const SMALLBLUE  = 'font-size:0.85em;color:#9999FF;'
 const GREENBOLD  = 'color:darkgreen;font-weight:bold;'
 const ORANGEBOLD = 'color:orange;font-weight:bold;'
@@ -29,7 +30,7 @@ static bluebold(msg,opts){this.w(msg,opts,BLUEBOLD)}
 static smallblue(msg,opts){this.w(msg,opts,SMALLBLUE)}
 static greenbold(msg,opts){this.w(msg,opts,GREENBOLD)}
 static orangebold(msg,opts){this.w(msg,opts,ORANGEBOLD)}
-static action(msg,opts){this.greenbold(`${INDENT}${msg}`,opts)}
+static action(msg,opts){this.w(`${INDENT}${msg}`,opts, BLUELIGHT)}
 static path(msg,opts){this.w(msg,opts,PATHSTYLE)}
 static error(msg,opts){this.w(msg,opts,REDBOLD)}
 static success(msg,opts){this.w(`${INDENT}${msg}`,opts, 'color:#00AA00;')}
@@ -56,3 +57,5 @@ static w(msg, opts, style){
 }
 
 }
+
+module.exports = Console

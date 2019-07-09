@@ -69,7 +69,7 @@ describe("Création d'un event", function(){
       frontForm.set({titre:nev_titre})
     })
     await action(`On écrit la description « ${description.substring(0,40)} […] »`, async() => {
-      frontForm.set({description:description})
+      frontForm.set({longtext1:description})
     })
 
     await action("On soumet le formulaire", async () => {

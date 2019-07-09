@@ -1,6 +1,6 @@
 'use strict'
 /**
-  Gestion des combinaisons de touches dans le mode Ban Timeline
+  Gestionnaire principal des combinaisons de touches
 
   NOTE
     On modifie les raccourcis en appelant la méthode :

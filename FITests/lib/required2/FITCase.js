@@ -63,6 +63,10 @@ traiteError(error) {
   switch (error.type) {
     case 'ExpectationError':
       // Rien à faire, l'erreur est traitée avant
+      // Sauf si on est en mode expectOnly
+      // if ( Tests.EXPECT_ONLY_MODE ) {
+      //   throw new Error(error)
+      // }
       break;
     default:
       // Une erreur systémique (pas une erreur de test)
