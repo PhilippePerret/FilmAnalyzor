@@ -125,11 +125,11 @@ Object.assign(FAnalyse.prototype, {
 
 , destroyEvent(event_id, form_instance){
 
-    // Si un event détruit était un event structurel, il faut modifier
-    // la données pfa.json
+    // On prend l'event à détruire
     var ev = this.ids[event_id]
 
-    // Destruction dans la liste events
+    // Destruction dans la liste `events`
+    // ----------------------------------
     // console.log("this.events avant:", Object.assign([], this.events))
     // console.log("Index de l'évènement à détruire : ", this.indexOfEvent(event_id))
     this.events.splice(this.indexOfEvent(event_id),1)
@@ -142,7 +142,7 @@ Object.assign(FAnalyse.prototype, {
     this.reader.removeItem(ev)
 
     // Destruction dans la table par clé identifiants
-    delete this.ids[event_id]
+    // delete this.ids[event_id] // ça ne sert à rien
     this.ids[event_id] = undefined
 
     // Si c'est une scène, il faut la retirer de la liste des

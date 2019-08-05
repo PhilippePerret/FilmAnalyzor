@@ -4,7 +4,13 @@
   "version": "0.9.1",
   "description": "Application pour l'analyse de films",
   "main": "main.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PhilippePerret/FilmAnalyzor.git"
+  },
   "scripts": {
+    "essai1": "nvm run 10.16.1 .",
+    "essai2": "nvm run 8.9.1 .",
     "collect-fit-methods": "ruby FITests/exe/build_methods_list.rb",
     "open-fit-methods": "open FITests/Manuel/Manuel_FITests_METHS.html",
     "start": "NODE_ENV=development electron .",
@@ -18,16 +24,15 @@
   ],
   "author": "Philippe Perret",
   "mail": "philippe.perret@yahoo.fr",
-  "license": "GNU",
-  "devDependencies": {
-    "@jest-runner/electron": "^2.0.1",
-    "electron": "^4.0.7"
-  },
+  "license": "GPL-3.0-or-later",
+  "devDependencies": {},
   "dependencies": {
     "adm-zip": "^0.4.13",
+    "electron": "^6.0.0",
     "electron-log": "^3.0.5",
     "glob": "^7.1.3",
     "jquery": ">=3.4.1",
-    "js-yaml": "^3.13.1"
+    "js-yaml": "^3.13.1",
+    "nodemon": "^1.19.1"
   }
 }

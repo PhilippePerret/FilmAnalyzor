@@ -187,7 +187,8 @@ const Prefs = {
 /**
  * Pour les préférences
  */
-const ipc   = electron.ipcMain
+// const {ipcMain} =
+const ipc = electron.ipcMain
 ipc.on('get-pref', (ev, data) => {
   ev.returnValue = Prefs.get(data)
 })

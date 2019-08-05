@@ -25,14 +25,18 @@ async is(name, human_name, options){
     , xtimes = options.xtimes || 8
     , current
   while ( xtimes -- ){
-    current = FWindow.current
-    // if ( current ) console.log("current.name / name", current.name, name)
-    // else console.log("Pas de courante")
-    pass = !!(current && current.name === name)
-    if ( this.positive === pass ) break
+    if ( FWindow.current ) {
+      current = FWindow.current
+      // if ( current ) console.log("current.name / name", current.name, name)
+      // else console.log("Pas de courante")
+      pass = !!(current && current.name === name)
+      if ( this.positive === pass ) break
+    } else {
+      this.pass = false
+    }
     await wait(500)
   }
-  resultat.validIf(pass)
+  resultat.validIf(pass === this.positive)
   return assert(resultat)
 }
 
@@ -44,8 +48,14 @@ async is(name, human_name, options){
  */
 async is_event_form(options){
   options = options || {}
-  options.success = "La fenêtre au premier plan est bien le formulaire d'édition des events."
-  options.failure = `La fenêtre au premier plan devrait être le formulaire d'édition des events. C'est la fenêtre « ${FWindow.current.name} ».`
+  if ( this.positive ) {
+    options.success = "La fenêtre au premier plan est bien le formulaire d'édition des events."
+    var hfencur = FWindow.current ? `C'est la fenêtre "${FWindow.current.name}"` : 'Il n’y a pas de fenêtre courante.'
+    options.failure = `La fenêtre au premier plan devrait être le formulaire d'édition des events. ${hfencur}`
+  } else {
+    options.success = "La fenêtre au premier plan n'est pas ou plus le formulaire d'édition des events."
+    options.failure = "La fenêtre au premier plan ne devrait pas être le formulaire d'édition des events."
+  }
   await this.is('AEVENTFORM', 'le formulaire d’events', options)
 }
 
@@ -57,8 +67,13 @@ async is_event_form(options){
  */
 async is_porte_documents(options){
   options = options || {}
-  options.success = "La fenêtre au premier plan est bien le porte documents."
-  options.failure = `La fenêtre au premier plan devrait être le porte documents. C'est la fenêtre « ${FWindow.current.name} ».`
+  if ( this.positive ) {
+    options.success = "La fenêtre au premier plan est bien le porte-documents."
+    options.failure = `La fenêtre au premier plan devrait être le porte-documents. ${FWindow.current? FWindow.current.name + ' est la fenêtre au premier plan' : 'Pas de fenêtre au premier plan.'}.`
+  } else {
+    options.success = "La fenêtre au premier plan n'est pas ou plus le porte-documents."
+    options.failure = "La fenêtre au premier plan ne devrait pas ou plus être le porte-documents."
+  }
   await this.is('PORTEDOCUMENTS', 'le porte-documents', options)
 }
 

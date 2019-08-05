@@ -7,6 +7,7 @@ global.ExpectationError = class extends Error {
   constructor(message){
     super(message)
     this.type     = 'ExpectationError'
+    this.name     = 'ExpectationError'
     this.message  = message
   }
 }

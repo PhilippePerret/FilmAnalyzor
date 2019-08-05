@@ -7,6 +7,7 @@
 module.exports = {
   beforeTestsFunction:  undefined
 , afterTestsFunction:   undefined
+, FAILING_FAST: false // mis à true par les assertions quand il faut s'arrêter
 
 , async runAll(){
     if ( this.cases_count === 0 ) {
@@ -52,7 +53,7 @@ module.exports = {
 
       // Si on doit s'arrêter au premier échec
       if ( this.config.fail_fast && cas.failed ){
-        Console.redbold("FAIL-FAST ACTIVE")
+        Console.redbold("\n=== FAIL-FAST ACTIVE ===")
         break
       }
 

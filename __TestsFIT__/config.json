@@ -1,6 +1,7 @@
 {
   "--onlyFolders": ["FIT"]
 , "onlyFolders": ["FilmAnalyzor/EventForm"]
+, "debug":      false
 , "trace":      false
 , "random":     false
 , "fail_fast":  true

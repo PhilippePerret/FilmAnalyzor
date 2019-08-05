@@ -15,7 +15,6 @@ constructor(test, name, fn){
 **/
 run(){
   var my = this ;
-  // console.log(`%c---> Cas : ${my.name}`, STYLE3);
   this.writeFormatedName()
   return new Promise((ok,ko) => {
     try {
@@ -60,7 +59,7 @@ run(){
 **/
 traiteError(error) {
   this.failed = true
-  switch (error.type) {
+  switch (error.name) {
     case 'ExpectationError':
       // Rien à faire, l'erreur est traitée avant
       // Sauf si on est en mode expectOnly

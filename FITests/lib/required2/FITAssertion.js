@@ -92,7 +92,14 @@ global.assert = function(){
   // Sinon, on l'écrit et on produit une failure le cas échéant.
   ass.add()
   if ( false === ass.pass ) {
-    throw new ExpectationError(ass.finalFailureMessage)
+    if ( Tests.config.debug || Tests.config.trace ) {
+      // Si on est en mode débug (configuration), on affiche le message
+      // d'erreurs complet.
+      throw new ExpectationError(ass.finalFailureMessage)
+    }
+    if (Tests.config.fail_fast){
+      // console.log("Je dois m'arrêter tout de suite")
+    }
   }
   return ass.pass
 }

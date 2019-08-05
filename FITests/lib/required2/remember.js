@@ -29,7 +29,8 @@ class Rememberer {
     Retourne la valeur actuelle, en utilisant la méthode d'évaluation
   **/
   async getValue(){
-    return await this.evaluateMethod.call()
+    // return await this.evaluateMethod.call()
+    return this.evaluateMethod.call()
   }
   async defineFirstValue(){
     this.firstValue = await this.getValue()
@@ -58,6 +59,7 @@ class Rememberer {
       case false:   return this.lastValue === false
       case true:    return this.lastValue === true
       case 'inverse': return this.lastValue === !this.firstValue
+      case 'same':    return this.lastValue === this.firstValue
       default:
         return false
     }
@@ -66,9 +68,9 @@ class Rememberer {
     return `La valeur de ${this.id} devrait être vraie. Elle est fausse.`
   }
   get lastFailureMessage(){
-    return `La valeur de ${this.id} devrait être ${this.firstValue}${this.diffExpected}. Elle vaut ${this.lastValue}.`
+    return `La valeur de ${this.id} devrait être ${this.firstValue} ${this.diffExpected}. Elle vaut ${this.lastValue}.`
   }
   get lastSuccessMessage(){
-    return `La valeur de ${this.id} est correcte (${this.diffExpected})`
+    return `La valeur de ${this.id} est correcte (${this.firstValue} ${this.diffExpected}).`
   }
 }
