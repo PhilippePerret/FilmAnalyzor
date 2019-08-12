@@ -1,15 +1,18 @@
 'use strict'
 
 
-module.exports = function(){
+module.exports = async function(){
   log.info('-> [tool] choose_analyse')
   let openOptions = {
-      defaultPath:  null // __dirname
-    , message:      'Analyse à ouvrir'
+      message:      'Analyse à ouvrir'
     , properties:   ['openDirectory']
     // , properties:   ['openDirectory', 'createDirectory']
   }
-  let files = DIALOG.showOpenDialog(openOptions)
+  let lastAnalyseFolder = Prefs.get('last_analyse_folder')
+  if ( lastAnalyseFolder ) {
+    Object.assign(openOptions,{defaultPath: lastAnalyseFolder})
+  }
+  let files = DIALOG.showOpenDialogSync(openOptions)
   if (!files){
     log.info('<- [tool] choose_analyse [return false, pas de dossier choisi]')
     return false

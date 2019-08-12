@@ -2,6 +2,11 @@
 
 ### Traiter :
 
+Peut-être qu'on se heurte au même problème qu'avec les lois de la narration et qu'il faut préconstruire la page html :
+  - fichier analyser-template.html ne contenant aucun des fichiers css/javascript
+  - méthode qui au tout début, quand on le demande (process.env.REBUILD_HTML) reconstruit la page
+    IL faut bien s'assurer que les choses importantes soient définies en premier (par exemple les classes principales)
+
 CurrentAnalyse
   - Elle contient une propriété `events` qui liste les instances d'event de type :
   - CurrentAnalyseEvent

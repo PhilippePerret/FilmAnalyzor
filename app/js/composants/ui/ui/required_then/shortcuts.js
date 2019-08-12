@@ -519,10 +519,13 @@ Object.assign(UI, {
       var method = pref.split('-').map(t => t.titleize())
       method[0] = 'goTo'
       method = method.join('')
-      TBL_GOTO_FLAG2METHOD[this.keyComb2flag(prefs[pref])] = method
+      if ( prefs[pref] ) {
+        TBL_GOTO_FLAG2METHOD[this.keyComb2flag(prefs[pref])] = method
+      }
     }
     // console.log("TBL_GOTO_FLAG2METHOD:", TBL_GOTO_FLAG2METHOD)
   }
 }) // /Object.assign(UI)
 
+// setTimeout(UI.initKeysObservers.bind(UI),2000)
 UI.initKeysObservers()

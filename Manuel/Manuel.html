@@ -81,10 +81,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </head>
 <body>
 <h1 id="film-analyzer">Film Analyzer</h1>
-<h1 id="manuel-dutilisation">Manuel d’utilisation</h1>
+<h1 id="manuel-de-lanalyste">Manuel de l’analyste</h1>
 <ul>
-<li><a href="#presentation_generale">Présentation générale</a></li>
-<li><a href="#concernant_la_video">Videos</a></li>
+<li><a href="#presentation_generale">Présentation générale</a>
+<ul>
+<li><a href="#tout_clavier">Tout clavier</a></li>
+</ul></li>
+<li><a href="#concernant_la_video">Videos</a>
+<ul>
+<li><a href="#video_size">Taille de la vidéo</a></li>
+</ul></li>
 <li><a href="#lanalyse">L’analyse de film</a>
 <ul>
 <li><a href="#analyse_protocole">Protocole d’analyse</a></li>
@@ -92,7 +98,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li><a href="#les_events">Les Events</a>
 <ul>
-<li><a href="#les_events_scenes">Les events « Scènes »</a></li>
+<li><a href="#create_events">Création des « Events »</a></li>
+<li><a href="#les_events_scenes">Les events « Scènes »</a>
+<ul>
+<li><a href="#decors_in_scenes">Décors dans les events « Scènes »</a></li>
+</ul></li>
+<li><a href="#les_events_notes">Les events « Notes »</a></li>
+<li><a href="#affichage_des%20events">Affichages des events</a></li>
 </ul></li>
 <li><a href="#gestion_des_temps">Gestion des temps</a>
 <ul>
@@ -109,27 +121,52 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li><a href="#linterface">L’Interface</a>
 <ul>
+<li><a href="#main_ui_sections">Les sections principales de l’UI</a>
+<ul>
+<li><a href="#ui_section_video">La section vidéo</a></li>
+<li><a href="#ui_section_reader">La section « lecteur »</a></li>
+<li><a href="#ui_banc_timeline">Le Banc-Timeline</a></li>
+</ul></li>
+<li><a href="#one_key_pressed_feature">Fonction « One-Key-Pressed »</a></li>
 <li><a href="#indication_parties_zones_courantes">Indication des parties et zones courantes</a></li>
 <li><a href="#le_bouton_stop">Comportement du bouton STOP</a></li>
 <li><a href="#move_to_a_scene">Se déplacer rapidement à une scène particulière</a></li>
 </ul></li>
-<li><a href="#define_film_pfa">Définir le Paradigme de Field Augmenté du film</a></li>
+<li><a href="#define_film_pfa">Définir le Paradigme de Field Augmenté du film</a>
+<ul>
+<li><a href="#calque_pfa">Calque du Paradigme de Field Augmenté Absolu</a></li>
+</ul></li>
 <li><a href="#les_documents">Les Documents</a>
 <ul>
 <li><a href="#types_de_documents">Quatre types de documents</a></li>
 <li><a href="#les_diminutifs">Diminutifs</a></li>
 <li><a href="#variables_dans_les_documents">Variables dans les documents</a></li>
 <li><a href="#les_snippets">Les snippets</a></li>
-<li><a href="#redaction_documents">Rédaction des documents</a></li>
+<li><a href="#redaction_documents">Rédaction des documents</a>
+<ul>
+<li><a href="#force_return_newline">Retours à la ligne forcés</a></li>
 </ul></li>
+</ul></li>
+<li><a href="#listings_ditems">Listings d’élément</a></li>
 <li><a href="#assemblage_analyse">Assemblage de l’analyse finale</a></li>
 <li><a href="#publication_online">Publication online</a></li>
 </ul>
 <p>Ce manuel décrit l’utilisation de l’application <strong>FilmAnalyse</strong> qui permet d’effectuer avec confort — et plus que ça — des analyses de films.</p>
 <h2 id="presentation_generale">Présentation générale</h2>
+<h3 id="tout_clavier">Tout clavier</h3>
+<p>L’option forte de cette application est de faire un interface « tout clavier », c’est-à-dire contrôlable principalement à l’aide du clavier. On le voit dès le départ avec l’absence de contrôleur de vidéo, de boutons permettant de lancer et d’arrêter la vidéo. On doit s’habituer dès le départ à utiliser les touches <code>l</code> — pour mettre en route —, <code>k</code> — pour arrêter — et <code>j</code> pour revenir en arrière, comme sur un banc de montage.</p>
+<p>C’est une condition indispensable pour produire rapidement une analyse de film et particulièrement la collecte de ses informations.</p>
 <h2 id="concernant_la_video">Videos</h2>
 <p>Les vidéos utilisées peuvent être au format <code>mp4</code>, <code>ogg</code> et <code>webm</code>.</p>
 <p>Si la durée de la vidéo est inférieure à 30 secondes environ, il y aura des problèmes au niveau des affichages. Il est bon, en règle générale, de choisir des vidéos d’au moins une minute.</p>
+<h3 id="video_size">Taille de la vidéo</h3>
+<p>On peut régler la taille de la vidéo à l’aide des sous-menus du menu « Vidéo &gt; Taille &gt; ». On trouve dans cette partie des réglages standard, « Petite », « Normale » ou « Large », ou un réglage personnalisé fin.</p>
+<p>Pour régler la vidéo très facilement à la taille voulue, on peut utiliser aussi <a href="#one_key_pressed_feature">la fonctionnalité « One-Key-Pressed »</a> (« Une touche pressée ») :</p>
+<ul>
+<li>maintenir la touche « v » appuyée</li>
+<li>jouer sur les flèches HAUT et BAS pour augmenter ou réduire respectivement la taille.</li>
+</ul>
+<p>Noter que cette taille sera enregistrée avec l’analyse et qu’elle sera donc appliquée chaque fois que l’analyse sera chargée. Cela signifie aussi que chaque analyse peut posséder sa propre taille de vidéo.</p>
 <hr />
 <h2 id="lanalyse">L’analyse de film</h2>
 <p>L’<em>analyse de film</em> est le but ultime de l’application <strong>Film Analyzer</strong>, avec une orientation précise pour les eBooks.</p>
@@ -142,9 +179,44 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2 id="les_events">Les Events</h2>
 <p>Dans <strong>Film Analyzer</strong>, l’<em>Event</em> est l’élément de base, l’<em>atome</em> de l’analyse. Il signifie « évènement » en français, mais on préfère la version courte anglaise.</p>
 <p>On pourrait dire que <em>tout est event</em> dans <strong>Film Analyzer</strong>. Un procédé est un event, une scène est un event, une note est un event, etc.</p>
+<h3 id="create_events">Création des « Events »</h3>
+<p>Pour créer les <em>events</em>, on peut utiliser les boutons qui se trouvent en bas à gauche de la fenêtre, ou les menus dans « Event &gt; Nouveau &gt; … » ou les raccourcis clavier à base de <code>ALT-CMD</code> (on trouve dans les menus les lettres qui correspondent à chaque event, mais de façon générale, c’est la première lettre).</p>
+<p>Une fois une de ces procédures adoptées, le formulaire de l’event s’ouvre et il suffit de le remplir.</p>
+<blockquote>
+<p>Note : le formulaire de création (ou d’édition) s’ouvre toujours exactement à côté de la boite qui contient les boutons. Donc il suffit de déplacer cette boite pour déplacer l’emplacement où s’ouvriront tous les formulaires d’édition des <em>events</em>.</p>
+</blockquote>
 <h3 id="les_events_scenes">Les events « Scènes »</h3>
 <p>Ils permettent de définir les scènes du film. Ce sont des <em>events</em> particulier dans le sens où leurs informations sont très particulières (effet, lieu, etc.) et ils sont souvent les conteneurs d’autres éléments.</p>
 <p>La scène, à la base, se définit par un <em>pitch</em> et un <em>résumé</em>. À la création de la scène, on remarque que le pitch, à mesure qu’on le rentre, se copie dans le résumé de la scène. Cela a une incidence directe sur l’affichage : si le résumé commence exactement comme le pitch, ce pitch n’est pas ajouté dans l’affichage complet des scènes. En revanche, il permet d’en faire un affichage réduit.</p>
+<h4 id="decors_in_scenes">Décors dans les events « Scènes »</h4>
+<p>On choisit le décor et le sous-décor de la scène à l’aide de deux menus qui se peuplent dynamiquement en fonction des lieux ajoutés. Un nouveau lieu principal est créé dès qu’un nouveau décor est entré dans le champ (attention, cette valeur est sensible à la casse, ce qui signifie que le décor « Maison » est totalement différent du décor « maison »). Idem pour les sous-décors.</p>
+<p>On peut indiquer <strong>deux décors</strong> ou plus pour une même scène en utilisant le signe esperluette (« &amp; »). La procédure la plus simple est la suivante :</p>
+<ul>
+<li>choisir le premier décor/sous-décor,</li>
+<li>=&gt; il s’inscrit dans le champ</li>
+<li>ajouter ‘&amp;’ à la fin du champ</li>
+<li>choisir le second décor/sous-décor,</li>
+<li>=&gt; il s’ajoute au premier décor/sous-décor</li>
+<li>répéter l’opération avec tous les décors voulus.</li>
+</ul>
+<p>Noter que pour une scène qui contient plusieurs décors/sous-décors, chacun d’entre eux se partagera le temps en fonction du nombre total de décors/sous-décors. Par exemple, si la scène se passe dans deux décors différents, chacun d’eux « héritera » de la moitié du temps de la scène. Si trois sous-décors composent la scène, chaque sous-décor se partagera un tiers du temps de la scène. Etc.</p>
+<h3 id="les_events_notes">Les events « Notes »</h3>
+<p>Les events de type « notes » sont des events particuliers puisqu’ils s’affichent comme des notes dans un texte, c’est-à-dire avec un indice en exposant après un mot, qui renvoie à une définition ou une explication plus bas — normalement en pied de page.</p>
+<p>On utilise cependant ces notes de la même manière que pour les autres types d’event :</p>
+<ul>
+<li>on crée la note au temps voulu,</li>
+<li>on place le curseur dans le texte de l’autre event que la note doit affecter,</li>
+<li>on glisse la note — par exemple depuis le reader — sur le champ de texte.</li>
+</ul>
+<p>Une marque <code>{{event:XXX}}</code> est alors insérée à l’endroit du curseur, qui sera remplacé lors de la compilation par l’indice de la note en exposant, et la note — ou <em>les</em> notes seront inscrites sont le texte concerné.</p>
+<hr />
+<h2 id="affichages-des-events-affichage_des-events">[Affichages des events {#affichage_des events}</h2>
+<p>Il y a deux moyens d’afficher la liste des events par type et un moyen de les afficher tous.</p>
+<p>Si un filtre doit être appliqué, pour choisir des <em>events</em> précis, alors il sera préférable d’utiliser un <em>Eventeur</em>. Tandis que l’affichage par listing permet d’afficher plus vite les events d’un type particulier — les notes, les infos, etc. — mais ne permet pas, pour le moment de les filtre. En revanche, il permet de les éditer.</p>
+<h3 id="affichage-par-listing">Affichage par listing</h3>
+<p>Utiliser un des menus <code>Events &gt; Liste des… &gt; *type d'event*</code> ou, plus facile encore, cliquer sur le bouton pour créer un nouvel event — dans les boutons en bas à gauche — tout en tenant la touche <code>CMD</code> appuyée.</p>
+<h3 id="affichage-par-eventer">Affichage par <em>Eventer</em></h3>
+<p>Ouvrir un <em>eventer</em> avec le menu <code>Events &gt; Nouvel Eventer…</code> — ou activer le raccourci <code>CMD-MAJ-E</code>, puis choisissez le bouton <code>filtre</code> en haut à droite pour définir le filtre à appliquer. Recliquez le bouton <code>liste</code> qui affichera la liste de tous les <em>events</em> — et autres éléments — correspondant à votre filtre.</p>
 <hr />
 <h2 id="gestion_des_temps">Gestion des temps</h2>
 <h3 id="move_with_timeline">Déplacements à l’aide de la Timeline</h3>
@@ -171,6 +243,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3 id="get_current_time">Récupération du temps courant</h3>
 <p>Pour coller rapidement un temps courant dans un champ d’édition, il suffit de cliquer sur le bouton « Temps courant » qui affiche le résultat et le colle dans le presse-papier.</p>
 <p>Mais il y a même plus simple en glissant la vidéo (qui se transforme en horloge) sur le champ de saisie voulu. Cela place une balise <code>{{time: &lt;le temps&gt;}}</code> qui sera ensuite formatée convenablement suivant le support voulu.</p>
+<p>Ou, si l’on se trouve dans un champ d’édition du formulaire, il suffit de jouer la combinaison clavier <code>CMD T</code>.</p>
 <h3 id="set_event_time">Réglage du temps de l’event</h3>
 <h4 id="reglage_du_point_temporel">Réglage du temps</h4>
 <p>Pour éditer le temps d’un event — i.e. le modifier, on peut s’y prendre de cette manière :</p>
@@ -198,6 +271,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Si l’option « Calcul automatique de la durée des scènes » est coché dans le menu « Options », le calcul de la durée des scènes se fait automatiquement à la création des scènes. Dès que la scène N est créée, on calcule la durée de la scène N-1 d’après son temps.</p>
 <hr />
 <h2 id="linterface">Interface</h2>
+<h3 id="main_ui_sections">Les sections principales de l’UI</h3>
+<h3 id="ui_section_video">La section vidéo</h3>
+<p>C’est la section contenant la vidéo du film, s’il est défini, en haut à gauche de l’écran.</p>
+<p>On sera peut-être étonné de ne trouver aucun bouton, mais cette application est pensée pour être presque exclusivement pilotable par le clavier. Jouer simplement le raccourci <code>g</code> (hors d’un champ d’édition) pour voir les raccourcis à utiliser pour se déplacer. Pour jouer la vidéo, utiliser les touches <code>j</code> (pour reculer), <code>k</code> (pour stopper) et <code>l</code> (pour avancer) plus ou moins vite, en fonction du nombre de pressions.</p>
+<h3 id="ui_section_reader">La section « lecteur »</h3>
+<p>La section « lecteur » (ou section « Reader ») est la section en haut à droite de l’interface. Elle permet de lire les <em>events</em>, images et autres marqueurs au fil du visionnage.</p>
+<p>Comme partout ou presque dans l’interface, les éléments sont éditables et « draggables » (pour les associer à d’autres éléments) depuis ce lecteur.</p>
+<h4 id="ui_banc_timeline">Le Banc-Timeline</h4>
+<p>C’est la rangée inférieure, qui affiche la <em>ligne de temps</em> du film, depuis le début à gauche jusqu’à la fin à droite, et présente les scènes, les <em>events</em> et les marqueurs de façon graphique.</p>
+<h3 id="one_key_pressed_feature">Fonction « One-Key-Pressed »</h3>
+<p>La fonctionnalité « One Key Pressed » (littéralement « Une touche pressée ») permet de régler un grand nombre de choses en maintenant une touche pressée.</p>
+<p>Par exemple, pour régler le zoom, on presse la touche <code>z</code>, puis on utilise les flèches pour choisir une valeur de zoom (pour le <a href="#ui_banc_timeline">banc timeline</a>).</p>
 <h3 id="indication_parties_zones_courantes">Indication des parties et zones courantes</h3>
 <p>À côté de l’horloge principale de la vidée se trouve l’indication de la partie (haut) et de la zone (bas) dans laquelle on se trouve dans le film. La première colonne, à gauche, indique les parties et les zones de façon absolue, dans le Paradigme de Field Augmenté, tandis que la seconde, à droite, indique ces parties et ces zones par rapport au film courant, si ces éléments sont définis.</p>
 <p>Voir comment se <a href="#move_by_parts_and_zones">déplacer par parties/zones</a> grâce à ces indications, en cliquant dessus.</p>
@@ -209,7 +294,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>la troisième pression ramène au début de la vidéo.</li>
 </ol>
 <h3 id="move_to_a_scene">Se déplacer rapidement à une scène particulière</h3>
-<p>Pour se déplacer rapidement à une scène particulière, le mieux est d’utiliser l’<em>Eventers</em> qui affiche, par défaut, toutes les scènes :</p>
+<p>Pour se déplacer rapidement à une scène particulière, si ce n’est pas une scène proche, le mieux est d’utiliser l’<em>Eventers</em> qui affiche, par défaut, toutes les scènes :</p>
 <ul>
 <li>ouvrir l’<em>Eventer</em> par le menu « Events &gt; Nouvel eventer… » (ou faire <code>CMD MAJ E</code>),</li>
 <li>trouver la scène dans le listing qui s’affiche,</li>
@@ -217,10 +302,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <hr />
 <h2 id="define_film_pfa">Définir le Paradigme de Field Augmenté du film</h2>
-<p>Pour définir le PFA du film, on crée des events de type <strong>Nœud STT</strong>. Il suffit de choisir le type du nœud dans le premier menu et de décrire en quoi le temps courant correspond au nœud concerné.</p>
-<p>Une fois suffisamment de nœud définis, on peut demander l’affichage du paradigme en actionnant le menu « Affichage &gt; Paradigme de Field Augmenté ».</p>
+<p>On peut définir quatre PFA différent dans <strong>FilmAnalyzor</strong>. Le premier peut concerner l’intrigue principale tandis que le deuxième s’intéressera à l’intrigue amoureuse (secondaire) et un troisième pourra se concentrer sur le parcours d’un autre personnage que le protagoniste.</p>
+<p>Pour définir ces PFA du film, on crée des events de type <strong>Nœud STT</strong>. Il suffit de choisir le paradigme visé dans le premier menu et le type du nœud dans le second menu, puis de décrire en quoi le temps courant correspond au nœud concerné.</p>
+<p>Une fois que suffisamment de nœud ont été définis, on peut demander l’affichage du paradigme en actionnant le menu « Affichage &gt; Paradigme de Field Augmenté &gt; PFA Principal » ou autre paradigme.</p>
+<p>Pour afficher le paradigme dans l’assemblage final du livre, il suffit de choisir ce paradigme dans le script d’assemblage.</p>
+<h3 id="calque_pfa">Calque du Paradigme de Field Augmenté Absolu</h3>
+<p>On peut faire apparaitre sur le <a href="#ui_banc_timeline">banc timeline</a> un calque dessinant le paradigme absolu du film, en tout cas les grandes divisions, pour retrouver les actes, les tiers, les cinquièmes.</p>
+<p>On fait apparaitre ce calque avec le menu <code>Affichage &gt; Calque du PFA</code> ou avec le raccourci-clavier <code>CMD MAJ P</code>.</p>
+<hr />
 <h2 id="les_documents">Les Documents</h2>
-<p>Une analyse, en plus des [events][] qui permettent de définir des éléments précis du film, est composée de <a href="#types_de_documents">documents</a> de types différents. On peut tous les atteindre depuis le menu « Documents » de l’application <strong>Film-Analyzer</strong>.</p>
+<p>Une analyse, en plus des [events][] qui permettent de définir des éléments précis du film, est composée de <a href="#types_de_documents">documents</a> de types différents. On peut tous les atteindre depuis le menu « Documents » de l’application <strong>Film-Analyzor</strong>.</p>
 <h3 id="types_de_documents">Quatre types de documents</h3>
 <p>Il faut comprendre qu’il y a 4 types de documents, même s’ils sont tous accessibles depuis le menu « Documents » de l’application.</p>
 <ol type="1">
@@ -278,10 +369,33 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Les snippets permettent de rédiger beaucoup plus vite le texte en permettant d’écrire le simple début d’un mot, et d’en obtenir la suite en jouant la touche TABULATION. Par exemple, si le snippet <code>f:film</code> est défini, il suffit de taper « f » suivi de la touche TABULATION pour écrire « film ».</p>
 <p>Les snippets se définissent dans le document de même nom, qu’on peut atteindre par le menu « Documents ». On en définit autant qu’on veut, pour chaque analyse. Si l’on veut utiliser les snippets d’une autre analyse, il suffit de l’ouvrir et de copier-coller le code des snippets dans la nouvelle.</p>
 <h3 id="redaction_documents">Rédaction des documents</h3>
-<p>Le <code>Writer</code> de l’application permet de rédiger tous les documents de l’analyse. Il suffit de le choisir dans le menu « Documents » et il s’ouvre en édition. Tous les <a href="#types_de_documents">types de documents</a> peuvent s’ouvrir de cette manière.</p>
+<p>Le <code>PorteDocument</code> de l’application permet de rédiger tous les documents de l’analyse. Il suffit de le choisir dans le menu « Documents » et il s’ouvre en édition. Tous les <a href="#types_de_documents">types de documents</a> peuvent s’ouvrir de cette manière.</p>
 <p>On utilisera des <a href="#variables_dans_les_documents">variables</a> les <a href="#les_diminutifs">diminutifs</a> et les <a href="#les_snippets">snippets</a> pour se faciliter l’écriture et éviter certaines erreurs.</p>
 <p>Pour faire référence à des <em>events</em> de tout type, il suffit de prendre ces <em>events</em> et de les glisser dans le texte. Une référence sera écrite au curseur. La nature et l’aspect de cette référence est fonction du type de l’<em>event</em> et peut varier beaucoup d’un type à l’autre. On reconnait les balises à leur forme <code>{{event: &lt;id de l'event&gt;}}</code>. Si l’<em>event</em> est une scène, il apparaitra de cette manière : <code>{{scene: &lt;id event&gt;}}</code> (noter que ça n’est pas le <em>numéro de la scène</em>, mais bien l’<em>identifiant de l’event</em> qui est inscrit).</p>
 <p>ASTUCE : On peut voir tout de suite l’aspect que prendra la référence — et la modifier au besoin — en demandant la visualisation en direct du texte (case à cocher « Visualiser » dans le pied de page du <code>Writer</code>).</p>
+<h4 id="enregistrement-du-document-édité">Enregistrement du document édité</h4>
+<p>Pour enregistrer le document édité, on a plusieurs solutions :</p>
+<ul>
+<li>exécuter la combinaison <code>CMD-s</code> ou <code>CMD-Return</code> lorsque l’on se trouve dans le champ de texte (c’est la méthode privilégiée)</li>
+<li>cocher la case d’enregistrement automatique en bas de la fenêtre du porte-documents,</li>
+<li>cliquer sur le bouton « Enregistrer » au bas de la fenêtre du porte-documents (mais selon le principe du « tout clavier », c’est la méthode la moins conseillée),</li>
+</ul>
+<h4 id="force_return_newline">Retours à la ligne forcés</h4>
+<p>Pour forcer un retour à la ligne dans un document Markdown, il faut utiliser le caractère <code>¶</code> qui s’obtient, sur Mac, avec <code>ALT 6</code>.</p>
+<hr />
+<h3 id="listings_ditems">Listings d’élément</h3>
+<p>On peut afficher la plupart des listes d’éléments — personnages, brins, documents, etc. — à l’aide de raccourcis clavier commençant par <code>CMD+MAJ</code>. Il suffit de regarder dans le menu « Affichage » pour trouver la liste des listes possibles.</p>
+<p>Lorsque la fenêtre du listing est ouverte, et selon le principe du « tout clavier », des raccourcis permettent de commander la liste :</p>
+<ul>
+<li>les flèches permettent de sélectionner et se déplacer l’item en item,</li>
+<li>la touche <code>e</code> permet d’éditer l’item sélectionné,</li>
+<li>les touches <code>Backspace</code> ou <code>Delete</code> permettent de détruire l’item,</li>
+<li>la touche <code>o</code> permet de déployer tous les éléments,</li>
+<li>la touche <code>o</code> permet de les rassembler,</li>
+<li>la flèche droite permet de déployer l’élément sélectionné,</li>
+<li>la flèche gauche permet de rassembler l’élément.</li>
+</ul>
+<hr />
 <h2 id="assemblage_analyse">Assemblage de l’analyse finale</h2>
 <p>L’assemblage de l’analyse finale se fait à partir du <em>script d’assemblage</em> défini dans les documents. S’il n’est pas défini, c’est le script par défaut qui sera utilisé (<code>./app/analyse_files/building_script.md</code>).</p>
 <p>Chaque ligne de ce <em>script d’assemblage</em> définit une commande à jouer. Cette commande est composée de la commande elle-même, qui est toujours le premier mot en majuscule, suivi des arguments à utiliser.</p>

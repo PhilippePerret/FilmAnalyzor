@@ -16,7 +16,7 @@ const NewAnalyse = {
             {name:"Films", extensions: ["mp4", "ogg", "webm"]}
         ]
       }
-      let files = DIALOG.showOpenDialog(openOptions)
+      let files = DIALOG.showOpenDialogSync(openOptions)
       if (!files) return F.error(T('video-required'))
       var videoPath = files[0]
       // Note : l'extension est correcte puisqu'on limite aux extensions

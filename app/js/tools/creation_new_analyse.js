@@ -7,7 +7,7 @@ const NewAnalyse = {
       , message:      'Dossier de la nouvelle analyse (le créer si nécessaire)'
       , properties:   ['openDirectory', 'createDirectory']
     }
-    let files = DIALOG.showOpenDialog(openOptions)
+    let files = DIALOG.showOpenDialogSync(openOptions)
     if (!files) return false
     var analyseFolder = files[0]
     // Si c'est un dossier qui contient déjà une analyse, on produit une erreur
@@ -32,7 +32,7 @@ const NewAnalyse = {
             {name:"Films", extensions: ["mp4", "ogg", "webm"]}
         ]
       }
-      let files = DIALOG.showOpenDialog(openOptions)
+      let files = DIALOG.showOpenDialogSync(openOptions)
       if (!files) return F.error(T('video-required'))
       var videoPath = files[0]
       // Note : l'extension est correcte puisqu'on limite aux extensions

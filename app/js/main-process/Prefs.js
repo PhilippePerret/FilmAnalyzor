@@ -136,6 +136,7 @@ const Prefs = {
    */
 , save(){
     console.log("-> Prefs.save", this.userPrefs)
+    console.log("this.userPrefsPath = '%s'", this.userPrefsPath)
     fs.writeFileSync(this.userPrefsPath, JSON.stringify(this.userPrefs), 'utf8')
     console.log("<- Prefs.save")
   }

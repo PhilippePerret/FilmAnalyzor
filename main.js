@@ -26,7 +26,7 @@ global.userPrefs      = null
 app.on('ready', () => {
 
   // // Chargement des préférences
-  // Prefs.init().load()
+  Prefs.init().load()
   //
   // Construction des menus
   // Note : on a besoin de `mainMenuBar` pour retrouver les menus par
@@ -44,6 +44,9 @@ app.on('ready', () => {
       height: screenHeight - 40
     , width:  screenWidth - 40
     , icon:   "../dist/icons/macos/icon.icns"
+    , webPreferences:{
+        nodeIntegration:true
+      }
   })
   mainW.loadURL(`file://${path.resolve('./app/analyser.html')}`)
   // if (MODE_TEST) mainW.toggleDevTools();

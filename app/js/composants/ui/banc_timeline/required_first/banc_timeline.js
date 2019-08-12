@@ -59,9 +59,12 @@ const BancTimeline = {
 
   Note : ce setTimeout sert à ne pas déclencher les choses si on ne
   fait que passer sur la réglette rapidement
+
+  Note : seulement si une analyse est chargée
 **/
 , onMouseOverTimeRuler(e){
     // console.log("-> onMouseOverTimeRuler")
+    if ( ! FAnalyse.current ) return
     this.timerOnTimeRuler = setTimeout(this.observeTimeRuler.bind(this), 750)
     return stopEvent(e)
   }
