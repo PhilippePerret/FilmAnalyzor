@@ -29,6 +29,7 @@
   * [Élément DOM courant (`FocusedElement`)](#active_dom_element)
 * [Méthodes pratiques](#les_methodes_pratiques)
   * [Simuler des touches clavier](#simulate_keyboard)
+  * [Simuler le choix d'un menu](#simulate_menu)
   * [Exécution d'une action (`action`)](#exec_action)
 * [Textes écrits dans le suivi](#textes_suivis)
   * [Cas entièrement à implémenter (`pending`)](#pending)
@@ -120,6 +121,9 @@ On configure les tests dans le fichier `./__TestsFIT__/config.json`.
 `regCases`
 : Expression régulière à utiliser pour filtrer les cas à jouer.
 : On peut utiliser par exemple "ONLY" et ajouter « ONLY » au seul cas qu'on veut traiter pour ne traiter que lui.
+
+`map-menus`
+: Une carte où la clé permettra de reconnaitre simplement un menu de l'application, et la valeur sera l'identifiant du menu. Cf. [Simuler le choix d'un menu](#simulate_menu).
 
 
 ---------------------------------------------------------------------
@@ -802,9 +806,76 @@ test.after_case( () => { /* code à exécuter avant chaque cas */ })
 
 ```
 
-## Simuler des touches clavier {#simulate_keyboard}
+### Simuler des touches clavier {#simulate_keyboard}
 
 Pour toutes les méthodes de tests concernant les touches clavier, cf. [le fichier rassemblant toutes les méthodes](./Manuel_FITests_METHS.html#libtestsutilitiesKeysjs).
+
+### Simuler le choix d'un menu {#simulate_menu}
+
+On simule le choix d'un menu, dans les tests, à l'aide de :
+
+```javascript
+
+chooseMenu(<identifiant-menu>)
+
+```
+
+Par exemple, dans une action :
+
+```javascript
+
+await action("Je joue le menu", async () => {
+  chooseMenu('mon-menu')
+})
+
+```
+
+L'`identifiant du menu` peut prendre trois forme :
+
+* le « chemin » vers le menu, où chaque élément est séparé par `::` (par exemple `Fichier::Ouvrir…` — attention à respecter scrupuleusement les noms),
+* l’identifiant défini dans la définition des menus, donc la propriété `id` du menu,
+* la clé définie dans la propriété `map-menus` des [configurations des fitest](#configurer_les_tests).
+
+Par exemple, si nous avons un menu défini par :
+
+```javascript
+
+  label:"Menu principal"
+, subitem:[
+    {
+        label: "Mon sous-menu…"
+      , id: 'mon-sous-menu'
+    }
+
+  ]
+
+```
+
+… et que les configurations définissent :
+
+```javascript
+
+"map-menus":{
+    "Le sous-menu en question": "mon-sous-menu"
+}
+
+```
+
+… alors on peut désigner ce menu de trois façons différentes pour l'activer :
+
+```javascript
+
+chooseMenu("Menu principal::Mon sous-menu…") // par le "chemin"
+
+// ou
+
+chooseMenu("mon-sous-menu") // par l'identifiant
+
+// ou
+
+chooseMenu("Le sous-menu en question") // par la map
+
+```
 
 ### Exécution d'une action (`action`) {#exec_action}
 

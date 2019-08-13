@@ -137,7 +137,7 @@ verifyCompletude(fn_callback){
   //  - parce que le fichier est inexistant
   // S'assurer que tous les fichiers du dossier `analyse_files` ont
   // été traités
-  glob.sync(`${this.a.folderFiles}/**/*.md`).forEach(function(file){
+  globSync(`${this.a.folderFiles}/**/*.md`).forEach(function(file){
     // console.log(file)
     var fname  = path.basename(file)
     var affixe = path.basename(file, path.extname(file))
@@ -241,7 +241,7 @@ getLastChangeDateIn(folder, lastDate){
     // <= folder n'est pas un Array
     // => C'est le path d'un dossier à fouiller
     fpath = path.join(this.a.folder,folder)
-    files = glob.sync(`${fpath}/**/*.*`)
+    files = globSync(`${fpath}/**/*.*`)
   }
   for(file of files){
     var t = fs.statSync(file).mtime

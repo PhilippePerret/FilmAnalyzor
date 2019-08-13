@@ -93,7 +93,7 @@ static get(docId){
   `analyse_files` et le renvoie (utilisé pour les tests manuels)
 **/
 static get count(){
-  return glob.sync(`${current_analyse.folderFiles}/*.*`).length
+  return globSync(`${current_analyse.folderFiles}/*.*`).length
 }
 
 // ---------------------------------------------------------------------

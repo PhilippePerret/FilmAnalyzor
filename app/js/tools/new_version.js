@@ -45,7 +45,8 @@ const FAVersion = {
   // On doit copier tous les fichiers dans le dossier de la
   // version
   log.info(`${pfx} Copie de tous les fichiers JSON dans le dossier de la version courante`)
-  await Sys.glob(`${this.a.folder}/*.json`, (err, files) => {
+  // await Sys.glob(`${this.a.folder}/*.json`, (err, files) => {
+  let filesTraitedCount = await glob(`${this.a.folder}/*.json`, (err, files) => {
     if(err)throw Error(err)
     for(srcPath of files){
       dstPath = path.join(folder_oldv, path.basename(srcPath))
@@ -53,24 +54,31 @@ const FAVersion = {
       fs.copyFileSync(srcPath, dstPath)
     }
   })
-  let filesCount = glob.sync(`${folder_oldv}/*.json`).length
-  filesCount > 3 || raise(`Les fichiers JSON auraient dû être copiés dans le dossier '${folder_oldv}'…`)
-  log.info(`${pfx} ${filesCount} fichiers JSON copiés.`)
+  filesTraitedCount = filesTraitedCount.length
+  // Fichiers dans le dossier de l'ancienne version
+  let count = globSync(`${folder_oldv}/*.json`).length
+  count > 3 || raise(`${pfx} Les fichiers JSON auraient dû être copiés dans le dossier '${folder_oldv}'…`)
+  count == filesTraitedCount || raise(`${pfx} Le nombre de fichiers JSON originaux (${filesTraitedCount}) et copiés (${count}) ne correspond pas…`)
+  log.info(`${pfx} ${count} fichiers JSON copiés.`)
 
   log.info(`${pfx} Copie des fichiers du dossier analyse_files de l’analyse…`)
-  await Sys.glob(`${this.a.folder}/analyse_files/*.*`, (err, files) => {
+  // await Sys.glob(`${this.a.folder}/analyse_files/*.*`, (err, files) => {
+  filesTraitedCount = await glob(`${this.a.folder}/analyse_files/*.*`, (err, files) => {
     if(err)throw(err)
     for(srcPath of files){
       dstPath = path.join(folderFiles_oldv, path.basename(srcPath))
       // console.log("Traitement du fichier file : ", path.basename(srcPath), dstPath)
       fs.copyFileSync(srcPath, dstPath)
     }
-    // zip.addLocalFile(dstPath)
-    my.buildZipFile(folder_oldv, zipPath)
-    // Enfin, on change la définition de la version courante
-    my.changeVersion(version)
   })
-
+  filesTraitedCount = filesTraitedCount.length
+  count = globSync(`${folderFiles_oldv}/*.*`).length
+  count > 0 || raise(`${pfx} Aucun fichier n'a été copié dans le dossier 'analyse_files'…`)
+  count == filesTraitedCount || raise(`${pfx} Le nombre de fichiers d'analyse originaux (${filesTraitedCount}) et copiés (${count}) ne correspond pas…`)
+  // zip.addLocalFile(dstPath)
+  my.buildZipFile(folder_oldv, zipPath)
+  // Enfin, on change la définition de la version courante
+  my.changeVersion(version)
 }
 /**
   Construction du zip file et suppression du dossier

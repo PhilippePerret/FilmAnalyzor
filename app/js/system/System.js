@@ -1,7 +1,7 @@
 'use strict'
 const path      = require('path')
 const fs        = require('fs')
-const glob      = require('glob')
+// const glob      = require('glob')
 const log       = require('electron-log')
 const electron  = require('electron')
 const remote    = electron.remote
@@ -10,6 +10,30 @@ const ipc       = electron.ipcRenderer
 const YAML      = require('js-yaml')
 const exec      = require('child_process').exec
 
+
+const System  = {} // pour pouvoir mettre tout de suite des trucs "dedans"
+const Sys     = System
+
+// = glob =
+// --------
+// Glob avec async/await (j'ai essayé promisify sans succès)
+// @return les fichiers traités (même si ça ne sert à rien)
+const globSync  = require('glob').sync
+Object.assign(System, {
+  glob(pattern, options, callback){
+    const glob = require('glob')
+    if ( undefined === callback && 'function' === typeof options) {
+      callback = options ; options  = null }
+    return new Promise((ok,ko)=>{
+      glob(pattern, options, (err, files) => {
+        if ( err ){ko(err);throw Error(err)}
+        else {callback(err, files);ok(files)}
+      })
+    })
+  }
+})
+const glob  = System.glob
+
 let ScreenWidth, ScreenHeight
 
 /**
@@ -17,7 +41,7 @@ let ScreenWidth, ScreenHeight
  * -------------
  * Permet de gérer le système courant
  */
-const System = {
+Object.assign(System,{
   name: 'System'
 
 /**
@@ -40,28 +64,6 @@ const System = {
   return require(`./js/tools/${relative}`)
 }
 
-/**
-  |
-  | Pour transformer la méthode glob en méthode utilisable avec async/await
-  |
-**/
-, glob(pattern, options, callback){
-    if ( undefined === callback && 'function' === typeof options) {
-      callback = options
-      options  = null
-    }
-    return new Promise((ok,ko)=>{
-      glob(pattern, options, (err, files) => {
-        if ( err ){
-          ko(err)
-          throw Error(err)
-        } else {
-          callback(err, files)
-          ok(files)
-        }
-      })
-    })
-  }
 /**
 * Pour charger un composant de l'application.
 * Un composant :
@@ -102,7 +104,7 @@ const System = {
     log.info(`   Folder: "${folder}"`)
     // Protection contre les dossiers vides
     if(folder && fs.existsSync(folder)){
-      if(glob.sync(`./${folder}/**/*.js`).length === 0){
+      if(globSync(`./${folder}/**/*.js`).length === 0){
         log.info(`<- System::loadNextFolder (pas de script dans le dossier)`)
         return this.loadNextFolder()
       }
@@ -164,6 +166,6 @@ const System = {
     document.head.append(DCreate(LINK, {id:id, attrs:{href: relpath, rel:'stylesheet'}}))
   }
 
-}
+}) // System (assign)
 
-const Sys = System
+// const Sys = System

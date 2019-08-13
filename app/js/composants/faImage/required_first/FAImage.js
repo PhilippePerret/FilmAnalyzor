@@ -205,7 +205,7 @@ static dataByTimesFor(faimg){
 static pickupImagesInFolder(){
   let my = this
   log.info('-> FAImage::pickupImagesInFolder')
-  glob.sync(`${this.a.folderPictures}/*.*`).forEach(function(file){
+  globSync(`${this.a.folderPictures}/*.*`).forEach(function(file){
     var fname = path.basename(file)
       , imgid = my.fname2id(fname)
     if(isUndefined(my._images[imgid])){

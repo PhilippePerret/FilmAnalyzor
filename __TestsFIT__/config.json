@@ -1,16 +1,19 @@
 {
   "--onlyFolders": ["FIT"]
-, "onlyFolders": ["FilmAnalyzor/EventForm"]
+, "onlyFolders": ["FilmAnalyzor/Analyse"]
 , "debug":      false
 , "trace":      false
 , "random":     false
 , "fail_fast":  true
 , "--fail_fast":  true
 , "--regFiles":   "t\\.test"
-, "regFiles":   "destroy"
+, "--regFiles":   "destroy"
 , "regNames":   null
 , "regCases":   null
 , "exemple regFiles": "^only\\.test\\.js"
 , "exemple regNames": "le filtrage"
 , "exemple regCases": "un wait"
+, "map-menus":{
+    "Nouvelle version":"new-version"
+  }
 }

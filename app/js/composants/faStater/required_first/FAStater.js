@@ -249,7 +249,7 @@ const FAStater = {
     // On considère que 5 documents personnalisés est une bonne
     // chose. Ça pourra être rectifié plus tard.
     // TODO Sinon ? On les comptes en prenant les fichiers docX.md
-    this.ActualCustomDocsCount = glob.sync(path.join(this.a.folderFiles, '**', 'doc-*.md')).length
+    this.ActualCustomDocsCount = globSync(path.join(this.a.folderFiles, '**', 'doc-*.md')).length
     curValue += this.ActualCustomDocsCount
     maxValue += this.ExpectedCustomDocsCount
 
@@ -319,7 +319,7 @@ Object.defineProperties(FAStater,{
     get(){
       if(undefined === this._documents){
         this._documents = {length: 0, items: {}}
-        glob.sync(path.join(this.a.folderFiles,'*.*')).forEach(file => {
+        globSync(path.join(this.a.folderFiles,'*.*')).forEach(file => {
           var affixe = path.basename(file,path.extname(file))
           this._documents.items[affixe] = {
             affixe: affixe

@@ -168,11 +168,11 @@ const Tests = {
       // On ne recherche que dans certains dossiers
       this.config.onlyFolders.map( rfolder => {
         p = path.join(this.testsFolder,rfolder,'**','*.js')
-        files.push(...glob.sync(p))
+        files.push(...globSync(p))
       })
     } else {
       p = path.join(this.testsFolder,'**','*.js')
-      files = glob.sync(p)
+      files = globSync(p)
     }
     // console.log("Fichiers après filtrage ou non par les dossiers : ", files)
 
@@ -252,7 +252,7 @@ const Tests = {
 , requireFolder(pfolder, owner){
     if ( ! fs.existsSync(pfolder) ) pfolder = path.join(this.MAINFOLDER,pfolder)
     pfolder = path.join(pfolder,'**','*.js')
-    glob.sync(pfolder).map( file => {
+    globSync(pfolder).map( file => {
       // console.log("Requérir:", file)
       try {
         if ( owner ) Object.assign( owner, require(file) )

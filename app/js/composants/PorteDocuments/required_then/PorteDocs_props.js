@@ -62,7 +62,7 @@ Object.assign(PorteDocuments,{
     var maxId = 49
       // , tbl   = {}
       , tbl   = new Map()
-    glob.sync(`${this.a.folderFiles}/*.*`).forEach( dpath => {
+    globSync(`${this.a.folderFiles}/*.*`).forEach( dpath => {
       var docId = this.docIdFromPath(dpath)
       tbl.set(docId, new FADocument(docId))
       if ( docId > maxId ) maxId = docId

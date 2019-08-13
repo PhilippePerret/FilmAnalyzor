@@ -295,7 +295,7 @@ Object.defineProperties(HandTests,{
 , HTestFiles:{
   get(){
     if(undefined === this._HTestFiles){
-      this._HTestFiles = glob.sync(`${this.folder}/**/*.yaml`)
+      this._HTestFiles = globSync(`${this.folder}/**/*.yaml`)
     }
     return this._HTestFiles
   }
