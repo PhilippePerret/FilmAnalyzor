@@ -64,7 +64,7 @@ static checkIfCurrentSavedBeforeExec(toolName){
   var toolMethod = require(`./js/tools/${toolName}.js`).bind(this)
   if (current_analyse && current_analyse.modified && !current_analyse.locked){
     var my = this
-    DIALOG.showMessageBox(null, {
+    DIALOG.showMessageBoxSync(null, {
         type: 'question'
       , buttons: ['Sauver', 'Annuler', 'Ignorer les changements' ]
       , defaultId: 0
@@ -319,8 +319,8 @@ togglePanneauStatistiques(){
 toggleAnalyseState(){ FAStater.toggleFullState() }
 
 newVersionRequired(){
-  var method = require('./js/tools/new_version.js')
-  method.bind(this)()
+  // var method = require('./js/tools/new_version.js')
+  Sys.reqTool('new_version').bind(this)()
 }
 
 /**

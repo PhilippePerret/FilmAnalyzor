@@ -101,7 +101,7 @@ const PorteDocuments = {
     if ( isUndefined(this.currentDocument) ) return false
     if ( this.a.locked ) return false
     if ( isFalse(this.currentDocument.isModified()) ) return false
-    var choix = DIALOG.showMessageBox({
+    var choix = DIALOG.showMessageBoxSync({
         type:       'warning'
       , buttons:    ["Enregistrer", "Annuler", "Ignorer les changements"]
       , title:      "Document courant non sauvegardé"

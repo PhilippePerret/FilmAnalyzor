@@ -28,7 +28,6 @@ const {
   , TEXTFIELD_ASSOCIATES_PROPS
 } = require('./js/system/first_required/FA_associates.js')
 
-const System = FReqGet('System')
 const {DOMHorloge, DOMDuration} = FReqGet('DOMHorloge')
 const Hash = FReqGet('Hash')
 const Flash = FReqGet('Flash')

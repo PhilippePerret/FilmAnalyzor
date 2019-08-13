@@ -2,6 +2,11 @@
 
 const APPFOLDER = path.resolve('.')
 
+window.onerror = function(e){
+  console.error(e)
+  alert("Une erreur est survenue. Merci de consulter la console.")
+}
+
 window.onCancelMe = function(){
   F.notify("Je cancel le truc")
 }
@@ -42,6 +47,8 @@ $(document).ready(() => {
   // Mais ici on n'est pas encore prêt, des dossiers sont toujours en
   // chargement
   // Par exemple, ici, UI n'est pas défini, encore
+
+  System.init()
 
   log.info("--- DOM ready ---")
   // console.clear()

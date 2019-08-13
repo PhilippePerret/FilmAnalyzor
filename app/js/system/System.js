@@ -1,16 +1,67 @@
 'use strict'
-const path  = require('path')
-const fs    = require('fs')
-const glob  = require('glob')
-const log   = require('electron-log')
+const path      = require('path')
+const fs        = require('fs')
+const glob      = require('glob')
+const log       = require('electron-log')
+const electron  = require('electron')
+const remote    = electron.remote
+const DIALOG    = remote.dialog
+const ipc       = electron.ipcRenderer
+const YAML      = require('js-yaml')
+const exec      = require('child_process').exec
+
+let ScreenWidth, ScreenHeight
 
 /**
- * Object System
+ * Object System    (alias : Sys)
  * -------------
  * Permet de gérer le système courant
  */
 const System = {
+  name: 'System'
 
+/**
+  |
+  | Initialisation du système
+  |
+  |
+**/
+, init() {
+    log.transports.console.level = 'warn'
+  }
+/**
+  |
+  | Méthodes pour requérir un module suivant son emplacement.
+  |
+  |
+**/
+, reqTool(relative){
+  relative.endsWith('.js') || relative.concat('.js')
+  return require(`./js/tools/${relative}`)
+}
+
+/**
+  |
+  | Pour transformer la méthode glob en méthode utilisable avec async/await
+  |
+**/
+, glob(pattern, options, callback){
+    if ( undefined === callback && 'function' === typeof options) {
+      callback = options
+      options  = null
+    }
+    return new Promise((ok,ko)=>{
+      glob(pattern, options, (err, files) => {
+        if ( err ){
+          ko(err)
+          throw Error(err)
+        } else {
+          callback(err, files)
+          ok(files)
+        }
+      })
+    })
+  }
 /**
 * Pour charger un composant de l'application.
 * Un composant :
@@ -22,10 +73,10 @@ const System = {
 * La méthode charge tous les scripts et inscrit les feuilles de
 * style dans le document.
 **/
-loadComponant(compName, fn_callback){
-  this.loadCSSFolder(`./app/js/composants/${compName}/css`)
-  this.loadJSFolders(`./app/js/composants/${compName}`, ['required_first', 'required_then', 'required_xfinally'], fn_callback)
-}
+, loadComponant(compName, fn_callback){
+    this.loadCSSFolder(`./app/js/composants/${compName}/css`)
+    this.loadJSFolders(`./app/js/composants/${compName}`, ['required_first', 'required_then', 'required_xfinally'], fn_callback)
+  }
 
   /**
    * Permet de charger des modules javascript dans le programme en inscrivant
@@ -115,4 +166,4 @@ loadComponant(compName, fn_callback){
 
 }
 
-module.exports = System
+const Sys = System
