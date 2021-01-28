@@ -20,7 +20,7 @@
   "license": "GNU",
   "devDependencies": {
     "@jest-runner/electron": "^2.0.1",
-    "electron": "^4.0.7"
+    "electron": "^9.4.0"
   },
   "dependencies": {
     "adm-zip": "^0.4.13",
